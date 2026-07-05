@@ -12,6 +12,9 @@ export const ROUTES = {
   EVENTS: '/events',
   NOTIFICATIONS: '/notifications',
   PROFILE: '/profile',
+  READING_PROGRESS: '/reading-progress',
+  LEADERBOARD: '/leaderboard',
+  REVIEWS: '/reviews',
   SETTINGS: '/settings',
   ADMIN: '/admin',
 } as const;

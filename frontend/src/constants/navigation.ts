@@ -1,4 +1,5 @@
 import {
+  BookMarked,
   BookOpen,
   Calendar,
   CalendarCheck,
@@ -8,7 +9,9 @@ import {
   MessageCircle,
   Settings,
   ShieldCheck,
+  Star,
   Ticket,
+  Trophy,
 } from 'lucide-react';
 
 import { Icons } from './icons';
@@ -27,6 +30,9 @@ export const userNavigation: NavItem[] = [
   { label: 'Seat Booking', path: ROUTES.SEAT_BOOKING, icon: CalendarCheck },
   { label: 'Community', path: ROUTES.COMMUNITY, icon: MessageCircle },
   { label: 'Events', path: ROUTES.EVENTS, icon: Calendar },
+  { label: 'Reading Progress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
+  { label: 'Leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
+  { label: 'Reviews', path: ROUTES.REVIEWS, icon: Star },
   { label: 'Notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
   { label: 'Settings', path: ROUTES.SETTINGS, icon: Settings },
 ];

@@ -27,7 +27,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 const sizeClasses: Record<ButtonSize, string> = {
   sm: 'h-8 gap-1.5 px-3 text-sm',
   md: 'h-10 gap-2 px-4 text-sm',
-  lg: 'h-12 gap-2 px-6 text-base',
+  lg: 'h-14 gap-2 px-8 text-base',
 };
 
 export function Button({
@@ -47,7 +47,8 @@ export function Button({
       ref={ref}
       disabled={disabled ?? isLoading}
       className={cn(
-        'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+        'inline-flex items-center justify-center rounded-md font-medium transition-all duration-150',
+        'active:scale-[0.98]',
         'disabled:pointer-events-none disabled:opacity-50',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         variantClasses[variant],

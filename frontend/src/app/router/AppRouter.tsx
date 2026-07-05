@@ -4,6 +4,19 @@ import { AdminLayout } from '@/app/layouts/AdminLayout';
 import { PublicLayout } from '@/app/layouts/PublicLayout';
 import { UserLayout } from '@/app/layouts/UserLayout';
 import { ROUTES } from '@/constants/routes';
+import { AdminDashboardPage } from '@/features/admin/pages/AdminDashboardPage';
+import { BookDetailsPage } from '@/features/books/pages/BookDetailsPage';
+import { BooksListPage } from '@/features/books/pages/BooksListPage';
+import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
+import { EventsPage } from '@/features/events/pages/EventsPage';
+import { LandingPage } from '@/features/landing';
+import { LeaderboardPage } from '@/features/leaderboard/pages/LeaderboardPage';
+import { NotificationsPage } from '@/features/notifications/pages/NotificationsPage';
+import { ProfilePage } from '@/features/profile/pages/ProfilePage';
+import { ReadingProgressPage } from '@/features/reading-progress/pages/ReadingProgressPage';
+import { ReservationsPage } from '@/features/reservations/pages/ReservationsPage';
+import { ReviewsPage } from '@/features/reviews/pages/ReviewsPage';
+import { SeatBookingPage } from '@/features/seat-booking/pages/SeatBookingPage';
 import { Login } from '@/pages/Login';
 import { NotFound } from '@/pages/NotFound';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
@@ -17,15 +30,7 @@ const router = createBrowserRouter([
   {
     element: <PublicLayout />,
     children: [
-      {
-        index: true,
-        element: (
-          <PlaceholderPage
-            title="Community Reading Club & Library Management Platform"
-            description="Digitize your library, join reading clubs, and get AI-powered book recommendations."
-          />
-        ),
-      },
+      { index: true, element: <LandingPage /> },
       {
         element: (
           <PublicRoute>
@@ -53,46 +58,21 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      {
-        path: relative(ROUTES.DASHBOARD),
-        element: (
-          <PlaceholderPage title="Dashboard" description="Your reading activity at a glance." />
-        ),
-      },
-      {
-        path: relative(ROUTES.BOOKS),
-        element: <PlaceholderPage title="Books" description="Browse the library catalog." />,
-      },
-      {
-        path: relative(ROUTES.BOOK_DETAILS),
-        element: <PlaceholderPage title="Book Details" description="Details for a single book." />,
-      },
-      {
-        path: relative(ROUTES.RESERVATIONS),
-        element: (
-          <PlaceholderPage title="Reservations" description="Track your book reservations." />
-        ),
-      },
-      {
-        path: relative(ROUTES.SEAT_BOOKING),
-        element: <PlaceholderPage title="Seat Booking" description="Reserve a study seat." />,
-      },
+      { path: relative(ROUTES.DASHBOARD), element: <DashboardPage /> },
+      { path: relative(ROUTES.BOOKS), element: <BooksListPage /> },
+      { path: relative(ROUTES.BOOK_DETAILS), element: <BookDetailsPage /> },
+      { path: relative(ROUTES.RESERVATIONS), element: <ReservationsPage /> },
+      { path: relative(ROUTES.SEAT_BOOKING), element: <SeatBookingPage /> },
       {
         path: relative(ROUTES.COMMUNITY),
         element: <PlaceholderPage title="Community" description="Reading clubs and discussions." />,
       },
-      {
-        path: relative(ROUTES.EVENTS),
-        element: <PlaceholderPage title="Events" description="Upcoming library events." />,
-      },
-      {
-        path: relative(ROUTES.NOTIFICATIONS),
-        element: <PlaceholderPage title="Notifications" description="Your recent notifications." />,
-      },
-      {
-        path: relative(ROUTES.PROFILE),
-        element: <PlaceholderPage title="Profile" description="Manage your account details." />,
-      },
+      { path: relative(ROUTES.EVENTS), element: <EventsPage /> },
+      { path: relative(ROUTES.NOTIFICATIONS), element: <NotificationsPage /> },
+      { path: relative(ROUTES.PROFILE), element: <ProfilePage /> },
+      { path: relative(ROUTES.READING_PROGRESS), element: <ReadingProgressPage /> },
+      { path: relative(ROUTES.LEADERBOARD), element: <LeaderboardPage /> },
+      { path: relative(ROUTES.REVIEWS), element: <ReviewsPage /> },
       {
         path: relative(ROUTES.SETTINGS),
         element: <PlaceholderPage title="Settings" description="Manage your preferences." />,
@@ -105,12 +85,7 @@ const router = createBrowserRouter([
         <AdminLayout />
       </RoleRoute>
     ),
-    children: [
-      {
-        path: relative(ROUTES.ADMIN),
-        element: <PlaceholderPage title="Admin" description="Platform administration." />,
-      },
-    ],
+    children: [{ path: relative(ROUTES.ADMIN), element: <AdminDashboardPage /> }],
   },
   { path: '*', element: <NotFound /> },
 ]);
