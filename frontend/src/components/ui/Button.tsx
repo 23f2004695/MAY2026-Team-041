@@ -1,0 +1,64 @@
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
+
+import { cn } from '@/lib/cn';
+
+import { Loader } from './Loader';
+
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isLoading?: boolean;
+  leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
+  ref?: Ref<HTMLButtonElement>;
+}
+
+const variantClasses: Record<ButtonVariant, string> = {
+  primary: 'bg-primary text-primary-foreground hover:bg-primary-hover',
+  secondary: 'bg-secondary text-secondary-foreground hover:bg-border-muted',
+  outline: 'border border-border bg-transparent text-foreground hover:bg-secondary',
+  ghost: 'bg-transparent text-foreground hover:bg-secondary',
+  danger: 'bg-danger text-danger-foreground hover:opacity-90',
+};
+
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: 'h-8 gap-1.5 px-3 text-sm',
+  md: 'h-10 gap-2 px-4 text-sm',
+  lg: 'h-12 gap-2 px-6 text-base',
+};
+
+export function Button({
+  ref,
+  className,
+  variant = 'primary',
+  size = 'md',
+  isLoading = false,
+  leadingIcon,
+  trailingIcon,
+  disabled,
+  children,
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      ref={ref}
+      disabled={disabled ?? isLoading}
+      className={cn(
+        'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+        'disabled:pointer-events-none disabled:opacity-50',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        variantClasses[variant],
+        sizeClasses[size],
+        className,
+      )}
+      {...props}
+    >
+      {isLoading ? <Loader size="sm" /> : leadingIcon}
+      {children}
+      {!isLoading && trailingIcon}
+    </button>
+  );
+}
