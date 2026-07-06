@@ -14,12 +14,13 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link
           to={ROUTES.HOME}
-          className="flex items-center gap-2 text-base font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80"
+          className="flex items-center gap-2 whitespace-nowrap text-base font-semibold tracking-tight text-foreground transition-opacity hover:opacity-80"
         >
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <BookOpen className="size-4" />
           </span>
-          Community Reading Club
+          <span className="sm:hidden">Reading Club</span>
+          <span className="hidden sm:inline">Community Reading Club</span>
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />

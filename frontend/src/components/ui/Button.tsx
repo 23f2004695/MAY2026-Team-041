@@ -47,7 +47,7 @@ export function Button({
       ref={ref}
       disabled={disabled ?? isLoading}
       className={cn(
-        'inline-flex items-center justify-center rounded-md font-medium transition-all duration-150',
+        'inline-flex items-center justify-center rounded-full font-medium transition-all duration-150',
         'active:scale-[0.98]',
         'disabled:pointer-events-none disabled:opacity-50',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
