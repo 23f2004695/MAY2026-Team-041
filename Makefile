@@ -12,7 +12,8 @@ e2e-install:
 	npm install
 
 backend-dev:
-	cd backend && uv run uvicorn app.main:app --app-dir src --reload --host 0.0.0.0 --port 8000
+	docker compose up -d --wait db
+	cd backend && uv run uvicorn app.main:app --app-dir src --reload --host 127.0.0.1 --port 8000
 
 frontend-dev:
 	npm --prefix frontend run dev
