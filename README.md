@@ -1,21 +1,46 @@
-# MAY2026-Team-041
+# MAY2026-Team-041 — Community Reading Club & Library Management Platform
 
-Production-ready starter repo with:
+A web platform that digitizes community library operations — borrowing, reservations,
+seat booking, reading clubs, and AI-powered recommendations — replacing paper registers
+and spreadsheets.
+
+
+
+Stack:
 
 - Backend: FastAPI, uv, Prisma, PostgreSQL
-- Frontend: React, Vite, TypeScript
-- Testing: pytest for backend, Playwright for end-to-end tests
+- Frontend: React 19, Vite, TypeScript, Tailwind CSS v4, TanStack Query, Framer Motion
+- Testing: pytest for backend, Vitest for frontend units, Playwright for end-to-end tests
 - Tooling: Ruff, ESLint, Prettier, Docker Compose
+
+## Current Status
+
+- **Milestone 1** (requirements) and **Milestone 2** (design & frontend) are complete.
+- The frontend has a full application shell (routing, layouts, navigation, route guards,
+  light/dark theme) and every core screen built against mock data: Landing, Dashboard,
+  Books, Book Details, Reservations, Events, Notifications, Profile, Reading Progress,
+  Leaderboard, Reviews, Seat Booking, and an Admin Dashboard.
+- The backend is a working scaffold (health checks, Prisma/PostgreSQL wiring) with no
+  business logic yet — that's **Milestone 3**, which will replace the frontend's mock
+  data with real API calls.
 
 ## Repository Layout
 
 ```text
 .
-├── backend/              # FastAPI service, Prisma schema, migrations
-├── frontend/             # React + Vite app
-├── docker-compose.yml    # Local PostgreSQL
-├── package.json          # Root Playwright/e2e scripts
-└── Makefile              # Common developer commands
+├── backend/                      # FastAPI service, Prisma schema, migrations
+├── frontend/                     # React + Vite app
+│   └── src/
+│       ├── app/                  # Router, route guards, layouts
+│       ├── components/           # ui/ primitives, layout/ shell pieces, common/ feature cards
+│       ├── features/             # One folder per screen (landing, dashboard, books, ...)
+│       ├── mocks/                # Mock data backing each feature until Milestone 3
+│       └── providers/            # Query client, auth (mocked), theme
+├── docker-compose.yml            # Local PostgreSQL
+├── package.json                  # Root dev scripts (backend/frontend) and Playwright e2e
+├── start_backend.py              # One-command backend starter (db + uvicorn)
+├── Makefile                      # Common developer commands
+└── PROJECT_SPECIFICATION.md      # Product scope and architecture rules (source of truth)
 ```
 
 ## Prerequisites
@@ -46,34 +71,60 @@ Install dependencies:
 make install
 ```
 
-Start PostgreSQL:
-
-```bash
-docker compose up -d db
-```
-
-Generate the Prisma client and apply migrations:
+Generate the Prisma client and apply migrations (starts PostgreSQL automatically):
 
 ```bash
 make db-generate
 make db-migrate
 ```
 
+> **Port already in use?** If you already have a local PostgreSQL instance listening on
+> 5432, `docker compose` will silently bind to the wrong server and Prisma will fail with
+> an authentication error. Change `POSTGRES_PORT` and `DATABASE_URL` in `.env` to an
+> unused port (e.g. 5433) and re-run the steps above.
+
 ## Development
 
-Run the backend:
+Open the app at http://localhost:5173 once both are running. Pick whichever way of
+starting each one fits your workflow — they all do the same thing.
+
+### Backend
+
+Starts PostgreSQL (waiting until it's healthy) and then the FastAPI dev server with
+auto-reload.
 
 ```bash
-make backend-dev
+npm run backend          # from the repo root
 ```
-
-Run the frontend in a second terminal:
 
 ```bash
-make frontend-dev
+python start_backend.py  # same thing, called directly
 ```
 
-Open the app at http://localhost:5173.
+```bash
+make backend-dev         # if you prefer Make
+```
+
+```bash
+# fully manual, for when you want to see/control each step
+docker compose up -d --wait db
+cd backend
+uv run uvicorn app.main:app --app-dir src --reload --host 127.0.0.1 --port 8000
+```
+
+### Frontend
+
+```bash
+npm run frontend            # from the repo root
+```
+
+```bash
+cd frontend && npm run dev  # same thing, run directly inside frontend/
+```
+
+```bash
+make frontend-dev           # if you prefer Make
+```
 
 Backend API:
 
