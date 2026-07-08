@@ -3,7 +3,7 @@ import { Star } from 'lucide-react';
 import { ProgressBar } from '@/components/common';
 import { Card, CardContent } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import type { ratingBreakdown } from '@/mocks/reviews';
+import { ratingBreakdown } from '@/mocks/reviews';
 
 export interface RatingSummaryProps {
   averageRating: number;
