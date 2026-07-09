@@ -1,7 +1,7 @@
 # MAY2026-Team-041 — Community Reading Club & Library Management Platform
 
-A web platform that digitizes community library operations — borrowing, reservations,
-seat booking, reading clubs, and AI-powered recommendations — replacing paper registers
+A web platform that digitizes community library operations - borrowing, reservations,
+seat booking, reading clubs, and AI-powered recommendations - replacing paper registers
 and spreadsheets.
 
 
@@ -86,7 +86,7 @@ make db-migrate
 ## Development
 
 Open the app at http://localhost:5173 once both are running. Pick whichever way of
-starting each one fits your workflow — they all do the same thing.
+starting each one fits your workflow - they all do the same thing.
 
 ### Backend
 
