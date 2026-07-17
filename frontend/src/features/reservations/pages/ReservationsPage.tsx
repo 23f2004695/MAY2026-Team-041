@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { PageHeader } from '@/components/common';
 import { Dialog, EmptyState } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { currentReservations, reservationQueue } from '@/mocks/reservations';
@@ -21,12 +22,10 @@ export function ReservationsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Reservations</h1>
-        <p className="mt-1 text-muted-foreground">
-          Track your book reservations and queue position
-        </p>
-      </div>
+      <PageHeader
+        title="Reservations"
+        description="Track your book reservations and queue position"
+      />
 
       <section aria-labelledby="current-reservations-heading" className="flex flex-col gap-3">
         <h2 id="current-reservations-heading" className="text-lg font-semibold text-foreground">

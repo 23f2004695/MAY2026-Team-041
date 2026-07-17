@@ -72,7 +72,6 @@ export interface DashboardEvent {
 
 export const upcomingEvents: DashboardEvent[] = [
   { id: 'e1', title: 'Sci-Fi Book Club Meetup', date: 'Jul 10, 2026' },
-  { id: 'e2', title: 'Author Talk: Local Writers Night', date: 'Jul 18, 2026' },
 ];
 
 export const readingProgressSummary = {

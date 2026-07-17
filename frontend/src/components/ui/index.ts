@@ -8,6 +8,7 @@ export * from './Drawer';
 export * from './EmptyState';
 export * from './Input';
 export * from './Loader';
+export * from './MenuToggleIcon';
 export * from './Modal';
 export * from './Pagination';
 export * from './SearchBar';

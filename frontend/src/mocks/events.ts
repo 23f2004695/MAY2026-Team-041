@@ -1,4 +1,4 @@
-export interface EventVolunteer {
+export interface EventManager {
   name: string;
   role: string;
 }
@@ -12,7 +12,7 @@ export interface Event {
   attendees: number;
   capacity: number;
   registered: boolean;
-  volunteers: EventVolunteer[];
+  managers: EventManager[];
 }
 
 export const events: Event[] = [
@@ -25,21 +25,10 @@ export const events: Event[] = [
     attendees: 18,
     capacity: 30,
     registered: true,
-    volunteers: [
-      { name: 'Amara Okafor', role: 'Discussion Lead' },
-      { name: 'Liam Fitzgerald', role: 'Setup' },
+    managers: [
+      { name: 'Ananya Iyer', role: 'Discussion Lead' },
+      { name: 'Karan Malhotra', role: 'Setup' },
     ],
-  },
-  {
-    id: 'author-talk',
-    title: 'Author Talk: Local Writers Night',
-    date: 'Jul 18, 2026, 7:00 PM',
-    location: 'Auditorium, Community Library',
-    description: 'An evening with three local authors discussing their debut novels.',
-    attendees: 42,
-    capacity: 80,
-    registered: false,
-    volunteers: [{ name: 'Daniel Cho', role: 'Registration Desk' }],
   },
   {
     id: 'kids-story-hour',
@@ -50,18 +39,18 @@ export const events: Event[] = [
     attendees: 12,
     capacity: 20,
     registered: false,
-    volunteers: [{ name: 'Priya Sharma', role: 'Storyteller' }],
+    managers: [{ name: 'Priya Sharma', role: 'Storyteller' }],
   },
   {
-    id: 'volunteer-orientation',
-    title: 'Volunteer Orientation',
+    id: 'manager-orientation',
+    title: 'Manager Orientation',
     date: 'Jul 28, 2026, 5:00 PM',
     location: 'Meeting Room B',
-    description: 'Orientation session for new volunteers joining the library programs.',
+    description: 'Orientation session for new managers joining the library programs.',
     attendees: 6,
     capacity: 15,
     registered: false,
-    volunteers: [],
+    managers: [],
   },
 ];
 

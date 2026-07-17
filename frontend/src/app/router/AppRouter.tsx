@@ -20,6 +20,7 @@ import { SeatBookingPage } from '@/features/seat-booking/pages/SeatBookingPage';
 import { Login } from '@/pages/Login';
 import { NotFound } from '@/pages/NotFound';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
+import { Register } from '@/pages/Register';
 
 import { ProtectedRoute, PublicRoute, RoleRoute } from './guards';
 
@@ -39,13 +40,15 @@ const router = createBrowserRouter([
         ),
         children: [
           { path: relative(ROUTES.LOGIN), element: <Login /> },
-          {
-            path: relative(ROUTES.REGISTER),
-            element: <PlaceholderPage title="Register" description="Create a new account." />,
-          },
+          { path: relative(ROUTES.REGISTER), element: <Register /> },
           {
             path: relative(ROUTES.FORGOT_PASSWORD),
-            element: <PlaceholderPage title="Forgot Password" description="Reset your password." />,
+            element: (
+              <PlaceholderPage
+                titleKey="placeholder.forgotPassword.title"
+                descriptionKey="placeholder.forgotPassword.description"
+              />
+            ),
           },
         ],
       },
@@ -65,7 +68,9 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.SEAT_BOOKING), element: <SeatBookingPage /> },
       {
         path: relative(ROUTES.COMMUNITY),
-        element: <PlaceholderPage title="Community" description="Reading clubs and discussions." />,
+        element: (
+          <PlaceholderPage titleKey="nav.community" descriptionKey="placeholder.community.description" />
+        ),
       },
       { path: relative(ROUTES.EVENTS), element: <EventsPage /> },
       { path: relative(ROUTES.NOTIFICATIONS), element: <NotificationsPage /> },
@@ -75,7 +80,9 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.REVIEWS), element: <ReviewsPage /> },
       {
         path: relative(ROUTES.SETTINGS),
-        element: <PlaceholderPage title="Settings" description="Manage your preferences." />,
+        element: (
+          <PlaceholderPage titleKey="nav.settings" descriptionKey="placeholder.settings.description" />
+        ),
       },
     ],
   },

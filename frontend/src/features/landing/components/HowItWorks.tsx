@@ -1,49 +1,54 @@
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import { Badge } from '@/components/ui';
 import { howItWorksSteps } from '@/mocks/landing';
 
+import { FadeUp } from './FadeUp';
 import { fadeInUp, viewportOnce } from '../motion';
 
 export function HowItWorks() {
+  const { t } = useTranslation();
+
   return (
-    <section aria-labelledby="how-it-works-heading" className="border-b border-border">
+    <section aria-labelledby="how-it-works-heading" className="bg-background">
       <div className="mx-auto max-w-6xl px-6 py-16 md:py-20 lg:py-30">
-        <motion.h2
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={fadeInUp}
-          id="how-it-works-heading"
-          className="mb-10 text-3xl font-semibold text-foreground"
-        >
-          How it works
-        </motion.h2>
+        <div className="mb-10 max-w-2xl">
+          <FadeUp>
+            <Badge variant="outline" className="w-fit">
+              {t('landing.howItWorks.badge')}
+            </Badge>
+          </FadeUp>
+          <FadeUp delay={1}>
+            <h2 id="how-it-works-heading" className="mt-3 text-3xl font-semibold text-foreground">
+              {t('landing.howItWorks.titlePrefix')}{' '}
+              <span className="text-primary">{t('landing.howItWorks.titleHighlight')}</span>
+            </h2>
+          </FadeUp>
+        </div>
 
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
           variants={fadeInUp}
-          className="flex flex-col items-stretch gap-4 md:flex-row md:items-center"
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {howItWorksSteps.map((item, index) => (
-            <Fragment key={item.step}>
-              <div className="flex flex-1 flex-col items-center gap-3 rounded-lg border border-border bg-surface p-6 text-center">
-                <span className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                  {item.step}
-                </span>
-                <p className="font-semibold text-foreground">{item.title}</p>
-                <p className="text-sm text-muted-foreground">{item.description}</p>
-              </div>
-              {index < howItWorksSteps.length - 1 && (
-                <span className="flex justify-center text-muted-foreground" aria-hidden="true">
-                  <ChevronDown className="size-5 md:hidden" />
-                  <ChevronRight className="hidden size-5 md:block" />
-                </span>
-              )}
-            </Fragment>
+          {howItWorksSteps.map((item) => (
+            <div key={item.step} className="rounded-lg border border-border bg-surface p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t('landing.howItWorks.stepLabel', { step: item.step })}
+              </p>
+              <span className="mt-3 flex size-12 items-center justify-center rounded-full bg-primary text-base font-semibold text-primary-foreground">
+                {item.step}
+              </span>
+              <p className="mt-4 font-semibold text-foreground">
+                {t(`landing.howItWorks.steps.${item.step}.title`)}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t(`landing.howItWorks.steps.${item.step}.description`)}
+              </p>
+            </div>
           ))}
         </motion.div>
       </div>

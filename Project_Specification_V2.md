@@ -52,7 +52,7 @@ The list is strong on member-facing "wow" features but under-specifies the opera
 ## 3. Security, Scalability & Usability Recommendations
 
 ### Security
-- **Granular RBAC**, not just three fixed roles — model permissions as capabilities (`can_issue_book`, `can_waive_fine`, `can_approve_donation`) assigned to roles, so future roles (e.g. "volunteer") don't require code changes.
+- **Granular RBAC**, not just three fixed roles — model permissions as capabilities (`can_issue_book`, `can_waive_fine`, `can_approve_donation`) assigned to roles, so future roles (e.g. "manager") don't require code changes.
 - **Short-lived JWT access tokens + refresh tokens**, refresh token rotation on use.
 - **Rate limiting on the AI Librarian endpoint specifically** — conversational AI features are the easiest attack surface for cost-abuse (someone scripting thousands of queries against your LLM bill).
 - **File upload validation** for Cloudinary uploads (type, size, image dimension limits) to prevent abuse of storage/bandwidth.

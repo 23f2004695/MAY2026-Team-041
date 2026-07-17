@@ -10,8 +10,9 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 }
 
 export function PublicRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Navigate to={ROUTES.DASHBOARD} replace /> : children;
+  const { isAuthenticated, role } = useAuth();
+  if (!isAuthenticated) return children;
+  return <Navigate to={role === 'admin' ? ROUTES.ADMIN : ROUTES.DASHBOARD} replace />;
 }
 
 export function RoleRoute({ allow, children }: { allow: Role[]; children: ReactNode }) {

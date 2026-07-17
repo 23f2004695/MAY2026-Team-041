@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 import { cn } from '@/lib/cn';
@@ -8,6 +9,8 @@ export interface SidebarProps {
 }
 
 export function Sidebar({ items }: SidebarProps) {
+  const { t } = useTranslation();
+
   return (
     <nav className="flex flex-col gap-1 p-3">
       {items.map(({ label, path, icon: Icon }) => (
@@ -23,7 +26,7 @@ export function Sidebar({ items }: SidebarProps) {
           }
         >
           <Icon className="size-4" />
-          {label}
+          {t(label)}
         </NavLink>
       ))}
     </nav>

@@ -19,7 +19,7 @@ Community Reading Club & Library Management Platform
 
 ## Problem Statement
 
-Community libraries still rely heavily on paper registers, spreadsheets, WhatsApp groups, and manual workflows to manage books, members, borrowing, reservations, events, and volunteers.
+Community libraries still rely heavily on paper registers, spreadsheets, WhatsApp groups, and manual workflows to manage books, members, borrowing, reservations, events, and managers.
 
 The goal of this project is to build a modern web application that digitizes library operations while promoting community engagement through reading clubs, AI-powered recommendations, seat booking, gamification, and analytics.
 
@@ -84,7 +84,7 @@ Responsible for:
 
 ---
 
-## Volunteer
+## Manager
 
 Responsible for:
 

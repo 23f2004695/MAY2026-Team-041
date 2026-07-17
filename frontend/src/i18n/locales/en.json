@@ -1,0 +1,335 @@
+{
+  "common": {
+    "brandFull": "Community Reading Club",
+    "brandShort": "Reading Club",
+    "signIn": "Sign in",
+    "getStarted": "Get Started"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "topUtilityBar": {
+    "website": "Website",
+    "communityForum": "Community Forum",
+    "newsletter": "Newsletter"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "books": "Books",
+    "reservations": "Reservations",
+    "seatBooking": "Seat Booking",
+    "community": "Community",
+    "events": "Events",
+    "readingProgress": "Reading Progress",
+    "leaderboard": "Leaderboard",
+    "reviews": "Reviews",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "adminOverview": "Admin Overview",
+    "backToApp": "Back to App"
+  },
+  "userMenu": {
+    "openAccountMenu": "Open account menu",
+    "account": "Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logOut": "Log out"
+  },
+  "themeToggle": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "topBar": {
+    "openNavigation": "Open navigation",
+    "menu": "Menu"
+  },
+  "footer": {
+    "copyright": "© {{year}} Community Reading Club & Library Management Platform"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "subtitle": "Real authentication ships in Milestone 3. Pick a role to preview the app.",
+      "continueAs": "Continue as {{role}}",
+      "roles": {
+        "admin": "Admin",
+        "librarian": "Librarian",
+        "member": "Member",
+        "manager": "Manager"
+      }
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Real registration ships in Milestone 3. Submitting this form previews the app as a member.",
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "terms": "I agree to the terms of service",
+      "createAccount": "Create account",
+      "alreadyHaveAccount": "Already have an account?",
+      "logIn": "Log in",
+      "errors": {
+        "name": "Name is required.",
+        "email": "Enter a valid email address.",
+        "password": "Password must be at least 8 characters.",
+        "confirmPassword": "Passwords do not match.",
+        "terms": "You must accept the terms to continue."
+      }
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "message": "This page doesn't exist.",
+    "backHome": "Back home"
+  },
+  "placeholder": {
+    "comingSoon": "Coming soon",
+    "community": { "description": "Reading clubs and discussions." },
+    "settings": { "description": "Manage your preferences." },
+    "forgotPassword": { "title": "Forgot Password", "description": "Reset your password." }
+  },
+  "landing": {
+    "hero": {
+      "badge": "Community Reading Club & Library Platform",
+      "title": "Your library, your community, all in one place.",
+      "subtitle": "Borrow books, reserve a study seat, join a reading club, and get personalized recommendations, without the paper registers and group chats.",
+      "ctaJoin": "Join the Community",
+      "ctaBrowse": "Browse Books",
+      "imgAlt": "Illustration of students using the library's catalog, book issues, study space, and membership services"
+    },
+    "stats": {
+      "booksAvailable": "Books Available",
+      "members": "Members",
+      "readingClubs": "Reading Clubs",
+      "eventsHosted": "Events Hosted",
+      "booksBorrowed": "Books Borrowed",
+      "studySeats": "Study Seats"
+    },
+    "features": {
+      "heading": "Everything a modern library needs",
+      "subheading": "One platform for borrowing, discovery, community, and the day-to-day running of the library.",
+      "items": {
+        "digitalLibrary": {
+          "title": "Digital Library",
+          "description": "Search, filter, and browse the full catalog of books, authors, and categories."
+        },
+        "qrBorrowing": {
+          "title": "QR Borrowing",
+          "description": "Scan a book's QR code to borrow or return it in seconds, no paperwork."
+        },
+        "seatBooking": {
+          "title": "Seat Booking",
+          "description": "Reserve a quiet study seat ahead of time and see live availability."
+        },
+        "aiLibrarian": {
+          "title": "AI Librarian",
+          "description": "Get personalized book suggestions from a conversational reading assistant."
+        },
+        "readingChallenges": {
+          "title": "Reading Challenges",
+          "description": "Track your progress and earn achievements as you read more."
+        },
+        "communityDiscussions": {
+          "title": "Community Discussions",
+          "description": "Join reading clubs, share reviews, and discuss your favorite books."
+        },
+        "bookDonations": {
+          "title": "Book Donations",
+          "description": "Donate books you've finished and help grow the shared collection."
+        },
+        "analyticsDashboard": {
+          "title": "Analytics Dashboard",
+          "description": "Librarians and admins get insight into trends, popular books, and usage."
+        }
+      }
+    },
+    "howItWorks": {
+      "badge": "Process",
+      "titlePrefix": "How it",
+      "titleHighlight": "works",
+      "stepLabel": "Step {{step}}",
+      "steps": {
+        "1": { "title": "Register", "description": "Create a free membership in under a minute." },
+        "2": { "title": "Search Books", "description": "Find titles by category, author, or mood." },
+        "3": {
+          "title": "Borrow / Reserve",
+          "description": "Pick up a copy or reserve one that's checked out."
+        },
+        "4": {
+          "title": "Read & Participate",
+          "description": "Track progress and join the community around it."
+        }
+      }
+    },
+    "aiLibrarian": {
+      "heading": "Meet the AI Librarian",
+      "subheading": "Tell it how you're feeling and watch it search the catalog for you, live.",
+      "windowTitle": "AI Librarian",
+      "prompt": "I'm feeling stressed. Recommend a light motivational book.",
+      "reply": "Here are a few picks that might help:",
+      "available": "Available",
+      "reserved": "Reserved",
+      "reserveBook": "Reserve Book",
+      "shelves": {
+        "atomicHabits": "Self-Help · Shelf C2",
+        "psychologyOfMoney": "Finance · Shelf D1",
+        "ikigai": "Self-Help · Shelf C4"
+      }
+    },
+    "mood": {
+      "heading": "What are you in the mood to read?",
+      "subheading": "Pick a mood and see a preview of what our recommendation engine would suggest.",
+      "ariaLabel": "Reading moods",
+      "recommendedFor": "Recommended for {{mood}} mood",
+      "moods": {
+        "happy": "Happy",
+        "relaxed": "Relaxed",
+        "curious": "Curious",
+        "motivated": "Motivated",
+        "studyMode": "Study Mode"
+      }
+    },
+    "seatAvailability": {
+      "heading": "Live Seat Availability",
+      "subheading": "See real-time seat availability across all study spaces. Find the perfect spot, instantly.",
+      "live": "Live",
+      "updatedJustNow": "Updated just now",
+      "youAreHere": "You are here",
+      "floorPlanAlt": "Illustration of a library floor plan with a quiet study row, a collaborative table, a reading lounge, and a computer lab, with seats color-coded by availability",
+      "available": "Available",
+      "availableSub": "Ready to book",
+      "reserved": "Reserved",
+      "reservedSub": "Temporarily held",
+      "occupied": "Occupied",
+      "occupiedSub": "In use now",
+      "zones": {
+        "quiet": "Quiet Zone",
+        "collaborative": "Collaborative Zone",
+        "readingLounge": "Reading Lounge",
+        "computerLab": "Computer Lab"
+      },
+      "features": {
+        "realTimeUpdates": {
+          "title": "Real-time Updates",
+          "description": "Live tracking of every seat across the library"
+        },
+        "smartReservations": {
+          "title": "Smart Reservations",
+          "description": "Reserve your seat in advance and get instant confirmation"
+        },
+        "betterExperience": {
+          "title": "Better Study Experience",
+          "description": "Choose the right environment for your best focus"
+        }
+      },
+      "cta": {
+        "title": "Find your perfect study space",
+        "description": "Filter by zone, floor, or seat type and book in seconds.",
+        "button": "Explore All Spaces"
+      }
+    },
+    "readingChallenge": {
+      "heading": "Reading challenges & achievements",
+      "subheading": "Stay motivated with badges you unlock as you read.",
+      "achievements": {
+        "firstBook": { "label": "First Book", "description": "Borrow your first book" },
+        "bookWorm": { "label": "Book Worm", "description": "Read 10 books in a year" },
+        "topReader": {
+          "label": "Top Reader",
+          "description": "Reach the top of the monthly leaderboard"
+        },
+        "monthlyChampion": {
+          "label": "Monthly Champion",
+          "description": "Complete every weekly challenge in a month"
+        }
+      }
+    },
+    "community": {
+      "heading": "Built around community",
+      "subheading": "The library is more than a catalog. It's a place to talk about what you're reading and give back.",
+      "items": {
+        "bookDiscussions": {
+          "title": "Book Discussions",
+          "description": "Talk through plot twists and themes with other readers."
+        },
+        "reviews": {
+          "title": "Reviews",
+          "description": "Rate and review books to help the community pick their next read."
+        },
+        "readingClubs": {
+          "title": "Reading Clubs",
+          "description": "Join a club that matches your favorite genre and reading pace."
+        },
+        "volunteerPrograms": {
+          "title": "Volunteer Programs",
+          "description": "Help run events, sort donations, or mentor new members."
+        }
+      }
+    },
+    "testimonials": {
+      "heading": "What our members say",
+      "items": {
+        "priyaSharma": {
+          "role": "Member since 2023",
+          "quote": "The seat booking feature alone saved me so many wasted trips to a full library."
+        },
+        "rahulNair": {
+          "role": "Reading Club Lead",
+          "quote": "Running our monthly book club is so much easier with the discussion boards built in."
+        },
+        "ananyaIyer": {
+          "role": "Manager",
+          "quote": "Coordinating donations and events used to be all spreadsheets. Now it's all in one place."
+        },
+        "karanMalhotra": {
+          "role": "Member since 2024",
+          "quote": "The AI librarian recommended books I never would have picked myself, and I loved them."
+        }
+      }
+    },
+    "faq": {
+      "heading": "Frequently asked questions",
+      "items": {
+        "reservations": {
+          "question": "How do reservations work?",
+          "answer": "If a book is checked out, you can reserve it and you'll be notified as soon as it's back on the shelf."
+        },
+        "seatBookings": {
+          "question": "How do seat bookings work?",
+          "answer": "Pick an open time slot on the seat map and it's held for you until your session starts."
+        },
+        "donations": {
+          "question": "Can I donate books?",
+          "answer": "Yes, submit a donation request and a librarian will review and approve it for the shared collection."
+        },
+        "aiLibrarian": {
+          "question": "What is AI Librarian?",
+          "answer": "A conversational assistant that recommends books based on your interests, mood, or reading history."
+        }
+      }
+    },
+    "cta": {
+      "heading": "Become a member and start reading today",
+      "subheading": "Join the reading community, explore the library, and never lose track of a book again.",
+      "button": "Join the Reading Community"
+    },
+    "footer": {
+      "heading": "Site links",
+      "brand": "Community Reading Club",
+      "description": "A modern library platform for borrowing, reading clubs, and community events.",
+      "navigation": "Navigation",
+      "quickLinks": "Quick Links",
+      "contact": "Contact",
+      "home": "Home",
+      "login": "Log in",
+      "register": "Register",
+      "books": "Books",
+      "community": "Community",
+      "events": "Events",
+      "website": "Website",
+      "communityForum": "Community Forum",
+      "newsletter": "Newsletter"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { Avatar, Badge, Button, Drawer } from '@/components/ui';
@@ -6,6 +7,7 @@ import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/providers/AuthProvider';
 
 export function UserMenu() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { role, logout } = useAuth();
   const navigate = useNavigate();
@@ -20,24 +22,24 @@ export function UserMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open account menu"
+        aria-label={t('userMenu.openAccountMenu')}
         className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <Avatar name={role ?? undefined} size="sm" />
       </button>
 
-      <Drawer open={open} onClose={() => setOpen(false)} title="Account">
+      <Drawer open={open} onClose={() => setOpen(false)} title={t('userMenu.account')}>
         <div className="flex flex-col gap-4">
           {role && (
             <Badge variant="outline" className="w-fit capitalize">
-              {role}
+              {t(`auth.login.roles.${role}`)}
             </Badge>
           )}
           <Button variant="ghost" className="justify-start" onClick={() => goTo(ROUTES.PROFILE)}>
-            Profile
+            {t('userMenu.profile')}
           </Button>
           <Button variant="ghost" className="justify-start" onClick={() => goTo(ROUTES.SETTINGS)}>
-            Settings
+            {t('userMenu.settings')}
           </Button>
           <Button
             variant="outline"
@@ -47,7 +49,7 @@ export function UserMenu() {
               goTo(ROUTES.HOME);
             }}
           >
-            Log out
+            {t('userMenu.logOut')}
           </Button>
         </div>
       </Drawer>

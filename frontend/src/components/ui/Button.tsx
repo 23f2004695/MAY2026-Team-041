@@ -30,6 +30,30 @@ const sizeClasses: Record<ButtonSize, string> = {
   lg: 'h-14 gap-2 px-8 text-base',
 };
 
+export interface ButtonVariantsOptions {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+}
+
+// Plain className generator for non-<button> elements styled like a button
+// (e.g. a react-router <Link> that should look and feel like a Button).
+export function buttonVariants({
+  variant = 'primary',
+  size = 'md',
+  className,
+}: ButtonVariantsOptions = {}): string {
+  return cn(
+    'inline-flex items-center justify-center rounded-md font-medium transition-all duration-150',
+    'active:scale-[0.98]',
+    'disabled:pointer-events-none disabled:opacity-50',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+    variantClasses[variant],
+    sizeClasses[size],
+    className,
+  );
+}
+
 export function Button({
   ref,
   className,
@@ -46,15 +70,7 @@ export function Button({
     <button
       ref={ref}
       disabled={disabled ?? isLoading}
-      className={cn(
-        'inline-flex items-center justify-center rounded-full font-medium transition-all duration-150',
-        'active:scale-[0.98]',
-        'disabled:pointer-events-none disabled:opacity-50',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
-        variantClasses[variant],
-        sizeClasses[size],
-        className,
-      )}
+      className={buttonVariants({ variant, size, className })}
       {...props}
     >
       {isLoading ? <Loader size="sm" /> : leadingIcon}

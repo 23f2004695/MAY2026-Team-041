@@ -1,0 +1,326 @@
+{
+  "common": {
+    "brandFull": "社区读书会",
+    "brandShort": "读书会",
+    "signIn": "登录",
+    "getStarted": "开始使用"
+  },
+  "language": {
+    "label": "语言"
+  },
+  "topUtilityBar": {
+    "website": "网站",
+    "communityForum": "社区论坛",
+    "newsletter": "订阅通讯"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "books": "图书",
+    "reservations": "预约",
+    "seatBooking": "座位预订",
+    "community": "社区",
+    "events": "活动",
+    "readingProgress": "阅读进度",
+    "leaderboard": "排行榜",
+    "reviews": "书评",
+    "notifications": "通知",
+    "settings": "设置",
+    "adminOverview": "管理概览",
+    "backToApp": "返回应用"
+  },
+  "userMenu": {
+    "openAccountMenu": "打开账户菜单",
+    "account": "账户",
+    "profile": "个人资料",
+    "settings": "设置",
+    "logOut": "退出登录"
+  },
+  "themeToggle": {
+    "switchToLight": "切换到浅色模式",
+    "switchToDark": "切换到深色模式"
+  },
+  "topBar": {
+    "openNavigation": "打开导航",
+    "menu": "菜单"
+  },
+  "footer": {
+    "copyright": "© {{year}} 社区读书会与图书馆管理平台"
+  },
+  "auth": {
+    "login": {
+      "title": "登录",
+      "subtitle": "真正的身份验证将在里程碑 3 中推出。选择一个角色来预览应用。",
+      "continueAs": "以{{role}}身份继续",
+      "roles": {
+        "admin": "管理员",
+        "librarian": "图书管理员",
+        "member": "会员",
+        "manager": "经理"
+      }
+    },
+    "register": {
+      "title": "创建账户",
+      "subtitle": "真正的注册功能将在里程碑 3 中推出。提交此表单将以会员身份预览应用。",
+      "fullName": "姓名",
+      "email": "电子邮箱",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "terms": "我同意服务条款",
+      "createAccount": "创建账户",
+      "alreadyHaveAccount": "已经有账户了？",
+      "logIn": "登录",
+      "errors": {
+        "name": "姓名为必填项。",
+        "email": "请输入有效的电子邮箱地址。",
+        "password": "密码至少需要 8 个字符。",
+        "confirmPassword": "两次输入的密码不一致。",
+        "terms": "您必须同意条款才能继续。"
+      }
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "message": "此页面不存在。",
+    "backHome": "返回首页"
+  },
+  "placeholder": {
+    "comingSoon": "即将推出",
+    "community": { "description": "读书会与讨论。" },
+    "settings": { "description": "管理您的偏好设置。" },
+    "forgotPassword": { "title": "忘记密码", "description": "重置您的密码。" }
+  },
+  "landing": {
+    "hero": {
+      "badge": "社区读书会与图书馆平台",
+      "title": "您的图书馆，您的社区，尽在一处。",
+      "subtitle": "借阅图书、预订学习座位、加入读书会，获取个性化推荐，无需纸质登记和群聊。",
+      "ctaJoin": "加入社区",
+      "ctaBrowse": "浏览图书",
+      "imgAlt": "学生使用图书馆目录、借还书、学习空间和会员服务的插图"
+    },
+    "stats": {
+      "booksAvailable": "可借图书",
+      "members": "会员",
+      "readingClubs": "读书会",
+      "eventsHosted": "已举办活动",
+      "booksBorrowed": "已借出图书",
+      "studySeats": "学习座位"
+    },
+    "features": {
+      "heading": "现代图书馆所需的一切",
+      "subheading": "一个平台，满足借阅、发现、社区互动以及图书馆日常运营的所有需求。",
+      "items": {
+        "digitalLibrary": {
+          "title": "数字图书馆",
+          "description": "搜索、筛选并浏览完整的图书、作者与分类目录。"
+        },
+        "qrBorrowing": {
+          "title": "二维码借阅",
+          "description": "扫描图书二维码，几秒钟内即可完成借阅或归还，无需任何纸质手续。"
+        },
+        "seatBooking": {
+          "title": "座位预订",
+          "description": "提前预订安静的学习座位，并查看实时可用情况。"
+        },
+        "aiLibrarian": {
+          "title": "AI 图书管理员",
+          "description": "通过对话式阅读助手获取个性化图书推荐。"
+        },
+        "readingChallenges": {
+          "title": "阅读挑战",
+          "description": "追踪您的阅读进度，阅读越多，获得的成就越多。"
+        },
+        "communityDiscussions": {
+          "title": "社区讨论",
+          "description": "加入读书会，分享书评，讨论您喜爱的图书。"
+        },
+        "bookDonations": {
+          "title": "图书捐赠",
+          "description": "捐出您已读完的图书，帮助扩大共享馆藏。"
+        },
+        "analyticsDashboard": {
+          "title": "分析仪表盘",
+          "description": "图书管理员和管理员可洞察趋势、热门图书及使用情况。"
+        }
+      }
+    },
+    "howItWorks": {
+      "badge": "流程",
+      "titlePrefix": "使用",
+      "titleHighlight": "流程",
+      "stepLabel": "步骤 {{step}}",
+      "steps": {
+        "1": { "title": "注册", "description": "不到一分钟即可创建免费会员资格。" },
+        "2": { "title": "搜索图书", "description": "按分类、作者或心情查找书籍。" },
+        "3": { "title": "借阅／预约", "description": "取走一本图书，或预约一本已被借出的图书。" },
+        "4": {
+          "title": "阅读与参与",
+          "description": "追踪您的阅读进度，并加入相关的社区活动。"
+        }
+      }
+    },
+    "aiLibrarian": {
+      "heading": "认识 AI 图书管理员",
+      "subheading": "告诉它您的心情，实时观看它为您搜索馆藏。",
+      "windowTitle": "AI 图书管理员",
+      "prompt": "我感到有点压力，推荐一本轻松励志的书吧。",
+      "reply": "这里有几本可能对您有帮助的书：",
+      "available": "可借阅",
+      "reserved": "已预约",
+      "reserveBook": "预约图书",
+      "shelves": {
+        "atomicHabits": "励志成长 · C2 书架",
+        "psychologyOfMoney": "金融理财 · D1 书架",
+        "ikigai": "励志成长 · C4 书架"
+      }
+    },
+    "mood": {
+      "heading": "您现在想读点什么？",
+      "subheading": "选择一种心情，预览我们的推荐引擎会给出怎样的建议。",
+      "ariaLabel": "阅读心情",
+      "recommendedFor": "为「{{mood}}」心情推荐",
+      "moods": {
+        "happy": "开心",
+        "relaxed": "放松",
+        "curious": "好奇",
+        "motivated": "有干劲",
+        "studyMode": "学习模式"
+      }
+    },
+    "seatAvailability": {
+      "heading": "实时座位情况",
+      "subheading": "实时查看所有学习空间的座位情况，即刻找到最合适的座位。",
+      "live": "实时",
+      "updatedJustNow": "刚刚更新",
+      "youAreHere": "您在这里",
+      "floorPlanAlt": "图书馆平面图插图，展示安静学习区、协作长桌、阅读休息区和电脑室，座位按可用状态用颜色标示",
+      "available": "空闲",
+      "availableSub": "可预订",
+      "reserved": "已预约",
+      "reservedSub": "暂时保留",
+      "occupied": "使用中",
+      "occupiedSub": "正在使用",
+      "zones": {
+        "quiet": "安静区",
+        "collaborative": "协作区",
+        "readingLounge": "阅读休息区",
+        "computerLab": "电脑室"
+      },
+      "features": {
+        "realTimeUpdates": {
+          "title": "实时更新",
+          "description": "实时追踪图书馆内每个座位的状态"
+        },
+        "smartReservations": {
+          "title": "智能预约",
+          "description": "提前预约座位，即时获得确认"
+        },
+        "betterExperience": {
+          "title": "更好的学习体验",
+          "description": "选择最适合专注学习的环境"
+        }
+      },
+      "cta": {
+        "title": "找到您的完美学习空间",
+        "description": "按区域、楼层或座位类型筛选，几秒内完成预订。",
+        "button": "浏览所有空间"
+      }
+    },
+    "readingChallenge": {
+      "heading": "阅读挑战与成就",
+      "subheading": "边阅读边解锁徽章，保持阅读动力。",
+      "achievements": {
+        "firstBook": { "label": "第一本书", "description": "借阅您的第一本图书" },
+        "bookWorm": { "label": "书虫", "description": "一年内阅读 10 本书" },
+        "topReader": { "label": "阅读之星", "description": "登上月度排行榜榜首" },
+        "monthlyChampion": { "label": "月度冠军", "description": "完成一个月内的每周挑战" }
+      }
+    },
+    "community": {
+      "heading": "围绕社区打造",
+      "subheading": "图书馆不仅仅是一份目录，更是一个交流阅读心得、回馈他人的地方。",
+      "items": {
+        "bookDiscussions": {
+          "title": "图书讨论",
+          "description": "与其他读者一起探讨情节转折与主题。"
+        },
+        "reviews": {
+          "title": "书评",
+          "description": "为图书评分与撰写书评，帮助社区选择下一本读物。"
+        },
+        "readingClubs": {
+          "title": "读书会",
+          "description": "加入符合您喜爱题材与阅读节奏的读书会。"
+        },
+        "volunteerPrograms": {
+          "title": "志愿者项目",
+          "description": "协助组织活动、整理捐赠图书，或指导新会员。"
+        }
+      }
+    },
+    "testimonials": {
+      "heading": "会员心声",
+      "items": {
+        "priyaSharma": {
+          "role": "2023 年起成为会员",
+          "quote": "仅座位预订功能就为我省去了许多白跑图书馆的次数。"
+        },
+        "rahulNair": {
+          "role": "读书会负责人",
+          "quote": "有了内置的讨论板，管理我们的月度读书会变得轻松多了。"
+        },
+        "ananyaIyer": {
+          "role": "经理",
+          "quote": "以前协调捐赠和活动全靠表格，现在一切都集中在一个平台上。"
+        },
+        "karanMalhotra": {
+          "role": "2024 年起成为会员",
+          "quote": "AI 图书管理员推荐了我自己绝对不会选的书，我非常喜欢。"
+        }
+      }
+    },
+    "faq": {
+      "heading": "常见问题",
+      "items": {
+        "reservations": {
+          "question": "预约功能是如何运作的？",
+          "answer": "如果一本书已被借出，您可以预约它，一旦归还上架，我们会立即通知您。"
+        },
+        "seatBookings": {
+          "question": "座位预订是如何运作的？",
+          "answer": "在座位图上选择一个空闲时段，系统会为您保留座位，直到您的使用时段开始。"
+        },
+        "donations": {
+          "question": "我可以捐赠图书吗？",
+          "answer": "可以，提交捐赠申请后，图书管理员会审核并批准其加入共享馆藏。"
+        },
+        "aiLibrarian": {
+          "question": "什么是 AI 图书管理员？",
+          "answer": "一个对话式助手，可根据您的兴趣、心情或阅读历史推荐图书。"
+        }
+      }
+    },
+    "cta": {
+      "heading": "成为会员，今天就开始阅读",
+      "subheading": "加入阅读社区，探索图书馆，从此不再错过任何一本书。",
+      "button": "加入阅读社区"
+    },
+    "footer": {
+      "heading": "站点链接",
+      "brand": "社区读书会",
+      "description": "一个用于借阅、读书会和社区活动的现代图书馆平台。",
+      "navigation": "导航",
+      "quickLinks": "快速链接",
+      "contact": "联系方式",
+      "home": "首页",
+      "login": "登录",
+      "register": "注册",
+      "books": "图书",
+      "community": "社区",
+      "events": "活动",
+      "website": "网站",
+      "communityForum": "社区论坛",
+      "newsletter": "订阅通讯"
+    }
+  }
+}

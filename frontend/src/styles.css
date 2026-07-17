@@ -6,49 +6,62 @@
   --font-sans:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  --color-background: #eef2f3;
+  --color-background: #f8fafc;
   --color-surface: #ffffff;
-  --color-border: #d7dee2;
-  --color-border-muted: #dfe6e9;
+  --color-border: #e2e8f0;
+  --color-border-muted: #edf1f5;
 
-  --color-foreground: #03151e;
-  --color-muted: #52626b;
-  --color-muted-foreground: #60717a;
+  --color-foreground: #0f172a;
+  --color-muted: #475569;
+  --color-muted-foreground: #64748b;
 
-  --color-primary: #0096b5;
+  --color-primary: #731c7b;
   --color-primary-foreground: #ffffff;
-  --color-primary-hover: #00809a;
+  --color-primary-hover: #5c1663;
 
-  --color-secondary: #f7f9fa;
-  --color-secondary-foreground: #03151e;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
 
-  --color-success: #16734f;
+  --color-success: #15803d;
   --color-success-foreground: #ffffff;
-  --color-warning: #8a5a00;
+  --color-warning: #b45309;
   --color-warning-foreground: #ffffff;
-  --color-danger: #b42318;
+  --color-danger: #b91c1c;
   --color-danger-foreground: #ffffff;
+
+  --color-ink: #4a044e;
+  --color-ink-foreground: #fdf4ff;
+  --color-ink-muted: #f0abfc;
 
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
 
-  --shadow-panel: 0 20px 50px rgba(23, 32, 38, 0.08);
+  --shadow-panel: 0 8px 24px rgba(15, 23, 42, 0.1);
 }
 
 .dark {
-  --color-background: #0f1417;
-  --color-surface: #171e22;
-  --color-border: #2a3338;
-  --color-border-muted: #323c42;
+  --color-background: #0b1220;
+  --color-surface: #131b2c;
+  --color-border: #232f42;
+  --color-border-muted: #1c2536;
 
-  --color-foreground: #e9edef;
-  --color-muted: #a7b3b8;
-  --color-muted-foreground: #8a969b;
+  --color-foreground: #e2e8f0;
+  --color-muted: #94a3b8;
+  --color-muted-foreground: #7c8ba1;
 
-  --color-secondary: #1e262a;
-  --color-secondary-foreground: #e9edef;
+  --color-secondary: #1b2536;
+  --color-secondary-foreground: #e2e8f0;
+
+  --color-primary: #c13fcb;
+  --color-primary-hover: #a62db0;
+
+  --color-ink: #5b0c63;
+  --color-ink-foreground: #fdf4ff;
+  --color-ink-muted: #f0abfc;
+
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 @layer base {
@@ -80,38 +93,61 @@
   }
 }
 
-/* Subtle hero background depth: kept under 5% opacity so it only adds texture, never competes with content. */
-.bg-hero-glow {
-  background:
-    radial-gradient(
-      circle at 25% 20%,
-      color-mix(in srgb, var(--color-primary) 10%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 80% 0%,
-      color-mix(in srgb, var(--color-primary) 6%, transparent),
-      transparent 55%
-    );
+@layer utilities {
+  .blob {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 42% 58% 69% 31% / 45% 41% 59% 55%;
+    background: radial-gradient(circle at 32% 32%, var(--color-primary), transparent 72%);
+  }
+
+  .seat-available {
+    animation: seat-glow 2.6s ease-in-out infinite;
+  }
+
+  .seat-reserved {
+    animation: seat-pulse 1.8s ease-in-out infinite;
+  }
+
+  .seat-occupied {
+    animation: seat-breathe 3.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .seat-available,
+    .seat-reserved,
+    .seat-occupied {
+      animation: none;
+    }
+  }
 }
 
-.bg-hero-grid {
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-foreground) 4%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-foreground) 4%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 48px 48px;
-  mask-image: linear-gradient(to bottom, black, transparent);
+@keyframes seat-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
 }
 
-.bg-hero-noise {
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+@keyframes seat-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+@keyframes seat-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
 }

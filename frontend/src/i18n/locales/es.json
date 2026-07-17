@@ -1,0 +1,341 @@
+{
+  "common": {
+    "brandFull": "Club de Lectura Comunitario",
+    "brandShort": "Club de Lectura",
+    "signIn": "Iniciar sesión",
+    "getStarted": "Comenzar"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "topUtilityBar": {
+    "website": "Sitio web",
+    "communityForum": "Foro comunitario",
+    "newsletter": "Boletín"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "books": "Libros",
+    "reservations": "Reservas",
+    "seatBooking": "Reserva de asientos",
+    "community": "Comunidad",
+    "events": "Eventos",
+    "readingProgress": "Progreso de lectura",
+    "leaderboard": "Clasificación",
+    "reviews": "Reseñas",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
+    "adminOverview": "Resumen de administración",
+    "backToApp": "Volver a la app"
+  },
+  "userMenu": {
+    "openAccountMenu": "Abrir menú de cuenta",
+    "account": "Cuenta",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logOut": "Cerrar sesión"
+  },
+  "themeToggle": {
+    "switchToLight": "Cambiar a modo claro",
+    "switchToDark": "Cambiar a modo oscuro"
+  },
+  "topBar": {
+    "openNavigation": "Abrir navegación",
+    "menu": "Menú"
+  },
+  "footer": {
+    "copyright": "© {{year}} Plataforma del Club de Lectura Comunitario y Gestión de Biblioteca"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "subtitle": "La autenticación real llega en el Hito 3. Elige un rol para previsualizar la app.",
+      "continueAs": "Continuar como {{role}}",
+      "roles": {
+        "admin": "Administrador",
+        "librarian": "Bibliotecario",
+        "member": "Miembro",
+        "manager": "Gerente"
+      }
+    },
+    "register": {
+      "title": "Crear una cuenta",
+      "subtitle": "El registro real llega en el Hito 3. Enviar este formulario previsualiza la app como miembro.",
+      "fullName": "Nombre completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "terms": "Acepto los términos del servicio",
+      "createAccount": "Crear cuenta",
+      "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+      "logIn": "Iniciar sesión",
+      "errors": {
+        "name": "El nombre es obligatorio.",
+        "email": "Introduce una dirección de correo válida.",
+        "password": "La contraseña debe tener al menos 8 caracteres.",
+        "confirmPassword": "Las contraseñas no coinciden.",
+        "terms": "Debes aceptar los términos para continuar."
+      }
+    }
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Esta página no existe.",
+    "backHome": "Volver al inicio"
+  },
+  "placeholder": {
+    "comingSoon": "Próximamente",
+    "community": { "description": "Clubes de lectura y debates." },
+    "settings": { "description": "Gestiona tus preferencias." },
+    "forgotPassword": { "title": "Contraseña olvidada", "description": "Restablece tu contraseña." }
+  },
+  "landing": {
+    "hero": {
+      "badge": "Club de Lectura Comunitario y Plataforma de Biblioteca",
+      "title": "Tu biblioteca, tu comunidad, todo en un solo lugar.",
+      "subtitle": "Toma libros prestados, reserva un asiento de estudio, únete a un club de lectura y recibe recomendaciones personalizadas, sin registros en papel ni chats grupales.",
+      "ctaJoin": "Únete a la comunidad",
+      "ctaBrowse": "Explorar libros",
+      "imgAlt": "Ilustración de estudiantes usando el catálogo de la biblioteca, préstamo de libros, sala de estudio y servicios de membresía"
+    },
+    "stats": {
+      "booksAvailable": "Libros disponibles",
+      "members": "Miembros",
+      "readingClubs": "Clubes de lectura",
+      "eventsHosted": "Eventos organizados",
+      "booksBorrowed": "Libros prestados",
+      "studySeats": "Asientos de estudio"
+    },
+    "features": {
+      "heading": "Todo lo que una biblioteca moderna necesita",
+      "subheading": "Una sola plataforma para préstamos, descubrimiento, comunidad y la gestión diaria de la biblioteca.",
+      "items": {
+        "digitalLibrary": {
+          "title": "Biblioteca digital",
+          "description": "Busca, filtra y explora el catálogo completo de libros, autores y categorías."
+        },
+        "qrBorrowing": {
+          "title": "Préstamo por código QR",
+          "description": "Escanea el código QR de un libro para prestarlo o devolverlo en segundos, sin papeleo."
+        },
+        "seatBooking": {
+          "title": "Reserva de asientos",
+          "description": "Reserva un asiento de estudio tranquilo con antelación y consulta la disponibilidad en vivo."
+        },
+        "aiLibrarian": {
+          "title": "Bibliotecario con IA",
+          "description": "Obtén recomendaciones de libros personalizadas de un asistente de lectura conversacional."
+        },
+        "readingChallenges": {
+          "title": "Retos de lectura",
+          "description": "Sigue tu progreso y consigue logros a medida que lees más."
+        },
+        "communityDiscussions": {
+          "title": "Debates comunitarios",
+          "description": "Únete a clubes de lectura, comparte reseñas y comenta tus libros favoritos."
+        },
+        "bookDonations": {
+          "title": "Donación de libros",
+          "description": "Dona los libros que ya has terminado y ayuda a ampliar la colección compartida."
+        },
+        "analyticsDashboard": {
+          "title": "Panel de análisis",
+          "description": "Bibliotecarios y administradores obtienen información sobre tendencias, libros populares y uso."
+        }
+      }
+    },
+    "howItWorks": {
+      "badge": "Proceso",
+      "titlePrefix": "Cómo",
+      "titleHighlight": "funciona",
+      "stepLabel": "Paso {{step}}",
+      "steps": {
+        "1": {
+          "title": "Regístrate",
+          "description": "Crea una membresía gratuita en menos de un minuto."
+        },
+        "2": {
+          "title": "Busca libros",
+          "description": "Encuentra títulos por categoría, autor o estado de ánimo."
+        },
+        "3": {
+          "title": "Presta / Reserva",
+          "description": "Recoge un ejemplar o reserva uno que esté prestado."
+        },
+        "4": {
+          "title": "Lee y participa",
+          "description": "Sigue tu progreso y únete a la comunidad en torno a él."
+        }
+      }
+    },
+    "aiLibrarian": {
+      "heading": "Conoce al Bibliotecario con IA",
+      "subheading": "Cuéntale cómo te sientes y míralo buscar en el catálogo por ti, en vivo.",
+      "windowTitle": "Bibliotecario con IA",
+      "prompt": "Me siento estresado. Recomiéndame un libro motivacional ligero.",
+      "reply": "Aquí tienes algunas opciones que podrían ayudarte:",
+      "available": "Disponible",
+      "reserved": "Reservado",
+      "reserveBook": "Reservar libro",
+      "shelves": {
+        "atomicHabits": "Autoayuda · Estante C2",
+        "psychologyOfMoney": "Finanzas · Estante D1",
+        "ikigai": "Autoayuda · Estante C4"
+      }
+    },
+    "mood": {
+      "heading": "¿Qué te apetece leer?",
+      "subheading": "Elige un estado de ánimo y mira una vista previa de lo que sugeriría nuestro motor de recomendaciones.",
+      "ariaLabel": "Estados de ánimo de lectura",
+      "recommendedFor": "Recomendado para el estado de ánimo {{mood}}",
+      "moods": {
+        "happy": "Feliz",
+        "relaxed": "Relajado",
+        "curious": "Curioso",
+        "motivated": "Motivado",
+        "studyMode": "Modo estudio"
+      }
+    },
+    "seatAvailability": {
+      "heading": "Disponibilidad de asientos en vivo",
+      "subheading": "Consulta la disponibilidad de asientos en tiempo real en todos los espacios de estudio. Encuentra el lugar perfecto al instante.",
+      "live": "En vivo",
+      "updatedJustNow": "Actualizado justo ahora",
+      "youAreHere": "Estás aquí",
+      "floorPlanAlt": "Ilustración de un plano de biblioteca con una fila de estudio silencioso, una mesa colaborativa, una sala de lectura y un laboratorio de computación, con asientos codificados por color según su disponibilidad",
+      "available": "Disponible",
+      "availableSub": "Listo para reservar",
+      "reserved": "Reservado",
+      "reservedSub": "Retenido temporalmente",
+      "occupied": "Ocupado",
+      "occupiedSub": "En uso ahora",
+      "zones": {
+        "quiet": "Zona silenciosa",
+        "collaborative": "Zona colaborativa",
+        "readingLounge": "Sala de lectura",
+        "computerLab": "Laboratorio de computación"
+      },
+      "features": {
+        "realTimeUpdates": {
+          "title": "Actualizaciones en tiempo real",
+          "description": "Seguimiento en vivo de cada asiento en toda la biblioteca"
+        },
+        "smartReservations": {
+          "title": "Reservas inteligentes",
+          "description": "Reserva tu asiento con antelación y recibe confirmación instantánea"
+        },
+        "betterExperience": {
+          "title": "Mejor experiencia de estudio",
+          "description": "Elige el entorno adecuado para tu mejor concentración"
+        }
+      },
+      "cta": {
+        "title": "Encuentra tu espacio de estudio perfecto",
+        "description": "Filtra por zona, planta o tipo de asiento y reserva en segundos.",
+        "button": "Explorar todos los espacios"
+      }
+    },
+    "readingChallenge": {
+      "heading": "Retos de lectura y logros",
+      "subheading": "Mantente motivado con insignias que desbloqueas a medida que lees.",
+      "achievements": {
+        "firstBook": { "label": "Primer libro", "description": "Toma prestado tu primer libro" },
+        "bookWorm": { "label": "Ratón de biblioteca", "description": "Lee 10 libros en un año" },
+        "topReader": {
+          "label": "Mejor lector",
+          "description": "Llega a la cima de la clasificación mensual"
+        },
+        "monthlyChampion": {
+          "label": "Campeón mensual",
+          "description": "Completa todos los retos semanales de un mes"
+        }
+      }
+    },
+    "community": {
+      "heading": "Diseñado en torno a la comunidad",
+      "subheading": "La biblioteca es más que un catálogo. Es un lugar para hablar sobre lo que lees y retribuir.",
+      "items": {
+        "bookDiscussions": {
+          "title": "Debates sobre libros",
+          "description": "Comenta giros de la trama y temas con otros lectores."
+        },
+        "reviews": {
+          "title": "Reseñas",
+          "description": "Puntúa y reseña libros para ayudar a la comunidad a elegir su próxima lectura."
+        },
+        "readingClubs": {
+          "title": "Clubes de lectura",
+          "description": "Únete a un club que coincida con tu género favorito y tu ritmo de lectura."
+        },
+        "volunteerPrograms": {
+          "title": "Programas de voluntariado",
+          "description": "Ayuda a organizar eventos, clasificar donaciones o guiar a nuevos miembros."
+        }
+      }
+    },
+    "testimonials": {
+      "heading": "Lo que dicen nuestros miembros",
+      "items": {
+        "priyaSharma": {
+          "role": "Miembro desde 2023",
+          "quote": "Solo la función de reserva de asientos me ahorró muchos viajes en vano a una biblioteca llena."
+        },
+        "rahulNair": {
+          "role": "Líder de club de lectura",
+          "quote": "Llevar nuestro club de lectura mensual es mucho más fácil con los foros de debate integrados."
+        },
+        "ananyaIyer": {
+          "role": "Gerente",
+          "quote": "Coordinar donaciones y eventos antes era puras hojas de cálculo. Ahora todo está en un solo lugar."
+        },
+        "karanMalhotra": {
+          "role": "Miembro desde 2024",
+          "quote": "El bibliotecario con IA me recomendó libros que nunca habría elegido yo mismo, y me encantaron."
+        }
+      }
+    },
+    "faq": {
+      "heading": "Preguntas frecuentes",
+      "items": {
+        "reservations": {
+          "question": "¿Cómo funcionan las reservas?",
+          "answer": "Si un libro está prestado, puedes reservarlo y te avisaremos en cuanto vuelva a estar disponible."
+        },
+        "seatBookings": {
+          "question": "¿Cómo funcionan las reservas de asientos?",
+          "answer": "Elige un horario libre en el mapa de asientos y quedará reservado para ti hasta que comience tu sesión."
+        },
+        "donations": {
+          "question": "¿Puedo donar libros?",
+          "answer": "Sí, envía una solicitud de donación y un bibliotecario la revisará y aprobará para la colección compartida."
+        },
+        "aiLibrarian": {
+          "question": "¿Qué es el Bibliotecario con IA?",
+          "answer": "Un asistente conversacional que recomienda libros según tus intereses, tu estado de ánimo o tu historial de lectura."
+        }
+      }
+    },
+    "cta": {
+      "heading": "Hazte miembro y empieza a leer hoy",
+      "subheading": "Únete a la comunidad lectora, explora la biblioteca y no vuelvas a perder de vista un libro.",
+      "button": "Únete a la comunidad lectora"
+    },
+    "footer": {
+      "heading": "Enlaces del sitio",
+      "brand": "Club de Lectura Comunitario",
+      "description": "Una plataforma de biblioteca moderna para préstamos, clubes de lectura y eventos comunitarios.",
+      "navigation": "Navegación",
+      "quickLinks": "Enlaces rápidos",
+      "contact": "Contacto",
+      "home": "Inicio",
+      "login": "Iniciar sesión",
+      "register": "Registrarse",
+      "books": "Libros",
+      "community": "Comunidad",
+      "events": "Eventos",
+      "website": "Sitio web",
+      "communityForum": "Foro comunitario",
+      "newsletter": "Boletín"
+    }
+  }
+}

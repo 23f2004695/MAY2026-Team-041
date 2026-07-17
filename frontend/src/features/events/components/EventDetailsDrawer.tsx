@@ -56,15 +56,15 @@ export function EventDetailsDrawer({
           </div>
 
           <div className="rounded-lg border border-border p-3">
-            <p className="text-sm font-semibold text-foreground">Volunteer Assignments</p>
-            {event.volunteers.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">No volunteers assigned yet.</p>
+            <p className="text-sm font-semibold text-foreground">Manager Assignments</p>
+            {event.managers.length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">No managers assigned yet.</p>
             ) : (
               <ul className="mt-2 flex flex-col gap-1.5">
-                {event.volunteers.map((volunteer) => (
-                  <li key={volunteer.name} className="flex items-center justify-between text-sm">
-                    <span className="text-foreground">{volunteer.name}</span>
-                    <span className="text-muted-foreground">{volunteer.role}</span>
+                {event.managers.map((manager) => (
+                  <li key={manager.name} className="flex items-center justify-between text-sm">
+                    <span className="text-foreground">{manager.name}</span>
+                    <span className="text-muted-foreground">{manager.role}</span>
                   </li>
                 ))}
               </ul>

@@ -23,21 +23,28 @@ export interface NavItem {
   icon: LucideIcon;
 }
 
+// `label` holds an i18n key (translated at render time in Sidebar), not display text.
 export const userNavigation: NavItem[] = [
-  { label: 'Dashboard', path: ROUTES.DASHBOARD, icon: LayoutDashboard },
-  { label: 'Books', path: ROUTES.BOOKS, icon: BookOpen },
-  { label: 'Reservations', path: ROUTES.RESERVATIONS, icon: Ticket },
-  { label: 'Seat Booking', path: ROUTES.SEAT_BOOKING, icon: CalendarCheck },
-  { label: 'Community', path: ROUTES.COMMUNITY, icon: MessageCircle },
-  { label: 'Events', path: ROUTES.EVENTS, icon: Calendar },
-  { label: 'Reading Progress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
-  { label: 'Leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
-  { label: 'Reviews', path: ROUTES.REVIEWS, icon: Star },
-  { label: 'Notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
-  { label: 'Settings', path: ROUTES.SETTINGS, icon: Settings },
+  { label: 'nav.dashboard', path: ROUTES.DASHBOARD, icon: LayoutDashboard },
+  { label: 'nav.books', path: ROUTES.BOOKS, icon: BookOpen },
+  { label: 'nav.reservations', path: ROUTES.RESERVATIONS, icon: Ticket },
+  { label: 'nav.seatBooking', path: ROUTES.SEAT_BOOKING, icon: CalendarCheck },
+  { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
+  { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
+  { label: 'nav.readingProgress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
+  { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
+  { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
+  { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
+export const adminOverviewNavItem: NavItem = {
+  label: 'nav.adminOverview',
+  path: ROUTES.ADMIN,
+  icon: ShieldCheck,
+};
+
 export const adminNavigation: NavItem[] = [
-  { label: 'Admin Overview', path: ROUTES.ADMIN, icon: ShieldCheck },
-  { label: 'Back to App', path: ROUTES.DASHBOARD, icon: Home },
+  adminOverviewNavItem,
+  { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
 ];

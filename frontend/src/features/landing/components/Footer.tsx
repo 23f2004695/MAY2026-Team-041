@@ -1,42 +1,43 @@
 import { Globe, Link2, Mail, MessageCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { ROUTES } from '@/constants/routes';
 
-const navLinks = [
-  { label: 'Home', to: ROUTES.HOME },
-  { label: 'Log in', to: ROUTES.LOGIN },
-  { label: 'Register', to: ROUTES.REGISTER },
-];
-
-const quickLinks = [
-  { label: 'Books', to: ROUTES.BOOKS },
-  { label: 'Community', to: ROUTES.COMMUNITY },
-  { label: 'Events', to: ROUTES.EVENTS },
-];
-
-const socialLinks = [
-  { label: 'Website', href: '#', icon: Globe },
-  { label: 'Community Forum', href: '#', icon: MessageCircle },
-  { label: 'Newsletter', href: '#', icon: Link2 },
-];
-
 export function Footer() {
+  const { t } = useTranslation();
+
+  const navLinks = [
+    { label: t('landing.footer.home'), to: ROUTES.HOME },
+    { label: t('landing.footer.login'), to: ROUTES.LOGIN },
+    { label: t('landing.footer.register'), to: ROUTES.REGISTER },
+  ];
+
+  const quickLinks = [
+    { label: t('landing.footer.books'), to: ROUTES.BOOKS },
+    { label: t('landing.footer.community'), to: ROUTES.COMMUNITY },
+    { label: t('landing.footer.events'), to: ROUTES.EVENTS },
+  ];
+
+  const socialLinks = [
+    { label: t('landing.footer.website'), href: '#', icon: Globe },
+    { label: t('landing.footer.communityForum'), href: '#', icon: MessageCircle },
+    { label: t('landing.footer.newsletter'), href: '#', icon: Link2 },
+  ];
+
   return (
     <section aria-labelledby="footer-heading" className="bg-surface">
       <h2 id="footer-heading" className="sr-only">
-        Site links
+        {t('landing.footer.heading')}
       </h2>
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <p className="text-lg font-semibold text-foreground">Community Reading Club</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            A modern library platform for borrowing, reading clubs, and community events.
-          </p>
+          <p className="text-lg font-semibold text-foreground">{t('landing.footer.brand')}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{t('landing.footer.description')}</p>
         </div>
 
-        <nav aria-label="Navigation">
-          <p className="text-sm font-semibold text-foreground">Navigation</p>
+        <nav aria-label={t('landing.footer.navigation')}>
+          <p className="text-sm font-semibold text-foreground">{t('landing.footer.navigation')}</p>
           <ul className="mt-3 flex flex-col gap-2">
             {navLinks.map((link) => (
               <li key={link.to}>
@@ -48,8 +49,8 @@ export function Footer() {
           </ul>
         </nav>
 
-        <nav aria-label="Quick links">
-          <p className="text-sm font-semibold text-foreground">Quick Links</p>
+        <nav aria-label={t('landing.footer.quickLinks')}>
+          <p className="text-sm font-semibold text-foreground">{t('landing.footer.quickLinks')}</p>
           <ul className="mt-3 flex flex-col gap-2">
             {quickLinks.map((link) => (
               <li key={link.to}>
@@ -62,7 +63,7 @@ export function Footer() {
         </nav>
 
         <div>
-          <p className="text-sm font-semibold text-foreground">Contact</p>
+          <p className="text-sm font-semibold text-foreground">{t('landing.footer.contact')}</p>
           <a
             href="mailto:hello@communityreadingclub.org"
             className="mt-3 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
