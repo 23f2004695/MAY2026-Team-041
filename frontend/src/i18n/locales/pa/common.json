@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ",
+    "short": "ਰੀਡਿੰਗ ਕਲੱਬ"
+  },
+  "nav": {
+    "dashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "books": "ਕਿਤਾਬਾਂ",
+    "reservations": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
+    "seatBooking": "ਸੀਟ ਬੁਕਿੰਗ",
+    "community": "ਕਮਿਊਨਿਟੀ",
+    "events": "ਸਮਾਗਮ",
+    "readingProgress": "ਪੜ੍ਹਾਈ ਦੀ ਤਰੱਕੀ",
+    "leaderboard": "ਲੀਡਰਬੋਰਡ",
+    "reviews": "ਸਮੀਖਿਆਵਾਂ",
+    "notifications": "ਸੂਚਨਾਵਾਂ",
+    "settings": "ਸੈਟਿੰਗਾਂ",
+    "adminOverview": "ਐਡਮਿਨ ਸੰਖੇਪ",
+    "backToApp": "ਐਪ ਵੱਲ ਵਾਪਸ"
+  },
+  "actions": {
+    "signIn": "ਸਾਈਨ ਇਨ ਕਰੋ",
+    "logOut": "ਲੌਗ ਆਊਟ",
+    "profile": "ਪ੍ਰੋਫਾਈਲ",
+    "settings": "ਸੈਟਿੰਗਾਂ",
+    "backHome": "ਹੋਮ 'ਤੇ ਵਾਪਸ",
+    "backToHome": "ਹੋਮ ਵੱਲ ਵਾਪਸ",
+    "viewAll": "ਸਾਰੇ ਵੇਖੋ"
+  },
+  "aria": {
+    "openNavigation": "ਨੈਵੀਗੇਸ਼ਨ ਖੋਲ੍ਹੋ",
+    "openAccountMenu": "ਖਾਤਾ ਮੀਨੂ ਖੋਲ੍ਹੋ",
+    "menu": "ਮੀਨੂ",
+    "account": "ਖਾਤਾ"
+  },
+  "language": {
+    "selectLabel": "ਭਾਸ਼ਾ ਬਦਲੋ"
+  },
+  "theme": {
+    "toLight": "ਲਾਈਟ ਮੋਡ 'ਤੇ ਜਾਓ",
+    "toDark": "ਡਾਰਕ ਮੋਡ 'ਤੇ ਜਾਓ"
+  },
+  "appearance": {
+    "label": "ਸਪੇਸ ਬੈਕਗ੍ਰਾਊਂਡ ਸੈੱਟ ਕਰੋ",
+    "background": {
+      "title": "ਪੇਜ ਬੈਕਗ੍ਰਾਊਂਡ",
+      "description": "ਪੇਜ 'ਤੇ ਹਰ ਚੀਜ਼ ਦੇ ਪਿੱਛੇ ਦਾ ਰੰਗ।"
+    },
+    "cards": {
+      "title": "ਕਾਰਡ ਤੇ ਪੈਨਲ",
+      "description": "ਕਾਰਡ, ਨੈਵਬਾਰ, ਇਨਪੁੱਟ ਅਤੇ ਡਾਇਲਾਗ ਇਹੀ ਰੰਗ ਸਾਂਝਾ ਕਰਦੇ ਹਨ।"
+    },
+    "custom": "ਕਸਟਮ",
+    "preview": "ਝਲਕ",
+    "sampleCard": "ਨਮੂਨਾ ਕਾਰਡ",
+    "sampleText": "ਪੜ੍ਹਨਯੋਗ ਰਹਿਣ ਲਈ ਟੈਕਸਟ ਦਾ ਰੰਗ ਆਪਣੇ ਆਪ ਅਡਜਸਟ ਹੋ ਜਾਂਦਾ ਹੈ।",
+    "primaryAction": "ਮੁੱਖ ਕਾਰਵਾਈ",
+    "lowContrast": "ਘੱਟ ਕੰਟ੍ਰਾਸਟ — ਸਭ ਤੋਂ ਪੜ੍ਹਨਯੋਗ ਨਤੀਜੇ ਲਈ, ਹਲਕੇ ਨੂੰ ਹਲਕੇ ਨਾਲ ਜਾਂ ਗੂੜ੍ਹੇ ਨੂੰ ਗੂੜ੍ਹੇ ਰੰਗ ਨਾਲ ਮਿਲਾਓ।",
+    "reset": "ਥੀਮ ਡਿਫਾਲਟ 'ਤੇ ਰੀਸੈੱਟ ਕਰੋ",
+    "done": "ਹੋ ਗਿਆ"
+  },
+  "comingSoon": {
+    "badge": "ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} ਅਜੇ ਤੱਕ ਜੁੜਿਆ ਨਹੀਂ ਹੈ",
+      "description": "ਇਹ ਇੱਕ UI ਝਲਕ ਹੈ — ਬੈਕਐਂਡ ਜੁੜਦੇ ਹੀ ਅਸਲੀ ਵਰਕਫਲੋ ਆ ਜਾਵੇਗਾ।"
+    }
+  },
+  "footer": {
+    "brand": "ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ",
+    "tagline": "ਕਿਤਾਬਾਂ ਉਧਾਰ ਲੈਣ, ਰੀਡਿੰਗ ਕਲੱਬਾਂ ਅਤੇ ਕਮਿਊਨਿਟੀ ਸਮਾਗਮਾਂ ਲਈ ਇੱਕ ਆਧੁਨਿਕ ਲਾਇਬ੍ਰੇਰੀ ਪਲੇਟਫਾਰਮ।",
+    "siteLinks": "ਸਾਈਟ ਲਿੰਕ",
+    "navigation": "ਨੈਵੀਗੇਸ਼ਨ",
+    "quickLinks": "ਤੇਜ਼ ਲਿੰਕ",
+    "contact": "ਸੰਪਰਕ",
+    "links": {
+      "home": "ਹੋਮ",
+      "login": "ਲੌਗ ਇਨ",
+      "register": "ਰਜਿਸਟਰ",
+      "books": "ਕਿਤਾਬਾਂ",
+      "community": "ਕਮਿਊਨਿਟੀ",
+      "events": "ਸਮਾਗਮ"
+    },
+    "social": {
+      "website": "ਵੈੱਬਸਾਈਟ",
+      "forum": "ਕਮਿਊਨਿਟੀ ਫੋਰਮ",
+      "newsletter": "ਨਿਊਜ਼ਲੈਟਰ"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "ਇਹ ਪੇਜ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।"
+  },
+  "pages": {
+    "register": {
+      "title": "ਰਜਿਸਟਰ",
+      "description": "ਨਵਾਂ ਖਾਤਾ ਬਣਾਓ।"
+    },
+    "forgotPassword": {
+      "title": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ",
+      "description": "ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈੱਟ ਕਰੋ।"
+    },
+    "community": {
+      "title": "ਕਮਿਊਨਿਟੀ",
+      "description": "ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਚਰਚਾਵਾਂ।"
+    },
+    "settings": {
+      "title": "ਸੈਟਿੰਗਾਂ",
+      "description": "ਆਪਣੀਆਂ ਤਰਜੀਹਾਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ।"
+    }
+  }
+}

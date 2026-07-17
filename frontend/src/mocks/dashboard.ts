@@ -6,16 +6,16 @@ export const dashboardUser = {
 };
 
 export interface DashboardStat {
+  id: string;
   icon: LucideIcon;
-  label: string;
   value: string;
 }
 
 export const dashboardStats: DashboardStat[] = [
-  { icon: BookOpen, label: 'Books Borrowed', value: '4' },
-  { icon: BookMarked, label: 'Books Reserved', value: '2' },
-  { icon: CalendarCheck, label: 'Seat Bookings', value: '1' },
-  { icon: Trophy, label: 'Reading Points', value: '1,280' },
+  { id: 'booksBorrowed', icon: BookOpen, value: '4' },
+  { id: 'booksReserved', icon: BookMarked, value: '2' },
+  { id: 'seatBookings', icon: CalendarCheck, value: '1' },
+  { id: 'readingPoints', icon: Trophy, value: '1,280' },
 ];
 
 export interface DueBook {

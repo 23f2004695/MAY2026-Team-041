@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "自 {{date}} 起的会员",
+    "editProfile": "编辑个人资料",
+    "editProfileAction": "正在编辑你的个人资料"
+  },
+  "stats": {
+    "booksRead": "已读图书",
+    "pagesRead": "已读页数",
+    "hoursRead": "阅读时长"
+  },
+  "achievements": {
+    "title": "成就",
+    "items": {
+      "firstBook": {
+        "label": "第一本书",
+        "description": "借阅你的第一本书"
+      },
+      "bookWorm": {
+        "label": "书虫",
+        "description": "一年内读完 10 本书"
+      },
+      "topReader": {
+        "label": "阅读达人",
+        "description": "登顶月度排行榜"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "正在阅读",
+    "by": "作者：{{author}}"
+  },
+  "borrowHistory": {
+    "title": "借阅记录",
+    "columns": {
+      "title": "书名",
+      "borrowedOn": "借阅日期",
+      "returnedOn": "归还日期"
+    }
+  }
+}

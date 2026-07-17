@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "वापसी पर स्वागत है, {{name}}",
+    "subtitle": "यहाँ देखें आपकी लाइब्रेरी में क्या चल रहा है"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "उधार ली गई किताबें"
+    },
+    "booksReserved": {
+      "label": "आरक्षित किताबें"
+    },
+    "seatBookings": {
+      "label": "सीट बुकिंग"
+    },
+    "readingPoints": {
+      "label": "रीडिंग पॉइंट्स"
+    }
+  },
+  "booksDueSoon": {
+    "title": "जल्द वापस करने वाली किताबें",
+    "empty": {
+      "title": "जल्द कुछ भी वापस नहीं करना",
+      "description": "आप पूरी तरह अपडेट हैं।"
+    },
+    "dueLabel": "{{date}} तक वापस करनी है · {{days}} दिन बाकी"
+  },
+  "currentlyBorrowed": {
+    "title": "अभी उधार ली गई",
+    "since": "{{date}} से"
+  },
+  "recentNotifications": {
+    "title": "हाल की सूचनाएँ"
+  },
+  "upcomingEvents": {
+    "title": "आगामी इवेंट्स"
+  },
+  "readingProgress": {
+    "title": "रीडिंग प्रगति",
+    "pages": "{{total}} में से {{read}} पृष्ठ"
+  },
+  "monthlyChallenge": {
+    "title": "मासिक चुनौती",
+    "books": "{{target}} में से {{current}} किताबें"
+  },
+  "quickActions": {
+    "title": "त्वरित क्रियाएँ",
+    "browseBooks": "किताबें ब्राउज़ करें",
+    "bookSeat": "एक सीट बुक करें",
+    "viewReservations": "आरक्षण देखें"
+  }
+}

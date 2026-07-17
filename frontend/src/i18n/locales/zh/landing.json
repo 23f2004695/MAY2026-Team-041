@@ -1,0 +1,246 @@
+{
+  "hero": {
+    "badge": "社区读书俱乐部与图书馆平台",
+    "title": "你的图书馆、你的社区，尽在一处。",
+    "description": "借阅图书、预订自习座位、加入读书俱乐部，并获得个性化推荐——告别纸质登记簿和群聊。",
+    "joinCommunity": "加入社区",
+    "browseBooks": "浏览图书",
+    "dashboard": "仪表盘",
+    "currentlyReading": "正在阅读",
+    "history": "历史记录",
+    "nav": {
+      "dashboard": "仪表盘",
+      "books": "图书",
+      "reservations": "预约",
+      "seatBooking": "座位预订"
+    },
+    "readingList": {
+      "atomicHabits": { "status": "4 天后到期" },
+      "sapiens": { "status": "可取书" },
+      "theOverstory": { "status": "排队第 2 位" }
+    }
+  },
+  "statistics": {
+    "srHeading": "平台数据统计",
+    "items": {
+      "booksAvailable": { "label": "可借图书" },
+      "members": { "label": "会员" },
+      "readingClubs": { "label": "读书俱乐部" },
+      "eventsHosted": { "label": "已举办活动" },
+      "booksBorrowed": { "label": "已借图书" },
+      "studySeats": { "label": "自习座位" }
+    }
+  },
+  "features": {
+    "heading": "现代图书馆所需的一切",
+    "description": "一个平台，涵盖借阅、发现、社区，以及图书馆的日常运营。",
+    "items": {
+      "digitalLibrary": {
+        "title": "数字图书馆",
+        "description": "搜索、筛选并浏览图书、作者和分类的完整目录。"
+      },
+      "qrBorrowing": {
+        "title": "扫码借阅",
+        "description": "扫描图书的二维码，几秒即可借阅或归还，无需任何纸质手续。"
+      },
+      "seatBooking": {
+        "title": "座位预订",
+        "description": "提前预订安静的自习座位，并实时查看空位情况。"
+      },
+      "aiLibrarian": {
+        "title": "AI 图书管理员",
+        "description": "通过对话式阅读助手，获得为你量身定制的荐书。"
+      },
+      "readingChallenges": {
+        "title": "阅读挑战",
+        "description": "记录你的进度，随着阅读增多解锁成就。"
+      },
+      "communityDiscussions": {
+        "title": "社区讨论",
+        "description": "加入读书俱乐部、分享书评，与大家畅聊你喜爱的书。"
+      },
+      "bookDonations": {
+        "title": "图书捐赠",
+        "description": "捐出你读完的书，助力共享藏书不断壮大。"
+      },
+      "analyticsDashboard": {
+        "title": "数据分析仪表盘",
+        "description": "图书管理员和管理员可洞察趋势、热门图书和使用情况。"
+      }
+    }
+  },
+  "howItWorks": {
+    "heading": "使用方法",
+    "steps": {
+      "register": {
+        "title": "注册",
+        "description": "不到一分钟即可创建免费会员。"
+      },
+      "searchBooks": {
+        "title": "搜索图书",
+        "description": "按分类、作者或心情查找书目。"
+      },
+      "borrowReserve": {
+        "title": "借阅 / 预约",
+        "description": "取走一本，或预约已被借出的书。"
+      },
+      "readParticipate": {
+        "title": "阅读并参与",
+        "description": "记录进度，并加入围绕它的社区。"
+      }
+    }
+  },
+  "aiLibrarian": {
+    "heading": "认识一下 AI 图书管理员",
+    "description": "用日常语言提出推荐需求，即可获得一份精选书单。",
+    "conversation": {
+      "userPrompt": {
+        "message": "推荐几本机器学习的入门书。"
+      },
+      "aiResponse": {
+        "message": "为你推荐五本：《Hands-On Machine Learning》《The Hundred-Page ML Book》《Python Machine Learning》《Deep Learning for Coders》和《Grokking Machine Learning》。"
+      }
+    }
+  },
+  "mood": {
+    "heading": "此刻你想读点什么？",
+    "description": "选择一种心情，抢先看看我们的推荐引擎会为你推荐什么。",
+    "groupLabel": "阅读心情",
+    "recommendedFor": "为{{mood}}心情推荐",
+    "moods": {
+      "happy": { "label": "开心" },
+      "relaxed": { "label": "放松" },
+      "curious": { "label": "好奇" },
+      "motivated": { "label": "有干劲" },
+      "studyMode": { "label": "学习模式" }
+    }
+  },
+  "readingChallenge": {
+    "heading": "阅读挑战与成就",
+    "description": "在阅读中解锁徽章，持续保持动力。",
+    "achievements": {
+      "firstBook": {
+        "label": "第一本书",
+        "description": "借阅你的第一本书"
+      },
+      "bookWorm": {
+        "label": "书虫",
+        "description": "一年内读完 10 本书"
+      },
+      "topReader": {
+        "label": "阅读达人",
+        "description": "登顶月度排行榜"
+      },
+      "monthlyChampion": {
+        "label": "月度冠军",
+        "description": "在一个月内完成每一项每周挑战"
+      }
+    }
+  },
+  "community": {
+    "heading": "以社区为核心",
+    "description": "图书馆不只是一份书目。它更是一个畅聊阅读、回馈他人的地方。",
+    "highlights": {
+      "bookDiscussions": {
+        "title": "图书讨论",
+        "description": "与其他读者一起细品情节转折与主题。"
+      },
+      "reviews": {
+        "title": "书评",
+        "description": "为图书评分和撰写书评，帮助大家挑选下一本读物。"
+      },
+      "readingClubs": {
+        "title": "读书俱乐部",
+        "description": "加入契合你喜爱类型和阅读节奏的俱乐部。"
+      },
+      "volunteerPrograms": {
+        "title": "志愿者项目",
+        "description": "协助举办活动、整理捐书，或指导新会员。"
+      }
+    }
+  },
+  "seatAvailability": {
+    "heading": "座位实时空余情况",
+    "description": "出发前先查看自习室情况。本页为示例数据预览。",
+    "legend": {
+      "available": "空闲",
+      "reserved": "已预订",
+      "occupied": "已占用"
+    }
+  },
+  "testimonials": {
+    "heading": "会员心声",
+    "people": {
+      "priyaSharma": {
+        "role": "2023 年起的会员",
+        "quote": "光是座位预订功能，就让我省去了无数次白跑一趟去满座图书馆的经历。"
+      },
+      "danielCho": {
+        "role": "读书俱乐部负责人",
+        "quote": "有了内置的讨论区，主持我们的月度读书会轻松多了。"
+      },
+      "amaraOkafor": {
+        "role": "志愿者",
+        "quote": "过去协调捐赠和活动全靠表格，现在全都集中在一处。"
+      },
+      "liamFitzgerald": {
+        "role": "2024 年起的会员",
+        "quote": "AI 图书管理员推荐的书是我自己绝不会挑的，而我却非常喜欢。"
+      },
+      "ananyaIyer": {
+        "role": "2022 年起的会员",
+        "quote": "现在我用手机就能续借图书、记录阅读连胜。它让阅读重新成了我的每日习惯。"
+      },
+      "marcusBenson": {
+        "role": "阅读挑战优胜者",
+        "quote": "排行榜把我的阅读目标变成了我们整层楼之间友好的比拼。"
+      },
+      "fatimaAlRashid": {
+        "role": "活动组织者",
+        "quote": "现在筹办作家讲座、统计报名只需几分钟。加入后我们的到场人数翻了一倍。"
+      },
+      "kenjiTanaka": {
+        "role": "2025 年起的会员",
+        "quote": "考前预订到一个安静的自习座位，救了我整个学期。再也不用四处找位子了。"
+      },
+      "graceMwangi": {
+        "role": "读书会成员",
+        "quote": "讨论区让我们的话题在月度聚会结束后依然能持续很久。"
+      },
+      "diegoFernandez": {
+        "role": "志愿者",
+        "quote": "用二维码扫描器登记捐书太快了，现在编目几乎变成了一件乐事。"
+      },
+      "sarahOConnor": {
+        "role": "2023 年起的会员",
+        "quote": "通知会在图书到期前提醒我，所以我一年多没交过一次滞纳金了。"
+      }
+    }
+  },
+  "faq": {
+    "heading": "常见问题",
+    "items": {
+      "reservations": {
+        "question": "预约是怎么运作的？",
+        "answer": "如果某本书已被借出，你可以预约它，一旦上架我们就会立即通知你。"
+      },
+      "seatBookings": {
+        "question": "座位预订是怎么运作的？",
+        "answer": "在座位图上选择一个空闲时段，它就会为你保留，直到你的使用时段开始。"
+      },
+      "donations": {
+        "question": "我可以捐书吗？",
+        "answer": "可以，提交一份捐赠申请，图书管理员会审核并批准将其纳入共享藏书。"
+      },
+      "aiLibrarian": {
+        "question": "什么是 AI 图书管理员？",
+        "answer": "一个对话式助手，会根据你的兴趣、心情或阅读历史为你推荐图书。"
+      }
+    }
+  },
+  "cta": {
+    "heading": "成为会员，今天就开始阅读",
+    "description": "加入阅读社区，畅游图书馆，再也不会与一本书失之交臂。",
+    "action": "加入阅读社区"
+  }
+}

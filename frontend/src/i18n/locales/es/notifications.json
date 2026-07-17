@@ -1,0 +1,39 @@
+{
+  "title": "Notificaciones",
+  "unreadBadge": "{{count}} sin leer",
+  "filterAriaLabel": "Filtrar notificaciones",
+  "filters": {
+    "all": "Todas",
+    "unread": "Sin leer"
+  },
+  "empty": {
+    "title": "Aquí no hay nada",
+    "description": "Estás al día con tus notificaciones."
+  },
+  "card": {
+    "unreadDot": "Sin leer",
+    "markAsRead": "Marcar como leída"
+  },
+  "items": {
+    "n1": {
+      "title": "Libro por vencer",
+      "message": "\"{{book}}\" vence en {{count}} días."
+    },
+    "n2": {
+      "title": "Reserva lista",
+      "message": "\"{{book}}\" está listo para recoger."
+    },
+    "n3": {
+      "title": "Nueva incorporación",
+      "message": "\"{{book}}\" se ha añadido a la colección de {{category}}."
+    },
+    "n4": {
+      "title": "Logro desbloqueado",
+      "message": "Ganaste la insignia \"{{badge}}\" por leer {{count}} libros este año."
+    },
+    "n5": {
+      "title": "Renovación de membresía",
+      "message": "Tu membresía premium se renueva en {{count}} días."
+    }
+  }
+}

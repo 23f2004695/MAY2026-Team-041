@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "Welcome back, {{name}}",
+    "subtitle": "Here’s what’s happening with your library"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "Books Borrowed"
+    },
+    "booksReserved": {
+      "label": "Books Reserved"
+    },
+    "seatBookings": {
+      "label": "Seat Bookings"
+    },
+    "readingPoints": {
+      "label": "Reading Points"
+    }
+  },
+  "booksDueSoon": {
+    "title": "Books Due Soon",
+    "empty": {
+      "title": "Nothing due soon",
+      "description": "You're all caught up."
+    },
+    "dueLabel": "Due {{date}} · {{days}}d left"
+  },
+  "currentlyBorrowed": {
+    "title": "Currently Borrowed",
+    "since": "Since {{date}}"
+  },
+  "recentNotifications": {
+    "title": "Recent Notifications"
+  },
+  "upcomingEvents": {
+    "title": "Upcoming Events"
+  },
+  "readingProgress": {
+    "title": "Reading Progress",
+    "pages": "{{read}} of {{total}} pages"
+  },
+  "monthlyChallenge": {
+    "title": "Monthly Challenge",
+    "books": "{{current}} of {{target}} books"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "browseBooks": "Browse Books",
+    "bookSeat": "Book a Seat",
+    "viewReservations": "View Reservations"
+  }
+}

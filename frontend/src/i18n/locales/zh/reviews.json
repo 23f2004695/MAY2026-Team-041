@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "图书书评",
+    "byAuthor": "作者：{{author}}",
+    "writeReview": "写书评",
+    "comments": "评论"
+  },
+  "allReviews": {
+    "heading": "会员心声",
+    "subtitle": "来自社区各处读者、俱乐部负责人、志愿者和活动组织者的真实反馈。"
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} 条书评",
+    "reviewCount_other": "{{count}} 条书评",
+    "starsLabel_one": "{{count}} 星",
+    "starsLabel_other": "{{count}} 星"
+  },
+  "modal": {
+    "title": "写书评",
+    "cancel": "取消",
+    "submit": "发布书评",
+    "errors": {
+      "imageFailed": "无法添加该图片。",
+      "missingFields": "请填写你的名字、评分和评论。"
+    },
+    "toast": {
+      "posted": "书评已发布"
+    },
+    "fields": {
+      "name": {
+        "label": "你的名字",
+        "placeholder": "例如：Priya Sharma"
+      },
+      "rating": {
+        "label": "评分",
+        "starLabel_one": "{{count}} 星",
+        "starLabel_other": "{{count}} 星"
+      },
+      "comment": {
+        "label": "评论",
+        "placeholder": "分享一下你对这本书的看法……"
+      },
+      "photo": {
+        "label": "照片（可选）",
+        "previewAlt": "书评附件预览",
+        "remove": "移除图片",
+        "uploading": "正在添加……",
+        "upload": "上传图片"
+      }
+    }
+  }
+}

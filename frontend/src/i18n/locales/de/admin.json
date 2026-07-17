@@ -1,0 +1,72 @@
+{
+  "title": "Admin-Dashboard",
+  "subtitle": "Plattformübersicht und Verwaltung",
+  "stats": {
+    "totalBooks": {
+      "label": "Bücher insgesamt"
+    },
+    "totalMembers": {
+      "label": "Mitglieder insgesamt"
+    },
+    "eventsThisMonth": {
+      "label": "Veranstaltungen diesen Monat"
+    },
+    "revenueMtd": {
+      "label": "Umsatz (lfd. Monat)"
+    }
+  },
+  "pendingRequests": {
+    "title": "Ausstehende Anfragen",
+    "from": "Von {{requester}}",
+    "reject": "Ablehnen",
+    "approve": "Genehmigen",
+    "requestTypes": {
+      "donation": "Buchspende",
+      "membershipRenewal": "Mitgliedschaftsverlängerung",
+      "reservationDispute": "Reservierungsbeschwerde"
+    },
+    "items": {
+      "pr1": {
+        "summary": "Spende von 8 Büchern, darunter 3 Sci-Fi-Titel"
+      },
+      "pr2": {
+        "summary": "Anfrage zur Verlängerung der Premium-Mitgliedschaft"
+      },
+      "pr3": {
+        "summary": "Meldet, dass die Warteposition der Reservierung falsch erscheint"
+      }
+    },
+    "toast": {
+      "reject": "Anfrage von {{requester}} wird abgelehnt",
+      "approve": "Anfrage von {{requester}} wird genehmigt"
+    }
+  },
+  "reports": {
+    "title": "Berichte",
+    "viewReport": "Bericht anzeigen",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "Am häufigsten ausgeliehene Bücher"
+      },
+      "membershipGrowth": {
+        "label": "Mitgliederwachstum"
+      },
+      "eventAttendance": {
+        "label": "Veranstaltungsteilnahme"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "Schnellaktionen",
+    "addBook": "Buch hinzufügen",
+    "inviteMember": "Mitglied einladen",
+    "createEvent": "Veranstaltung erstellen",
+    "announcement": "Ankündigung",
+    "toast": {
+      "addBook": "Buch wird hinzugefügt",
+      "inviteMember": "Mitglied wird eingeladen",
+      "createEvent": "Veranstaltung wird erstellt",
+      "announcement": "Ankündigung wird gesendet"
+    }
+  }
+}

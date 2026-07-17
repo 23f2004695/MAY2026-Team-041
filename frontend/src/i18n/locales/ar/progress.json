@@ -1,0 +1,33 @@
+{
+  "title": "تقدم القراءة",
+  "subtitle": "نشاطك في القراءة على مدار العام",
+  "goal": {
+    "title": "هدف القراءة لعام {{year}}",
+    "progress": "{{current}} من {{target}} كتاب"
+  },
+  "streak": {
+    "title": "سلسلة القراءة",
+    "currentDays": "{{days}} يوم",
+    "longest": "أطول سلسلة: {{days}} يوم"
+  },
+  "lists": {
+    "currentlyReading": {
+      "title": "أقرأ حاليًا",
+      "empty": "ابدأ كتابًا لتتبّعه هنا."
+    },
+    "completed": {
+      "title": "المكتملة",
+      "empty": "ستظهر هنا الكتب التي تنهيها."
+    },
+    "wantToRead": {
+      "title": "أرغب في قراءتها",
+      "empty": "احفظ الكتب التي تخطط لقراءتها لاحقًا."
+    }
+  },
+  "book": {
+    "by": "بقلم {{author}}"
+  },
+  "emptyState": {
+    "title": "لا شيء هنا بعد"
+  }
+}

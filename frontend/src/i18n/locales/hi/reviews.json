@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "किताब समीक्षाएँ",
+    "byAuthor": "{{author}} द्वारा",
+    "writeReview": "एक समीक्षा लिखें",
+    "comments": "टिप्पणियाँ"
+  },
+  "allReviews": {
+    "heading": "हमारे सदस्य क्या कहते हैं",
+    "subtitle": "पूरी कम्युनिटी के पाठकों, क्लब लीड्स, स्वयंसेवकों और इवेंट आयोजकों की असली प्रतिक्रिया।"
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} समीक्षा",
+    "reviewCount_other": "{{count}} समीक्षाएँ",
+    "starsLabel_one": "{{count}} स्टार",
+    "starsLabel_other": "{{count}} स्टार"
+  },
+  "modal": {
+    "title": "एक समीक्षा लिखें",
+    "cancel": "रद्द करें",
+    "submit": "समीक्षा पोस्ट करें",
+    "errors": {
+      "imageFailed": "इमेज नहीं जोड़ी जा सकी।",
+      "missingFields": "अपना नाम, एक रेटिंग और एक टिप्पणी जोड़ें।"
+    },
+    "toast": {
+      "posted": "समीक्षा पोस्ट हो गई"
+    },
+    "fields": {
+      "name": {
+        "label": "आपका नाम",
+        "placeholder": "जैसे Priya Sharma"
+      },
+      "rating": {
+        "label": "रेटिंग",
+        "starLabel_one": "{{count}} स्टार",
+        "starLabel_other": "{{count}} स्टार"
+      },
+      "comment": {
+        "label": "टिप्पणी",
+        "placeholder": "इस किताब के बारे में आपकी राय साझा करें..."
+      },
+      "photo": {
+        "label": "फ़ोटो (वैकल्पिक)",
+        "previewAlt": "समीक्षा संलग्नक पूर्वावलोकन",
+        "remove": "इमेज हटाएँ",
+        "uploading": "जोड़ा जा रहा है...",
+        "upload": "एक इमेज अपलोड करें"
+      }
+    }
+  }
+}

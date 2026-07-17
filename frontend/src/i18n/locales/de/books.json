@@ -1,0 +1,61 @@
+{
+  "title": "Bücher",
+  "subtitle": "Durchstöbere den Bibliothekskatalog",
+  "searchPlaceholder": "Nach Titel oder Autor suchen…",
+  "searchAriaLabel": "Bücher suchen",
+  "filterAriaLabel": "Nach Kategorie filtern",
+  "backToBooks": "Zurück zu den Büchern",
+  "reserveThisBook": "Dieses Buch reservieren",
+  "reserveToast": "\"{{title}}\" wird reserviert",
+  "copiesAvailable": "{{available}} von {{total}} Exemplaren verfügbar",
+  "categories": {
+    "All": "Alle",
+    "Fiction": "Belletristik",
+    "Non-Fiction": "Sachbuch",
+    "Science": "Wissenschaft",
+    "Technology": "Technik",
+    "Biography": "Biografie",
+    "Self-Help": "Ratgeber"
+  },
+  "status": {
+    "available": "Verfügbar",
+    "checkedOut": "Ausgeliehen"
+  },
+  "empty": {
+    "title": "Keine Bücher gefunden",
+    "description": "Versuche einen anderen Suchbegriff oder eine andere Kategorie."
+  },
+  "notFound": {
+    "title": "Buch nicht gefunden",
+    "description": "Dieses Buch wurde möglicherweise aus dem Katalog entfernt."
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "Ein praktischer Leitfaden, um gute Gewohnheiten aufzubauen und schlechte abzulegen."
+    },
+    "sapiens": {
+      "description": "Eine kurze Geschichte der Menschheit, von der Steinzeit bis heute."
+    },
+    "the-overstory": {
+      "description": "Ein kunstvoller Roman, der neun Amerikaner über ihre Beziehung zu Bäumen verbindet."
+    },
+    "hands-on-ml": {
+      "description": "Ein praktischer Leitfaden für Machine Learning mit Scikit-Learn, Keras und TensorFlow."
+    },
+    "a-short-history": {
+      "description": "Eine leicht zugängliche Reise durch die Geschichte der Wissenschaft."
+    },
+    "cant-hurt-me": {
+      "description": "David Goggins' Bericht darüber, wie er eine schwere Kindheit überwand und zu einem Spitzensportler wurde."
+    },
+    "deep-work": {
+      "description": "Regeln für konzentrierten Erfolg in einer ablenkungsreichen Welt."
+    },
+    "the-hundred-page-ml": {
+      "description": "Eine kompakte Einführung in die Kernideen des Machine Learning."
+    },
+    "norwegian-wood": {
+      "description": "Eine wehmütige Geschichte über Verlust und erwachende Sexualität im Tokio der 1960er-Jahre."
+    }
+  }
+}

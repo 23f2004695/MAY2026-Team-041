@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "イベント",
+    "subtitle": "今後の図書館イベントと地域プログラム"
+  },
+  "stats": {
+    "eventsThisMonth": "今月のイベント",
+    "totalAttendees": "総参加者数",
+    "avgAttendanceRate": "平均参加率"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}}人が参加予定",
+    "registered": "登録済み",
+    "open": "受付中",
+    "viewDetails": "詳細を見る"
+  },
+  "drawer": {
+    "title": "イベントの詳細",
+    "registration": "登録",
+    "registered": "登録済みです",
+    "notRegistered": "未登録",
+    "cancelRegistration": "登録をキャンセル",
+    "register": "登録する",
+    "volunteerAssignments": "ボランティアの担当",
+    "noVolunteers": "まだボランティアは割り当てられていません。",
+    "toast": {
+      "cancelling": "登録をキャンセル中",
+      "registering": "登録中"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "SF読書クラブの集い",
+      "location": "メインホール、コミュニティ図書館",
+      "description": "今月の課題図書「Project Hail Mary」についての月例ディスカッション。",
+      "volunteers": {
+        "amaraOkafor": "ディスカッションリーダー",
+        "liamFitzgerald": "設営"
+      }
+    },
+    "author-talk": {
+      "title": "著者トーク：地元作家の夕べ",
+      "location": "オーディトリアム、コミュニティ図書館",
+      "description": "地元の作家3名がデビュー作について語る一夜。",
+      "volunteers": {
+        "danielCho": "受付"
+      }
+    },
+    "kids-story-hour": {
+      "title": "こどもお話の時間",
+      "location": "児童コーナー",
+      "description": "4〜8歳の子ども向けの週替わり読み聞かせセッション。",
+      "volunteers": {
+        "priyaSharma": "読み聞かせ担当"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "ボランティアオリエンテーション",
+      "location": "ミーティングルームB",
+      "description": "図書館プログラムに参加する新しいボランティア向けのオリエンテーション。",
+      "volunteers": {}
+    }
+  }
+}

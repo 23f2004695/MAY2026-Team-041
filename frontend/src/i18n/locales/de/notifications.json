@@ -1,0 +1,39 @@
+{
+  "title": "Benachrichtigungen",
+  "unreadBadge": "{{count}} ungelesen",
+  "filterAriaLabel": "Benachrichtigungen filtern",
+  "filters": {
+    "all": "Alle",
+    "unread": "Ungelesen"
+  },
+  "empty": {
+    "title": "Hier gibt es nichts zu sehen",
+    "description": "Du hast alle Benachrichtigungen gelesen."
+  },
+  "card": {
+    "unreadDot": "Ungelesen",
+    "markAsRead": "Als gelesen markieren"
+  },
+  "items": {
+    "n1": {
+      "title": "Buch bald fällig",
+      "message": "\"{{book}}\" ist in {{count}} Tagen fällig."
+    },
+    "n2": {
+      "title": "Reservierung bereit",
+      "message": "\"{{book}}\" ist abholbereit."
+    },
+    "n3": {
+      "title": "Neuzugang",
+      "message": "\"{{book}}\" wurde zur Sammlung {{category}} hinzugefügt."
+    },
+    "n4": {
+      "title": "Erfolg freigeschaltet",
+      "message": "Du hast das Abzeichen \"{{badge}}\" für das Lesen von {{count}} Büchern in diesem Jahr erhalten."
+    },
+    "n5": {
+      "title": "Mitgliedschaftsverlängerung",
+      "message": "Deine Premium-Mitgliedschaft verlängert sich in {{count}} Tagen."
+    }
+  }
+}

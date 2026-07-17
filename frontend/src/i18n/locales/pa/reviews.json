@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "ਕਿਤਾਬ ਸਮੀਖਿਆਵਾਂ",
+    "byAuthor": "{{author}} ਵੱਲੋਂ",
+    "writeReview": "ਸਮੀਖਿਆ ਲਿਖੋ",
+    "comments": "ਟਿੱਪਣੀਆਂ"
+  },
+  "allReviews": {
+    "heading": "ਸਾਡੇ ਮੈਂਬਰ ਕੀ ਕਹਿੰਦੇ ਹਨ",
+    "subtitle": "ਕਮਿਊਨਿਟੀ ਭਰ ਦੇ ਪਾਠਕਾਂ, ਕਲੱਬ ਲੀਡਾਂ, ਵਲੰਟੀਅਰਾਂ ਅਤੇ ਸਮਾਗਮ ਪ੍ਰਬੰਧਕਾਂ ਵੱਲੋਂ ਅਸਲੀ ਫੀਡਬੈਕ।"
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} ਸਮੀਖਿਆ",
+    "reviewCount_other": "{{count}} ਸਮੀਖਿਆਵਾਂ",
+    "starsLabel_one": "{{count}} ਤਾਰਾ",
+    "starsLabel_other": "{{count}} ਤਾਰੇ"
+  },
+  "modal": {
+    "title": "ਸਮੀਖਿਆ ਲਿਖੋ",
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "submit": "ਸਮੀਖਿਆ ਪੋਸਟ ਕਰੋ",
+    "errors": {
+      "imageFailed": "ਤਸਵੀਰ ਸ਼ਾਮਲ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ।",
+      "missingFields": "ਆਪਣਾ ਨਾਮ, ਇੱਕ ਰੇਟਿੰਗ ਅਤੇ ਇੱਕ ਟਿੱਪਣੀ ਸ਼ਾਮਲ ਕਰੋ।"
+    },
+    "toast": {
+      "posted": "ਸਮੀਖਿਆ ਪੋਸਟ ਹੋ ਗਈ"
+    },
+    "fields": {
+      "name": {
+        "label": "ਤੁਹਾਡਾ ਨਾਮ",
+        "placeholder": "ਉਦਾਹਰਨ ਲਈ Priya Sharma"
+      },
+      "rating": {
+        "label": "ਰੇਟਿੰਗ",
+        "starLabel_one": "{{count}} ਤਾਰਾ",
+        "starLabel_other": "{{count}} ਤਾਰੇ"
+      },
+      "comment": {
+        "label": "ਟਿੱਪਣੀ",
+        "placeholder": "ਇਸ ਕਿਤਾਬ ਬਾਰੇ ਤੁਹਾਡੇ ਵਿਚਾਰ ਸਾਂਝੇ ਕਰੋ..."
+      },
+      "photo": {
+        "label": "ਫੋਟੋ (ਵਿਕਲਪਿਕ)",
+        "previewAlt": "ਸਮੀਖਿਆ ਅਟੈਚਮੈਂਟ ਦੀ ਝਲਕ",
+        "remove": "ਤਸਵੀਰ ਹਟਾਓ",
+        "uploading": "ਸ਼ਾਮਲ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ...",
+        "upload": "ਇੱਕ ਤਸਵੀਰ ਅੱਪਲੋਡ ਕਰੋ"
+      }
+    }
+  }
+}

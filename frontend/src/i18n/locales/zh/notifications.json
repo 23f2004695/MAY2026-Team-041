@@ -1,0 +1,39 @@
+{
+  "title": "通知",
+  "unreadBadge": "{{count}} 条未读",
+  "filterAriaLabel": "筛选通知",
+  "filters": {
+    "all": "全部",
+    "unread": "未读"
+  },
+  "empty": {
+    "title": "这里空空如也",
+    "description": "你已查看所有通知。"
+  },
+  "card": {
+    "unreadDot": "未读",
+    "markAsRead": "标记为已读"
+  },
+  "items": {
+    "n1": {
+      "title": "图书即将到期",
+      "message": "《{{book}}》将在 {{count}} 天后到期。"
+    },
+    "n2": {
+      "title": "预约已就绪",
+      "message": "《{{book}}》已可取书。"
+    },
+    "n3": {
+      "title": "新书上架",
+      "message": "《{{book}}》已加入{{category}}藏书。"
+    },
+    "n4": {
+      "title": "解锁成就",
+      "message": "你今年读完 {{count}} 本书，获得了“{{badge}}”徽章。"
+    },
+    "n5": {
+      "title": "会员续期",
+      "message": "你的高级会员将在 {{count}} 天后续期。"
+    }
+  }
+}

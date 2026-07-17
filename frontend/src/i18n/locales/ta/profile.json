@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} முதல் உறுப்பினர்",
+    "editProfile": "சுயவிவரத்தைத் திருத்து",
+    "editProfileAction": "உங்கள் சுயவிவரத்தைத் திருத்துகிறது"
+  },
+  "stats": {
+    "booksRead": "வாசித்த புத்தகங்கள்",
+    "pagesRead": "வாசித்த பக்கங்கள்",
+    "hoursRead": "வாசித்த மணிநேரம்"
+  },
+  "achievements": {
+    "title": "சாதனைகள்",
+    "items": {
+      "firstBook": {
+        "label": "முதல் புத்தகம்",
+        "description": "உங்கள் முதல் புத்தகத்தைக் கடன் வாங்குங்கள்"
+      },
+      "bookWorm": {
+        "label": "புத்தகப் புழு",
+        "description": "ஓராண்டில் 10 புத்தகங்களை வாசியுங்கள்"
+      },
+      "topReader": {
+        "label": "சிறந்த வாசகர்",
+        "description": "மாதாந்திர தலைமைப் பட்டியலின் உச்சியை அடையுங்கள்"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "தற்போதைய வாசிப்பு",
+    "by": "{{author}} எழுதியது"
+  },
+  "borrowHistory": {
+    "title": "கடன் வாங்கிய வரலாறு",
+    "columns": {
+      "title": "தலைப்பு",
+      "borrowedOn": "கடன் வாங்கிய தேதி",
+      "returnedOn": "திருப்பிய தேதி"
+    }
+  }
+}

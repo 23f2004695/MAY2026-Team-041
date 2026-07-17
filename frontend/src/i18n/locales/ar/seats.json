@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "حجز المقاعد",
+    "subtitle": "احجز مقعد دراسة هادئًا"
+  },
+  "legend": {
+    "available": "متاح",
+    "reserved": "محجوز",
+    "occupied": "مشغول"
+  },
+  "summary": {
+    "title": "ملخص الحجز",
+    "seatSelected": "المقعد <bold>{{seat}}</bold> محدَّد لليوم",
+    "emptyState": "اختر مقعدًا متاحًا للمتابعة.",
+    "confirm": "تأكيد الحجز"
+  },
+  "toast": {
+    "bookingSeat": "جارٍ حجز المقعد {{seat}}"
+  }
+}

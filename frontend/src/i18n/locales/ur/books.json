@@ -1,0 +1,61 @@
+{
+  "title": "کتابیں",
+  "subtitle": "لائبریری کیٹلاگ دیکھیں",
+  "searchPlaceholder": "عنوان یا مصنف سے تلاش کریں…",
+  "searchAriaLabel": "کتابیں تلاش کریں",
+  "filterAriaLabel": "زمرے کے حساب سے فلٹر کریں",
+  "backToBooks": "کتابوں پر واپس",
+  "reserveThisBook": "یہ کتاب ریزرو کریں",
+  "reserveToast": "\"{{title}}\" ریزرو کی جا رہی ہے",
+  "copiesAvailable": "{{total}} میں سے {{available}} کاپیاں دستیاب",
+  "categories": {
+    "All": "سب",
+    "Fiction": "فکشن",
+    "Non-Fiction": "نان فکشن",
+    "Science": "سائنس",
+    "Technology": "ٹیکنالوجی",
+    "Biography": "سوانح",
+    "Self-Help": "سیلف ہیلپ"
+  },
+  "status": {
+    "available": "دستیاب",
+    "checkedOut": "ادھار پر"
+  },
+  "empty": {
+    "title": "کوئی کتاب نہیں ملی",
+    "description": "کوئی مختلف تلاش کی اصطلاح یا زمرہ آزمائیں۔"
+  },
+  "notFound": {
+    "title": "کتاب نہیں ملی",
+    "description": "ہو سکتا ہے یہ کتاب کیٹلاگ سے ہٹا دی گئی ہو۔"
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "اچھی عادتیں اپنانے اور بری عادتیں چھوڑنے کے لیے ایک عملی رہنما۔"
+    },
+    "sapiens": {
+      "description": "پتھر کے دور سے آج تک، بنی نوع انسان کی مختصر تاریخ۔"
+    },
+    "the-overstory": {
+      "description": "ایک پیچیدہ ناول جو نو امریکیوں کو درختوں کے ساتھ ان کے تعلق کے ذریعے جوڑتا ہے۔"
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn، Keras، اور TensorFlow کے ساتھ مشین لرننگ کے لیے ایک عملی رہنما۔"
+    },
+    "a-short-history": {
+      "description": "سائنس کی تاریخ کا ایک آسان فہم سفر۔"
+    },
+    "cant-hurt-me": {
+      "description": "David Goggins کی داستان کہ کیسے انہوں نے مشکل بچپن پر قابو پا کر ایک اعلیٰ کھلاڑی بننے۔"
+    },
+    "deep-work": {
+      "description": "ایک منتشر دنیا میں یکسو کامیابی کے اصول۔"
+    },
+    "the-hundred-page-ml": {
+      "description": "مشین لرننگ کے بنیادی تصورات کا مختصر تعارف۔"
+    },
+    "norwegian-wood": {
+      "description": "1960 کی دہائی کے ٹوکیو میں نقصان اور ابھرتی جوانی کی ایک یادگار کہانی۔"
+    }
+  }
+}

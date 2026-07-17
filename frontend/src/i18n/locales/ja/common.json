@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "コミュニティ読書クラブ",
+    "short": "読書クラブ"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "books": "書籍",
+    "reservations": "予約",
+    "seatBooking": "座席予約",
+    "community": "コミュニティ",
+    "events": "イベント",
+    "readingProgress": "読書の進捗",
+    "leaderboard": "ランキング",
+    "reviews": "レビュー",
+    "notifications": "通知",
+    "settings": "設定",
+    "adminOverview": "管理者概要",
+    "backToApp": "アプリに戻る"
+  },
+  "actions": {
+    "signIn": "サインイン",
+    "logOut": "ログアウト",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "backHome": "ホームに戻る",
+    "backToHome": "ホームに戻る",
+    "viewAll": "すべて表示"
+  },
+  "aria": {
+    "openNavigation": "ナビゲーションを開く",
+    "openAccountMenu": "アカウントメニューを開く",
+    "menu": "メニュー",
+    "account": "アカウント"
+  },
+  "language": {
+    "selectLabel": "言語を変更"
+  },
+  "theme": {
+    "toLight": "ライトモードに切り替え",
+    "toDark": "ダークモードに切り替え"
+  },
+  "appearance": {
+    "label": "スペース背景を設定",
+    "background": {
+      "title": "ページ背景",
+      "description": "ページ上のすべての要素の背後にある色です。"
+    },
+    "cards": {
+      "title": "カードとパネル",
+      "description": "カード、ナビゲーションバー、入力欄、ダイアログはこの色を共有します。"
+    },
+    "custom": "カスタム",
+    "preview": "プレビュー",
+    "sampleCard": "サンプルカード",
+    "sampleText": "テキストの色は読みやすさを保つよう自動的に調整されます。",
+    "primaryAction": "メインの操作",
+    "lowContrast": "コントラストが低すぎます。最も読みやすくするには、明るい色同士、または濃い色同士を組み合わせてください。",
+    "reset": "テーマの初期設定に戻す",
+    "done": "完了"
+  },
+  "comingSoon": {
+    "badge": "近日公開"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}}はまだ利用できません",
+      "description": "これはUIのプレビューです。実際の機能はバックエンドが接続され次第公開されます。"
+    }
+  },
+  "footer": {
+    "brand": "コミュニティ読書クラブ",
+    "tagline": "貸し出し、読書クラブ、地域イベントのためのモダンな図書館プラットフォーム。",
+    "siteLinks": "サイトリンク",
+    "navigation": "ナビゲーション",
+    "quickLinks": "クイックリンク",
+    "contact": "お問い合わせ",
+    "links": {
+      "home": "ホーム",
+      "login": "ログイン",
+      "register": "新規登録",
+      "books": "書籍",
+      "community": "コミュニティ",
+      "events": "イベント"
+    },
+    "social": {
+      "website": "ウェブサイト",
+      "forum": "コミュニティフォーラム",
+      "newsletter": "ニュースレター"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "このページは存在しません。"
+  },
+  "pages": {
+    "register": {
+      "title": "新規登録",
+      "description": "新しいアカウントを作成します。"
+    },
+    "forgotPassword": {
+      "title": "パスワードをお忘れの方",
+      "description": "パスワードを再設定します。"
+    },
+    "community": {
+      "title": "コミュニティ",
+      "description": "読書クラブとディスカッション。"
+    },
+    "settings": {
+      "title": "設定",
+      "description": "設定を管理します。"
+    }
+  }
+}

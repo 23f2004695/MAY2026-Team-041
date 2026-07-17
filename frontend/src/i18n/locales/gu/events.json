@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "કાર્યક્રમો",
+    "subtitle": "આગામી લાઇબ્રેરી કાર્યક્રમો અને સામુદાયિક કાર્યક્રમો"
+  },
+  "stats": {
+    "eventsThisMonth": "આ મહિનાના કાર્યક્રમો",
+    "totalAttendees": "કુલ હાજર રહેનારા",
+    "avgAttendanceRate": "સરેરાશ હાજરી દર"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} હાજર રહેશે",
+    "registered": "નોંધાયેલ",
+    "open": "ખુલ્લું",
+    "viewDetails": "વિગતો જુઓ"
+  },
+  "drawer": {
+    "title": "કાર્યક્રમની વિગતો",
+    "registration": "નોંધણી",
+    "registered": "તમે નોંધાયેલા છો",
+    "notRegistered": "નોંધાયેલ નથી",
+    "cancelRegistration": "નોંધણી રદ કરો",
+    "register": "નોંધણી કરો",
+    "volunteerAssignments": "સ્વયંસેવક સોંપણીઓ",
+    "noVolunteers": "હજી કોઈ સ્વયંસેવક સોંપાયા નથી.",
+    "toast": {
+      "cancelling": "નોંધણી રદ કરી રહ્યા છીએ",
+      "registering": "નોંધણી કરી રહ્યા છીએ"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "સાય-ફાય બુક ક્લબ મીટઅપ",
+      "location": "મુખ્ય હૉલ, Community Library",
+      "description": "આ મહિનાની પસંદગી, \"Project Hail Mary\" પર માસિક ચર્ચા.",
+      "volunteers": {
+        "amaraOkafor": "ચર્ચા લીડ",
+        "liamFitzgerald": "તૈયારી"
+      }
+    },
+    "author-talk": {
+      "title": "લેખક વાર્તાલાપ: સ્થાનિક લેખકોની રાત",
+      "location": "ઓડિટોરિયમ, Community Library",
+      "description": "ત્રણ સ્થાનિક લેખકો સાથે તેમની પ્રથમ નવલકથાઓ પર ચર્ચા કરતી એક સાંજ.",
+      "volunteers": {
+        "danielCho": "નોંધણી ડેસ્ક"
+      }
+    },
+    "kids-story-hour": {
+      "title": "બાળકોનો વાર્તા કલાક",
+      "location": "બાળ વિભાગ",
+      "description": "4-8 વર્ષની ઉંમરના બાળકો માટે સાપ્તાહિક વાર્તા-કથન સત્ર.",
+      "volunteers": {
+        "priyaSharma": "વાર્તાકાર"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "સ્વયંસેવક પરિચય",
+      "location": "મીટિંગ રૂમ B",
+      "description": "લાઇબ્રેરી કાર્યક્રમોમાં જોડાતા નવા સ્વયંસેવકો માટે પરિચય સત્ર.",
+      "volunteers": {}
+    }
+  }
+}

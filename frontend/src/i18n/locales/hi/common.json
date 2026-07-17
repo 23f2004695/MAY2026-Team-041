@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "books": "किताबें",
+    "reservations": "आरक्षण",
+    "seatBooking": "सीट बुकिंग",
+    "community": "कम्युनिटी",
+    "events": "इवेंट्स",
+    "readingProgress": "रीडिंग प्रगति",
+    "leaderboard": "लीडरबोर्ड",
+    "reviews": "समीक्षाएँ",
+    "notifications": "सूचनाएँ",
+    "settings": "सेटिंग्स",
+    "adminOverview": "एडमिन अवलोकन",
+    "backToApp": "ऐप पर वापस जाएँ"
+  },
+  "actions": {
+    "signIn": "साइन इन करें",
+    "logOut": "लॉग आउट करें",
+    "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग्स",
+    "backHome": "होम पर वापस जाएँ",
+    "backToHome": "होम पर वापस जाएँ",
+    "viewAll": "सभी देखें"
+  },
+  "aria": {
+    "openNavigation": "नेविगेशन खोलें",
+    "openAccountMenu": "अकाउंट मेनू खोलें",
+    "menu": "मेनू",
+    "account": "अकाउंट"
+  },
+  "language": {
+    "selectLabel": "भाषा बदलें"
+  },
+  "theme": {
+    "toLight": "लाइट मोड में बदलें",
+    "toDark": "डार्क मोड में बदलें"
+  },
+  "appearance": {
+    "label": "स्पेस बैकग्राउंड सेट करें",
+    "background": {
+      "title": "पेज बैकग्राउंड",
+      "description": "पेज पर हर चीज़ के पीछे का रंग।"
+    },
+    "cards": {
+      "title": "कार्ड और पैनल",
+      "description": "कार्ड, नेवबार, इनपुट और डायलॉग सभी यही रंग साझा करते हैं।"
+    },
+    "custom": "कस्टम",
+    "preview": "पूर्वावलोकन",
+    "sampleCard": "नमूना कार्ड",
+    "sampleText": "टेक्स्ट का रंग पढ़ने योग्य बने रहने के लिए अपने आप समायोजित हो जाता है।",
+    "primaryAction": "मुख्य क्रिया",
+    "lowContrast": "कम कंट्रास्ट — सबसे पढ़ने योग्य परिणाम के लिए हल्के रंग को हल्के के साथ या गहरे रंग को गहरे के साथ मिलाएँ।",
+    "reset": "थीम डिफ़ॉल्ट पर रीसेट करें",
+    "done": "हो गया"
+  },
+  "comingSoon": {
+    "badge": "जल्द आ रहा है"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} अभी तैयार नहीं है",
+      "description": "यह एक UI पूर्वावलोकन है — बैकएंड जुड़ते ही असली वर्कफ़्लो लाइव हो जाएगा।"
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "किताबें उधार लेने, रीडिंग क्लब और सामुदायिक इवेंट्स के लिए एक आधुनिक लाइब्रेरी प्लेटफ़ॉर्म।",
+    "siteLinks": "साइट लिंक",
+    "navigation": "नेविगेशन",
+    "quickLinks": "त्वरित लिंक",
+    "contact": "संपर्क",
+    "links": {
+      "home": "होम",
+      "login": "लॉग इन करें",
+      "register": "रजिस्टर करें",
+      "books": "किताबें",
+      "community": "कम्युनिटी",
+      "events": "इवेंट्स"
+    },
+    "social": {
+      "website": "वेबसाइट",
+      "forum": "कम्युनिटी फ़ोरम",
+      "newsletter": "न्यूज़लेटर"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "यह पेज मौजूद नहीं है।"
+  },
+  "pages": {
+    "register": {
+      "title": "रजिस्टर करें",
+      "description": "नया अकाउंट बनाएँ।"
+    },
+    "forgotPassword": {
+      "title": "पासवर्ड भूल गए",
+      "description": "अपना पासवर्ड रीसेट करें।"
+    },
+    "community": {
+      "title": "कम्युनिटी",
+      "description": "रीडिंग क्लब और चर्चाएँ।"
+    },
+    "settings": {
+      "title": "सेटिंग्स",
+      "description": "अपनी प्राथमिकताएँ प्रबंधित करें।"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "আবার স্বাগতম, {{name}}",
+    "subtitle": "আপনার লাইব্রেরিতে যা কিছু ঘটছে তা এখানে"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "ধার নেওয়া বই"
+    },
+    "booksReserved": {
+      "label": "সংরক্ষিত বই"
+    },
+    "seatBookings": {
+      "label": "আসন বুকিং"
+    },
+    "readingPoints": {
+      "label": "পড়ার পয়েন্ট"
+    }
+  },
+  "booksDueSoon": {
+    "title": "শীঘ্রই ফেরত দেওয়ার বই",
+    "empty": {
+      "title": "শীঘ্রই কিছু ফেরত দেওয়ার নেই",
+      "description": "আপনি সব ঠিক আছেন।"
+    },
+    "dueLabel": "শেষ তারিখ {{date}} · {{days}} দিন বাকি"
+  },
+  "currentlyBorrowed": {
+    "title": "বর্তমানে ধার নেওয়া",
+    "since": "{{date}} থেকে"
+  },
+  "recentNotifications": {
+    "title": "সাম্প্রতিক নোটিফিকেশন"
+  },
+  "upcomingEvents": {
+    "title": "আসন্ন ইভেন্ট"
+  },
+  "readingProgress": {
+    "title": "পড়ার অগ্রগতি",
+    "pages": "{{total}} পৃষ্ঠার মধ্যে {{read}}"
+  },
+  "monthlyChallenge": {
+    "title": "মাসিক চ্যালেঞ্জ",
+    "books": "{{target}} বইয়ের মধ্যে {{current}}"
+  },
+  "quickActions": {
+    "title": "দ্রুত অ্যাকশন",
+    "browseBooks": "বই ব্রাউজ করুন",
+    "bookSeat": "আসন বুক করুন",
+    "viewReservations": "সংরক্ষণ দেখুন"
+  }
+}

@@ -1,11 +1,15 @@
+import { useTranslation } from 'react-i18next';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import type { DashboardEvent, DashboardNotification } from '@/mocks/dashboard';
 
 export function RecentNotifications({ notifications }: { notifications: DashboardNotification[] }) {
+  const { t } = useTranslation('dashboard');
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Notifications</CardTitle>
+        <CardTitle>{t('recentNotifications.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="flex flex-col gap-3">
@@ -22,10 +26,12 @@ export function RecentNotifications({ notifications }: { notifications: Dashboar
 }
 
 export function UpcomingEvents({ events }: { events: DashboardEvent[] }) {
+  const { t } = useTranslation('dashboard');
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Events</CardTitle>
+        <CardTitle>{t('upcomingEvents.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="flex flex-col gap-3">

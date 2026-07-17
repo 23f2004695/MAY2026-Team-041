@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "واپسی پر خوش آمدید، {{name}}",
+    "subtitle": "یہ ہے جو آپ کی لائبریری میں ہو رہا ہے"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "ادھار لی گئی کتابیں"
+    },
+    "booksReserved": {
+      "label": "ریزرو کی گئی کتابیں"
+    },
+    "seatBookings": {
+      "label": "سیٹ بکنگز"
+    },
+    "readingPoints": {
+      "label": "ریڈنگ پوائنٹس"
+    }
+  },
+  "booksDueSoon": {
+    "title": "جلد واپس کرنے والی کتابیں",
+    "empty": {
+      "title": "جلد کچھ واپس نہیں کرنا",
+      "description": "آپ بالکل اپ ٹو ڈیٹ ہیں۔"
+    },
+    "dueLabel": "واپسی {{date}} · {{days}} دن باقی"
+  },
+  "currentlyBorrowed": {
+    "title": "ابھی ادھار پر",
+    "since": "{{date}} سے"
+  },
+  "recentNotifications": {
+    "title": "حالیہ اطلاعات"
+  },
+  "upcomingEvents": {
+    "title": "آنے والے ایونٹس"
+  },
+  "readingProgress": {
+    "title": "مطالعے کی پیش رفت",
+    "pages": "{{total}} میں سے {{read}} صفحات"
+  },
+  "monthlyChallenge": {
+    "title": "ماہانہ چیلنج",
+    "books": "{{target}} میں سے {{current}} کتابیں"
+  },
+  "quickActions": {
+    "title": "فوری اقدامات",
+    "browseBooks": "کتابیں دیکھیں",
+    "bookSeat": "سیٹ بُک کریں",
+    "viewReservations": "ریزرویشنز دیکھیں"
+  }
+}

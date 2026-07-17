@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "വീണ്ടും സ്വാഗതം, {{name}}",
+    "subtitle": "നിങ്ങളുടെ ലൈബ്രറിയിൽ എന്താണ് നടക്കുന്നതെന്ന് ഇതാ"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "കടം വാങ്ങിയ പുസ്തകങ്ങൾ"
+    },
+    "booksReserved": {
+      "label": "റിസർവ് ചെയ്ത പുസ്തകങ്ങൾ"
+    },
+    "seatBookings": {
+      "label": "സീറ്റ് ബുക്കിംഗുകൾ"
+    },
+    "readingPoints": {
+      "label": "വായനാ പോയിന്റുകൾ"
+    }
+  },
+  "booksDueSoon": {
+    "title": "ഉടൻ തിരികെ നൽകേണ്ട പുസ്തകങ്ങൾ",
+    "empty": {
+      "title": "ഉടൻ തിരികെ നൽകാൻ ഒന്നുമില്ല",
+      "description": "നിങ്ങൾ എല്ലാം പൂർത്തിയാക്കിയിരിക്കുന്നു."
+    },
+    "dueLabel": "അവസാന തീയതി {{date}} · {{days}} ദിവസം ബാക്കി"
+  },
+  "currentlyBorrowed": {
+    "title": "നിലവിൽ കടം വാങ്ങിയവ",
+    "since": "{{date}} മുതൽ"
+  },
+  "recentNotifications": {
+    "title": "സമീപകാല അറിയിപ്പുകൾ"
+  },
+  "upcomingEvents": {
+    "title": "വരാനിരിക്കുന്ന ഇവന്റുകൾ"
+  },
+  "readingProgress": {
+    "title": "വായനാ പുരോഗതി",
+    "pages": "{{total}} പേജുകളിൽ {{read}}"
+  },
+  "monthlyChallenge": {
+    "title": "മാസ ചലഞ്ച്",
+    "books": "{{target}} പുസ്തകങ്ങളിൽ {{current}}"
+  },
+  "quickActions": {
+    "title": "ക്വിക്ക് ആക്ഷനുകൾ",
+    "browseBooks": "പുസ്തകങ്ങൾ ബ്രൗസ് ചെയ്യുക",
+    "bookSeat": "ഒരു സീറ്റ് ബുക്ക് ചെയ്യുക",
+    "viewReservations": "റിസർവേഷനുകൾ കാണുക"
+  }
+}

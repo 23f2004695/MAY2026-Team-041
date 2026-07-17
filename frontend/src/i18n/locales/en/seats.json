@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Seat Booking",
+    "subtitle": "Reserve a quiet study seat"
+  },
+  "legend": {
+    "available": "Available",
+    "reserved": "Reserved",
+    "occupied": "Occupied"
+  },
+  "summary": {
+    "title": "Booking Summary",
+    "seatSelected": "Seat <bold>{{seat}}</bold> selected for today",
+    "emptyState": "Select an available seat to continue.",
+    "confirm": "Confirm Booking"
+  },
+  "toast": {
+    "bookingSeat": "Booking seat {{seat}}"
+  }
+}

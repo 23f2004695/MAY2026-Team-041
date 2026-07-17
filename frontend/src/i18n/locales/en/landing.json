@@ -1,0 +1,246 @@
+{
+  "hero": {
+    "badge": "Community Reading Club & Library Platform",
+    "title": "Your library, your community, all in one place.",
+    "description": "Borrow books, reserve a study seat, join a reading club, and get personalized recommendations, without the paper registers and group chats.",
+    "joinCommunity": "Join the Community",
+    "browseBooks": "Browse Books",
+    "dashboard": "Dashboard",
+    "currentlyReading": "Currently Reading",
+    "history": "History",
+    "nav": {
+      "dashboard": "Dashboard",
+      "books": "Books",
+      "reservations": "Reservations",
+      "seatBooking": "Seat Booking"
+    },
+    "readingList": {
+      "atomicHabits": { "status": "Due in 4 days" },
+      "sapiens": { "status": "Ready for pickup" },
+      "theOverstory": { "status": "Queue position 2" }
+    }
+  },
+  "statistics": {
+    "srHeading": "Platform statistics",
+    "items": {
+      "booksAvailable": { "label": "Books Available" },
+      "members": { "label": "Members" },
+      "readingClubs": { "label": "Reading Clubs" },
+      "eventsHosted": { "label": "Events Hosted" },
+      "booksBorrowed": { "label": "Books Borrowed" },
+      "studySeats": { "label": "Study Seats" }
+    }
+  },
+  "features": {
+    "heading": "Everything a modern library needs",
+    "description": "One platform for borrowing, discovery, community, and the day-to-day running of the library.",
+    "items": {
+      "digitalLibrary": {
+        "title": "Digital Library",
+        "description": "Search, filter, and browse the full catalog of books, authors, and categories."
+      },
+      "qrBorrowing": {
+        "title": "QR Borrowing",
+        "description": "Scan a book’s QR code to borrow or return it in seconds, no paperwork."
+      },
+      "seatBooking": {
+        "title": "Seat Booking",
+        "description": "Reserve a quiet study seat ahead of time and see live availability."
+      },
+      "aiLibrarian": {
+        "title": "AI Librarian",
+        "description": "Get personalized book suggestions from a conversational reading assistant."
+      },
+      "readingChallenges": {
+        "title": "Reading Challenges",
+        "description": "Track your progress and earn achievements as you read more."
+      },
+      "communityDiscussions": {
+        "title": "Community Discussions",
+        "description": "Join reading clubs, share reviews, and discuss your favorite books."
+      },
+      "bookDonations": {
+        "title": "Book Donations",
+        "description": "Donate books you’ve finished and help grow the shared collection."
+      },
+      "analyticsDashboard": {
+        "title": "Analytics Dashboard",
+        "description": "Librarians and admins get insight into trends, popular books, and usage."
+      }
+    }
+  },
+  "howItWorks": {
+    "heading": "How it works",
+    "steps": {
+      "register": {
+        "title": "Register",
+        "description": "Create a free membership in under a minute."
+      },
+      "searchBooks": {
+        "title": "Search Books",
+        "description": "Find titles by category, author, or mood."
+      },
+      "borrowReserve": {
+        "title": "Borrow / Reserve",
+        "description": "Pick up a copy or reserve one that’s checked out."
+      },
+      "readParticipate": {
+        "title": "Read & Participate",
+        "description": "Track progress and join the community around it."
+      }
+    }
+  },
+  "aiLibrarian": {
+    "heading": "Meet the AI Librarian",
+    "description": "Ask for recommendations in plain language and get a curated shortlist back.",
+    "conversation": {
+      "userPrompt": {
+        "message": "Suggest beginner books for Machine Learning."
+      },
+      "aiResponse": {
+        "message": "Here are five recommendations: \"Hands-On Machine Learning\", \"The Hundred-Page ML Book\", \"Python Machine Learning\", \"Deep Learning for Coders\", and \"Grokking Machine Learning\"."
+      }
+    }
+  },
+  "mood": {
+    "heading": "What are you in the mood to read?",
+    "description": "Pick a mood and see a preview of what our recommendation engine would suggest.",
+    "groupLabel": "Reading moods",
+    "recommendedFor": "Recommended for {{mood}} mood",
+    "moods": {
+      "happy": { "label": "Happy" },
+      "relaxed": { "label": "Relaxed" },
+      "curious": { "label": "Curious" },
+      "motivated": { "label": "Motivated" },
+      "studyMode": { "label": "Study Mode" }
+    }
+  },
+  "readingChallenge": {
+    "heading": "Reading challenges & achievements",
+    "description": "Stay motivated with badges you unlock as you read.",
+    "achievements": {
+      "firstBook": {
+        "label": "First Book",
+        "description": "Borrow your first book"
+      },
+      "bookWorm": {
+        "label": "Book Worm",
+        "description": "Read 10 books in a year"
+      },
+      "topReader": {
+        "label": "Top Reader",
+        "description": "Reach the top of the monthly leaderboard"
+      },
+      "monthlyChampion": {
+        "label": "Monthly Champion",
+        "description": "Complete every weekly challenge in a month"
+      }
+    }
+  },
+  "community": {
+    "heading": "Built around community",
+    "description": "The library is more than a catalog. It’s a place to talk about what you’re reading and give back.",
+    "highlights": {
+      "bookDiscussions": {
+        "title": "Book Discussions",
+        "description": "Talk through plot twists and themes with other readers."
+      },
+      "reviews": {
+        "title": "Reviews",
+        "description": "Rate and review books to help the community pick their next read."
+      },
+      "readingClubs": {
+        "title": "Reading Clubs",
+        "description": "Join a club that matches your favorite genre and reading pace."
+      },
+      "volunteerPrograms": {
+        "title": "Volunteer Programs",
+        "description": "Help run events, sort donations, or mentor new members."
+      }
+    }
+  },
+  "seatAvailability": {
+    "heading": "Live seat availability",
+    "description": "Check the study room before you head over. This is a preview with sample data.",
+    "legend": {
+      "available": "Available",
+      "reserved": "Reserved",
+      "occupied": "Occupied"
+    }
+  },
+  "testimonials": {
+    "heading": "What our members say",
+    "people": {
+      "priyaSharma": {
+        "role": "Member since 2023",
+        "quote": "The seat booking feature alone saved me so many wasted trips to a full library."
+      },
+      "danielCho": {
+        "role": "Reading Club Lead",
+        "quote": "Running our monthly book club is so much easier with the discussion boards built in."
+      },
+      "amaraOkafor": {
+        "role": "Volunteer",
+        "quote": "Coordinating donations and events used to be all spreadsheets. Now it’s all in one place."
+      },
+      "liamFitzgerald": {
+        "role": "Member since 2024",
+        "quote": "The AI librarian recommended books I never would have picked myself, and I loved them."
+      },
+      "ananyaIyer": {
+        "role": "Member since 2022",
+        "quote": "I renew books and track my reading streak from my phone now. It made reading a daily habit again."
+      },
+      "marcusBenson": {
+        "role": "Reading Challenge Winner",
+        "quote": "The leaderboard turned my reading goal into a friendly competition with my whole floor."
+      },
+      "fatimaAlRashid": {
+        "role": "Event Organizer",
+        "quote": "Setting up author talks and tracking RSVPs takes minutes now. Attendance has doubled since we joined."
+      },
+      "kenjiTanaka": {
+        "role": "Member since 2025",
+        "quote": "Reserving a quiet study seat before exams saved my semester. No more hunting for a spot."
+      },
+      "graceMwangi": {
+        "role": "Book Club Member",
+        "quote": "The discussion boards keep our conversations going long after the monthly meetup ends."
+      },
+      "diegoFernandez": {
+        "role": "Volunteer",
+        "quote": "Logging donated books with the QR scanner is so quick that cataloguing is almost fun now."
+      },
+      "sarahOConnor": {
+        "role": "Member since 2023",
+        "quote": "Notifications remind me before a book is due, so I have not paid a late fee in over a year."
+      }
+    }
+  },
+  "faq": {
+    "heading": "Frequently asked questions",
+    "items": {
+      "reservations": {
+        "question": "How do reservations work?",
+        "answer": "If a book is checked out, you can reserve it and you’ll be notified as soon as it’s back on the shelf."
+      },
+      "seatBookings": {
+        "question": "How do seat bookings work?",
+        "answer": "Pick an open time slot on the seat map and it’s held for you until your session starts."
+      },
+      "donations": {
+        "question": "Can I donate books?",
+        "answer": "Yes, submit a donation request and a librarian will review and approve it for the shared collection."
+      },
+      "aiLibrarian": {
+        "question": "What is AI Librarian?",
+        "answer": "A conversational assistant that recommends books based on your interests, mood, or reading history."
+      }
+    }
+  },
+  "cta": {
+    "heading": "Become a member and start reading today",
+    "description": "Join the reading community, explore the library, and never lose track of a book again.",
+    "action": "Join the Reading Community"
+  }
+}

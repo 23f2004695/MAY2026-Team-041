@@ -13,14 +13,13 @@ export const readingStats = {
 };
 
 export interface ProfileAchievement {
-  label: string;
-  description: string;
+  id: string;
 }
 
 export const profileAchievements: ProfileAchievement[] = [
-  { label: 'First Book', description: 'Borrow your first book' },
-  { label: 'Book Worm', description: 'Read 10 books in a year' },
-  { label: 'Top Reader', description: 'Reach the top of the monthly leaderboard' },
+  { id: 'firstBook' },
+  { id: 'bookWorm' },
+  { id: 'topReader' },
 ];
 
 export interface CurrentReadingItem {

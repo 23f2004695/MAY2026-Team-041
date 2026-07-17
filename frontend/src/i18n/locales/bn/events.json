@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "ইভেন্ট",
+    "subtitle": "আসন্ন লাইব্রেরি ইভেন্ট ও কমিউনিটি প্রোগ্রাম"
+  },
+  "stats": {
+    "eventsThisMonth": "এই মাসের ইভেন্ট",
+    "totalAttendees": "মোট অংশগ্রহণকারী",
+    "avgAttendanceRate": "গড় উপস্থিতির হার"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} জন অংশ নিচ্ছেন",
+    "registered": "নিবন্ধিত",
+    "open": "খোলা",
+    "viewDetails": "বিস্তারিত দেখুন"
+  },
+  "drawer": {
+    "title": "ইভেন্টের বিস্তারিত",
+    "registration": "নিবন্ধন",
+    "registered": "আপনি নিবন্ধিত",
+    "notRegistered": "নিবন্ধিত নন",
+    "cancelRegistration": "নিবন্ধন বাতিল করুন",
+    "register": "নিবন্ধন করুন",
+    "volunteerAssignments": "স্বেচ্ছাসেবক দায়িত্ব",
+    "noVolunteers": "এখনও কোনো স্বেচ্ছাসেবক নিযুক্ত হয়নি।",
+    "toast": {
+      "cancelling": "নিবন্ধন বাতিল করা হচ্ছে",
+      "registering": "নিবন্ধন করা হচ্ছে"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "সাই-ফাই বুক ক্লাব মিটআপ",
+      "location": "মূল হল, কমিউনিটি লাইব্রেরি",
+      "description": "এই মাসের বাছাই \"Project Hail Mary\" নিয়ে মাসিক আলোচনা।",
+      "volunteers": {
+        "amaraOkafor": "আলোচনা লিড",
+        "liamFitzgerald": "সেটআপ"
+      }
+    },
+    "author-talk": {
+      "title": "লেখক আলোচনা: স্থানীয় লেখকদের সন্ধ্যা",
+      "location": "অডিটোরিয়াম, কমিউনিটি লাইব্রেরি",
+      "description": "তিনজন স্থানীয় লেখকের সাথে তাঁদের প্রথম উপন্যাস নিয়ে আলোচনার সন্ধ্যা।",
+      "volunteers": {
+        "danielCho": "নিবন্ধন ডেস্ক"
+      }
+    },
+    "kids-story-hour": {
+      "title": "শিশুদের গল্পের সময়",
+      "location": "শিশু বিভাগ",
+      "description": "৪-৮ বছর বয়সী শিশুদের জন্য সাপ্তাহিক গল্প বলার সেশন।",
+      "volunteers": {
+        "priyaSharma": "গল্পকথক"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "স্বেচ্ছাসেবক পরিচিতি",
+      "location": "মিটিং রুম B",
+      "description": "লাইব্রেরি প্রোগ্রামে যোগ দেওয়া নতুন স্বেচ্ছাসেবকদের জন্য পরিচিতি সেশন।",
+      "volunteers": {}
+    }
+  }
+}

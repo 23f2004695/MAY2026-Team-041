@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Bot, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { Card } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -8,6 +9,8 @@ import { aiConversation } from '@/mocks/landing';
 import { fadeInUp, viewportOnce } from '../motion';
 
 export function AILibrarian() {
+  const { t } = useTranslation('landing');
+
   return (
     <section
       aria-labelledby="ai-librarian-heading"
@@ -21,11 +24,9 @@ export function AILibrarian() {
           variants={fadeInUp}
         >
           <h2 id="ai-librarian-heading" className="text-3xl font-semibold text-foreground">
-            Meet the AI Librarian
+            {t('aiLibrarian.heading')}
           </h2>
-          <p className="mt-2 text-muted-foreground">
-            Ask for recommendations in plain language and get a curated shortlist back.
-          </p>
+          <p className="mt-2 text-muted-foreground">{t('aiLibrarian.description')}</p>
 
           <Card className="mt-8 flex flex-col gap-4 p-6">
             {aiConversation.map((entry, index) => (
@@ -54,7 +55,7 @@ export function AILibrarian() {
                       : 'bg-primary/10 text-foreground',
                   )}
                 >
-                  {entry.message}
+                  {t(`aiLibrarian.conversation.${entry.id}.message`)}
                 </p>
               </div>
             ))}

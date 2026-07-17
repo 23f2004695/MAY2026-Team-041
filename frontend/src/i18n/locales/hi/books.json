@@ -1,0 +1,61 @@
+{
+  "title": "किताबें",
+  "subtitle": "लाइब्रेरी कैटलॉग ब्राउज़ करें",
+  "searchPlaceholder": "शीर्षक या लेखक से खोजें…",
+  "searchAriaLabel": "किताबें खोजें",
+  "filterAriaLabel": "श्रेणी के अनुसार फ़िल्टर करें",
+  "backToBooks": "किताबों पर वापस जाएँ",
+  "reserveThisBook": "यह किताब आरक्षित करें",
+  "reserveToast": "\"{{title}}\" आरक्षित की जा रही है",
+  "copiesAvailable": "{{total}} में से {{available}} प्रतियाँ उपलब्ध",
+  "categories": {
+    "All": "सभी",
+    "Fiction": "काल्पनिक",
+    "Non-Fiction": "गैर-काल्पनिक",
+    "Science": "विज्ञान",
+    "Technology": "प्रौद्योगिकी",
+    "Biography": "जीवनी",
+    "Self-Help": "स्व-सहायता"
+  },
+  "status": {
+    "available": "उपलब्ध",
+    "checkedOut": "जारी की गई"
+  },
+  "empty": {
+    "title": "कोई किताब नहीं मिली",
+    "description": "कोई अलग खोज शब्द या श्रेणी आज़माएँ।"
+  },
+  "notFound": {
+    "title": "किताब नहीं मिली",
+    "description": "यह किताब शायद कैटलॉग से हटा दी गई है।"
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "अच्छी आदतें बनाने और बुरी आदतें छोड़ने की एक व्यावहारिक मार्गदर्शिका।"
+    },
+    "sapiens": {
+      "description": "पाषाण युग से लेकर वर्तमान तक, मानव जाति का एक संक्षिप्त इतिहास।"
+    },
+    "the-overstory": {
+      "description": "एक जटिल उपन्यास जो नौ अमेरिकियों को पेड़ों से उनके रिश्ते के ज़रिए जोड़ता है।"
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn, Keras और TensorFlow के साथ मशीन लर्निंग की एक व्यावहारिक मार्गदर्शिका।"
+    },
+    "a-short-history": {
+      "description": "विज्ञान के इतिहास की एक सुगम यात्रा।"
+    },
+    "cant-hurt-me": {
+      "description": "David Goggins का वृतांत, जो एक कठिन बचपन से पार पाकर एक शीर्ष एथलीट बने।"
+    },
+    "deep-work": {
+      "description": "ध्यान भटकाने वाली दुनिया में एकाग्र सफलता के नियम।"
+    },
+    "the-hundred-page-ml": {
+      "description": "मशीन लर्निंग के मूल विचारों का एक संक्षिप्त परिचय।"
+    },
+    "norwegian-wood": {
+      "description": "1960 के दशक के टोक्यो में क्षति और उभरती कामुकता की एक स्मृतिपूर्ण कहानी।"
+    }
+  }
+}

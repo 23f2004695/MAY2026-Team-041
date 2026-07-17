@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "کتابوں کے تبصرے",
+    "byAuthor": "از {{author}}",
+    "writeReview": "تبصرہ لکھیں",
+    "comments": "کمنٹس"
+  },
+  "allReviews": {
+    "heading": "ہمارے ممبرز کیا کہتے ہیں",
+    "subtitle": "کمیونٹی بھر کے قارئین، کلب لیڈز، رضاکاروں، اور ایونٹ آرگنائزرز کی حقیقی رائے۔"
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} تبصرہ",
+    "reviewCount_other": "{{count}} تبصرے",
+    "starsLabel_one": "{{count}} ستارہ",
+    "starsLabel_other": "{{count}} ستارے"
+  },
+  "modal": {
+    "title": "تبصرہ لکھیں",
+    "cancel": "منسوخ کریں",
+    "submit": "تبصرہ شائع کریں",
+    "errors": {
+      "imageFailed": "تصویر شامل نہیں کی جا سکی۔",
+      "missingFields": "اپنا نام، ریٹنگ، اور تبصرہ شامل کریں۔"
+    },
+    "toast": {
+      "posted": "تبصرہ شائع ہو گیا"
+    },
+    "fields": {
+      "name": {
+        "label": "آپ کا نام",
+        "placeholder": "مثلاً Priya Sharma"
+      },
+      "rating": {
+        "label": "ریٹنگ",
+        "starLabel_one": "{{count}} ستارہ",
+        "starLabel_other": "{{count}} ستارے"
+      },
+      "comment": {
+        "label": "تبصرہ",
+        "placeholder": "بتائیں کہ اس کتاب کے بارے میں آپ کی کیا رائے ہے..."
+      },
+      "photo": {
+        "label": "تصویر (اختیاری)",
+        "previewAlt": "تبصرے کے منسلکہ کا پیش منظر",
+        "remove": "تصویر ہٹائیں",
+        "uploading": "شامل کی جا رہی ہے...",
+        "upload": "تصویر اپ لوڈ کریں"
+      }
+    }
+  }
+}

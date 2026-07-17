@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "活动",
+    "subtitle": "近期图书馆活动与社区项目"
+  },
+  "stats": {
+    "eventsThisMonth": "本月活动",
+    "totalAttendees": "参与总人数",
+    "avgAttendanceRate": "平均出席率"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} 人参加",
+    "registered": "已报名",
+    "open": "开放报名",
+    "viewDetails": "查看详情"
+  },
+  "drawer": {
+    "title": "活动详情",
+    "registration": "报名",
+    "registered": "你已报名",
+    "notRegistered": "未报名",
+    "cancelRegistration": "取消报名",
+    "register": "报名",
+    "volunteerAssignments": "志愿者分工",
+    "noVolunteers": "尚未分配志愿者。",
+    "toast": {
+      "cancelling": "正在取消报名",
+      "registering": "正在报名"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "科幻读书会聚会",
+      "location": "社区图书馆主厅",
+      "description": "围绕本月选书《Project Hail Mary》的月度讨论。",
+      "volunteers": {
+        "amaraOkafor": "讨论主持",
+        "liamFitzgerald": "布置场地"
+      }
+    },
+    "author-talk": {
+      "title": "作家讲座：本地作家之夜",
+      "location": "社区图书馆礼堂",
+      "description": "与三位本地作家共度一晚，畅谈他们的处女作。",
+      "volunteers": {
+        "danielCho": "报名接待"
+      }
+    },
+    "kids-story-hour": {
+      "title": "儿童故事时间",
+      "location": "儿童区",
+      "description": "面向 4 至 8 岁儿童的每周讲故事活动。",
+      "volunteers": {
+        "priyaSharma": "故事讲述者"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "志愿者培训",
+      "location": "会议室 B",
+      "description": "面向加入图书馆项目的新志愿者的培训会。",
+      "volunteers": {}
+    }
+  }
+}

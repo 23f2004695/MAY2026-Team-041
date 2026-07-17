@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "Reseñas de libros",
+    "byAuthor": "de {{author}}",
+    "writeReview": "Escribir una reseña",
+    "comments": "Comentarios"
+  },
+  "allReviews": {
+    "heading": "Lo que dicen nuestros miembros",
+    "subtitle": "Opiniones reales de lectores, líderes de club, voluntarios y organizadores de eventos de toda la comunidad."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} reseña",
+    "reviewCount_other": "{{count}} reseñas",
+    "starsLabel_one": "{{count}} estrella",
+    "starsLabel_other": "{{count}} estrellas"
+  },
+  "modal": {
+    "title": "Escribir una reseña",
+    "cancel": "Cancelar",
+    "submit": "Publicar reseña",
+    "errors": {
+      "imageFailed": "No se pudo añadir la imagen.",
+      "missingFields": "Añade tu nombre, una valoración y un comentario."
+    },
+    "toast": {
+      "posted": "Reseña publicada"
+    },
+    "fields": {
+      "name": {
+        "label": "Tu nombre",
+        "placeholder": "p. ej. Priya Sharma"
+      },
+      "rating": {
+        "label": "Valoración",
+        "starLabel_one": "{{count}} estrella",
+        "starLabel_other": "{{count}} estrellas"
+      },
+      "comment": {
+        "label": "Comentario",
+        "placeholder": "Comparte lo que te pareció este libro..."
+      },
+      "photo": {
+        "label": "Foto (opcional)",
+        "previewAlt": "Vista previa del adjunto de la reseña",
+        "remove": "Quitar imagen",
+        "uploading": "Añadiendo...",
+        "upload": "Subir una imagen"
+      }
+    }
+  }
+}

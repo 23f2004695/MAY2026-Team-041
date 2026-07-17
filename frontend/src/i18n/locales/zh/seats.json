@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "座位预订",
+    "subtitle": "预订一个安静的自习座位"
+  },
+  "legend": {
+    "available": "空闲",
+    "reserved": "已预订",
+    "occupied": "已占用"
+  },
+  "summary": {
+    "title": "预订摘要",
+    "seatSelected": "已选择今日座位 <bold>{{seat}}</bold>",
+    "emptyState": "选择一个空闲座位以继续。",
+    "confirm": "确认预订"
+  },
+  "toast": {
+    "bookingSeat": "正在预订座位 {{seat}}"
+  }
+}

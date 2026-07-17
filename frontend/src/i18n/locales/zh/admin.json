@@ -1,0 +1,72 @@
+{
+  "title": "管理员仪表盘",
+  "subtitle": "平台概览与管理",
+  "stats": {
+    "totalBooks": {
+      "label": "图书总数"
+    },
+    "totalMembers": {
+      "label": "会员总数"
+    },
+    "eventsThisMonth": {
+      "label": "本月活动"
+    },
+    "revenueMtd": {
+      "label": "收入（本月至今）"
+    }
+  },
+  "pendingRequests": {
+    "title": "待处理请求",
+    "from": "来自 {{requester}}",
+    "reject": "拒绝",
+    "approve": "批准",
+    "requestTypes": {
+      "donation": "图书捐赠",
+      "membershipRenewal": "会员续期",
+      "reservationDispute": "预约争议"
+    },
+    "items": {
+      "pr1": {
+        "summary": "捐赠 8 本书，其中包括 3 本科幻书目"
+      },
+      "pr2": {
+        "summary": "高级会员续期请求"
+      },
+      "pr3": {
+        "summary": "反映预约排队位置显示有误"
+      }
+    },
+    "toast": {
+      "reject": "正在拒绝来自 {{requester}} 的请求",
+      "approve": "正在批准来自 {{requester}} 的请求"
+    }
+  },
+  "reports": {
+    "title": "报表",
+    "viewReport": "查看报表",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "最热门借阅图书"
+      },
+      "membershipGrowth": {
+        "label": "会员增长"
+      },
+      "eventAttendance": {
+        "label": "活动出席情况"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "快捷操作",
+    "addBook": "添加图书",
+    "inviteMember": "邀请会员",
+    "createEvent": "创建活动",
+    "announcement": "发布公告",
+    "toast": {
+      "addBook": "正在添加图书",
+      "inviteMember": "正在邀请会员",
+      "createEvent": "正在创建活动",
+      "announcement": "正在发送公告"
+    }
+  }
+}

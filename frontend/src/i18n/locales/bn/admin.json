@@ -1,0 +1,72 @@
+{
+  "title": "অ্যাডমিন ড্যাশবোর্ড",
+  "subtitle": "প্ল্যাটফর্ম ওভারভিউ ও প্রশাসন",
+  "stats": {
+    "totalBooks": {
+      "label": "মোট বই"
+    },
+    "totalMembers": {
+      "label": "মোট সদস্য"
+    },
+    "eventsThisMonth": {
+      "label": "এই মাসের ইভেন্ট"
+    },
+    "revenueMtd": {
+      "label": "আয় (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "মুলতুবি অনুরোধ",
+    "from": "{{requester}}-এর কাছ থেকে",
+    "reject": "প্রত্যাখ্যান",
+    "approve": "অনুমোদন",
+    "requestTypes": {
+      "donation": "বই দান",
+      "membershipRenewal": "সদস্যপদ নবায়ন",
+      "reservationDispute": "সংরক্ষণ বিরোধ"
+    },
+    "items": {
+      "pr1": {
+        "summary": "৩টি সাই-ফাই সহ ৮টি বই দান করছেন"
+      },
+      "pr2": {
+        "summary": "প্রিমিয়াম সদস্যপদ নবায়নের অনুরোধ"
+      },
+      "pr3": {
+        "summary": "সংরক্ষণ সারির অবস্থান ভুল দেখাচ্ছে বলে জানিয়েছেন"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}}-এর অনুরোধ প্রত্যাখ্যান করা হচ্ছে",
+      "approve": "{{requester}}-এর অনুরোধ অনুমোদন করা হচ্ছে"
+    }
+  },
+  "reports": {
+    "title": "রিপোর্ট",
+    "viewReport": "রিপোর্ট দেখুন",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "সবচেয়ে বেশি ধার নেওয়া বই"
+      },
+      "membershipGrowth": {
+        "label": "সদস্যপদ বৃদ্ধি"
+      },
+      "eventAttendance": {
+        "label": "ইভেন্ট উপস্থিতি"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "দ্রুত অ্যাকশন",
+    "addBook": "বই যোগ করুন",
+    "inviteMember": "সদস্য আমন্ত্রণ করুন",
+    "createEvent": "ইভেন্ট তৈরি করুন",
+    "announcement": "ঘোষণা",
+    "toast": {
+      "addBook": "একটি বই যোগ করা হচ্ছে",
+      "inviteMember": "একজন সদস্যকে আমন্ত্রণ করা হচ্ছে",
+      "createEvent": "একটি ইভেন্ট তৈরি করা হচ্ছে",
+      "announcement": "একটি ঘোষণা পাঠানো হচ্ছে"
+    }
+  }
+}

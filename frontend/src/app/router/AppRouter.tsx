@@ -15,6 +15,7 @@ import { NotificationsPage } from '@/features/notifications/pages/NotificationsP
 import { ProfilePage } from '@/features/profile/pages/ProfilePage';
 import { ReadingProgressPage } from '@/features/reading-progress/pages/ReadingProgressPage';
 import { ReservationsPage } from '@/features/reservations/pages/ReservationsPage';
+import { AllReviewsPage } from '@/features/reviews/pages/AllReviewsPage';
 import { ReviewsPage } from '@/features/reviews/pages/ReviewsPage';
 import { SeatBookingPage } from '@/features/seat-booking/pages/SeatBookingPage';
 import { Login } from '@/pages/Login';
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { index: true, element: <LandingPage /> },
+      { path: relative(ROUTES.REVIEWS_ALL), element: <AllReviewsPage /> },
       {
         element: (
           <PublicRoute>
@@ -41,11 +43,21 @@ const router = createBrowserRouter([
           { path: relative(ROUTES.LOGIN), element: <Login /> },
           {
             path: relative(ROUTES.REGISTER),
-            element: <PlaceholderPage title="Register" description="Create a new account." />,
+            element: (
+              <PlaceholderPage
+                titleKey="pages.register.title"
+                descriptionKey="pages.register.description"
+              />
+            ),
           },
           {
             path: relative(ROUTES.FORGOT_PASSWORD),
-            element: <PlaceholderPage title="Forgot Password" description="Reset your password." />,
+            element: (
+              <PlaceholderPage
+                titleKey="pages.forgotPassword.title"
+                descriptionKey="pages.forgotPassword.description"
+              />
+            ),
           },
         ],
       },
@@ -65,7 +77,12 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.SEAT_BOOKING), element: <SeatBookingPage /> },
       {
         path: relative(ROUTES.COMMUNITY),
-        element: <PlaceholderPage title="Community" description="Reading clubs and discussions." />,
+        element: (
+          <PlaceholderPage
+            titleKey="pages.community.title"
+            descriptionKey="pages.community.description"
+          />
+        ),
       },
       { path: relative(ROUTES.EVENTS), element: <EventsPage /> },
       { path: relative(ROUTES.NOTIFICATIONS), element: <NotificationsPage /> },
@@ -75,7 +92,12 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.REVIEWS), element: <ReviewsPage /> },
       {
         path: relative(ROUTES.SETTINGS),
-        element: <PlaceholderPage title="Settings" description="Manage your preferences." />,
+        element: (
+          <PlaceholderPage
+            titleKey="pages.settings.title"
+            descriptionKey="pages.settings.description"
+          />
+        ),
       },
     ],
   },

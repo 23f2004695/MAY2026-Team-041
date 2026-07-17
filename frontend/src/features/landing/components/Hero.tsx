@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, CalendarCheck, LayoutDashboard, Ticket, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { StatisticCard } from '@/components/common';
@@ -8,23 +9,23 @@ import { cn } from '@/lib/cn';
 import { ROUTES } from '@/constants/routes';
 import { statistics } from '@/mocks/landing';
 
-const readingList: { title: string; status: string; variant: 'warning' | 'success' | 'outline' }[] =
-  [
-    { title: 'Atomic Habits', status: 'Due in 4 days', variant: 'warning' },
-    { title: 'Sapiens', status: 'Ready for pickup', variant: 'success' },
-    { title: 'The Overstory', status: 'Queue position 2', variant: 'outline' },
-  ];
+const readingList: { title: string; id: string; variant: 'warning' | 'success' | 'outline' }[] = [
+  { title: 'Atomic Habits', id: 'atomicHabits', variant: 'warning' },
+  { title: 'Sapiens', id: 'sapiens', variant: 'success' },
+  { title: 'The Overstory', id: 'theOverstory', variant: 'outline' },
+];
 
 const mockNav = [
-  { label: 'Dashboard', icon: LayoutDashboard, active: true },
-  { label: 'Books', icon: BookOpen, active: false },
-  { label: 'Reservations', icon: Ticket, active: false },
-  { label: 'Seat Booking', icon: CalendarCheck, active: false },
+  { id: 'dashboard', icon: LayoutDashboard, active: true },
+  { id: 'books', icon: BookOpen, active: false },
+  { id: 'reservations', icon: Ticket, active: false },
+  { id: 'seatBooking', icon: CalendarCheck, active: false },
 ];
 
 const trustStats = statistics.slice(0, 3);
 
 export function Hero() {
+  const { t } = useTranslation('landing');
   const navigate = useNavigate();
 
   return (
@@ -44,17 +45,16 @@ export function Hero() {
           className="flex flex-col"
         >
           <Badge variant="outline" className="w-fit">
-            Community Reading Club & Library Platform
+            {t('hero.badge')}
           </Badge>
           <h1
             id="hero-heading"
             className="mt-5 max-w-xl text-5xl font-extrabold leading-[1.05] tracking-tight text-foreground md:text-6xl"
           >
-            Your library, your community, all in one place.
+            {t('hero.title')}
           </h1>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted">
-            Borrow books, reserve a study seat, join a reading club, and get personalized
-            recommendations, without the paper registers and group chats.
+            {t('hero.description')}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button
@@ -62,18 +62,19 @@ export function Hero() {
               trailingIcon={<ArrowRight className="size-4" />}
               onClick={() => navigate(ROUTES.REGISTER)}
             >
-              Join the Community
+              {t('hero.joinCommunity')}
             </Button>
             <Button size="lg" variant="ghost" onClick={() => navigate(ROUTES.BOOKS)}>
-              Browse Books
+              {t('hero.browseBooks')}
             </Button>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border-muted pt-6 text-sm text-muted-foreground">
             {trustStats.map((stat) => (
-              <span key={stat.label} className="flex items-center gap-2">
+              <span key={stat.id} className="flex items-center gap-2">
                 <stat.icon className="size-4 text-primary" />
-                <span className="font-medium text-foreground">{stat.value}</span> {stat.label}
+                <span className="font-medium text-foreground">{stat.value}</span>{' '}
+                {t(`statistics.items.${stat.id}.label`)}
               </span>
             ))}
           </div>
@@ -88,36 +89,36 @@ export function Hero() {
         >
           <Card className="overflow-hidden pt-20">
             <div className="flex">
-              <div className="hidden w-36 shrink-0 flex-col gap-1 border-r border-border-muted bg-secondary/40 p-3 sm:flex">
+              <div className="hidden w-36 shrink-0 flex-col gap-1 border-e border-border-muted bg-secondary/40 p-3 sm:flex">
                 {mockNav.map((item) => (
                   <span
-                    key={item.label}
+                    key={item.id}
                     className={cn(
                       'flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium',
                       item.active ? 'bg-secondary text-foreground' : 'text-muted-foreground',
                     )}
                   >
                     <item.icon className="size-3.5" />
-                    {item.label}
+                    {t(`hero.nav.${item.id}`)}
                   </span>
                 ))}
               </div>
 
               <div className="flex-1 p-5">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">Dashboard</p>
+                  <p className="text-sm font-semibold text-foreground">{t('hero.dashboard')}</p>
                   <Avatar name="Priya Sharma" size="sm" />
                 </div>
                 <div className="mt-3 flex gap-4 border-b border-border-muted text-xs font-medium text-muted-foreground">
                   <span className="border-b-2 border-primary pb-2 text-foreground">
-                    Currently Reading
+                    {t('hero.currentlyReading')}
                   </span>
-                  <span className="pb-2">History</span>
+                  <span className="pb-2">{t('hero.history')}</span>
                 </div>
                 <ul className="mt-3 flex flex-col gap-2">
                   {readingList.map((item) => (
                     <li
-                      key={item.title}
+                      key={item.id}
                       className="flex items-center justify-between gap-3 rounded-lg border border-border-muted bg-secondary px-3 py-2.5"
                     >
                       <span className="flex items-center gap-2.5 text-sm font-medium text-foreground">
@@ -127,7 +128,7 @@ export function Hero() {
                         {item.title}
                       </span>
                       <Badge variant={item.variant} className="shrink-0">
-                        {item.status}
+                        {t(`hero.readingList.${item.id}.status`)}
                       </Badge>
                     </li>
                   ))}
@@ -138,15 +139,15 @@ export function Hero() {
 
           <StatisticCard
             icon={BookOpen}
-            label="Books Available"
+            label={t('statistics.items.booksAvailable.label')}
             value="12,400+"
-            className="absolute -left-4 -top-4 hidden shadow-panel sm:flex"
+            className="absolute -start-4 -top-4 hidden shadow-panel sm:flex"
           />
           <StatisticCard
             icon={Users}
-            label="Members"
+            label={t('statistics.items.members.label')}
             value="3,200+"
-            className="absolute -bottom-4 -right-4 hidden shadow-panel sm:flex"
+            className="absolute -bottom-4 -end-4 hidden shadow-panel sm:flex"
           />
         </motion.div>
       </div>

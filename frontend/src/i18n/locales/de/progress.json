@@ -1,0 +1,33 @@
+{
+  "title": "Lesefortschritt",
+  "subtitle": "Deine Leseaktivität im Laufe des Jahres",
+  "goal": {
+    "title": "Leseziel {{year}}",
+    "progress": "{{current}} von {{target}} Büchern"
+  },
+  "streak": {
+    "title": "Lesesträhne",
+    "currentDays": "{{days}} Tage",
+    "longest": "Längste Strähne: {{days}} Tage"
+  },
+  "lists": {
+    "currentlyReading": {
+      "title": "Aktuell in Bearbeitung",
+      "empty": "Beginne ein Buch, um es hier zu verfolgen."
+    },
+    "completed": {
+      "title": "Abgeschlossen",
+      "empty": "Bücher, die du abschließt, erscheinen hier."
+    },
+    "wantToRead": {
+      "title": "Möchte ich lesen",
+      "empty": "Speichere Bücher, die du als Nächstes lesen möchtest."
+    }
+  },
+  "book": {
+    "by": "von {{author}}"
+  },
+  "emptyState": {
+    "title": "Hier ist noch nichts"
+  }
+}

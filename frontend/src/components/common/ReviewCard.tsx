@@ -8,10 +8,11 @@ export interface ReviewCardProps {
   role: string;
   quote: string;
   rating?: number;
+  imageUrl?: string;
   className?: string;
 }
 
-export function ReviewCard({ name, role, quote, rating, className }: ReviewCardProps) {
+export function ReviewCard({ name, role, quote, rating, imageUrl, className }: ReviewCardProps) {
   return (
     <Card className={cn('h-full', className)}>
       <CardHeader className="flex-row items-center gap-3 space-y-0">
@@ -36,6 +37,13 @@ export function ReviewCard({ name, role, quote, rating, className }: ReviewCardP
           </div>
         )}
         <p className="text-sm text-muted-foreground">&ldquo;{quote}&rdquo;</p>
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={`Photo shared by ${name}`}
+            className="mt-1 max-h-56 w-full rounded-md border border-border object-cover"
+          />
+        )}
       </CardContent>
     </Card>
   );

@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "ایونٹس",
+    "subtitle": "آنے والے لائبریری ایونٹس اور کمیونٹی پروگرامز"
+  },
+  "stats": {
+    "eventsThisMonth": "اس ماہ کے ایونٹس",
+    "totalAttendees": "کل حاضرین",
+    "avgAttendanceRate": "اوسط حاضری کی شرح"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} شریک",
+    "registered": "رجسٹرڈ",
+    "open": "کھلا",
+    "viewDetails": "تفصیلات دیکھیں"
+  },
+  "drawer": {
+    "title": "ایونٹ کی تفصیلات",
+    "registration": "رجسٹریشن",
+    "registered": "آپ رجسٹرڈ ہیں",
+    "notRegistered": "رجسٹرڈ نہیں",
+    "cancelRegistration": "رجسٹریشن منسوخ کریں",
+    "register": "رجسٹر کریں",
+    "volunteerAssignments": "رضاکاروں کی ذمہ داریاں",
+    "noVolunteers": "ابھی تک کوئی رضاکار تفویض نہیں کیا گیا۔",
+    "toast": {
+      "cancelling": "رجسٹریشن منسوخ کی جا رہی ہے",
+      "registering": "رجسٹر کیا جا رہا ہے"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "سائی فائی بک کلب ملاقات",
+      "location": "مین ہال، کمیونٹی لائبریری",
+      "description": "اس ماہ کی منتخب کتاب \"Project Hail Mary\" پر ماہانہ گفتگو۔",
+      "volunteers": {
+        "amaraOkafor": "ڈسکشن لیڈ",
+        "liamFitzgerald": "سیٹ اپ"
+      }
+    },
+    "author-talk": {
+      "title": "مصنف سے گفتگو: مقامی لکھاریوں کی شام",
+      "location": "آڈیٹوریم، کمیونٹی لائبریری",
+      "description": "تین مقامی مصنفین کے ساتھ ایک شام جس میں وہ اپنے پہلے ناولوں پر گفتگو کریں گے۔",
+      "volunteers": {
+        "danielCho": "رجسٹریشن ڈیسک"
+      }
+    },
+    "kids-story-hour": {
+      "title": "بچوں کے لیے کہانی کا وقت",
+      "location": "بچوں کا شعبہ",
+      "description": "4-8 سال کے بچوں کے لیے ہفتہ وار کہانی سنانے کا سیشن۔",
+      "volunteers": {
+        "priyaSharma": "کہانی گو"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "رضاکار اورینٹیشن",
+      "location": "میٹنگ روم B",
+      "description": "لائبریری پروگرامز میں شامل ہونے والے نئے رضاکاروں کے لیے واقفیتی سیشن۔",
+      "volunteers": {}
+    }
+  }
+}

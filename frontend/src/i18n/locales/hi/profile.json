@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} से सदस्य",
+    "editProfile": "प्रोफ़ाइल संपादित करें",
+    "editProfileAction": "आपकी प्रोफ़ाइल संपादित की जा रही है"
+  },
+  "stats": {
+    "booksRead": "पढ़ी गई किताबें",
+    "pagesRead": "पढ़े गए पृष्ठ",
+    "hoursRead": "पढ़ने के घंटे"
+  },
+  "achievements": {
+    "title": "उपलब्धियाँ",
+    "items": {
+      "firstBook": {
+        "label": "पहली किताब",
+        "description": "अपनी पहली किताब उधार लें"
+      },
+      "bookWorm": {
+        "label": "बुक वर्म",
+        "description": "एक साल में 10 किताबें पढ़ें"
+      },
+      "topReader": {
+        "label": "टॉप रीडर",
+        "description": "मासिक लीडरबोर्ड में शीर्ष पर पहुँचें"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "अभी पढ़ रहे हैं",
+    "by": "{{author}} द्वारा"
+  },
+  "borrowHistory": {
+    "title": "उधार इतिहास",
+    "columns": {
+      "title": "शीर्षक",
+      "borrowedOn": "उधार लिया",
+      "returnedOn": "वापस किया"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "title": "Progression de lecture",
+  "subtitle": "Votre activité de lecture au fil de l'année",
+  "goal": {
+    "title": "Objectif de lecture {{year}}",
+    "progress": "{{current}} sur {{target}} livres"
+  },
+  "streak": {
+    "title": "Série de lecture",
+    "currentDays": "{{days}} jours",
+    "longest": "Plus longue série : {{days}} jours"
+  },
+  "lists": {
+    "currentlyReading": {
+      "title": "En cours de lecture",
+      "empty": "Commencez un livre pour le suivre ici."
+    },
+    "completed": {
+      "title": "Terminés",
+      "empty": "Les livres que vous terminez apparaîtront ici."
+    },
+    "wantToRead": {
+      "title": "À lire",
+      "empty": "Enregistrez les livres que vous comptez lire ensuite."
+    }
+  },
+  "book": {
+    "by": "par {{author}}"
+  },
+  "emptyState": {
+    "title": "Rien ici pour l'instant"
+  }
+}

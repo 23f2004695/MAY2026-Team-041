@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "पुन्हा स्वागत आहे, {{name}}",
+    "subtitle": "तुमच्या ग्रंथालयात काय चालले आहे ते येथे पहा"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "उधार घेतलेली पुस्तके"
+    },
+    "booksReserved": {
+      "label": "आरक्षित पुस्तके"
+    },
+    "seatBookings": {
+      "label": "आसन आरक्षणे"
+    },
+    "readingPoints": {
+      "label": "वाचन गुण"
+    }
+  },
+  "booksDueSoon": {
+    "title": "लवकरच परत करायची पुस्तके",
+    "empty": {
+      "title": "लवकर परत करण्यासारखे काही नाही",
+      "description": "तुम्ही सर्व अद्ययावत आहात."
+    },
+    "dueLabel": "{{date}} रोजी परत करायचे · {{days}} दिवस बाकी"
+  },
+  "currentlyBorrowed": {
+    "title": "सध्या उधार घेतलेली",
+    "since": "{{date}} पासून"
+  },
+  "recentNotifications": {
+    "title": "अलीकडील सूचना"
+  },
+  "upcomingEvents": {
+    "title": "आगामी कार्यक्रम"
+  },
+  "readingProgress": {
+    "title": "वाचन प्रगती",
+    "pages": "{{total}} पैकी {{read}} पाने"
+  },
+  "monthlyChallenge": {
+    "title": "मासिक आव्हान",
+    "books": "{{target}} पैकी {{current}} पुस्तके"
+  },
+  "quickActions": {
+    "title": "जलद कृती",
+    "browseBooks": "पुस्तके पहा",
+    "bookSeat": "आसन आरक्षित करा",
+    "viewReservations": "आरक्षणे पहा"
+  }
+}

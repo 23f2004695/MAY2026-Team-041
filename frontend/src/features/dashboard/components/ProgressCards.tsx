@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { ProgressBar } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 
@@ -12,16 +14,18 @@ export function ReadingProgressCard({
   pagesRead: number;
   totalPages: number;
 }) {
+  const { t } = useTranslation('dashboard');
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reading Progress</CardTitle>
+        <CardTitle>{t('readingProgress.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <p className="text-sm text-foreground">{currentBook}</p>
         <ProgressBar percent={percentComplete} />
         <p className="text-xs text-muted-foreground">
-          {pagesRead} of {totalPages} pages
+          {t('readingProgress.pages', { read: pagesRead, total: totalPages })}
         </p>
       </CardContent>
     </Card>
@@ -37,16 +41,18 @@ export function MonthlyChallengeCard({
   current: number;
   target: number;
 }) {
+  const { t } = useTranslation('dashboard');
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Monthly Challenge</CardTitle>
+        <CardTitle>{t('monthlyChallenge.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <p className="text-sm text-foreground">{title}</p>
         <ProgressBar percent={(current / target) * 100} />
         <p className="text-xs text-muted-foreground">
-          {current} of {target} books
+          {t('monthlyChallenge.books', { current, target })}
         </p>
       </CardContent>
     </Card>

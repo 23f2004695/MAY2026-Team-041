@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} മുതൽ അംഗം",
+    "editProfile": "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
+    "editProfileAction": "നിങ്ങളുടെ പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുന്നു"
+  },
+  "stats": {
+    "booksRead": "വായിച്ച പുസ്തകങ്ങൾ",
+    "pagesRead": "വായിച്ച പേജുകൾ",
+    "hoursRead": "വായിച്ച മണിക്കൂറുകൾ"
+  },
+  "achievements": {
+    "title": "നേട്ടങ്ങൾ",
+    "items": {
+      "firstBook": {
+        "label": "ആദ്യ പുസ്തകം",
+        "description": "നിങ്ങളുടെ ആദ്യ പുസ്തകം കടം വാങ്ങുക"
+      },
+      "bookWorm": {
+        "label": "ബുക്ക് വേം",
+        "description": "ഒരു വർഷത്തിൽ 10 പുസ്തകങ്ങൾ വായിക്കുക"
+      },
+      "topReader": {
+        "label": "ടോപ്പ് റീഡർ",
+        "description": "മാസ ലീഡർബോർഡിന്റെ മുകളിലെത്തുക"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "നിലവിലെ വായന",
+    "by": "{{author}} രചിച്ചത്"
+  },
+  "borrowHistory": {
+    "title": "കടം വാങ്ങൽ ചരിത്രം",
+    "columns": {
+      "title": "പേര്",
+      "borrowedOn": "കടം വാങ്ങിയ തീയതി",
+      "returnedOn": "തിരികെ നൽകിയ തീയതി"
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "title": "图书",
+  "subtitle": "浏览图书馆目录",
+  "searchPlaceholder": "按书名或作者搜索…",
+  "searchAriaLabel": "搜索图书",
+  "filterAriaLabel": "按分类筛选",
+  "backToBooks": "返回图书",
+  "reserveThisBook": "预约这本书",
+  "reserveToast": "正在预约《{{title}}》",
+  "copiesAvailable": "可借 {{available}} 本，共 {{total}} 本",
+  "categories": {
+    "All": "全部",
+    "Fiction": "小说",
+    "Non-Fiction": "非虚构",
+    "Science": "科学",
+    "Technology": "科技",
+    "Biography": "传记",
+    "Self-Help": "自助成长"
+  },
+  "status": {
+    "available": "可借",
+    "checkedOut": "已借出"
+  },
+  "empty": {
+    "title": "未找到图书",
+    "description": "换一个搜索词或分类试试。"
+  },
+  "notFound": {
+    "title": "未找到该图书",
+    "description": "这本书可能已从目录中移除。"
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "一本关于养成好习惯、戒除坏习惯的实用指南。"
+    },
+    "sapiens": {
+      "description": "一部人类简史，从石器时代讲到当下。"
+    },
+    "the-overstory": {
+      "description": "一部构思精巧的小说，通过九位美国人与树木的关系将他们联系在一起。"
+    },
+    "hands-on-ml": {
+      "description": "一本借助 Scikit-Learn、Keras 和 TensorFlow 的机器学习实用指南。"
+    },
+    "a-short-history": {
+      "description": "一场通俗易懂的科学史之旅。"
+    },
+    "cant-hurt-me": {
+      "description": "David Goggins 讲述自己如何战胜艰难童年、成长为顶尖运动员的经历。"
+    },
+    "deep-work": {
+      "description": "在纷扰世界中实现专注成功的法则。"
+    },
+    "the-hundred-page-ml": {
+      "description": "对机器学习核心思想的简明介绍。"
+    },
+    "norwegian-wood": {
+      "description": "一个关于失去与青春萌动的怀旧故事，背景设定在 1960 年代的东京。"
+    }
+  }
+}

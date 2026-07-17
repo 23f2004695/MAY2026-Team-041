@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "सीट बुकिंग",
+    "subtitle": "एक शांत स्टडी सीट आरक्षित करें"
+  },
+  "legend": {
+    "available": "उपलब्ध",
+    "reserved": "आरक्षित",
+    "occupied": "भरी हुई"
+  },
+  "summary": {
+    "title": "बुकिंग सारांश",
+    "seatSelected": "आज के लिए सीट <bold>{{seat}}</bold> चुनी गई",
+    "emptyState": "जारी रखने के लिए एक उपलब्ध सीट चुनें।",
+    "confirm": "बुकिंग की पुष्टि करें"
+  },
+  "toast": {
+    "bookingSeat": "सीट {{seat}} बुक की जा रही है"
+  }
+}

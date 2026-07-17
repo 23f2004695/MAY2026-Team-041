@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Sitzplatzbuchung",
+    "subtitle": "Reserviere einen ruhigen Lernplatz"
+  },
+  "legend": {
+    "available": "Verfügbar",
+    "reserved": "Reserviert",
+    "occupied": "Belegt"
+  },
+  "summary": {
+    "title": "Buchungsübersicht",
+    "seatSelected": "Sitzplatz <bold>{{seat}}</bold> für heute ausgewählt",
+    "emptyState": "Wähle einen verfügbaren Sitzplatz aus, um fortzufahren.",
+    "confirm": "Buchung bestätigen"
+  },
+  "toast": {
+    "bookingSeat": "Sitzplatz {{seat}} wird gebucht"
+  }
+}

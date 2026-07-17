@@ -1,0 +1,15 @@
+{
+  "title": "लीडरबोर्ड",
+  "subtitle": "इस महीने कम्युनिटी के शीर्ष पाठक",
+  "table": {
+    "rank": "रैंक",
+    "reader": "पाठक",
+    "points": "पॉइंट्स",
+    "badges": "बैज",
+    "hoursRead": "पढ़ने के घंटे",
+    "hoursValue": "{{hours}} घं"
+  },
+  "badge": {
+    "you": "आप"
+  }
+}

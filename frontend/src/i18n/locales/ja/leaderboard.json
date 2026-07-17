@@ -1,0 +1,15 @@
+{
+  "title": "ランキング",
+  "subtitle": "今月のコミュニティのトップ読者",
+  "table": {
+    "rank": "順位",
+    "reader": "読者",
+    "points": "ポイント",
+    "badges": "バッジ",
+    "hoursRead": "読書時間",
+    "hoursValue": "{{hours}}時間"
+  },
+  "badge": {
+    "you": "あなた"
+  }
+}

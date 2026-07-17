@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}}からのメンバー",
+    "editProfile": "プロフィールを編集",
+    "editProfileAction": "プロフィールを編集中"
+  },
+  "stats": {
+    "booksRead": "読了冊数",
+    "pagesRead": "読んだページ数",
+    "hoursRead": "読書時間"
+  },
+  "achievements": {
+    "title": "実績",
+    "items": {
+      "firstBook": {
+        "label": "はじめの1冊",
+        "description": "最初の1冊を借りる"
+      },
+      "bookWorm": {
+        "label": "本の虫",
+        "description": "1年間で10冊読む"
+      },
+      "topReader": {
+        "label": "トップリーダー",
+        "description": "月間ランキングの1位に到達する"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "現在読んでいる本",
+    "by": "著者: {{author}}"
+  },
+  "borrowHistory": {
+    "title": "貸出履歴",
+    "columns": {
+      "title": "タイトル",
+      "borrowedOn": "貸出日",
+      "returnedOn": "返却日"
+    }
+  }
+}

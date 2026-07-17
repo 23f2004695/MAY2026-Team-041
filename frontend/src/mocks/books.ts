@@ -5,7 +5,6 @@ export interface Book {
   category: string;
   available: boolean;
   rating: number;
-  description: string;
   totalCopies: number;
   availableCopies: number;
 }
@@ -28,7 +27,6 @@ export const books: Book[] = [
     category: 'Self-Help',
     available: true,
     rating: 4.8,
-    description: 'A practical guide to building good habits and breaking bad ones.',
     totalCopies: 6,
     availableCopies: 2,
   },
@@ -39,7 +37,6 @@ export const books: Book[] = [
     category: 'Non-Fiction',
     available: true,
     rating: 4.6,
-    description: 'A brief history of humankind, from the Stone Age to the present.',
     totalCopies: 4,
     availableCopies: 1,
   },
@@ -50,8 +47,6 @@ export const books: Book[] = [
     category: 'Fiction',
     available: false,
     rating: 4.3,
-    description:
-      'An intricate novel connecting nine Americans through their relationship with trees.',
     totalCopies: 3,
     availableCopies: 0,
   },
@@ -62,7 +57,6 @@ export const books: Book[] = [
     category: 'Technology',
     available: true,
     rating: 4.7,
-    description: 'A practical guide to machine learning with Scikit-Learn, Keras, and TensorFlow.',
     totalCopies: 5,
     availableCopies: 3,
   },
@@ -73,7 +67,6 @@ export const books: Book[] = [
     category: 'Science',
     available: true,
     rating: 4.5,
-    description: 'An accessible journey through the history of science.',
     totalCopies: 4,
     availableCopies: 4,
   },
@@ -84,8 +77,6 @@ export const books: Book[] = [
     category: 'Biography',
     available: false,
     rating: 4.7,
-    description:
-      "David Goggins' account of overcoming a difficult childhood to become a top athlete.",
     totalCopies: 3,
     availableCopies: 0,
   },
@@ -96,7 +87,6 @@ export const books: Book[] = [
     category: 'Self-Help',
     available: true,
     rating: 4.4,
-    description: 'Rules for focused success in a distracted world.',
     totalCopies: 5,
     availableCopies: 2,
   },
@@ -107,7 +97,6 @@ export const books: Book[] = [
     category: 'Technology',
     available: true,
     rating: 4.5,
-    description: 'A concise introduction to the core ideas of machine learning.',
     totalCopies: 2,
     availableCopies: 1,
   },
@@ -118,7 +107,6 @@ export const books: Book[] = [
     category: 'Fiction',
     available: true,
     rating: 4.2,
-    description: 'A nostalgic story of loss and burgeoning sexuality in 1960s Tokyo.',
     totalCopies: 3,
     availableCopies: 1,
   },

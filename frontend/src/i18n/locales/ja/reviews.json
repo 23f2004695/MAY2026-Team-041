@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "書籍レビュー",
+    "byAuthor": "著者: {{author}}",
+    "writeReview": "レビューを書く",
+    "comments": "コメント"
+  },
+  "allReviews": {
+    "heading": "メンバーの声",
+    "subtitle": "コミュニティ全体の読者、クラブリーダー、ボランティア、イベント主催者から寄せられた本音の感想。"
+  },
+  "summary": {
+    "reviewCount_one": "{{count}}件のレビュー",
+    "reviewCount_other": "{{count}}件のレビュー",
+    "starsLabel_one": "星{{count}}",
+    "starsLabel_other": "星{{count}}"
+  },
+  "modal": {
+    "title": "レビューを書く",
+    "cancel": "キャンセル",
+    "submit": "レビューを投稿",
+    "errors": {
+      "imageFailed": "画像を追加できませんでした。",
+      "missingFields": "お名前、評価、コメントを入力してください。"
+    },
+    "toast": {
+      "posted": "レビューを投稿しました"
+    },
+    "fields": {
+      "name": {
+        "label": "お名前",
+        "placeholder": "例: Priya Sharma"
+      },
+      "rating": {
+        "label": "評価",
+        "starLabel_one": "星{{count}}",
+        "starLabel_other": "星{{count}}"
+      },
+      "comment": {
+        "label": "コメント",
+        "placeholder": "この本についての感想を共有してください..."
+      },
+      "photo": {
+        "label": "写真（任意）",
+        "previewAlt": "レビュー添付画像のプレビュー",
+        "remove": "画像を削除",
+        "uploading": "追加中...",
+        "upload": "画像をアップロード"
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "page": {
+    "title": "Réservations",
+    "subtitle": "Suivez vos réservations de livres et votre position dans la file"
+  },
+  "sections": {
+    "current": "Réservations en cours",
+    "queue": "File d'attente des réservations"
+  },
+  "empty": {
+    "current": {
+      "title": "Aucune réservation active",
+      "description": "Réservez un livre depuis le catalogue pour le voir apparaître ici."
+    },
+    "queue": {
+      "title": "Vous n'attendez rien pour le moment",
+      "description": "Vous apparaîtrez ici dès que vous rejoindrez une file d'attente."
+    }
+  },
+  "queue": {
+    "line": "— position {{position}} sur {{total}}, attente estimée {{wait}}",
+    "cantHurtMe": {
+      "estimatedWait": "~1 semaine"
+    }
+  },
+  "card": {
+    "reservedOn": "Réservé le {{date}}",
+    "cancel": "Annuler"
+  },
+  "status": {
+    "ready": "Prêt à être retiré",
+    "waiting": "En file d'attente",
+    "expired": "Expirée"
+  },
+  "dialog": {
+    "title": "Annuler la réservation ?",
+    "description": "Cela annulera votre réservation pour \"{{title}}\".",
+    "confirmLabel": "Annuler la réservation"
+  },
+  "toast": {
+    "cancelling": "Annulation de \"{{title}}\""
+  }
+}

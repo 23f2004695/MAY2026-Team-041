@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "Veranstaltungen",
+    "subtitle": "Kommende Bibliotheksveranstaltungen und Community-Programme"
+  },
+  "stats": {
+    "eventsThisMonth": "Veranstaltungen diesen Monat",
+    "totalAttendees": "Teilnehmer insgesamt",
+    "avgAttendanceRate": "Durchschn. Teilnahmequote"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} nehmen teil",
+    "registered": "Angemeldet",
+    "open": "Offen",
+    "viewDetails": "Details anzeigen"
+  },
+  "drawer": {
+    "title": "Veranstaltungsdetails",
+    "registration": "Anmeldung",
+    "registered": "Du bist angemeldet",
+    "notRegistered": "Nicht angemeldet",
+    "cancelRegistration": "Anmeldung stornieren",
+    "register": "Anmelden",
+    "volunteerAssignments": "Aufgaben der Freiwilligen",
+    "noVolunteers": "Noch keine Freiwilligen zugewiesen.",
+    "toast": {
+      "cancelling": "Anmeldung wird storniert",
+      "registering": "Anmeldung läuft"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "Sci-Fi-Buchclub-Treffen",
+      "location": "Haupthalle, Community Library",
+      "description": "Monatliche Diskussion über den Titel des Monats, \"Project Hail Mary\".",
+      "volunteers": {
+        "amaraOkafor": "Diskussionsleitung",
+        "liamFitzgerald": "Aufbau"
+      }
+    },
+    "author-talk": {
+      "title": "Autorengespräch: Abend lokaler Autoren",
+      "location": "Auditorium, Community Library",
+      "description": "Ein Abend mit drei lokalen Autoren, die über ihre Debütromane sprechen.",
+      "volunteers": {
+        "danielCho": "Anmeldeschalter"
+      }
+    },
+    "kids-story-hour": {
+      "title": "Vorlesestunde für Kinder",
+      "location": "Kinderbereich",
+      "description": "Wöchentliche Vorlesestunde für Kinder von 4 bis 8 Jahren.",
+      "volunteers": {
+        "priyaSharma": "Vorleserin"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "Einführung für Freiwillige",
+      "location": "Besprechungsraum B",
+      "description": "Einführungsveranstaltung für neue Freiwillige, die bei den Bibliotheksprogrammen mitmachen.",
+      "volunteers": {}
+    }
+  }
+}

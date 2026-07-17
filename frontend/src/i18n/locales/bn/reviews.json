@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "বই রিভিউ",
+    "byAuthor": "লেখক {{author}}",
+    "writeReview": "একটি রিভিউ লিখুন",
+    "comments": "মন্তব্য"
+  },
+  "allReviews": {
+    "heading": "আমাদের সদস্যরা যা বলেন",
+    "subtitle": "কমিউনিটি জুড়ে পাঠক, ক্লাব লিড, স্বেচ্ছাসেবক ও ইভেন্ট আয়োজকদের সত্যিকারের মতামত।"
+  },
+  "summary": {
+    "reviewCount_one": "{{count}}টি রিভিউ",
+    "reviewCount_other": "{{count}}টি রিভিউ",
+    "starsLabel_one": "{{count}} তারা",
+    "starsLabel_other": "{{count}} তারা"
+  },
+  "modal": {
+    "title": "একটি রিভিউ লিখুন",
+    "cancel": "বাতিল",
+    "submit": "রিভিউ পোস্ট করুন",
+    "errors": {
+      "imageFailed": "ছবিটি যোগ করা যায়নি।",
+      "missingFields": "আপনার নাম, একটি রেটিং এবং একটি মন্তব্য যোগ করুন।"
+    },
+    "toast": {
+      "posted": "রিভিউ পোস্ট হয়েছে"
+    },
+    "fields": {
+      "name": {
+        "label": "আপনার নাম",
+        "placeholder": "যেমন Priya Sharma"
+      },
+      "rating": {
+        "label": "রেটিং",
+        "starLabel_one": "{{count}} তারা",
+        "starLabel_other": "{{count}} তারা"
+      },
+      "comment": {
+        "label": "মন্তব্য",
+        "placeholder": "এই বই সম্পর্কে আপনার মতামত শেয়ার করুন..."
+      },
+      "photo": {
+        "label": "ছবি (ঐচ্ছিক)",
+        "previewAlt": "রিভিউ সংযুক্তির প্রিভিউ",
+        "remove": "ছবি সরান",
+        "uploading": "যোগ করা হচ্ছে...",
+        "upload": "একটি ছবি আপলোড করুন"
+      }
+    }
+  }
+}

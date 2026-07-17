@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "社区读书俱乐部",
+    "short": "读书俱乐部"
+  },
+  "nav": {
+    "dashboard": "仪表盘",
+    "books": "图书",
+    "reservations": "预约",
+    "seatBooking": "座位预订",
+    "community": "社区",
+    "events": "活动",
+    "readingProgress": "阅读进度",
+    "leaderboard": "排行榜",
+    "reviews": "书评",
+    "notifications": "通知",
+    "settings": "设置",
+    "adminOverview": "管理概览",
+    "backToApp": "返回应用"
+  },
+  "actions": {
+    "signIn": "登录",
+    "logOut": "退出登录",
+    "profile": "个人主页",
+    "settings": "设置",
+    "backHome": "返回首页",
+    "backToHome": "返回首页",
+    "viewAll": "查看全部"
+  },
+  "aria": {
+    "openNavigation": "打开导航",
+    "openAccountMenu": "打开账户菜单",
+    "menu": "菜单",
+    "account": "账户"
+  },
+  "language": {
+    "selectLabel": "切换语言"
+  },
+  "theme": {
+    "toLight": "切换到浅色模式",
+    "toDark": "切换到深色模式"
+  },
+  "appearance": {
+    "label": "设置太空背景",
+    "background": {
+      "title": "页面背景",
+      "description": "页面上所有内容后方的颜色。"
+    },
+    "cards": {
+      "title": "卡片和面板",
+      "description": "卡片、导航栏、输入框和对话框共用这一颜色。"
+    },
+    "custom": "自定义",
+    "preview": "预览",
+    "sampleCard": "示例卡片",
+    "sampleText": "文字颜色会自动调整以保持清晰易读。",
+    "primaryAction": "主要操作",
+    "lowContrast": "对比度偏低——为了获得最清晰的效果，请将浅色与浅色搭配，或深色与深色搭配。",
+    "reset": "恢复主题默认",
+    "done": "完成"
+  },
+  "comingSoon": {
+    "badge": "即将推出"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}}功能尚未接入",
+      "description": "这是界面预览——后端接入后，真正的功能流程即会上线。"
+    }
+  },
+  "footer": {
+    "brand": "社区读书俱乐部",
+    "tagline": "一个现代化的图书馆平台，用于借阅、读书俱乐部和社区活动。",
+    "siteLinks": "站点链接",
+    "navigation": "导航",
+    "quickLinks": "快捷链接",
+    "contact": "联系我们",
+    "links": {
+      "home": "首页",
+      "login": "登录",
+      "register": "注册",
+      "books": "图书",
+      "community": "社区",
+      "events": "活动"
+    },
+    "social": {
+      "website": "官网",
+      "forum": "社区论坛",
+      "newsletter": "订阅通讯"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "该页面不存在。"
+  },
+  "pages": {
+    "register": {
+      "title": "注册",
+      "description": "创建一个新账户。"
+    },
+    "forgotPassword": {
+      "title": "忘记密码",
+      "description": "重置你的密码。"
+    },
+    "community": {
+      "title": "社区",
+      "description": "读书俱乐部与讨论。"
+    },
+    "settings": {
+      "title": "设置",
+      "description": "管理你的偏好设置。"
+    }
+  }
+}

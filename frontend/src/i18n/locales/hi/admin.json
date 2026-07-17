@@ -1,0 +1,72 @@
+{
+  "title": "एडमिन डैशबोर्ड",
+  "subtitle": "प्लेटफ़ॉर्म अवलोकन और प्रशासन",
+  "stats": {
+    "totalBooks": {
+      "label": "कुल किताबें"
+    },
+    "totalMembers": {
+      "label": "कुल सदस्य"
+    },
+    "eventsThisMonth": {
+      "label": "इस महीने के इवेंट्स"
+    },
+    "revenueMtd": {
+      "label": "राजस्व (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "लंबित अनुरोध",
+    "from": "{{requester}} की ओर से",
+    "reject": "अस्वीकार करें",
+    "approve": "स्वीकृत करें",
+    "requestTypes": {
+      "donation": "किताब दान",
+      "membershipRenewal": "सदस्यता नवीनीकरण",
+      "reservationDispute": "आरक्षण विवाद"
+    },
+    "items": {
+      "pr1": {
+        "summary": "8 किताबें दान कर रहे हैं, जिनमें 3 साई-फ़ाई शीर्षक शामिल हैं"
+      },
+      "pr2": {
+        "summary": "प्रीमियम सदस्यता नवीनीकरण अनुरोध"
+      },
+      "pr3": {
+        "summary": "आरक्षण कतार में स्थान गलत दिखने की रिपोर्ट करते हैं"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} का अनुरोध अस्वीकार किया जा रहा है",
+      "approve": "{{requester}} का अनुरोध स्वीकृत किया जा रहा है"
+    }
+  },
+  "reports": {
+    "title": "रिपोर्ट्स",
+    "viewReport": "रिपोर्ट देखें",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "सबसे ज़्यादा उधार ली गई किताबें"
+      },
+      "membershipGrowth": {
+        "label": "सदस्यता वृद्धि"
+      },
+      "eventAttendance": {
+        "label": "इवेंट उपस्थिति"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "त्वरित क्रियाएँ",
+    "addBook": "किताब जोड़ें",
+    "inviteMember": "सदस्य को आमंत्रित करें",
+    "createEvent": "इवेंट बनाएँ",
+    "announcement": "घोषणा",
+    "toast": {
+      "addBook": "एक किताब जोड़ी जा रही है",
+      "inviteMember": "एक सदस्य को आमंत्रित किया जा रहा है",
+      "createEvent": "एक इवेंट बनाया जा रहा है",
+      "announcement": "एक घोषणा भेजी जा रही है"
+    }
+  }
+}

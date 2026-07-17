@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { BookCard } from '@/components/common';
 import { EmptyState, Pagination } from '@/components/ui';
@@ -11,6 +12,7 @@ import { BookFilters } from '../components/BookFilters';
 const PAGE_SIZE = 6;
 
 export function BooksListPage() {
+  const { t } = useTranslation('books');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [page, setPage] = useState(1);
@@ -43,8 +45,8 @@ export function BooksListPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Books</h1>
-        <p className="mt-1 text-muted-foreground">Browse the library catalog</p>
+        <h1 className="text-2xl font-semibold text-foreground">{t('title')}</h1>
+        <p className="mt-1 text-muted-foreground">{t('subtitle')}</p>
       </div>
 
       <BookFilters
@@ -55,7 +57,7 @@ export function BooksListPage() {
       />
 
       {pageBooks.length === 0 ? (
-        <EmptyState title="No books found" description="Try a different search term or category." />
+        <EmptyState title={t('empty.title')} description={t('empty.description')} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {pageBooks.map((book) => (
@@ -63,11 +65,11 @@ export function BooksListPage() {
               key={book.id}
               title={book.title}
               author={book.author}
-              category={book.category}
+              category={t(`categories.${book.category}`)}
               available={book.available}
               rating={book.rating}
               href={ROUTES.BOOK_DETAILS.replace(':bookId', book.id)}
-              onReserve={() => comingSoonToast(`Reserving "${book.title}"`)}
+              onReserve={() => comingSoonToast(t('reserveToast', { title: book.title }))}
             />
           ))}
         </div>

@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "مرحبًا بعودتك، {{name}}",
+    "subtitle": "إليك آخر مستجدات مكتبتك"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "الكتب المستعارة"
+    },
+    "booksReserved": {
+      "label": "الكتب المحجوزة"
+    },
+    "seatBookings": {
+      "label": "حجوزات المقاعد"
+    },
+    "readingPoints": {
+      "label": "نقاط القراءة"
+    }
+  },
+  "booksDueSoon": {
+    "title": "كتب يقترب موعد إرجاعها",
+    "empty": {
+      "title": "لا شيء يقترب موعد إرجاعه",
+      "description": "أنت على اطّلاع بكل شيء."
+    },
+    "dueLabel": "موعد الإرجاع {{date}} · باقٍ {{days}} يوم"
+  },
+  "currentlyBorrowed": {
+    "title": "المستعار حاليًا",
+    "since": "منذ {{date}}"
+  },
+  "recentNotifications": {
+    "title": "أحدث الإشعارات"
+  },
+  "upcomingEvents": {
+    "title": "الفعاليات القادمة"
+  },
+  "readingProgress": {
+    "title": "تقدم القراءة",
+    "pages": "{{read}} من {{total}} صفحة"
+  },
+  "monthlyChallenge": {
+    "title": "تحدي الشهر",
+    "books": "{{current}} من {{target}} كتاب"
+  },
+  "quickActions": {
+    "title": "إجراءات سريعة",
+    "browseBooks": "تصفح الكتب",
+    "bookSeat": "احجز مقعدًا",
+    "viewReservations": "عرض الحجوزات"
+  }
+}

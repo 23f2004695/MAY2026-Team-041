@@ -1,0 +1,61 @@
+{
+  "title": "বই",
+  "subtitle": "লাইব্রেরি ক্যাটালগ ব্রাউজ করুন",
+  "searchPlaceholder": "শিরোনাম বা লেখক দিয়ে অনুসন্ধান করুন…",
+  "searchAriaLabel": "বই অনুসন্ধান",
+  "filterAriaLabel": "বিভাগ অনুযায়ী ফিল্টার",
+  "backToBooks": "বইয়ে ফিরে যান",
+  "reserveThisBook": "এই বইটি সংরক্ষণ করুন",
+  "reserveToast": "\"{{title}}\" সংরক্ষণ করা হচ্ছে",
+  "copiesAvailable": "{{total}}টির মধ্যে {{available}}টি কপি উপলব্ধ",
+  "categories": {
+    "All": "সব",
+    "Fiction": "কল্পকাহিনি",
+    "Non-Fiction": "নন-ফিকশন",
+    "Science": "বিজ্ঞান",
+    "Technology": "প্রযুক্তি",
+    "Biography": "জীবনী",
+    "Self-Help": "স্ব-সহায়তা"
+  },
+  "status": {
+    "available": "উপলব্ধ",
+    "checkedOut": "ধার নেওয়া হয়েছে"
+  },
+  "empty": {
+    "title": "কোনো বই পাওয়া যায়নি",
+    "description": "অন্য কোনো অনুসন্ধান শব্দ বা বিভাগ চেষ্টা করুন।"
+  },
+  "notFound": {
+    "title": "বই পাওয়া যায়নি",
+    "description": "এই বইটি হয়তো ক্যাটালগ থেকে সরিয়ে ফেলা হয়েছে।"
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "ভালো অভ্যাস গড়া এবং খারাপ অভ্যাস ভাঙার একটি ব্যবহারিক নির্দেশিকা।"
+    },
+    "sapiens": {
+      "description": "প্রস্তরযুগ থেকে বর্তমান পর্যন্ত মানবজাতির একটি সংক্ষিপ্ত ইতিহাস।"
+    },
+    "the-overstory": {
+      "description": "গাছের সাথে সম্পর্কের মাধ্যমে নয়জন আমেরিকানকে সংযুক্ত করা একটি জটিল উপন্যাস।"
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn, Keras এবং TensorFlow দিয়ে মেশিন লার্নিংয়ের একটি ব্যবহারিক নির্দেশিকা।"
+    },
+    "a-short-history": {
+      "description": "বিজ্ঞানের ইতিহাসের মধ্য দিয়ে একটি সহজবোধ্য যাত্রা।"
+    },
+    "cant-hurt-me": {
+      "description": "একটি কঠিন শৈশব কাটিয়ে শীর্ষ ক্রীড়াবিদ হয়ে ওঠার David Goggins-এর বিবরণ।"
+    },
+    "deep-work": {
+      "description": "মনোযোগ বিঘ্নিত এক বিশ্বে মনোযোগী সাফল্যের নিয়মাবলি।"
+    },
+    "the-hundred-page-ml": {
+      "description": "মেশিন লার্নিংয়ের মূল ধারণাগুলোর একটি সংক্ষিপ্ত পরিচিতি।"
+    },
+    "norwegian-wood": {
+      "description": "১৯৬০-এর দশকের টোকিওতে হারানো ও উদীয়মান যৌনতার একটি স্মৃতিমেদুর গল্প।"
+    }
+  }
+}

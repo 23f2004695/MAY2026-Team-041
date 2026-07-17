@@ -1,0 +1,43 @@
+{
+  "page": {
+    "title": "Reservas",
+    "subtitle": "Sigue tus reservas de libros y tu posición en la cola"
+  },
+  "sections": {
+    "current": "Reservas actuales",
+    "queue": "Cola de reservas"
+  },
+  "empty": {
+    "current": {
+      "title": "No hay reservas activas",
+      "description": "Reserva un libro del catálogo para verlo aquí."
+    },
+    "queue": {
+      "title": "No estás esperando por nada",
+      "description": "Aparecerás aquí en cuanto te unas a una cola."
+    }
+  },
+  "queue": {
+    "line": "— posición {{position}} de {{total}}, espera estimada {{wait}}",
+    "cantHurtMe": {
+      "estimatedWait": "~1 semana"
+    }
+  },
+  "card": {
+    "reservedOn": "Reservado el {{date}}",
+    "cancel": "Cancelar"
+  },
+  "status": {
+    "ready": "Listo para recoger",
+    "waiting": "En espera en la cola",
+    "expired": "Caducado"
+  },
+  "dialog": {
+    "title": "¿Cancelar reserva?",
+    "description": "Esto cancelará tu reserva de \"{{title}}\".",
+    "confirmLabel": "Cancelar reserva"
+  },
+  "toast": {
+    "cancelling": "Cancelando \"{{title}}\""
+  }
+}

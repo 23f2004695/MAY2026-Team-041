@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "इवेंट्स",
+    "subtitle": "आगामी लाइब्रेरी इवेंट्स और सामुदायिक कार्यक्रम"
+  },
+  "stats": {
+    "eventsThisMonth": "इस महीने के इवेंट्स",
+    "totalAttendees": "कुल उपस्थित",
+    "avgAttendanceRate": "औसत उपस्थिति दर"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} उपस्थित",
+    "registered": "पंजीकृत",
+    "open": "खुला",
+    "viewDetails": "विवरण देखें"
+  },
+  "drawer": {
+    "title": "इवेंट विवरण",
+    "registration": "पंजीकरण",
+    "registered": "आप पंजीकृत हैं",
+    "notRegistered": "पंजीकृत नहीं",
+    "cancelRegistration": "पंजीकरण रद्द करें",
+    "register": "पंजीकरण करें",
+    "volunteerAssignments": "स्वयंसेवक कार्य",
+    "noVolunteers": "अभी तक कोई स्वयंसेवक नियुक्त नहीं किया गया।",
+    "toast": {
+      "cancelling": "पंजीकरण रद्द किया जा रहा है",
+      "registering": "पंजीकरण किया जा रहा है"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "साई-फ़ाई बुक क्लब मीटअप",
+      "location": "मुख्य हॉल, Community Library",
+      "description": "इस महीने की पसंद \"Project Hail Mary\" पर मासिक चर्चा।",
+      "volunteers": {
+        "amaraOkafor": "चर्चा लीड",
+        "liamFitzgerald": "सेटअप"
+      }
+    },
+    "author-talk": {
+      "title": "लेखक वार्ता: लोकल राइटर्स नाइट",
+      "location": "ऑडिटोरियम, Community Library",
+      "description": "तीन स्थानीय लेखकों के साथ उनके पहले उपन्यासों पर चर्चा करती एक शाम।",
+      "volunteers": {
+        "danielCho": "पंजीकरण डेस्क"
+      }
+    },
+    "kids-story-hour": {
+      "title": "किड्स स्टोरी आवर",
+      "location": "बच्चों का विंग",
+      "description": "4-8 वर्ष के बच्चों के लिए साप्ताहिक कहानी सुनाने का सत्र।",
+      "volunteers": {
+        "priyaSharma": "कहानीकार"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "स्वयंसेवक ओरिएंटेशन",
+      "location": "मीटिंग रूम B",
+      "description": "लाइब्रेरी कार्यक्रमों में शामिल हो रहे नए स्वयंसेवकों के लिए ओरिएंटेशन सत्र।",
+      "volunteers": {}
+    }
+  }
+}

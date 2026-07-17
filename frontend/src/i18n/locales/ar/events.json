@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "الفعاليات",
+    "subtitle": "فعاليات المكتبة القادمة والبرامج المجتمعية"
+  },
+  "stats": {
+    "eventsThisMonth": "فعاليات هذا الشهر",
+    "totalAttendees": "إجمالي الحضور",
+    "avgAttendanceRate": "متوسط معدل الحضور"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} مشارك",
+    "registered": "مسجَّل",
+    "open": "مفتوح",
+    "viewDetails": "عرض التفاصيل"
+  },
+  "drawer": {
+    "title": "تفاصيل الفعالية",
+    "registration": "التسجيل",
+    "registered": "أنت مسجَّل",
+    "notRegistered": "غير مسجَّل",
+    "cancelRegistration": "إلغاء التسجيل",
+    "register": "التسجيل",
+    "volunteerAssignments": "مهام المتطوعين",
+    "noVolunteers": "لم يتم تعيين متطوعين بعد.",
+    "toast": {
+      "cancelling": "جارٍ إلغاء التسجيل",
+      "registering": "جارٍ التسجيل"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "لقاء نادي كتب الخيال العلمي",
+      "location": "القاعة الرئيسية، المكتبة المجتمعية",
+      "description": "نقاش شهري حول اختيار هذا الشهر، \"Project Hail Mary\".",
+      "volunteers": {
+        "amaraOkafor": "قائدة النقاش",
+        "liamFitzgerald": "الإعداد"
+      }
+    },
+    "author-talk": {
+      "title": "لقاء مع المؤلفين: أمسية الكتّاب المحليين",
+      "location": "المدرّج، المكتبة المجتمعية",
+      "description": "أمسية مع ثلاثة مؤلفين محليين يناقشون رواياتهم الأولى.",
+      "volunteers": {
+        "danielCho": "مكتب التسجيل"
+      }
+    },
+    "kids-story-hour": {
+      "title": "ساعة قصص الأطفال",
+      "location": "جناح الأطفال",
+      "description": "جلسة أسبوعية لسرد القصص للأطفال من سن 4 إلى 8.",
+      "volunteers": {
+        "priyaSharma": "راوية القصص"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "توجيه المتطوعين",
+      "location": "قاعة الاجتماعات B",
+      "description": "جلسة توجيهية للمتطوعين الجدد المنضمّين إلى برامج المكتبة.",
+      "volunteers": {}
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "title": "એડમિન ડેશબોર્ડ",
+  "subtitle": "પ્લેટફોર્મ ઝાંખી અને વહીવટ",
+  "stats": {
+    "totalBooks": {
+      "label": "કુલ પુસ્તકો"
+    },
+    "totalMembers": {
+      "label": "કુલ સભ્યો"
+    },
+    "eventsThisMonth": {
+      "label": "આ મહિનાના કાર્યક્રમો"
+    },
+    "revenueMtd": {
+      "label": "આવક (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "બાકી વિનંતીઓ",
+    "from": "{{requester}} તરફથી",
+    "reject": "નકારો",
+    "approve": "મંજૂર કરો",
+    "requestTypes": {
+      "donation": "પુસ્તક દાન",
+      "membershipRenewal": "સભ્યપદ નવીકરણ",
+      "reservationDispute": "આરક્ષણ વિવાદ"
+    },
+    "items": {
+      "pr1": {
+        "summary": "3 સાય-ફાય શીર્ષકો સહિત 8 પુસ્તકોનું દાન"
+      },
+      "pr2": {
+        "summary": "પ્રીમિયમ સભ્યપદ નવીકરણની વિનંતી"
+      },
+      "pr3": {
+        "summary": "આરક્ષણ કતારમાં ક્રમ ખોટો દેખાય છે એવી ફરિયાદ"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} તરફથી આવેલી વિનંતી નકારી રહ્યા છીએ",
+      "approve": "{{requester}} તરફથી આવેલી વિનંતી મંજૂર કરી રહ્યા છીએ"
+    }
+  },
+  "reports": {
+    "title": "અહેવાલો",
+    "viewReport": "અહેવાલ જુઓ",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "સૌથી વધુ ઉધાર લેવાયેલા પુસ્તકો"
+      },
+      "membershipGrowth": {
+        "label": "સભ્યપદ વૃદ્ધિ"
+      },
+      "eventAttendance": {
+        "label": "કાર્યક્રમ હાજરી"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "ઝડપી ક્રિયાઓ",
+    "addBook": "પુસ્તક ઉમેરો",
+    "inviteMember": "સભ્યને આમંત્રિત કરો",
+    "createEvent": "કાર્યક્રમ બનાવો",
+    "announcement": "જાહેરાત",
+    "toast": {
+      "addBook": "પુસ્તક ઉમેરી રહ્યા છીએ",
+      "inviteMember": "સભ્યને આમંત્રિત કરી રહ્યા છીએ",
+      "createEvent": "કાર્યક્રમ બનાવી રહ્યા છીએ",
+      "announcement": "જાહેરાત મોકલી રહ્યા છીએ"
+    }
+  }
+}

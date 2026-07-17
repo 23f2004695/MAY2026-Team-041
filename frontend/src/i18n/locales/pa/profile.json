@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} ਤੋਂ ਮੈਂਬਰ",
+    "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "editProfileAction": "ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+  },
+  "stats": {
+    "booksRead": "ਪੜ੍ਹੀਆਂ ਕਿਤਾਬਾਂ",
+    "pagesRead": "ਪੜ੍ਹੇ ਸਫ਼ੇ",
+    "hoursRead": "ਪੜ੍ਹਨ ਦੇ ਘੰਟੇ"
+  },
+  "achievements": {
+    "title": "ਪ੍ਰਾਪਤੀਆਂ",
+    "items": {
+      "firstBook": {
+        "label": "ਪਹਿਲੀ ਕਿਤਾਬ",
+        "description": "ਆਪਣੀ ਪਹਿਲੀ ਕਿਤਾਬ ਉਧਾਰ ਲਓ"
+      },
+      "bookWorm": {
+        "label": "ਕਿਤਾਬੀ ਕੀੜਾ",
+        "description": "ਇੱਕ ਸਾਲ ਵਿੱਚ 10 ਕਿਤਾਬਾਂ ਪੜ੍ਹੋ"
+      },
+      "topReader": {
+        "label": "ਚੋਟੀ ਦਾ ਪਾਠਕ",
+        "description": "ਮਹੀਨਾਵਾਰ ਲੀਡਰਬੋਰਡ ਦੇ ਸਿਖਰ 'ਤੇ ਪਹੁੰਚੋ"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "ਮੌਜੂਦਾ ਪੜ੍ਹਾਈ",
+    "by": "{{author}} ਵੱਲੋਂ"
+  },
+  "borrowHistory": {
+    "title": "ਉਧਾਰ ਦਾ ਇਤਿਹਾਸ",
+    "columns": {
+      "title": "ਸਿਰਲੇਖ",
+      "borrowedOn": "ਉਧਾਰ ਲਈ",
+      "returnedOn": "ਵਾਪਸ ਕੀਤੀ"
+    }
+  }
+}

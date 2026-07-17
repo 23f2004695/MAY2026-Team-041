@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Réservation de place",
+    "subtitle": "Réservez une place d'étude au calme"
+  },
+  "legend": {
+    "available": "Disponible",
+    "reserved": "Réservée",
+    "occupied": "Occupée"
+  },
+  "summary": {
+    "title": "Récapitulatif de la réservation",
+    "seatSelected": "Place <bold>{{seat}}</bold> sélectionnée pour aujourd'hui",
+    "emptyState": "Sélectionnez une place disponible pour continuer.",
+    "confirm": "Confirmer la réservation"
+  },
+  "toast": {
+    "bookingSeat": "Réservation de la place {{seat}}"
+  }
+}

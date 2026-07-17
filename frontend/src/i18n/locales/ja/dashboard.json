@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "おかえりなさい、{{name}}さん",
+    "subtitle": "あなたの図書館の最新情報はこちら"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "貸出冊数"
+    },
+    "booksReserved": {
+      "label": "予約冊数"
+    },
+    "seatBookings": {
+      "label": "座席予約"
+    },
+    "readingPoints": {
+      "label": "読書ポイント"
+    }
+  },
+  "booksDueSoon": {
+    "title": "まもなく返却期限の書籍",
+    "empty": {
+      "title": "まもなく期限を迎える本はありません",
+      "description": "すべて対応済みです。"
+    },
+    "dueLabel": "返却期限 {{date}} · あと{{days}}日"
+  },
+  "currentlyBorrowed": {
+    "title": "現在借りている書籍",
+    "since": "{{date}}から"
+  },
+  "recentNotifications": {
+    "title": "最近の通知"
+  },
+  "upcomingEvents": {
+    "title": "今後のイベント"
+  },
+  "readingProgress": {
+    "title": "読書の進捗",
+    "pages": "{{total}}ページ中{{read}}ページ"
+  },
+  "monthlyChallenge": {
+    "title": "月間チャレンジ",
+    "books": "{{target}}冊中{{current}}冊"
+  },
+  "quickActions": {
+    "title": "クイックアクション",
+    "browseBooks": "書籍を見る",
+    "bookSeat": "座席を予約",
+    "viewReservations": "予約を表示"
+  }
+}

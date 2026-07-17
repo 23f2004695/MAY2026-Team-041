@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "Reserva de asientos",
+    "subtitle": "Reserva un asiento de estudio tranquilo"
+  },
+  "legend": {
+    "available": "Disponible",
+    "reserved": "Reservado",
+    "occupied": "Ocupado"
+  },
+  "summary": {
+    "title": "Resumen de la reserva",
+    "seatSelected": "Asiento <bold>{{seat}}</bold> seleccionado para hoy",
+    "emptyState": "Selecciona un asiento disponible para continuar.",
+    "confirm": "Confirmar reserva"
+  },
+  "toast": {
+    "bookingSeat": "Reservando el asiento {{seat}}"
+  }
+}

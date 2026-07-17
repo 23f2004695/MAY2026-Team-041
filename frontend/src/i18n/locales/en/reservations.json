@@ -1,0 +1,43 @@
+{
+  "page": {
+    "title": "Reservations",
+    "subtitle": "Track your book reservations and queue position"
+  },
+  "sections": {
+    "current": "Current Reservations",
+    "queue": "Reservation Queue"
+  },
+  "empty": {
+    "current": {
+      "title": "No active reservations",
+      "description": "Reserve a book from the catalog to see it here."
+    },
+    "queue": {
+      "title": "You're not waiting on anything",
+      "description": "You’ll appear here once you join a queue."
+    }
+  },
+  "queue": {
+    "line": "— position {{position}} of {{total}}, estimated wait {{wait}}",
+    "cantHurtMe": {
+      "estimatedWait": "~1 week"
+    }
+  },
+  "card": {
+    "reservedOn": "Reserved on {{date}}",
+    "cancel": "Cancel"
+  },
+  "status": {
+    "ready": "Ready for pickup",
+    "waiting": "Waiting in queue",
+    "expired": "Expired"
+  },
+  "dialog": {
+    "title": "Cancel reservation?",
+    "description": "This will cancel your reservation for \"{{title}}\".",
+    "confirmLabel": "Cancel reservation"
+  },
+  "toast": {
+    "cancelling": "Cancelling \"{{title}}\""
+  }
+}

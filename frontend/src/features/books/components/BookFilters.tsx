@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { SearchBar, Select } from '@/components/ui';
 import { bookCategories } from '@/mocks/books';
 
@@ -14,21 +16,23 @@ export function BookFilters({
   category,
   onCategoryChange,
 }: BookFiltersProps) {
+  const { t } = useTranslation('books');
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
       <SearchBar
         value={search}
         onChange={onSearchChange}
-        placeholder="Search by title or author…"
-        aria-label="Search books"
+        placeholder={t('searchPlaceholder')}
+        aria-label={t('searchAriaLabel')}
         className="sm:max-w-sm"
       />
       <Select
         value={category}
         onChange={(event) => onCategoryChange(event.target.value)}
-        aria-label="Filter by category"
+        aria-label={t('filterAriaLabel')}
         className="sm:w-48"
-        options={bookCategories.map((value) => ({ value, label: value }))}
+        options={bookCategories.map((value) => ({ value, label: t(`categories.${value}`) }))}
       />
     </div>
   );

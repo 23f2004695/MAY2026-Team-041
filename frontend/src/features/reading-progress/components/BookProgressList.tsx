@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { ProgressBar } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import type { ProgressBook } from '@/mocks/reading-progress';
@@ -9,6 +11,8 @@ export interface BookProgressListProps {
 }
 
 export function BookProgressList({ title, books, emptyDescription }: BookProgressListProps) {
+  const { t } = useTranslation('progress');
+
   return (
     <Card>
       <CardHeader>
@@ -16,14 +20,16 @@ export function BookProgressList({ title, books, emptyDescription }: BookProgres
       </CardHeader>
       <CardContent>
         {books.length === 0 ? (
-          <EmptyState title="Nothing here yet" description={emptyDescription} />
+          <EmptyState title={t('emptyState.title')} description={emptyDescription} />
         ) : (
           <div className="flex flex-col gap-4">
             {books.map((book) => (
               <div key={book.id}>
                 <p className="text-sm font-medium text-foreground">
                   {book.title}{' '}
-                  <span className="font-normal text-muted-foreground">by {book.author}</span>
+                  <span className="font-normal text-muted-foreground">
+                    {t('book.by', { author: book.author })}
+                  </span>
                 </p>
                 {book.percentComplete > 0 && book.percentComplete < 100 && (
                   <ProgressBar percent={book.percentComplete} className="mt-1.5" />

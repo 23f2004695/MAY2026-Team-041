@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui';
@@ -11,6 +12,7 @@ const ROLES: Role[] = ['admin', 'librarian', 'member', 'volunteer'];
 export function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation('auth');
 
   function signInAs(role: Role) {
     login(role);
@@ -20,19 +22,17 @@ export function Login() {
   return (
     <div className="mx-auto flex max-w-sm flex-col gap-4 p-8">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Log in</h1>
-        <p className="text-muted-foreground">
-          Real authentication ships in Milestone 3. Pick a role to preview the app.
-        </p>
+        <h1 className="text-2xl font-semibold text-foreground">{t('login.title')}</h1>
+        <p className="text-muted-foreground">{t('login.subtitle')}</p>
       </div>
       {ROLES.map((role) => (
         <Button
           key={role}
           variant="outline"
-          className="justify-start capitalize"
+          className="justify-start"
           onClick={() => signInAs(role)}
         >
-          Continue as {role}
+          {t('login.continueAs', { role: t(`roles.${role}`) })}
         </Button>
       ))}
     </div>

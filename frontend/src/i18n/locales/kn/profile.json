@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} ರಿಂದ ಸದಸ್ಯ",
+    "editProfile": "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+    "editProfileAction": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಲಾಗುತ್ತಿದೆ"
+  },
+  "stats": {
+    "booksRead": "ಓದಿದ ಪುಸ್ತಕಗಳು",
+    "pagesRead": "ಓದಿದ ಪುಟಗಳು",
+    "hoursRead": "ಓದಿದ ಗಂಟೆಗಳು"
+  },
+  "achievements": {
+    "title": "ಸಾಧನೆಗಳು",
+    "items": {
+      "firstBook": {
+        "label": "ಮೊದಲ ಪುಸ್ತಕ",
+        "description": "ನಿಮ್ಮ ಮೊದಲ ಪುಸ್ತಕವನ್ನು ಎರವಲು ಪಡೆಯಿರಿ"
+      },
+      "bookWorm": {
+        "label": "ಪುಸ್ತಕ ಪ್ರಿಯ",
+        "description": "ವರ್ಷದಲ್ಲಿ 10 ಪುಸ್ತಕಗಳನ್ನು ಓದಿ"
+      },
+      "topReader": {
+        "label": "ಅಗ್ರ ಓದುಗ",
+        "description": "ಮಾಸಿಕ ಲೀಡರ್‌ಬೋರ್ಡ್‌ನ ಅಗ್ರಸ್ಥಾನ ತಲುಪಿ"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "ಪ್ರಸ್ತುತ ಓದುತ್ತಿರುವುದು",
+    "by": "{{author}} ಅವರಿಂದ"
+  },
+  "borrowHistory": {
+    "title": "ಎರವಲು ಇತಿಹಾಸ",
+    "columns": {
+      "title": "ಶೀರ್ಷಿಕೆ",
+      "borrowedOn": "ಎರವಲು ಪಡೆದ ದಿನಾಂಕ",
+      "returnedOn": "ಹಿಂತಿರುಗಿಸಿದ ದಿನಾಂಕ"
+    }
+  }
+}

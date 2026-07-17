@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "Buchrezensionen",
+    "byAuthor": "von {{author}}",
+    "writeReview": "Rezension schreiben",
+    "comments": "Kommentare"
+  },
+  "allReviews": {
+    "heading": "Das sagen unsere Mitglieder",
+    "subtitle": "Echtes Feedback von Lesern, Lesekreisleitern, Freiwilligen und Veranstaltungsorganisatoren aus der gesamten Community."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} Rezension",
+    "reviewCount_other": "{{count}} Rezensionen",
+    "starsLabel_one": "{{count}} Stern",
+    "starsLabel_other": "{{count}} Sterne"
+  },
+  "modal": {
+    "title": "Rezension schreiben",
+    "cancel": "Abbrechen",
+    "submit": "Rezension veröffentlichen",
+    "errors": {
+      "imageFailed": "Das Bild konnte nicht hinzugefügt werden.",
+      "missingFields": "Gib deinen Namen, eine Bewertung und einen Kommentar an."
+    },
+    "toast": {
+      "posted": "Rezension veröffentlicht"
+    },
+    "fields": {
+      "name": {
+        "label": "Dein Name",
+        "placeholder": "z. B. Priya Sharma"
+      },
+      "rating": {
+        "label": "Bewertung",
+        "starLabel_one": "{{count}} Stern",
+        "starLabel_other": "{{count}} Sterne"
+      },
+      "comment": {
+        "label": "Kommentar",
+        "placeholder": "Teile deine Meinung zu diesem Buch..."
+      },
+      "photo": {
+        "label": "Foto (optional)",
+        "previewAlt": "Vorschau des Rezensionsanhangs",
+        "remove": "Bild entfernen",
+        "uploading": "Wird hinzugefügt...",
+        "upload": "Bild hochladen"
+      }
+    }
+  }
+}

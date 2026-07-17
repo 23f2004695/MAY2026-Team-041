@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "سیٹ بکنگ",
+    "subtitle": "مطالعے کے لیے پُرسکون سیٹ ریزرو کریں"
+  },
+  "legend": {
+    "available": "دستیاب",
+    "reserved": "ریزرو شدہ",
+    "occupied": "مصروف"
+  },
+  "summary": {
+    "title": "بکنگ کا خلاصہ",
+    "seatSelected": "آج کے لیے سیٹ <bold>{{seat}}</bold> منتخب کی گئی",
+    "emptyState": "جاری رکھنے کے لیے کوئی دستیاب سیٹ منتخب کریں۔",
+    "confirm": "بکنگ کی تصدیق کریں"
+  },
+  "toast": {
+    "bookingSeat": "سیٹ {{seat}} بُک کی جا رہی ہے"
+  }
+}

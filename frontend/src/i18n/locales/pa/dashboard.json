@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "ਜੀ ਆਇਆਂ ਨੂੰ ਵਾਪਸ, {{name}}",
+    "subtitle": "ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ ਕੀ ਹੋ ਰਿਹਾ ਹੈ, ਇੱਥੇ ਵੇਖੋ"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ"
+    },
+    "booksReserved": {
+      "label": "ਰਿਜ਼ਰਵ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ"
+    },
+    "seatBookings": {
+      "label": "ਸੀਟ ਬੁਕਿੰਗਾਂ"
+    },
+    "readingPoints": {
+      "label": "ਪੜ੍ਹਾਈ ਦੇ ਪੁਆਇੰਟ"
+    }
+  },
+  "booksDueSoon": {
+    "title": "ਜਲਦੀ ਵਾਪਸ ਕਰਨ ਵਾਲੀਆਂ ਕਿਤਾਬਾਂ",
+    "empty": {
+      "title": "ਜਲਦੀ ਕੁਝ ਵਾਪਸ ਕਰਨ ਵਾਲਾ ਨਹੀਂ",
+      "description": "ਤੁਸੀਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਅੱਪ ਟੂ ਡੇਟ ਹੋ।"
+    },
+    "dueLabel": "{{date}} ਤੱਕ ਵਾਪਸ · {{days}} ਦਿਨ ਬਾਕੀ"
+  },
+  "currentlyBorrowed": {
+    "title": "ਹੁਣ ਉਧਾਰ ਲਈਆਂ",
+    "since": "{{date}} ਤੋਂ"
+  },
+  "recentNotifications": {
+    "title": "ਤਾਜ਼ਾ ਸੂਚਨਾਵਾਂ"
+  },
+  "upcomingEvents": {
+    "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ"
+  },
+  "readingProgress": {
+    "title": "ਪੜ੍ਹਾਈ ਦੀ ਤਰੱਕੀ",
+    "pages": "{{total}} ਵਿੱਚੋਂ {{read}} ਸਫ਼ੇ"
+  },
+  "monthlyChallenge": {
+    "title": "ਮਹੀਨਾਵਾਰ ਚੁਣੌਤੀ",
+    "books": "{{target}} ਵਿੱਚੋਂ {{current}} ਕਿਤਾਬਾਂ"
+  },
+  "quickActions": {
+    "title": "ਤੇਜ਼ ਕਾਰਵਾਈਆਂ",
+    "browseBooks": "ਕਿਤਾਬਾਂ ਵੇਖੋ",
+    "bookSeat": "ਸੀਟ ਬੁੱਕ ਕਰੋ",
+    "viewReservations": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ ਵੇਖੋ"
+  }
+}

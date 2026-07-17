@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "ਸਮਾਗਮ",
+    "subtitle": "ਆਉਣ ਵਾਲੇ ਲਾਇਬ੍ਰੇਰੀ ਸਮਾਗਮ ਅਤੇ ਕਮਿਊਨਿਟੀ ਪ੍ਰੋਗਰਾਮ"
+  },
+  "stats": {
+    "eventsThisMonth": "ਇਸ ਮਹੀਨੇ ਦੇ ਸਮਾਗਮ",
+    "totalAttendees": "ਕੁੱਲ ਹਾਜ਼ਰੀਨ",
+    "avgAttendanceRate": "ਔਸਤ ਹਾਜ਼ਰੀ ਦਰ"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} ਹਾਜ਼ਰ ਹੋ ਰਹੇ ਹਨ",
+    "registered": "ਰਜਿਸਟਰ ਹੋ ਗਏ",
+    "open": "ਖੁੱਲ੍ਹਾ",
+    "viewDetails": "ਵੇਰਵੇ ਵੇਖੋ"
+  },
+  "drawer": {
+    "title": "ਸਮਾਗਮ ਦੇ ਵੇਰਵੇ",
+    "registration": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
+    "registered": "ਤੁਸੀਂ ਰਜਿਸਟਰ ਹੋ",
+    "notRegistered": "ਰਜਿਸਟਰ ਨਹੀਂ ਹੋ",
+    "cancelRegistration": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਰੱਦ ਕਰੋ",
+    "register": "ਰਜਿਸਟਰ ਕਰੋ",
+    "volunteerAssignments": "ਵਲੰਟੀਅਰ ਜ਼ਿੰਮੇਵਾਰੀਆਂ",
+    "noVolunteers": "ਅਜੇ ਕੋਈ ਵਲੰਟੀਅਰ ਨਿਯੁਕਤ ਨਹੀਂ ਕੀਤਾ।",
+    "toast": {
+      "cancelling": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "registering": "ਰਜਿਸਟਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "ਸਾਈ-ਫਾਈ ਬੁੱਕ ਕਲੱਬ ਮੀਟਅਪ",
+      "location": "ਮੇਨ ਹਾਲ, ਕਮਿਊਨਿਟੀ ਲਾਇਬ੍ਰੇਰੀ",
+      "description": "ਇਸ ਮਹੀਨੇ ਦੀ ਚੋਣ, \"Project Hail Mary\" 'ਤੇ ਮਹੀਨਾਵਾਰ ਚਰਚਾ।",
+      "volunteers": {
+        "amaraOkafor": "ਚਰਚਾ ਲੀਡ",
+        "liamFitzgerald": "ਸੈੱਟਅਪ"
+      }
+    },
+    "author-talk": {
+      "title": "ਲੇਖਕ ਵਾਰਤਾਲਾਪ: ਸਥਾਨਕ ਲੇਖਕਾਂ ਦੀ ਸ਼ਾਮ",
+      "location": "ਆਡੀਟੋਰੀਅਮ, ਕਮਿਊਨਿਟੀ ਲਾਇਬ੍ਰੇਰੀ",
+      "description": "ਤਿੰਨ ਸਥਾਨਕ ਲੇਖਕਾਂ ਨਾਲ ਉਹਨਾਂ ਦੇ ਪਹਿਲੇ ਨਾਵਲਾਂ 'ਤੇ ਚਰਚਾ ਕਰਦੀ ਇੱਕ ਸ਼ਾਮ।",
+      "volunteers": {
+        "danielCho": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਡੈਸਕ"
+      }
+    },
+    "kids-story-hour": {
+      "title": "ਬੱਚਿਆਂ ਦਾ ਕਹਾਣੀ ਸਮਾਂ",
+      "location": "ਚਿਲਡਰਨਜ਼ ਵਿੰਗ",
+      "description": "4-8 ਸਾਲ ਦੇ ਬੱਚਿਆਂ ਲਈ ਹਫ਼ਤਾਵਾਰੀ ਕਹਾਣੀ ਸੁਣਾਉਣ ਦਾ ਸੈਸ਼ਨ।",
+      "volunteers": {
+        "priyaSharma": "ਕਹਾਣੀਕਾਰ"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "ਵਲੰਟੀਅਰ ਓਰੀਐਂਟੇਸ਼ਨ",
+      "location": "ਮੀਟਿੰਗ ਰੂਮ B",
+      "description": "ਲਾਇਬ੍ਰੇਰੀ ਪ੍ਰੋਗਰਾਮਾਂ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਣ ਵਾਲੇ ਨਵੇਂ ਵਲੰਟੀਅਰਾਂ ਲਈ ਓਰੀਐਂਟੇਸ਼ਨ ਸੈਸ਼ਨ।",
+      "volunteers": {}
+    }
+  }
+}

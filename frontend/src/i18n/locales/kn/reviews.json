@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "ಪುಸ್ತಕ ವಿಮರ್ಶೆಗಳು",
+    "byAuthor": "{{author}} ಅವರಿಂದ",
+    "writeReview": "ವಿಮರ್ಶೆ ಬರೆಯಿರಿ",
+    "comments": "ಕಾಮೆಂಟ್‌ಗಳು"
+  },
+  "allReviews": {
+    "heading": "ನಮ್ಮ ಸದಸ್ಯರು ಏನು ಹೇಳುತ್ತಾರೆ",
+    "subtitle": "ಸಮುದಾಯದಾದ್ಯಂತ ಓದುಗರು, ಕ್ಲಬ್ ನಾಯಕರು, ಸ್ವಯಂಸೇವಕರು ಮತ್ತು ಕಾರ್ಯಕ್ರಮ ಸಂಘಟಕರಿಂದ ನಿಜವಾದ ಪ್ರತಿಕ್ರಿಯೆ."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} ವಿಮರ್ಶೆ",
+    "reviewCount_other": "{{count}} ವಿಮರ್ಶೆಗಳು",
+    "starsLabel_one": "{{count}} ನಕ್ಷತ್ರ",
+    "starsLabel_other": "{{count}} ನಕ್ಷತ್ರಗಳು"
+  },
+  "modal": {
+    "title": "ವಿಮರ್ಶೆ ಬರೆಯಿರಿ",
+    "cancel": "ರದ್ದುಮಾಡಿ",
+    "submit": "ವಿಮರ್ಶೆ ಪೋಸ್ಟ್ ಮಾಡಿ",
+    "errors": {
+      "imageFailed": "ಚಿತ್ರವನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
+      "missingFields": "ನಿಮ್ಮ ಹೆಸರು, ರೇಟಿಂಗ್ ಮತ್ತು ಕಾಮೆಂಟ್ ಸೇರಿಸಿ."
+    },
+    "toast": {
+      "posted": "ವಿಮರ್ಶೆ ಪೋಸ್ಟ್ ಮಾಡಲಾಗಿದೆ"
+    },
+    "fields": {
+      "name": {
+        "label": "ನಿಮ್ಮ ಹೆಸರು",
+        "placeholder": "ಉದಾ. Priya Sharma"
+      },
+      "rating": {
+        "label": "ರೇಟಿಂಗ್",
+        "starLabel_one": "{{count}} ನಕ್ಷತ್ರ",
+        "starLabel_other": "{{count}} ನಕ್ಷತ್ರಗಳು"
+      },
+      "comment": {
+        "label": "ಕಾಮೆಂಟ್",
+        "placeholder": "ಈ ಪುಸ್ತಕದ ಬಗ್ಗೆ ನೀವು ಏನು ಯೋಚಿಸಿದಿರಿ ಎಂಬುದನ್ನು ಹಂಚಿಕೊಳ್ಳಿ..."
+      },
+      "photo": {
+        "label": "ಫೋಟೋ (ಐಚ್ಛಿಕ)",
+        "previewAlt": "ವಿಮರ್ಶೆ ಲಗತ್ತು ಪೂರ್ವವೀಕ್ಷಣೆ",
+        "remove": "ಚಿತ್ರ ತೆಗೆದುಹಾಕಿ",
+        "uploading": "ಸೇರಿಸಲಾಗುತ್ತಿದೆ...",
+        "upload": "ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ"
+      }
+    }
+  }
+}

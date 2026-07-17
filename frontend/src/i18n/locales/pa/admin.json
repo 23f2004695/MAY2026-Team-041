@@ -1,0 +1,72 @@
+{
+  "title": "ਐਡਮਿਨ ਡੈਸ਼ਬੋਰਡ",
+  "subtitle": "ਪਲੇਟਫਾਰਮ ਸੰਖੇਪ ਅਤੇ ਪ੍ਰਸ਼ਾਸਨ",
+  "stats": {
+    "totalBooks": {
+      "label": "ਕੁੱਲ ਕਿਤਾਬਾਂ"
+    },
+    "totalMembers": {
+      "label": "ਕੁੱਲ ਮੈਂਬਰ"
+    },
+    "eventsThisMonth": {
+      "label": "ਇਸ ਮਹੀਨੇ ਦੇ ਸਮਾਗਮ"
+    },
+    "revenueMtd": {
+      "label": "ਆਮਦਨ (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "ਬਕਾਇਆ ਬੇਨਤੀਆਂ",
+    "from": "{{requester}} ਵੱਲੋਂ",
+    "reject": "ਰੱਦ ਕਰੋ",
+    "approve": "ਮਨਜ਼ੂਰ ਕਰੋ",
+    "requestTypes": {
+      "donation": "ਕਿਤਾਬ ਦਾਨ",
+      "membershipRenewal": "ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ",
+      "reservationDispute": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਵਿਵਾਦ"
+    },
+    "items": {
+      "pr1": {
+        "summary": "8 ਕਿਤਾਬਾਂ ਦਾਨ ਕਰ ਰਹੇ ਹਨ, ਜਿਨ੍ਹਾਂ ਵਿੱਚ 3 ਸਾਈ-ਫਾਈ ਕਿਤਾਬਾਂ ਸ਼ਾਮਲ ਹਨ"
+      },
+      "pr2": {
+        "summary": "ਪ੍ਰੀਮੀਅਮ ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ ਬੇਨਤੀ"
+      },
+      "pr3": {
+        "summary": "ਦੱਸਦੇ ਹਨ ਕਿ ਰਿਜ਼ਰਵੇਸ਼ਨ ਕਤਾਰ ਵਿੱਚ ਸਥਾਨ ਗ਼ਲਤ ਲੱਗ ਰਿਹਾ ਹੈ"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} ਦੀ ਬੇਨਤੀ ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "approve": "{{requester}} ਦੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    }
+  },
+  "reports": {
+    "title": "ਰਿਪੋਰਟਾਂ",
+    "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "ਸਭ ਤੋਂ ਵੱਧ ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ"
+      },
+      "membershipGrowth": {
+        "label": "ਮੈਂਬਰਸ਼ਿਪ ਵਾਧਾ"
+      },
+      "eventAttendance": {
+        "label": "ਸਮਾਗਮ ਹਾਜ਼ਰੀ"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "ਤੇਜ਼ ਕਾਰਵਾਈਆਂ",
+    "addBook": "ਕਿਤਾਬ ਸ਼ਾਮਲ ਕਰੋ",
+    "inviteMember": "ਮੈਂਬਰ ਸੱਦੋ",
+    "createEvent": "ਸਮਾਗਮ ਬਣਾਓ",
+    "announcement": "ਐਲਾਨ",
+    "toast": {
+      "addBook": "ਇੱਕ ਕਿਤਾਬ ਸ਼ਾਮਲ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "inviteMember": "ਇੱਕ ਮੈਂਬਰ ਨੂੰ ਸੱਦਾ ਦਿੱਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "createEvent": "ਇੱਕ ਸਮਾਗਮ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ",
+      "announcement": "ਇੱਕ ਐਲਾਨ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
+    }
+  }
+}

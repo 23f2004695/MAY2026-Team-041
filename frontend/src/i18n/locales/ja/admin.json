@@ -1,0 +1,72 @@
+{
+  "title": "管理者ダッシュボード",
+  "subtitle": "プラットフォームの概要と管理",
+  "stats": {
+    "totalBooks": {
+      "label": "総書籍数"
+    },
+    "totalMembers": {
+      "label": "総メンバー数"
+    },
+    "eventsThisMonth": {
+      "label": "今月のイベント"
+    },
+    "revenueMtd": {
+      "label": "収益（月初来）"
+    }
+  },
+  "pendingRequests": {
+    "title": "保留中のリクエスト",
+    "from": "{{requester}}より",
+    "reject": "却下",
+    "approve": "承認",
+    "requestTypes": {
+      "donation": "書籍の寄贈",
+      "membershipRenewal": "メンバーシップの更新",
+      "reservationDispute": "予約に関する異議"
+    },
+    "items": {
+      "pr1": {
+        "summary": "SF作品3冊を含む8冊の書籍を寄贈"
+      },
+      "pr2": {
+        "summary": "プレミアムメンバーシップの更新リクエスト"
+      },
+      "pr3": {
+        "summary": "予約の順番待ちの位置が正しくないと報告"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}}からのリクエストを却下中",
+      "approve": "{{requester}}からのリクエストを承認中"
+    }
+  },
+  "reports": {
+    "title": "レポート",
+    "viewReport": "レポートを表示",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "貸出の多い書籍"
+      },
+      "membershipGrowth": {
+        "label": "メンバーシップの伸び"
+      },
+      "eventAttendance": {
+        "label": "イベント参加状況"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "クイックアクション",
+    "addBook": "書籍を追加",
+    "inviteMember": "メンバーを招待",
+    "createEvent": "イベントを作成",
+    "announcement": "お知らせ",
+    "toast": {
+      "addBook": "書籍を追加中",
+      "inviteMember": "メンバーを招待中",
+      "createEvent": "イベントを作成中",
+      "announcement": "お知らせを送信中"
+    }
+  }
+}

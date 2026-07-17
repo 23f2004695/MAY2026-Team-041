@@ -1,0 +1,72 @@
+{
+  "title": "अ‍ॅडमिन डॅशबोर्ड",
+  "subtitle": "व्यासपीठ आढावा आणि प्रशासन",
+  "stats": {
+    "totalBooks": {
+      "label": "एकूण पुस्तके"
+    },
+    "totalMembers": {
+      "label": "एकूण सदस्य"
+    },
+    "eventsThisMonth": {
+      "label": "या महिन्यातील कार्यक्रम"
+    },
+    "revenueMtd": {
+      "label": "महसूल (महिन्याच्या सुरुवातीपासून)"
+    }
+  },
+  "pendingRequests": {
+    "title": "प्रलंबित विनंत्या",
+    "from": "{{requester}} कडून",
+    "reject": "नाकारा",
+    "approve": "मंजूर करा",
+    "requestTypes": {
+      "donation": "पुस्तक देणगी",
+      "membershipRenewal": "सदस्यत्व नूतनीकरण",
+      "reservationDispute": "आरक्षण वाद"
+    },
+    "items": {
+      "pr1": {
+        "summary": "3 Sci-Fi शीर्षकांसह 8 पुस्तके दान करत आहे"
+      },
+      "pr2": {
+        "summary": "प्रीमियम सदस्यत्व नूतनीकरण विनंती"
+      },
+      "pr3": {
+        "summary": "आरक्षण रांगेतील स्थान चुकीचे दिसत असल्याची तक्रार"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} कडील विनंती नाकारत आहे",
+      "approve": "{{requester}} कडील विनंती मंजूर करत आहे"
+    }
+  },
+  "reports": {
+    "title": "अहवाल",
+    "viewReport": "अहवाल पहा",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "सर्वाधिक उधार घेतलेली पुस्तके"
+      },
+      "membershipGrowth": {
+        "label": "सदस्यत्व वाढ"
+      },
+      "eventAttendance": {
+        "label": "कार्यक्रम उपस्थिती"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "जलद कृती",
+    "addBook": "पुस्तक जोडा",
+    "inviteMember": "सदस्याला आमंत्रित करा",
+    "createEvent": "कार्यक्रम तयार करा",
+    "announcement": "घोषणा",
+    "toast": {
+      "addBook": "पुस्तक जोडत आहे",
+      "inviteMember": "सदस्याला आमंत्रित करत आहे",
+      "createEvent": "कार्यक्रम तयार करत आहे",
+      "announcement": "घोषणा पाठवत आहे"
+    }
+  }
+}

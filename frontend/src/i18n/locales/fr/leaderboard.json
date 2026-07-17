@@ -1,0 +1,15 @@
+{
+  "title": "Classement",
+  "subtitle": "Les meilleurs lecteurs de la communauté ce mois-ci",
+  "table": {
+    "rank": "Rang",
+    "reader": "Lecteur",
+    "points": "Points",
+    "badges": "Badges",
+    "hoursRead": "Heures de lecture",
+    "hoursValue": "{{hours}} h"
+  },
+  "badge": {
+    "you": "Vous"
+  }
+}

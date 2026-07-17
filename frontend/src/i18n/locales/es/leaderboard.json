@@ -1,0 +1,15 @@
+{
+  "title": "Clasificación",
+  "subtitle": "Los mejores lectores de la comunidad este mes",
+  "table": {
+    "rank": "Puesto",
+    "reader": "Lector",
+    "points": "Puntos",
+    "badges": "Insignias",
+    "hoursRead": "Horas leídas",
+    "hoursValue": "{{hours}} h"
+  },
+  "badge": {
+    "you": "Tú"
+  }
+}

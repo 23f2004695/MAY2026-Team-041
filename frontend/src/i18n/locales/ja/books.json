@@ -1,0 +1,61 @@
+{
+  "title": "書籍",
+  "subtitle": "図書館のカタログを見る",
+  "searchPlaceholder": "タイトルまたは著者で検索…",
+  "searchAriaLabel": "書籍を検索",
+  "filterAriaLabel": "カテゴリーで絞り込み",
+  "backToBooks": "書籍一覧に戻る",
+  "reserveThisBook": "この本を予約する",
+  "reserveToast": "「{{title}}」を予約中",
+  "copiesAvailable": "{{total}}冊中{{available}}冊が利用可能",
+  "categories": {
+    "All": "すべて",
+    "Fiction": "フィクション",
+    "Non-Fiction": "ノンフィクション",
+    "Science": "科学",
+    "Technology": "テクノロジー",
+    "Biography": "伝記",
+    "Self-Help": "自己啓発"
+  },
+  "status": {
+    "available": "利用可能",
+    "checkedOut": "貸出中"
+  },
+  "empty": {
+    "title": "書籍が見つかりません",
+    "description": "別の検索語やカテゴリーをお試しください。"
+  },
+  "notFound": {
+    "title": "書籍が見つかりません",
+    "description": "この書籍はカタログから削除された可能性があります。"
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "良い習慣を築き、悪い習慣を断ち切るための実践的なガイド。"
+    },
+    "sapiens": {
+      "description": "石器時代から現代まで、人類の歴史を簡潔にたどる一冊。"
+    },
+    "the-overstory": {
+      "description": "9人のアメリカ人を樹木との関わりを通じて結びつける、緻密に織り上げられた小説。"
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn、Keras、TensorFlowを使った機械学習の実践ガイド。"
+    },
+    "a-short-history": {
+      "description": "科学の歴史をわかりやすくたどる旅。"
+    },
+    "cant-hurt-me": {
+      "description": "困難な子供時代を乗り越えてトップアスリートになった、David Gogginsの記録。"
+    },
+    "deep-work": {
+      "description": "気が散りやすい世界で集中して成功するためのルール。"
+    },
+    "the-hundred-page-ml": {
+      "description": "機械学習の核となる考え方を簡潔に紹介する入門書。"
+    },
+    "norwegian-wood": {
+      "description": "1960年代の東京を舞台に、喪失と芽生える性を描いたノスタルジックな物語。"
+    }
+  }
+}

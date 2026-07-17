@@ -1,0 +1,61 @@
+{
+  "title": "Books",
+  "subtitle": "Browse the library catalog",
+  "searchPlaceholder": "Search by title or author…",
+  "searchAriaLabel": "Search books",
+  "filterAriaLabel": "Filter by category",
+  "backToBooks": "Back to Books",
+  "reserveThisBook": "Reserve this book",
+  "reserveToast": "Reserving \"{{title}}\"",
+  "copiesAvailable": "{{available}} of {{total}} copies available",
+  "categories": {
+    "All": "All",
+    "Fiction": "Fiction",
+    "Non-Fiction": "Non-Fiction",
+    "Science": "Science",
+    "Technology": "Technology",
+    "Biography": "Biography",
+    "Self-Help": "Self-Help"
+  },
+  "status": {
+    "available": "Available",
+    "checkedOut": "Checked out"
+  },
+  "empty": {
+    "title": "No books found",
+    "description": "Try a different search term or category."
+  },
+  "notFound": {
+    "title": "Book not found",
+    "description": "This book may have been removed from the catalog."
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "A practical guide to building good habits and breaking bad ones."
+    },
+    "sapiens": {
+      "description": "A brief history of humankind, from the Stone Age to the present."
+    },
+    "the-overstory": {
+      "description": "An intricate novel connecting nine Americans through their relationship with trees."
+    },
+    "hands-on-ml": {
+      "description": "A practical guide to machine learning with Scikit-Learn, Keras, and TensorFlow."
+    },
+    "a-short-history": {
+      "description": "An accessible journey through the history of science."
+    },
+    "cant-hurt-me": {
+      "description": "David Goggins' account of overcoming a difficult childhood to become a top athlete."
+    },
+    "deep-work": {
+      "description": "Rules for focused success in a distracted world."
+    },
+    "the-hundred-page-ml": {
+      "description": "A concise introduction to the core ideas of machine learning."
+    },
+    "norwegian-wood": {
+      "description": "A nostalgic story of loss and burgeoning sexuality in 1960s Tokyo."
+    }
+  }
+}

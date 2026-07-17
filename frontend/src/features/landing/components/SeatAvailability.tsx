@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 import { SeatCard } from '@/components/common';
 import { seatAvailability } from '@/mocks/landing';
@@ -6,6 +7,8 @@ import { seatAvailability } from '@/mocks/landing';
 import { fadeInUp, viewportOnce } from '../motion';
 
 export function SeatAvailability() {
+  const { t } = useTranslation('landing');
+
   return (
     <section
       aria-labelledby="seat-availability-heading"
@@ -19,11 +22,9 @@ export function SeatAvailability() {
           variants={fadeInUp}
         >
           <h2 id="seat-availability-heading" className="text-3xl font-semibold text-foreground">
-            Live seat availability
+            {t('seatAvailability.heading')}
           </h2>
-          <p className="mt-2 text-muted-foreground">
-            Check the study room before you head over. This is a preview with sample data.
-          </p>
+          <p className="mt-2 text-muted-foreground">{t('seatAvailability.description')}</p>
 
           <div className="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
             {seatAvailability.map((seat) => (
@@ -33,13 +34,13 @@ export function SeatAvailability() {
 
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
-              <span className="size-3 rounded-sm bg-success" /> Available
+              <span className="size-3 rounded-sm bg-success" /> {t('seatAvailability.legend.available')}
             </span>
             <span className="flex items-center gap-2">
-              <span className="size-3 rounded-sm bg-warning" /> Reserved
+              <span className="size-3 rounded-sm bg-warning" /> {t('seatAvailability.legend.reserved')}
             </span>
             <span className="flex items-center gap-2">
-              <span className="size-3 rounded-sm bg-danger" /> Occupied
+              <span className="size-3 rounded-sm bg-danger" /> {t('seatAvailability.legend.occupied')}
             </span>
           </div>
         </motion.div>

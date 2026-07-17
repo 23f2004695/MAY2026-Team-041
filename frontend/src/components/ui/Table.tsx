@@ -26,7 +26,7 @@ export function TableHead({ className, ...props }: ThHTMLAttributes<HTMLTableCel
   return (
     <th
       className={cn(
-        'px-4 py-3 text-left text-xs font-semibold uppercase text-muted-foreground',
+        'px-4 py-3 text-start text-xs font-semibold uppercase text-muted-foreground',
         className,
       )}
       {...props}

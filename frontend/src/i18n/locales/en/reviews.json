@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "Book Reviews",
+    "byAuthor": "by {{author}}",
+    "writeReview": "Write a Review",
+    "comments": "Comments"
+  },
+  "allReviews": {
+    "heading": "What our members say",
+    "subtitle": "Real feedback from readers, club leads, volunteers, and event organizers across the community."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} review",
+    "reviewCount_other": "{{count}} reviews",
+    "starsLabel_one": "{{count}} star",
+    "starsLabel_other": "{{count}} stars"
+  },
+  "modal": {
+    "title": "Write a Review",
+    "cancel": "Cancel",
+    "submit": "Post review",
+    "errors": {
+      "imageFailed": "Could not add the image.",
+      "missingFields": "Add your name, a rating, and a comment."
+    },
+    "toast": {
+      "posted": "Review posted"
+    },
+    "fields": {
+      "name": {
+        "label": "Your name",
+        "placeholder": "e.g. Priya Sharma"
+      },
+      "rating": {
+        "label": "Rating",
+        "starLabel_one": "{{count}} star",
+        "starLabel_other": "{{count}} stars"
+      },
+      "comment": {
+        "label": "Comment",
+        "placeholder": "Share what you thought about this book..."
+      },
+      "photo": {
+        "label": "Photo (optional)",
+        "previewAlt": "Review attachment preview",
+        "remove": "Remove image",
+        "uploading": "Adding...",
+        "upload": "Upload an image"
+      }
+    }
+  }
+}

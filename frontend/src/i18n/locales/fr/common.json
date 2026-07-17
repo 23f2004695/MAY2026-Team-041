@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "books": "Livres",
+    "reservations": "Réservations",
+    "seatBooking": "Réservation de place",
+    "community": "Communauté",
+    "events": "Événements",
+    "readingProgress": "Progression de lecture",
+    "leaderboard": "Classement",
+    "reviews": "Avis",
+    "notifications": "Notifications",
+    "settings": "Paramètres",
+    "adminOverview": "Vue d'ensemble admin",
+    "backToApp": "Retour à l'application"
+  },
+  "actions": {
+    "signIn": "Se connecter",
+    "logOut": "Se déconnecter",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "backHome": "Retour à l'accueil",
+    "backToHome": "Retour à l'accueil",
+    "viewAll": "Tout afficher"
+  },
+  "aria": {
+    "openNavigation": "Ouvrir la navigation",
+    "openAccountMenu": "Ouvrir le menu du compte",
+    "menu": "Menu",
+    "account": "Compte"
+  },
+  "language": {
+    "selectLabel": "Changer de langue"
+  },
+  "theme": {
+    "toLight": "Passer en mode clair",
+    "toDark": "Passer en mode sombre"
+  },
+  "appearance": {
+    "label": "Définir l'arrière-plan spatial",
+    "background": {
+      "title": "Arrière-plan de la page",
+      "description": "La couleur derrière tous les éléments de la page."
+    },
+    "cards": {
+      "title": "Cartes et panneaux",
+      "description": "Les cartes, la barre de navigation, les champs et les boîtes de dialogue partagent cette couleur."
+    },
+    "custom": "Personnalisé",
+    "preview": "Aperçu",
+    "sampleCard": "Exemple de carte",
+    "sampleText": "La couleur du texte s'ajuste automatiquement pour rester lisible.",
+    "primaryAction": "Action principale",
+    "lowContrast": "Faible contraste — pour un résultat plus lisible, associez des couleurs claires entre elles ou des couleurs foncées entre elles.",
+    "reset": "Rétablir le thème par défaut",
+    "done": "Terminé"
+  },
+  "comingSoon": {
+    "badge": "Bientôt disponible"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} n'est pas encore actif",
+      "description": "Ceci est un aperçu de l'interface — le vrai fonctionnement arrivera une fois le backend connecté."
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "Une plateforme de bibliothèque moderne pour l'emprunt, les clubs de lecture et les événements communautaires.",
+    "siteLinks": "Liens du site",
+    "navigation": "Navigation",
+    "quickLinks": "Liens rapides",
+    "contact": "Contact",
+    "links": {
+      "home": "Accueil",
+      "login": "Connexion",
+      "register": "S'inscrire",
+      "books": "Livres",
+      "community": "Communauté",
+      "events": "Événements"
+    },
+    "social": {
+      "website": "Site web",
+      "forum": "Forum communautaire",
+      "newsletter": "Newsletter"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "Cette page n'existe pas."
+  },
+  "pages": {
+    "register": {
+      "title": "S'inscrire",
+      "description": "Créer un nouveau compte."
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "description": "Réinitialisez votre mot de passe."
+    },
+    "community": {
+      "title": "Communauté",
+      "description": "Clubs de lecture et discussions."
+    },
+    "settings": {
+      "title": "Paramètres",
+      "description": "Gérez vos préférences."
+    }
+  }
+}

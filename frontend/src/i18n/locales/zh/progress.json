@@ -1,0 +1,33 @@
+{
+  "title": "阅读进度",
+  "subtitle": "你全年的阅读活动",
+  "goal": {
+    "title": "{{year}} 年阅读目标",
+    "progress": "已读 {{current}} 本，目标 {{target}} 本"
+  },
+  "streak": {
+    "title": "阅读连胜",
+    "currentDays": "{{days}} 天",
+    "longest": "最长连胜：{{days}} 天"
+  },
+  "lists": {
+    "currentlyReading": {
+      "title": "正在阅读",
+      "empty": "开始读一本书，即可在此跟踪它。"
+    },
+    "completed": {
+      "title": "已读完",
+      "empty": "你读完的书会显示在这里。"
+    },
+    "wantToRead": {
+      "title": "想读",
+      "empty": "收藏你打算接下来阅读的书。"
+    }
+  },
+  "book": {
+    "by": "作者：{{author}}"
+  },
+  "emptyState": {
+    "title": "这里还什么都没有"
+  }
+}

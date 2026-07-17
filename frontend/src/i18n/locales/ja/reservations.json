@@ -1,0 +1,43 @@
+{
+  "page": {
+    "title": "予約",
+    "subtitle": "書籍の予約状況と順番待ちの位置を確認"
+  },
+  "sections": {
+    "current": "現在の予約",
+    "queue": "予約の順番待ち"
+  },
+  "empty": {
+    "current": {
+      "title": "有効な予約はありません",
+      "description": "カタログから本を予約すると、ここに表示されます。"
+    },
+    "queue": {
+      "title": "順番待ちしているものはありません",
+      "description": "順番待ちに加わると、ここに表示されます。"
+    }
+  },
+  "queue": {
+    "line": "— {{total}}人中{{position}}番目、推定待ち時間 {{wait}}",
+    "cantHurtMe": {
+      "estimatedWait": "約1週間"
+    }
+  },
+  "card": {
+    "reservedOn": "{{date}}に予約",
+    "cancel": "キャンセル"
+  },
+  "status": {
+    "ready": "受け取り可能",
+    "waiting": "順番待ち中",
+    "expired": "期限切れ"
+  },
+  "dialog": {
+    "title": "予約をキャンセルしますか？",
+    "description": "「{{title}}」の予約をキャンセルします。",
+    "confirmLabel": "予約をキャンセル"
+  },
+  "toast": {
+    "cancelling": "「{{title}}」をキャンセル中"
+  }
+}

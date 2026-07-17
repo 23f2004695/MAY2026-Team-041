@@ -1,0 +1,61 @@
+{
+  "title": "ਕਿਤਾਬਾਂ",
+  "subtitle": "ਲਾਇਬ੍ਰੇਰੀ ਕੈਟਾਲਾਗ ਵੇਖੋ",
+  "searchPlaceholder": "ਸਿਰਲੇਖ ਜਾਂ ਲੇਖਕ ਨਾਲ ਖੋਜੋ…",
+  "searchAriaLabel": "ਕਿਤਾਬਾਂ ਖੋਜੋ",
+  "filterAriaLabel": "ਸ਼੍ਰੇਣੀ ਅਨੁਸਾਰ ਫਿਲਟਰ ਕਰੋ",
+  "backToBooks": "ਕਿਤਾਬਾਂ ਵੱਲ ਵਾਪਸ",
+  "reserveThisBook": "ਇਹ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
+  "reserveToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+  "copiesAvailable": "{{total}} ਵਿੱਚੋਂ {{available}} ਕਾਪੀਆਂ ਉਪਲਬਧ",
+  "categories": {
+    "All": "ਸਾਰੀਆਂ",
+    "Fiction": "ਗਲਪ",
+    "Non-Fiction": "ਗੈਰ-ਗਲਪ",
+    "Science": "ਵਿਗਿਆਨ",
+    "Technology": "ਤਕਨਾਲੋਜੀ",
+    "Biography": "ਜੀਵਨੀ",
+    "Self-Help": "ਸਵੈ-ਸਹਾਇਤਾ"
+  },
+  "status": {
+    "available": "ਉਪਲਬਧ",
+    "checkedOut": "ਉਧਾਰ ਗਈ ਹੋਈ"
+  },
+  "empty": {
+    "title": "ਕੋਈ ਕਿਤਾਬ ਨਹੀਂ ਮਿਲੀ",
+    "description": "ਕੋਈ ਹੋਰ ਖੋਜ ਸ਼ਬਦ ਜਾਂ ਸ਼੍ਰੇਣੀ ਅਜ਼ਮਾਓ।"
+  },
+  "notFound": {
+    "title": "ਕਿਤਾਬ ਨਹੀਂ ਮਿਲੀ",
+    "description": "ਇਹ ਕਿਤਾਬ ਸ਼ਾਇਦ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਹਟਾ ਦਿੱਤੀ ਗਈ ਹੈ।"
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "ਚੰਗੀਆਂ ਆਦਤਾਂ ਬਣਾਉਣ ਅਤੇ ਮਾੜੀਆਂ ਛੱਡਣ ਦੀ ਇੱਕ ਵਿਹਾਰਕ ਗਾਈਡ।"
+    },
+    "sapiens": {
+      "description": "ਪੱਥਰ ਯੁੱਗ ਤੋਂ ਲੈ ਕੇ ਅੱਜ ਤੱਕ, ਮਨੁੱਖਜਾਤੀ ਦਾ ਇੱਕ ਸੰਖੇਪ ਇਤਿਹਾਸ।"
+    },
+    "the-overstory": {
+      "description": "ਇੱਕ ਜਟਿਲ ਨਾਵਲ ਜੋ ਰੁੱਖਾਂ ਨਾਲ ਉਹਨਾਂ ਦੇ ਰਿਸ਼ਤੇ ਰਾਹੀਂ ਨੌਂ ਅਮਰੀਕੀਆਂ ਨੂੰ ਜੋੜਦਾ ਹੈ।"
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn, Keras, ਅਤੇ TensorFlow ਨਾਲ ਮਸ਼ੀਨ ਲਰਨਿੰਗ ਦੀ ਇੱਕ ਵਿਹਾਰਕ ਗਾਈਡ।"
+    },
+    "a-short-history": {
+      "description": "ਵਿਗਿਆਨ ਦੇ ਇਤਿਹਾਸ ਰਾਹੀਂ ਇੱਕ ਸਹਿਜ ਸਫ਼ਰ।"
+    },
+    "cant-hurt-me": {
+      "description": "ਡੇਵਿਡ ਗੌਗਿਨਜ਼ ਦੀ ਇੱਕ ਔਖੇ ਬਚਪਨ ਨੂੰ ਪਾਰ ਕਰਕੇ ਚੋਟੀ ਦਾ ਖਿਡਾਰੀ ਬਣਨ ਦੀ ਦਾਸਤਾਨ।"
+    },
+    "deep-work": {
+      "description": "ਧਿਆਨ ਭਟਕਾਉਣ ਵਾਲੀ ਦੁਨੀਆਂ ਵਿੱਚ ਇਕਾਗਰ ਸਫਲਤਾ ਲਈ ਨਿਯਮ।"
+    },
+    "the-hundred-page-ml": {
+      "description": "ਮਸ਼ੀਨ ਲਰਨਿੰਗ ਦੇ ਮੂਲ ਵਿਚਾਰਾਂ ਦੀ ਇੱਕ ਸੰਖੇਪ ਜਾਣ-ਪਛਾਣ।"
+    },
+    "norwegian-wood": {
+      "description": "1960ਵਿਆਂ ਦੇ ਟੋਕੀਓ ਵਿੱਚ ਵਿਛੋੜੇ ਅਤੇ ਉੱਭਰਦੀ ਜਵਾਨੀ ਦੀ ਇੱਕ ਯਾਦਗਾਰੀ ਕਹਾਣੀ।"
+    }
+  }
+}

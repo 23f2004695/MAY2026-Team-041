@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "మళ్లీ స్వాగతం, {{name}}",
+    "subtitle": "మీ లైబ్రరీలో జరుగుతున్నది ఇదిగో"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "అరువుగా తీసుకున్న పుస్తకాలు"
+    },
+    "booksReserved": {
+      "label": "రిజర్వ్ చేసిన పుస్తకాలు"
+    },
+    "seatBookings": {
+      "label": "సీటు బుకింగ్‌లు"
+    },
+    "readingPoints": {
+      "label": "పఠన పాయింట్లు"
+    }
+  },
+  "booksDueSoon": {
+    "title": "త్వరలో గడువు ముగిసే పుస్తకాలు",
+    "empty": {
+      "title": "త్వరలో గడువు ముగిసేవి ఏవీ లేవు",
+      "description": "మీరు అన్నీ పూర్తి చేశారు."
+    },
+    "dueLabel": "గడువు {{date}} · {{days}}రో మిగిలి ఉంది"
+  },
+  "currentlyBorrowed": {
+    "title": "ప్రస్తుతం అరువుగా ఉన్నవి",
+    "since": "{{date}} నుండి"
+  },
+  "recentNotifications": {
+    "title": "ఇటీవలి నోటిఫికేషన్లు"
+  },
+  "upcomingEvents": {
+    "title": "రాబోయే ఈవెంట్లు"
+  },
+  "readingProgress": {
+    "title": "పఠన పురోగతి",
+    "pages": "{{total}} పేజీలలో {{read}}"
+  },
+  "monthlyChallenge": {
+    "title": "నెలవారీ సవాలు",
+    "books": "{{target}} పుస్తకాలలో {{current}}"
+  },
+  "quickActions": {
+    "title": "త్వరిత చర్యలు",
+    "browseBooks": "పుస్తకాలను బ్రౌజ్ చేయండి",
+    "bookSeat": "ఒక సీటును బుక్ చేయండి",
+    "viewReservations": "రిజర్వేషన్లను చూడండి"
+  }
+}

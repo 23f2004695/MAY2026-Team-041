@@ -1,18 +1,22 @@
+import { useTranslation } from 'react-i18next';
+
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import type { PendingRequest, PendingRequestType } from '@/mocks/admin';
 
-const typeLabel: Record<PendingRequestType, string> = {
-  donation: 'Book Donation',
-  'membership-renewal': 'Membership Renewal',
-  'reservation-dispute': 'Reservation Dispute',
+const typeLabelKey: Record<PendingRequestType, string> = {
+  donation: 'pendingRequests.requestTypes.donation',
+  'membership-renewal': 'pendingRequests.requestTypes.membershipRenewal',
+  'reservation-dispute': 'pendingRequests.requestTypes.reservationDispute',
 };
 
 export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
+  const { t } = useTranslation('admin');
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pending Requests</CardTitle>
+        <CardTitle>{t('pendingRequests.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {requests.map((request) => (
@@ -22,25 +26,33 @@ export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
           >
             <div>
               <div className="flex items-center gap-2">
-                <Badge variant="outline">{typeLabel[request.type]}</Badge>
+                <Badge variant="outline">{t(typeLabelKey[request.type])}</Badge>
                 <span className="text-xs text-muted-foreground">{request.submittedOn}</span>
               </div>
-              <p className="mt-1 text-sm text-foreground">{request.summary}</p>
-              <p className="text-xs text-muted-foreground">From {request.requester}</p>
+              <p className="mt-1 text-sm text-foreground">
+                {t(`pendingRequests.items.${request.id}.summary`)}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t('pendingRequests.from', { requester: request.requester })}
+              </p>
             </div>
             <div className="flex gap-2">
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => comingSoonToast(`Rejecting request from ${request.requester}`)}
+                onClick={() =>
+                  comingSoonToast(t('pendingRequests.toast.reject', { requester: request.requester }))
+                }
               >
-                Reject
+                {t('pendingRequests.reject')}
               </Button>
               <Button
                 size="sm"
-                onClick={() => comingSoonToast(`Approving request from ${request.requester}`)}
+                onClick={() =>
+                  comingSoonToast(t('pendingRequests.toast.approve', { requester: request.requester }))
+                }
               >
-                Approve
+                {t('pendingRequests.approve')}
               </Button>
             </div>
           </div>

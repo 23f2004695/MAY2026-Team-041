@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "પુસ્તક સમીક્ષાઓ",
+    "byAuthor": "{{author}} દ્વારા",
+    "writeReview": "સમીક્ષા લખો",
+    "comments": "ટિપ્પણીઓ"
+  },
+  "allReviews": {
+    "heading": "અમારા સભ્યો શું કહે છે",
+    "subtitle": "સમગ્ર સમુદાયના વાચકો, ક્લબ લીડ, સ્વયંસેવકો અને કાર્યક્રમ આયોજકો તરફથી ખરેખરો પ્રતિસાદ."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} સમીક્ષા",
+    "reviewCount_other": "{{count}} સમીક્ષાઓ",
+    "starsLabel_one": "{{count}} સ્ટાર",
+    "starsLabel_other": "{{count}} સ્ટાર"
+  },
+  "modal": {
+    "title": "સમીક્ષા લખો",
+    "cancel": "રદ કરો",
+    "submit": "સમીક્ષા પોસ્ટ કરો",
+    "errors": {
+      "imageFailed": "છબી ઉમેરી શકાઈ નહીં.",
+      "missingFields": "તમારું નામ, રેટિંગ અને એક ટિપ્પણી ઉમેરો."
+    },
+    "toast": {
+      "posted": "સમીક્ષા પોસ્ટ થઈ"
+    },
+    "fields": {
+      "name": {
+        "label": "તમારું નામ",
+        "placeholder": "દા.ત. Priya Sharma"
+      },
+      "rating": {
+        "label": "રેટિંગ",
+        "starLabel_one": "{{count}} સ્ટાર",
+        "starLabel_other": "{{count}} સ્ટાર"
+      },
+      "comment": {
+        "label": "ટિપ્પણી",
+        "placeholder": "આ પુસ્તક વિશે તમને શું લાગ્યું તે વહેંચો..."
+      },
+      "photo": {
+        "label": "ફોટો (વૈકલ્પિક)",
+        "previewAlt": "સમીક્ષા જોડાણ પ્રિવ્યૂ",
+        "remove": "છબી કાઢી નાખો",
+        "uploading": "ઉમેરી રહ્યા છીએ...",
+        "upload": "એક છબી અપલોડ કરો"
+      }
+    }
+  }
+}

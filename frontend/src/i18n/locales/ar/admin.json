@@ -1,0 +1,72 @@
+{
+  "title": "لوحة تحكم المشرف",
+  "subtitle": "نظرة عامة على المنصة وإدارتها",
+  "stats": {
+    "totalBooks": {
+      "label": "إجمالي الكتب"
+    },
+    "totalMembers": {
+      "label": "إجمالي الأعضاء"
+    },
+    "eventsThisMonth": {
+      "label": "فعاليات هذا الشهر"
+    },
+    "revenueMtd": {
+      "label": "الإيرادات (منذ بداية الشهر)"
+    }
+  },
+  "pendingRequests": {
+    "title": "الطلبات المعلّقة",
+    "from": "من {{requester}}",
+    "reject": "رفض",
+    "approve": "موافقة",
+    "requestTypes": {
+      "donation": "تبرّع بكتب",
+      "membershipRenewal": "تجديد العضوية",
+      "reservationDispute": "نزاع على حجز"
+    },
+    "items": {
+      "pr1": {
+        "summary": "التبرع بـ 8 كتب، منها 3 عناوين خيال علمي"
+      },
+      "pr2": {
+        "summary": "طلب تجديد عضوية مميّزة"
+      },
+      "pr3": {
+        "summary": "يُبلّغ عن أن مركزه في قائمة انتظار الحجز يبدو غير صحيح"
+      }
+    },
+    "toast": {
+      "reject": "جارٍ رفض الطلب من {{requester}}",
+      "approve": "جارٍ الموافقة على الطلب من {{requester}}"
+    }
+  },
+  "reports": {
+    "title": "التقارير",
+    "viewReport": "عرض التقرير",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "الكتب الأكثر استعارة"
+      },
+      "membershipGrowth": {
+        "label": "نمو العضويات"
+      },
+      "eventAttendance": {
+        "label": "حضور الفعاليات"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "إجراءات سريعة",
+    "addBook": "إضافة كتاب",
+    "inviteMember": "دعوة عضو",
+    "createEvent": "إنشاء فعالية",
+    "announcement": "إعلان",
+    "toast": {
+      "addBook": "جارٍ إضافة كتاب",
+      "inviteMember": "جارٍ دعوة عضو",
+      "createEvent": "جارٍ إنشاء فعالية",
+      "announcement": "جارٍ إرسال إعلان"
+    }
+  }
+}

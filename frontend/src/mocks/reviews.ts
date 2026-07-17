@@ -20,6 +20,7 @@ export interface BookReview {
   rating: number;
   comment: string;
   date: string;
+  imageDataUrl?: string;
 }
 
 export const bookReviews: BookReview[] = [

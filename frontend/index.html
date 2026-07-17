@@ -4,6 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MAY2026 Team 041</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script>
+      // Anti-FOUC: apply the saved theme's `.dark` class before first paint so
+      // dark-mode users don't flash the light palette, and so the theme's base
+      // color tokens are already correct when AppearanceProvider reads them.
+      (function () {
+        try {
+          var t = JSON.parse(localStorage.getItem('theme') || '"system"');
+          var dark =
+            t === 'dark' ||
+            (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.toggle('dark', dark);
+        } catch (e) {}
+      })();
+
+      // Anti-FOUC: apply a saved custom appearance before first paint. Only the
+      // full both-surfaces case is handled here (a quick YIQ foreground); the
+      // AppearanceProvider refines to the WCAG palette on mount.
+      (function () {
+        try {
+          var a = JSON.parse(localStorage.getItem('appearance') || 'null');
+          if (!a || !a.backgroundColor || !a.cardColor) return;
+          var yiq = function (hex) {
+            var v = hex.replace('#', '');
+            if (v.length === 3)
+              v = v[0] + v[0] + v[1] + v[1] + v[2] + v[2];
+            var r = parseInt(v.slice(0, 2), 16),
+              g = parseInt(v.slice(2, 4), 16),
+              b = parseInt(v.slice(4, 6), 16);
+            return (r * 299 + g * 587 + b * 114) / 1000;
+          };
+          var s = document.documentElement.style;
+          s.setProperty('--color-background', a.backgroundColor);
+          s.setProperty('--color-surface', a.cardColor);
+          var fg = Math.min(yiq(a.backgroundColor), yiq(a.cardColor)) >= 128 ? '#0b1114' : '#f5f8f9';
+          s.setProperty('--color-foreground', fg);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

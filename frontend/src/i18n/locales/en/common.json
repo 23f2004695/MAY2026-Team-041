@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "books": "Books",
+    "reservations": "Reservations",
+    "seatBooking": "Seat Booking",
+    "community": "Community",
+    "events": "Events",
+    "readingProgress": "Reading Progress",
+    "leaderboard": "Leaderboard",
+    "reviews": "Reviews",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "adminOverview": "Admin Overview",
+    "backToApp": "Back to App"
+  },
+  "actions": {
+    "signIn": "Sign in",
+    "logOut": "Log out",
+    "profile": "Profile",
+    "settings": "Settings",
+    "backHome": "Back home",
+    "backToHome": "Back to home",
+    "viewAll": "View all"
+  },
+  "aria": {
+    "openNavigation": "Open navigation",
+    "openAccountMenu": "Open account menu",
+    "menu": "Menu",
+    "account": "Account"
+  },
+  "language": {
+    "selectLabel": "Change language"
+  },
+  "theme": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "appearance": {
+    "label": "Set space background",
+    "background": {
+      "title": "Page background",
+      "description": "The color behind everything on the page."
+    },
+    "cards": {
+      "title": "Cards & panels",
+      "description": "Cards, the navbar, inputs, and dialogs share this color."
+    },
+    "custom": "Custom",
+    "preview": "Preview",
+    "sampleCard": "Sample card",
+    "sampleText": "Text color adjusts automatically to stay readable.",
+    "primaryAction": "Primary action",
+    "lowContrast": "Low contrast — for the most readable result, pair light with light or deep with deep colors.",
+    "reset": "Reset to theme default",
+    "done": "Done"
+  },
+  "comingSoon": {
+    "badge": "Coming soon"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} isn't wired up yet",
+      "description": "This is a UI preview — the real workflow ships once the backend is connected."
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "A modern library platform for borrowing, reading clubs, and community events.",
+    "siteLinks": "Site links",
+    "navigation": "Navigation",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "links": {
+      "home": "Home",
+      "login": "Log in",
+      "register": "Register",
+      "books": "Books",
+      "community": "Community",
+      "events": "Events"
+    },
+    "social": {
+      "website": "Website",
+      "forum": "Community Forum",
+      "newsletter": "Newsletter"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "This page doesn't exist."
+  },
+  "pages": {
+    "register": {
+      "title": "Register",
+      "description": "Create a new account."
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Reset your password."
+    },
+    "community": {
+      "title": "Community",
+      "description": "Reading clubs and discussions."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Manage your preferences."
+    }
+  }
+}

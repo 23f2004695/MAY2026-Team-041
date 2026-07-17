@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "ఈవెంట్లు",
+    "subtitle": "రాబోయే లైబ్రరీ ఈవెంట్లు మరియు కమ్యూనిటీ ప్రోగ్రామ్‌లు"
+  },
+  "stats": {
+    "eventsThisMonth": "ఈ నెల ఈవెంట్లు",
+    "totalAttendees": "మొత్తం హాజరైనవారు",
+    "avgAttendanceRate": "సగటు హాజరు రేటు"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} హాజరవుతున్నారు",
+    "registered": "నమోదు చేయబడింది",
+    "open": "తెరిచి ఉంది",
+    "viewDetails": "వివరాలు చూడండి"
+  },
+  "drawer": {
+    "title": "ఈవెంట్ వివరాలు",
+    "registration": "నమోదు",
+    "registered": "మీరు నమోదు చేయబడ్డారు",
+    "notRegistered": "నమోదు కాలేదు",
+    "cancelRegistration": "నమోదును రద్దు చేయండి",
+    "register": "నమోదు చేయండి",
+    "volunteerAssignments": "వాలంటీర్ అసైన్‌మెంట్‌లు",
+    "noVolunteers": "ఇంకా ఎవరూ వాలంటీర్లుగా కేటాయించబడలేదు.",
+    "toast": {
+      "cancelling": "నమోదును రద్దు చేస్తోంది",
+      "registering": "నమోదు చేస్తోంది"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "సైన్స్-ఫై బుక్ క్లబ్ మీటప్",
+      "location": "మెయిన్ హాల్, కమ్యూనిటీ లైబ్రరీ",
+      "description": "ఈ నెల ఎంపిక \"Project Hail Mary\"పై నెలవారీ చర్చ.",
+      "volunteers": {
+        "amaraOkafor": "చర్చా నాయకురాలు",
+        "liamFitzgerald": "ఏర్పాట్లు"
+      }
+    },
+    "author-talk": {
+      "title": "రచయిత చర్చ: స్థానిక రచయితల రాత్రి",
+      "location": "ఆడిటోరియం, కమ్యూనిటీ లైబ్రరీ",
+      "description": "తమ తొలి నవలల గురించి చర్చిస్తున్న ముగ్గురు స్థానిక రచయితలతో ఒక సాయంత్రం.",
+      "volunteers": {
+        "danielCho": "నమోదు డెస్క్"
+      }
+    },
+    "kids-story-hour": {
+      "title": "పిల్లల కథల గంట",
+      "location": "పిల్లల విభాగం",
+      "description": "4-8 సంవత్సరాల పిల్లల కోసం వారపు కథల చెప్పే సెషన్.",
+      "volunteers": {
+        "priyaSharma": "కథకురాలు"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "వాలంటీర్ ఓరియంటేషన్",
+      "location": "మీటింగ్ రూమ్ B",
+      "description": "లైబ్రరీ ప్రోగ్రామ్‌లలో చేరుతున్న కొత్త వాలంటీర్ల కోసం ఓరియంటేషన్ సెషన్.",
+      "volunteers": {}
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "Eventos",
+    "subtitle": "Próximos eventos de la biblioteca y programas comunitarios"
+  },
+  "stats": {
+    "eventsThisMonth": "Eventos este mes",
+    "totalAttendees": "Asistentes totales",
+    "avgAttendanceRate": "Tasa media de asistencia"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} asistentes",
+    "registered": "Inscrito",
+    "open": "Abierto",
+    "viewDetails": "Ver detalles"
+  },
+  "drawer": {
+    "title": "Detalles del evento",
+    "registration": "Inscripción",
+    "registered": "Estás inscrito",
+    "notRegistered": "No inscrito",
+    "cancelRegistration": "Cancelar inscripción",
+    "register": "Inscribirse",
+    "volunteerAssignments": "Asignaciones de voluntarios",
+    "noVolunteers": "Aún no hay voluntarios asignados.",
+    "toast": {
+      "cancelling": "Cancelando inscripción",
+      "registering": "Inscribiendo"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "Encuentro del club de lectura de ciencia ficción",
+      "location": "Salón principal, Community Library",
+      "description": "Debate mensual sobre la selección de este mes, \"Project Hail Mary\".",
+      "volunteers": {
+        "amaraOkafor": "Moderadora del debate",
+        "liamFitzgerald": "Montaje"
+      }
+    },
+    "author-talk": {
+      "title": "Charla de autores: Noche de escritores locales",
+      "location": "Auditorio, Community Library",
+      "description": "Una velada con tres autores locales que comentan sus primeras novelas.",
+      "volunteers": {
+        "danielCho": "Mesa de inscripción"
+      }
+    },
+    "kids-story-hour": {
+      "title": "Hora del cuento para niños",
+      "location": "Ala infantil",
+      "description": "Sesión semanal de cuentacuentos para niños de 4 a 8 años.",
+      "volunteers": {
+        "priyaSharma": "Cuentacuentos"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "Orientación para voluntarios",
+      "location": "Sala de reuniones B",
+      "description": "Sesión de orientación para nuevos voluntarios que se unen a los programas de la biblioteca.",
+      "volunteers": {}
+    }
+  }
+}

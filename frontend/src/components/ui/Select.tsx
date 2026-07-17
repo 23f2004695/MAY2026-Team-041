@@ -47,7 +47,7 @@ export function Select({
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
           className={cn(
-            'h-10 w-full appearance-none rounded-md border border-border bg-surface px-3 pr-9 text-sm text-foreground',
+            'h-10 w-full appearance-none rounded-md border border-border bg-surface px-3 pe-9 text-sm text-foreground',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
             'disabled:cursor-not-allowed disabled:opacity-50',
             error && 'border-danger focus-visible:ring-danger',
@@ -66,7 +66,7 @@ export function Select({
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <ChevronDown className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
       </div>
       {error && (
         <p id={errorId} className="text-sm text-danger">

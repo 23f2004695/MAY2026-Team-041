@@ -2,7 +2,9 @@ import { useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 
+import { AppearanceProvider } from './AppearanceProvider';
 import { AuthProvider } from './AuthProvider';
+import { LanguageProvider } from './LanguageProvider';
 import { ThemeProvider } from './ThemeProvider';
 
 export interface AppProvidersProps {
@@ -15,10 +17,14 @@ export function AppProviders({ children }: AppProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AuthProvider>
-          {children}
-          <Toaster richColors closeButton position="top-right" />
-        </AuthProvider>
+        <AppearanceProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              {children}
+              <Toaster richColors closeButton position="top-right" />
+            </AuthProvider>
+          </LanguageProvider>
+        </AppearanceProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

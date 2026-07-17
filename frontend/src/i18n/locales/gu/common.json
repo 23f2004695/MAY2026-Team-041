@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "ડેશબોર્ડ",
+    "books": "પુસ્તકો",
+    "reservations": "આરક્ષણો",
+    "seatBooking": "સીટ બુકિંગ",
+    "community": "સમુદાય",
+    "events": "કાર્યક્રમો",
+    "readingProgress": "વાંચનની પ્રગતિ",
+    "leaderboard": "લીડરબોર્ડ",
+    "reviews": "સમીક્ષાઓ",
+    "notifications": "સૂચનાઓ",
+    "settings": "સેટિંગ્સ",
+    "adminOverview": "એડમિન ઝાંખી",
+    "backToApp": "એપ પર પાછા જાઓ"
+  },
+  "actions": {
+    "signIn": "સાઇન ઇન કરો",
+    "logOut": "લોગ આઉટ કરો",
+    "profile": "પ્રોફાઇલ",
+    "settings": "સેટિંગ્સ",
+    "backHome": "હોમ પર પાછા",
+    "backToHome": "હોમ પર પાછા જાઓ",
+    "viewAll": "બધું જુઓ"
+  },
+  "aria": {
+    "openNavigation": "નેવિગેશન ખોલો",
+    "openAccountMenu": "એકાઉન્ટ મેનૂ ખોલો",
+    "menu": "મેનૂ",
+    "account": "એકાઉન્ટ"
+  },
+  "language": {
+    "selectLabel": "ભાષા બદલો"
+  },
+  "theme": {
+    "toLight": "લાઇટ મોડ પર સ્વિચ કરો",
+    "toDark": "ડાર્ક મોડ પર સ્વિચ કરો"
+  },
+  "appearance": {
+    "label": "સ્પેસ બેકગ્રાઉન્ડ સેટ કરો",
+    "background": {
+      "title": "પેજ બેકગ્રાઉન્ડ",
+      "description": "પેજ પરની દરેક વસ્તુ પાછળનો રંગ."
+    },
+    "cards": {
+      "title": "કાર્ડ્સ અને પેનલ્સ",
+      "description": "કાર્ડ્સ, નેવબાર, ઇનપુટ્સ અને ડાયલોગ આ રંગ વહેંચે છે."
+    },
+    "custom": "કસ્ટમ",
+    "preview": "પ્રિવ્યૂ",
+    "sampleCard": "નમૂનો કાર્ડ",
+    "sampleText": "વાંચી શકાય તે માટે ટેક્સ્ટનો રંગ આપોઆપ ગોઠવાય છે.",
+    "primaryAction": "મુખ્ય ક્રિયા",
+    "lowContrast": "ઓછો કોન્ટ્રાસ્ટ — સૌથી વાંચી શકાય તેવા પરિણામ માટે લાઇટ સાથે લાઇટ કે ડીપ સાથે ડીપ રંગ પસંદ કરો.",
+    "reset": "થીમના ડિફોલ્ટ પર રીસેટ કરો",
+    "done": "થઈ ગયું"
+  },
+  "comingSoon": {
+    "badge": "ટૂંક સમયમાં આવી રહ્યું છે"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} હજી કનેક્ટ થયું નથી",
+      "description": "આ એક UI પ્રિવ્યૂ છે — બેકએન્ડ કનેક્ટ થતાં જ ખરેખરી પ્રક્રિયા શરૂ થશે."
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "ઉધાર લેવા, વાંચન ક્લબ અને સામુદાયિક કાર્યક્રમો માટેનું આધુનિક લાઇબ્રેરી પ્લેટફોર્મ.",
+    "siteLinks": "સાઇટ લિંક્સ",
+    "navigation": "નેવિગેશન",
+    "quickLinks": "ઝડપી લિંક્સ",
+    "contact": "સંપર્ક",
+    "links": {
+      "home": "હોમ",
+      "login": "લોગ ઇન કરો",
+      "register": "નોંધણી કરો",
+      "books": "પુસ્તકો",
+      "community": "સમુદાય",
+      "events": "કાર્યક્રમો"
+    },
+    "social": {
+      "website": "વેબસાઇટ",
+      "forum": "સામુદાયિક ફોરમ",
+      "newsletter": "ન્યૂઝલેટર"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "આ પેજ અસ્તિત્વમાં નથી."
+  },
+  "pages": {
+    "register": {
+      "title": "નોંધણી",
+      "description": "નવું એકાઉન્ટ બનાવો."
+    },
+    "forgotPassword": {
+      "title": "પાસવર્ડ ભૂલી ગયા",
+      "description": "તમારો પાસવર્ડ રીસેટ કરો."
+    },
+    "community": {
+      "title": "સમુદાય",
+      "description": "વાંચન ક્લબ અને ચર્ચાઓ."
+    },
+    "settings": {
+      "title": "સેટિંગ્સ",
+      "description": "તમારી પસંદગીઓ સંચાલિત કરો."
+    }
+  }
+}

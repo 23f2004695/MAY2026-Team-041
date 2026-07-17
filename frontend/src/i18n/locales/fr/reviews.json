@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "Avis sur les livres",
+    "byAuthor": "par {{author}}",
+    "writeReview": "Rédiger un avis",
+    "comments": "Commentaires"
+  },
+  "allReviews": {
+    "heading": "Ce que disent nos membres",
+    "subtitle": "De vrais retours de lecteurs, de responsables de club, de bénévoles et d'organisateurs d'événements de toute la communauté."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} avis",
+    "reviewCount_other": "{{count}} avis",
+    "starsLabel_one": "{{count}} étoile",
+    "starsLabel_other": "{{count}} étoiles"
+  },
+  "modal": {
+    "title": "Rédiger un avis",
+    "cancel": "Annuler",
+    "submit": "Publier l'avis",
+    "errors": {
+      "imageFailed": "Impossible d'ajouter l'image.",
+      "missingFields": "Ajoutez votre nom, une note et un commentaire."
+    },
+    "toast": {
+      "posted": "Avis publié"
+    },
+    "fields": {
+      "name": {
+        "label": "Votre nom",
+        "placeholder": "ex. Priya Sharma"
+      },
+      "rating": {
+        "label": "Note",
+        "starLabel_one": "{{count}} étoile",
+        "starLabel_other": "{{count}} étoiles"
+      },
+      "comment": {
+        "label": "Commentaire",
+        "placeholder": "Partagez ce que vous avez pensé de ce livre..."
+      },
+      "photo": {
+        "label": "Photo (facultatif)",
+        "previewAlt": "Aperçu de la pièce jointe de l'avis",
+        "remove": "Supprimer l'image",
+        "uploading": "Ajout en cours...",
+        "upload": "Téléverser une image"
+      }
+    }
+  }
+}

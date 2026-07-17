@@ -1,0 +1,72 @@
+{
+  "title": "Tableau de bord admin",
+  "subtitle": "Vue d'ensemble et administration de la plateforme",
+  "stats": {
+    "totalBooks": {
+      "label": "Total des livres"
+    },
+    "totalMembers": {
+      "label": "Total des membres"
+    },
+    "eventsThisMonth": {
+      "label": "Événements ce mois-ci"
+    },
+    "revenueMtd": {
+      "label": "Revenus (cumul mensuel)"
+    }
+  },
+  "pendingRequests": {
+    "title": "Demandes en attente",
+    "from": "De {{requester}}",
+    "reject": "Refuser",
+    "approve": "Approuver",
+    "requestTypes": {
+      "donation": "Don de livres",
+      "membershipRenewal": "Renouvellement d'adhésion",
+      "reservationDispute": "Litige de réservation"
+    },
+    "items": {
+      "pr1": {
+        "summary": "Don de 8 livres, dont 3 titres de science-fiction"
+      },
+      "pr2": {
+        "summary": "Demande de renouvellement d'adhésion premium"
+      },
+      "pr3": {
+        "summary": "Signale une position dans la file de réservation qui semble incorrecte"
+      }
+    },
+    "toast": {
+      "reject": "Refus de la demande de {{requester}}",
+      "approve": "Approbation de la demande de {{requester}}"
+    }
+  },
+  "reports": {
+    "title": "Rapports",
+    "viewReport": "Voir le rapport",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "Livres les plus empruntés"
+      },
+      "membershipGrowth": {
+        "label": "Croissance des adhésions"
+      },
+      "eventAttendance": {
+        "label": "Participation aux événements"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "Actions rapides",
+    "addBook": "Ajouter un livre",
+    "inviteMember": "Inviter un membre",
+    "createEvent": "Créer un événement",
+    "announcement": "Annonce",
+    "toast": {
+      "addBook": "Ajout d'un livre",
+      "inviteMember": "Invitation d'un membre",
+      "createEvent": "Création d'un événement",
+      "announcement": "Envoi d'une annonce"
+    }
+  }
+}

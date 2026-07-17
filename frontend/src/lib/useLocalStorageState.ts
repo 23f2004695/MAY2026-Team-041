@@ -13,7 +13,13 @@ export function useLocalStorageState<T>(key: string, defaultValue: T) {
 
   function set(next: T) {
     setValue(next);
-    localStorage.setItem(key, JSON.stringify(next));
+    try {
+      localStorage.setItem(key, JSON.stringify(next));
+    } catch (error) {
+      // Persistence can fail (e.g. QuotaExceededError). Keep the in-memory state
+      // and warn rather than throwing out of the state setter and aborting the caller.
+      console.warn(`useLocalStorageState: failed to persist "${key}"`, error);
+    }
   }
 
   return [value, set] as const;

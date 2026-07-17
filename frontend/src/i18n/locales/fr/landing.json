@@ -1,0 +1,246 @@
+{
+  "hero": {
+    "badge": "Community Reading Club et plateforme de bibliothèque",
+    "title": "Votre bibliothèque, votre communauté, tout au même endroit.",
+    "description": "Empruntez des livres, réservez une place d'étude, rejoignez un club de lecture et recevez des recommandations personnalisées, sans registres papier ni conversations de groupe.",
+    "joinCommunity": "Rejoindre la communauté",
+    "browseBooks": "Parcourir les livres",
+    "dashboard": "Tableau de bord",
+    "currentlyReading": "En cours de lecture",
+    "history": "Historique",
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "books": "Livres",
+      "reservations": "Réservations",
+      "seatBooking": "Réservation de place"
+    },
+    "readingList": {
+      "atomicHabits": { "status": "À rendre dans 4 jours" },
+      "sapiens": { "status": "Prêt à être retiré" },
+      "theOverstory": { "status": "Position 2 dans la file" }
+    }
+  },
+  "statistics": {
+    "srHeading": "Statistiques de la plateforme",
+    "items": {
+      "booksAvailable": { "label": "Livres disponibles" },
+      "members": { "label": "Membres" },
+      "readingClubs": { "label": "Clubs de lecture" },
+      "eventsHosted": { "label": "Événements organisés" },
+      "booksBorrowed": { "label": "Livres empruntés" },
+      "studySeats": { "label": "Places d'étude" }
+    }
+  },
+  "features": {
+    "heading": "Tout ce qu'une bibliothèque moderne doit offrir",
+    "description": "Une seule plateforme pour l'emprunt, la découverte, la communauté et la gestion quotidienne de la bibliothèque.",
+    "items": {
+      "digitalLibrary": {
+        "title": "Bibliothèque numérique",
+        "description": "Recherchez, filtrez et parcourez l'intégralité du catalogue de livres, d'auteurs et de catégories."
+      },
+      "qrBorrowing": {
+        "title": "Emprunt par QR code",
+        "description": "Scannez le QR code d'un livre pour l'emprunter ou le rendre en quelques secondes, sans paperasse."
+      },
+      "seatBooking": {
+        "title": "Réservation de place",
+        "description": "Réservez à l'avance une place d'étude au calme et consultez la disponibilité en temps réel."
+      },
+      "aiLibrarian": {
+        "title": "Bibliothécaire IA",
+        "description": "Recevez des suggestions de livres personnalisées grâce à un assistant de lecture conversationnel."
+      },
+      "readingChallenges": {
+        "title": "Défis de lecture",
+        "description": "Suivez votre progression et débloquez des récompenses au fil de vos lectures."
+      },
+      "communityDiscussions": {
+        "title": "Discussions communautaires",
+        "description": "Rejoignez des clubs de lecture, partagez des avis et discutez de vos livres préférés."
+      },
+      "bookDonations": {
+        "title": "Dons de livres",
+        "description": "Donnez les livres que vous avez terminés et contribuez à enrichir la collection partagée."
+      },
+      "analyticsDashboard": {
+        "title": "Tableau de bord analytique",
+        "description": "Les bibliothécaires et les administrateurs accèdent aux tendances, aux livres populaires et à l'utilisation."
+      }
+    }
+  },
+  "howItWorks": {
+    "heading": "Comment ça marche",
+    "steps": {
+      "register": {
+        "title": "S'inscrire",
+        "description": "Créez une adhésion gratuite en moins d'une minute."
+      },
+      "searchBooks": {
+        "title": "Rechercher des livres",
+        "description": "Trouvez des titres par catégorie, auteur ou humeur."
+      },
+      "borrowReserve": {
+        "title": "Emprunter / Réserver",
+        "description": "Retirez un exemplaire ou réservez-en un qui est déjà emprunté."
+      },
+      "readParticipate": {
+        "title": "Lire et participer",
+        "description": "Suivez votre progression et rejoignez la communauté autour du livre."
+      }
+    }
+  },
+  "aiLibrarian": {
+    "heading": "Découvrez le bibliothécaire IA",
+    "description": "Demandez des recommandations en langage naturel et recevez une sélection sur mesure.",
+    "conversation": {
+      "userPrompt": {
+        "message": "Suggère des livres pour débutants en Machine Learning."
+      },
+      "aiResponse": {
+        "message": "Voici cinq recommandations : \"Hands-On Machine Learning\", \"The Hundred-Page ML Book\", \"Python Machine Learning\", \"Deep Learning for Coders\" et \"Grokking Machine Learning\"."
+      }
+    }
+  },
+  "mood": {
+    "heading": "Quelle est votre humeur de lecture ?",
+    "description": "Choisissez une humeur et découvrez un aperçu des suggestions de notre moteur de recommandation.",
+    "groupLabel": "Humeurs de lecture",
+    "recommendedFor": "Recommandé pour l'humeur {{mood}}",
+    "moods": {
+      "happy": { "label": "Joyeux" },
+      "relaxed": { "label": "Détendu" },
+      "curious": { "label": "Curieux" },
+      "motivated": { "label": "Motivé" },
+      "studyMode": { "label": "Mode étude" }
+    }
+  },
+  "readingChallenge": {
+    "heading": "Défis de lecture et récompenses",
+    "description": "Restez motivé grâce à des badges à débloquer au fil de vos lectures.",
+    "achievements": {
+      "firstBook": {
+        "label": "Premier livre",
+        "description": "Empruntez votre premier livre"
+      },
+      "bookWorm": {
+        "label": "Rat de bibliothèque",
+        "description": "Lisez 10 livres en un an"
+      },
+      "topReader": {
+        "label": "Meilleur lecteur",
+        "description": "Atteignez le sommet du classement mensuel"
+      },
+      "monthlyChampion": {
+        "label": "Champion du mois",
+        "description": "Relevez tous les défis hebdomadaires d'un mois"
+      }
+    }
+  },
+  "community": {
+    "heading": "Conçu autour de la communauté",
+    "description": "La bibliothèque, c'est bien plus qu'un catalogue. C'est un lieu pour parler de vos lectures et pour donner en retour.",
+    "highlights": {
+      "bookDiscussions": {
+        "title": "Discussions sur les livres",
+        "description": "Échangez sur les rebondissements et les thèmes avec d'autres lecteurs."
+      },
+      "reviews": {
+        "title": "Avis",
+        "description": "Notez et commentez les livres pour aider la communauté à choisir sa prochaine lecture."
+      },
+      "readingClubs": {
+        "title": "Clubs de lecture",
+        "description": "Rejoignez un club correspondant à votre genre favori et à votre rythme de lecture."
+      },
+      "volunteerPrograms": {
+        "title": "Programmes de bénévolat",
+        "description": "Aidez à organiser des événements, à trier les dons ou à parrainer de nouveaux membres."
+      }
+    }
+  },
+  "seatAvailability": {
+    "heading": "Disponibilité des places en direct",
+    "description": "Vérifiez la salle d'étude avant de vous déplacer. Ceci est un aperçu avec des données d'exemple.",
+    "legend": {
+      "available": "Disponible",
+      "reserved": "Réservée",
+      "occupied": "Occupée"
+    }
+  },
+  "testimonials": {
+    "heading": "Ce que disent nos membres",
+    "people": {
+      "priyaSharma": {
+        "role": "Membre depuis 2023",
+        "quote": "Rien que la réservation de place m'a évité tellement de déplacements inutiles vers une bibliothèque bondée."
+      },
+      "danielCho": {
+        "role": "Responsable de club de lecture",
+        "quote": "Animer notre club de lecture mensuel est tellement plus simple avec les forums de discussion intégrés."
+      },
+      "amaraOkafor": {
+        "role": "Bénévole",
+        "quote": "Coordonner les dons et les événements, ce n'était que des tableurs. Maintenant, tout est au même endroit."
+      },
+      "liamFitzgerald": {
+        "role": "Membre depuis 2024",
+        "quote": "Le bibliothécaire IA m'a recommandé des livres que je n'aurais jamais choisis moi-même, et je les ai adorés."
+      },
+      "ananyaIyer": {
+        "role": "Membre depuis 2022",
+        "quote": "Je renouvelle mes emprunts et je suis ma série de lecture depuis mon téléphone. Lire est redevenu une habitude quotidienne."
+      },
+      "marcusBenson": {
+        "role": "Gagnant du défi de lecture",
+        "quote": "Le classement a transformé mon objectif de lecture en une compétition amicale avec tout mon étage."
+      },
+      "fatimaAlRashid": {
+        "role": "Organisatrice d'événements",
+        "quote": "Organiser des rencontres d'auteurs et suivre les inscriptions ne prend que quelques minutes. La fréquentation a doublé depuis que nous avons rejoint la plateforme."
+      },
+      "kenjiTanaka": {
+        "role": "Membre depuis 2025",
+        "quote": "Réserver une place d'étude au calme avant les examens a sauvé mon semestre. Fini la chasse à la place libre."
+      },
+      "graceMwangi": {
+        "role": "Membre d'un club de lecture",
+        "quote": "Les forums de discussion prolongent nos échanges bien après la fin de la rencontre mensuelle."
+      },
+      "diegoFernandez": {
+        "role": "Bénévole",
+        "quote": "Enregistrer les livres donnés avec le scanner QR est si rapide que le catalogage est presque devenu un plaisir."
+      },
+      "sarahOConnor": {
+        "role": "Membre depuis 2023",
+        "quote": "Les notifications me préviennent avant l'échéance d'un livre, alors je n'ai payé aucun frais de retard depuis plus d'un an."
+      }
+    }
+  },
+  "faq": {
+    "heading": "Questions fréquentes",
+    "items": {
+      "reservations": {
+        "question": "Comment fonctionnent les réservations ?",
+        "answer": "Si un livre est emprunté, vous pouvez le réserver et vous serez averti dès qu'il sera de retour en rayon."
+      },
+      "seatBookings": {
+        "question": "Comment fonctionnent les réservations de place ?",
+        "answer": "Choisissez un créneau libre sur le plan des places : il vous est réservé jusqu'au début de votre session."
+      },
+      "donations": {
+        "question": "Puis-je donner des livres ?",
+        "answer": "Oui, soumettez une demande de don et un bibliothécaire l'examinera et l'approuvera pour la collection partagée."
+      },
+      "aiLibrarian": {
+        "question": "Qu'est-ce que le bibliothécaire IA ?",
+        "answer": "Un assistant conversationnel qui recommande des livres selon vos centres d'intérêt, votre humeur ou votre historique de lecture."
+      }
+    }
+  },
+  "cta": {
+    "heading": "Devenez membre et commencez à lire dès aujourd'hui",
+    "description": "Rejoignez la communauté de lecteurs, explorez la bibliothèque et ne perdez plus jamais la trace d'un livre.",
+    "action": "Rejoindre la communauté de lecture"
+  }
+}

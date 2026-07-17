@@ -1,0 +1,39 @@
+{
+  "title": "Notifications",
+  "unreadBadge": "{{count}} non lues",
+  "filterAriaLabel": "Filtrer les notifications",
+  "filters": {
+    "all": "Toutes",
+    "unread": "Non lues"
+  },
+  "empty": {
+    "title": "Rien à afficher ici",
+    "description": "Vous êtes à jour sur vos notifications."
+  },
+  "card": {
+    "unreadDot": "Non lue",
+    "markAsRead": "Marquer comme lue"
+  },
+  "items": {
+    "n1": {
+      "title": "Livre à rendre bientôt",
+      "message": "\"{{book}}\" est à rendre dans {{count}} jours."
+    },
+    "n2": {
+      "title": "Réservation prête",
+      "message": "\"{{book}}\" est prêt à être retiré."
+    },
+    "n3": {
+      "title": "Nouvelle arrivée",
+      "message": "\"{{book}}\" a été ajouté à la collection {{category}}."
+    },
+    "n4": {
+      "title": "Récompense débloquée",
+      "message": "Vous avez obtenu le badge \"{{badge}}\" pour avoir lu {{count}} livres cette année."
+    },
+    "n5": {
+      "title": "Renouvellement d'adhésion",
+      "message": "Votre adhésion premium se renouvelle dans {{count}} jours."
+    }
+  }
+}

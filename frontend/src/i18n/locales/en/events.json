@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "Events",
+    "subtitle": "Upcoming library events and community programs"
+  },
+  "stats": {
+    "eventsThisMonth": "Events This Month",
+    "totalAttendees": "Total Attendees",
+    "avgAttendanceRate": "Avg. Attendance Rate"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} attending",
+    "registered": "Registered",
+    "open": "Open",
+    "viewDetails": "View details"
+  },
+  "drawer": {
+    "title": "Event details",
+    "registration": "Registration",
+    "registered": "You’re registered",
+    "notRegistered": "Not registered",
+    "cancelRegistration": "Cancel registration",
+    "register": "Register",
+    "volunteerAssignments": "Volunteer Assignments",
+    "noVolunteers": "No volunteers assigned yet.",
+    "toast": {
+      "cancelling": "Cancelling registration",
+      "registering": "Registering"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "Sci-Fi Book Club Meetup",
+      "location": "Main Hall, Community Library",
+      "description": "Monthly discussion on this month’s pick, \"Project Hail Mary\".",
+      "volunteers": {
+        "amaraOkafor": "Discussion Lead",
+        "liamFitzgerald": "Setup"
+      }
+    },
+    "author-talk": {
+      "title": "Author Talk: Local Writers Night",
+      "location": "Auditorium, Community Library",
+      "description": "An evening with three local authors discussing their debut novels.",
+      "volunteers": {
+        "danielCho": "Registration Desk"
+      }
+    },
+    "kids-story-hour": {
+      "title": "Kids Story Hour",
+      "location": "Children’s Wing",
+      "description": "Weekly story-telling session for children ages 4-8.",
+      "volunteers": {
+        "priyaSharma": "Storyteller"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "Volunteer Orientation",
+      "location": "Meeting Room B",
+      "description": "Orientation session for new volunteers joining the library programs.",
+      "volunteers": {}
+    }
+  }
+}

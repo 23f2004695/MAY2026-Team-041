@@ -1,9 +1,13 @@
 import { expect, test } from '@playwright/test';
 
-test('loads the application shell', async ({ page }) => {
+test('loads the landing page', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByRole('heading', { name: 'Full-stack app scaffold' })).toBeVisible();
-  await expect(page.getByText('React + Vite')).toBeVisible();
-  await expect(page.getByText('PostgreSQL + Prisma')).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: 'Your library, your community, all in one place.',
+    }),
+  ).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Browse Books' })).toBeVisible();
 });

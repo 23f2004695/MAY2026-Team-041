@@ -1,0 +1,15 @@
+{
+  "title": "Leaderboard",
+  "subtitle": "Top readers in the community this month",
+  "table": {
+    "rank": "Rank",
+    "reader": "Reader",
+    "points": "Points",
+    "badges": "Badges",
+    "hoursRead": "Hours Read",
+    "hoursValue": "{{hours}}h"
+  },
+  "badge": {
+    "you": "You"
+  }
+}

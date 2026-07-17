@@ -21,12 +21,12 @@ export const currentReservations: Reservation[] = [
 ];
 
 export interface ReservationQueueEntry {
+  id: string;
   bookTitle: string;
   position: number;
   totalInQueue: number;
-  estimatedWait: string;
 }
 
 export const reservationQueue: ReservationQueueEntry[] = [
-  { bookTitle: "Can't Hurt Me", position: 2, totalInQueue: 5, estimatedWait: '~1 week' },
+  { id: 'cantHurtMe', bookTitle: "Can't Hurt Me", position: 2, totalInQueue: 5 },
 ];

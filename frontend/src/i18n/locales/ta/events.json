@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "நிகழ்வுகள்",
+    "subtitle": "வரவிருக்கும் நூலக நிகழ்வுகள் மற்றும் சமூகத் திட்டங்கள்"
+  },
+  "stats": {
+    "eventsThisMonth": "இந்த மாத நிகழ்வுகள்",
+    "totalAttendees": "மொத்த பங்கேற்பாளர்கள்",
+    "avgAttendanceRate": "சராசரி வருகை விகிதம்"
+  },
+  "card": {
+    "attending": "{{capacity}}-இல் {{attendees}} பேர் கலந்துகொள்கின்றனர்",
+    "registered": "பதிவு செய்யப்பட்டது",
+    "open": "திறந்துள்ளது",
+    "viewDetails": "விவரங்களைக் காண்க"
+  },
+  "drawer": {
+    "title": "நிகழ்வு விவரங்கள்",
+    "registration": "பதிவு",
+    "registered": "நீங்கள் பதிவு செய்துள்ளீர்கள்",
+    "notRegistered": "பதிவு செய்யப்படவில்லை",
+    "cancelRegistration": "பதிவை ரத்து செய்",
+    "register": "பதிவு செய்க",
+    "volunteerAssignments": "தன்னார்வலர் பணிகள்",
+    "noVolunteers": "இதுவரை தன்னார்வலர்கள் எவரும் நியமிக்கப்படவில்லை.",
+    "toast": {
+      "cancelling": "பதிவு ரத்து செய்யப்படுகிறது",
+      "registering": "பதிவு செய்யப்படுகிறது"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "அறிவியல் புனைவு புத்தகக் கழக சந்திப்பு",
+      "location": "மெயின் ஹால், Community Library",
+      "description": "இந்த மாதத் தேர்வான \"Project Hail Mary\" குறித்த மாதாந்திர விவாதம்.",
+      "volunteers": {
+        "amaraOkafor": "விவாதத் தலைவர்",
+        "liamFitzgerald": "ஏற்பாடு"
+      }
+    },
+    "author-talk": {
+      "title": "ஆசிரியர் உரை: உள்ளூர் எழுத்தாளர்கள் இரவு",
+      "location": "அரங்கம், Community Library",
+      "description": "தங்கள் அறிமுக நாவல்களைப் பற்றி விவாதிக்கும் மூன்று உள்ளூர் ஆசிரியர்களுடன் ஒரு மாலைப் பொழுது.",
+      "volunteers": {
+        "danielCho": "பதிவு மேசை"
+      }
+    },
+    "kids-story-hour": {
+      "title": "குழந்தைகள் கதை நேரம்",
+      "location": "குழந்தைகள் பிரிவு",
+      "description": "4-8 வயது குழந்தைகளுக்கான வாராந்திர கதை சொல்லும் அமர்வு.",
+      "volunteers": {
+        "priyaSharma": "கதை சொல்பவர்"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "தன்னார்வலர் அறிமுகம்",
+      "location": "கூட்ட அறை B",
+      "description": "நூலகத் திட்டங்களில் சேரும் புதிய தன்னார்வலர்களுக்கான அறிமுக அமர்வு.",
+      "volunteers": {}
+    }
+  }
+}

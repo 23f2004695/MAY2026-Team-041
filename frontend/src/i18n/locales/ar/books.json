@@ -1,0 +1,61 @@
+{
+  "title": "الكتب",
+  "subtitle": "تصفح فهرس المكتبة",
+  "searchPlaceholder": "ابحث بالعنوان أو المؤلف…",
+  "searchAriaLabel": "البحث في الكتب",
+  "filterAriaLabel": "التصفية حسب الفئة",
+  "backToBooks": "العودة إلى الكتب",
+  "reserveThisBook": "احجز هذا الكتاب",
+  "reserveToast": "جارٍ حجز \"{{title}}\"",
+  "copiesAvailable": "{{available}} من {{total}} نسخة متاحة",
+  "categories": {
+    "All": "الكل",
+    "Fiction": "روايات",
+    "Non-Fiction": "غير روائي",
+    "Science": "علوم",
+    "Technology": "تقنية",
+    "Biography": "سير ذاتية",
+    "Self-Help": "تطوير الذات"
+  },
+  "status": {
+    "available": "متاح",
+    "checkedOut": "مُعار"
+  },
+  "empty": {
+    "title": "لم يُعثر على كتب",
+    "description": "جرّب مصطلح بحث أو فئة مختلفة."
+  },
+  "notFound": {
+    "title": "الكتاب غير موجود",
+    "description": "ربما تمت إزالة هذا الكتاب من الفهرس."
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "دليل عملي لبناء العادات الجيدة والتخلّص من العادات السيئة."
+    },
+    "sapiens": {
+      "description": "تاريخ موجز للبشرية، من العصر الحجري إلى الحاضر."
+    },
+    "the-overstory": {
+      "description": "رواية متشعّبة تربط تسعة أمريكيين من خلال علاقتهم بالأشجار."
+    },
+    "hands-on-ml": {
+      "description": "دليل عملي لتعلّم الآلة باستخدام Scikit-Learn وKeras وTensorFlow."
+    },
+    "a-short-history": {
+      "description": "رحلة سهلة عبر تاريخ العلوم."
+    },
+    "cant-hurt-me": {
+      "description": "رواية David Goggins عن تجاوزه لطفولة صعبة ليصبح رياضيًا من الطراز الأول."
+    },
+    "deep-work": {
+      "description": "قواعد للنجاح المركّز في عالم مليء بالمشتّتات."
+    },
+    "the-hundred-page-ml": {
+      "description": "مقدمة موجزة للأفكار الأساسية في تعلّم الآلة."
+    },
+    "norwegian-wood": {
+      "description": "قصة حنينية عن الفقد والبلوغ في طوكيو خلال الستينيات."
+    }
+  }
+}

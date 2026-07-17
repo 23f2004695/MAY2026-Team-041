@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "Bon retour, {{name}}",
+    "subtitle": "Voici l'actualité de votre bibliothèque"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "Livres empruntés"
+    },
+    "booksReserved": {
+      "label": "Livres réservés"
+    },
+    "seatBookings": {
+      "label": "Réservations de place"
+    },
+    "readingPoints": {
+      "label": "Points de lecture"
+    }
+  },
+  "booksDueSoon": {
+    "title": "Livres à rendre bientôt",
+    "empty": {
+      "title": "Rien à rendre prochainement",
+      "description": "Vous êtes à jour."
+    },
+    "dueLabel": "À rendre le {{date}} · {{days}} j restants"
+  },
+  "currentlyBorrowed": {
+    "title": "Actuellement empruntés",
+    "since": "Depuis le {{date}}"
+  },
+  "recentNotifications": {
+    "title": "Notifications récentes"
+  },
+  "upcomingEvents": {
+    "title": "Événements à venir"
+  },
+  "readingProgress": {
+    "title": "Progression de lecture",
+    "pages": "{{read}} sur {{total}} pages"
+  },
+  "monthlyChallenge": {
+    "title": "Défi du mois",
+    "books": "{{current}} sur {{target}} livres"
+  },
+  "quickActions": {
+    "title": "Actions rapides",
+    "browseBooks": "Parcourir les livres",
+    "bookSeat": "Réserver une place",
+    "viewReservations": "Voir les réservations"
+  }
+}

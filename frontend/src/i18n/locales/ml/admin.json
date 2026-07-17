@@ -1,0 +1,72 @@
+{
+  "title": "അഡ്മിൻ ഡാഷ്‌ബോർഡ്",
+  "subtitle": "പ്ലാറ്റ്‌ഫോം അവലോകനവും ഭരണനിർവഹണവും",
+  "stats": {
+    "totalBooks": {
+      "label": "ആകെ പുസ്തകങ്ങൾ"
+    },
+    "totalMembers": {
+      "label": "ആകെ അംഗങ്ങൾ"
+    },
+    "eventsThisMonth": {
+      "label": "ഈ മാസത്തെ ഇവന്റുകൾ"
+    },
+    "revenueMtd": {
+      "label": "വരുമാനം (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "തീർപ്പാക്കാത്ത അഭ്യർത്ഥനകൾ",
+    "from": "{{requester}} എന്നയാളിൽ നിന്ന്",
+    "reject": "നിരസിക്കുക",
+    "approve": "അംഗീകരിക്കുക",
+    "requestTypes": {
+      "donation": "പുസ്തക സംഭാവന",
+      "membershipRenewal": "അംഗത്വ പുതുക്കൽ",
+      "reservationDispute": "റിസർവേഷൻ തർക്കം"
+    },
+    "items": {
+      "pr1": {
+        "summary": "3 സൈ-ഫൈ പുസ്തകങ്ങൾ ഉൾപ്പെടെ 8 പുസ്തകങ്ങൾ സംഭാവന ചെയ്യുന്നു"
+      },
+      "pr2": {
+        "summary": "പ്രീമിയം അംഗത്വ പുതുക്കൽ അഭ്യർത്ഥന"
+      },
+      "pr3": {
+        "summary": "റിസർവേഷൻ ക്യൂ പൊസിഷൻ തെറ്റാണെന്ന് റിപ്പോർട്ട് ചെയ്യുന്നു"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} എന്നയാളുടെ അഭ്യർത്ഥന നിരസിക്കുന്നു",
+      "approve": "{{requester}} എന്നയാളുടെ അഭ്യർത്ഥന അംഗീകരിക്കുന്നു"
+    }
+  },
+  "reports": {
+    "title": "റിപ്പോർട്ടുകൾ",
+    "viewReport": "റിപ്പോർട്ട് കാണുക",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "ഏറ്റവും കൂടുതൽ കടം വാങ്ങിയ പുസ്തകങ്ങൾ"
+      },
+      "membershipGrowth": {
+        "label": "അംഗത്വ വളർച്ച"
+      },
+      "eventAttendance": {
+        "label": "ഇവന്റ് ഹാജർ"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "ക്വിക്ക് ആക്ഷനുകൾ",
+    "addBook": "പുസ്തകം ചേർക്കുക",
+    "inviteMember": "അംഗത്തെ ക്ഷണിക്കുക",
+    "createEvent": "ഇവന്റ് സൃഷ്ടിക്കുക",
+    "announcement": "അറിയിപ്പ്",
+    "toast": {
+      "addBook": "ഒരു പുസ്തകം ചേർക്കുന്നു",
+      "inviteMember": "ഒരു അംഗത്തെ ക്ഷണിക്കുന്നു",
+      "createEvent": "ഒരു ഇവന്റ് സൃഷ്ടിക്കുന്നു",
+      "announcement": "ഒരു അറിയിപ്പ് അയയ്ക്കുന്നു"
+    }
+  }
+}

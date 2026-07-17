@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "સીટ બુકિંગ",
+    "subtitle": "શાંત અભ્યાસ સીટ આરક્ષિત કરો"
+  },
+  "legend": {
+    "available": "ઉપલબ્ધ",
+    "reserved": "આરક્ષિત",
+    "occupied": "રોકાયેલ"
+  },
+  "summary": {
+    "title": "બુકિંગ સારાંશ",
+    "seatSelected": "આજ માટે સીટ <bold>{{seat}}</bold> પસંદ કરી",
+    "emptyState": "આગળ વધવા માટે એક ઉપલબ્ધ સીટ પસંદ કરો.",
+    "confirm": "બુકિંગની પુષ્ટિ કરો"
+  },
+  "toast": {
+    "bookingSeat": "સીટ {{seat}} બુક કરી રહ્યા છીએ"
+  }
+}

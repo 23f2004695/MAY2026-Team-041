@@ -1,0 +1,39 @@
+{
+  "title": "通知",
+  "unreadBadge": "未読{{count}}件",
+  "filterAriaLabel": "通知を絞り込み",
+  "filters": {
+    "all": "すべて",
+    "unread": "未読"
+  },
+  "empty": {
+    "title": "表示するものはありません",
+    "description": "通知はすべて確認済みです。"
+  },
+  "card": {
+    "unreadDot": "未読",
+    "markAsRead": "既読にする"
+  },
+  "items": {
+    "n1": {
+      "title": "まもなく返却期限",
+      "message": "「{{book}}」の返却期限まであと{{count}}日です。"
+    },
+    "n2": {
+      "title": "予約の準備が整いました",
+      "message": "「{{book}}」を受け取れます。"
+    },
+    "n3": {
+      "title": "新着",
+      "message": "「{{book}}」が{{category}}コレクションに追加されました。"
+    },
+    "n4": {
+      "title": "実績を解除しました",
+      "message": "今年{{count}}冊読んで「{{badge}}」バッジを獲得しました。"
+    },
+    "n5": {
+      "title": "メンバーシップの更新",
+      "message": "プレミアムメンバーシップはあと{{count}}日で更新されます。"
+    }
+  }
+}

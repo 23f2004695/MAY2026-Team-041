@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { StatisticCard } from '@/components/common';
 import { BooksDueSoon } from '../components/BooksDueSoon';
 import { CurrentlyBorrowed } from '../components/CurrentlyBorrowed';
@@ -17,13 +19,20 @@ import {
 } from '@/mocks/dashboard';
 
 export function DashboardPage() {
+  const { t } = useTranslation('dashboard');
+
   return (
     <div className="flex flex-col gap-6">
       <WelcomeSection name={dashboardUser.name} membershipPlan={dashboardUser.membershipPlan} />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {dashboardStats.map((stat) => (
-          <StatisticCard key={stat.label} icon={stat.icon} label={stat.label} value={stat.value} />
+          <StatisticCard
+            key={stat.id}
+            icon={stat.icon}
+            label={t(`stats.${stat.id}.label`)}
+            value={stat.value}
+          />
         ))}
       </div>
 

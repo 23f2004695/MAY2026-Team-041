@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "Mitglied seit {{date}}",
+    "editProfile": "Profil bearbeiten",
+    "editProfileAction": "Dein Profil wird bearbeitet"
+  },
+  "stats": {
+    "booksRead": "Gelesene Bücher",
+    "pagesRead": "Gelesene Seiten",
+    "hoursRead": "Gelesene Stunden"
+  },
+  "achievements": {
+    "title": "Auszeichnungen",
+    "items": {
+      "firstBook": {
+        "label": "Erstes Buch",
+        "description": "Leihe dein erstes Buch aus"
+      },
+      "bookWorm": {
+        "label": "Leseratte",
+        "description": "Lies 10 Bücher in einem Jahr"
+      },
+      "topReader": {
+        "label": "Top-Leser",
+        "description": "Erreiche die Spitze der monatlichen Bestenliste"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "Aktuelle Lektüre",
+    "by": "von {{author}}"
+  },
+  "borrowHistory": {
+    "title": "Ausleihverlauf",
+    "columns": {
+      "title": "Titel",
+      "borrowedOn": "Ausgeliehen am",
+      "returnedOn": "Zurückgegeben am"
+    }
+  }
+}

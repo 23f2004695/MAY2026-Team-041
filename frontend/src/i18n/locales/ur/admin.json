@@ -1,0 +1,72 @@
+{
+  "title": "ایڈمن ڈیش بورڈ",
+  "subtitle": "پلیٹ فارم کا جائزہ اور انتظام",
+  "stats": {
+    "totalBooks": {
+      "label": "کل کتابیں"
+    },
+    "totalMembers": {
+      "label": "کل ممبرز"
+    },
+    "eventsThisMonth": {
+      "label": "اس ماہ کے ایونٹس"
+    },
+    "revenueMtd": {
+      "label": "آمدنی (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "زیرِ التوا درخواستیں",
+    "from": "{{requester}} کی طرف سے",
+    "reject": "مسترد کریں",
+    "approve": "منظور کریں",
+    "requestTypes": {
+      "donation": "کتاب کا عطیہ",
+      "membershipRenewal": "ممبرشپ کی تجدید",
+      "reservationDispute": "ریزرویشن تنازع"
+    },
+    "items": {
+      "pr1": {
+        "summary": "8 کتابیں عطیہ کر رہے ہیں، جن میں 3 سائی فائی کتابیں شامل ہیں"
+      },
+      "pr2": {
+        "summary": "پریمیم ممبرشپ کی تجدید کی درخواست"
+      },
+      "pr3": {
+        "summary": "اطلاع دی ہے کہ ریزرویشن قطار میں پوزیشن غلط لگ رہی ہے"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} کی درخواست مسترد کی جا رہی ہے",
+      "approve": "{{requester}} کی درخواست منظور کی جا رہی ہے"
+    }
+  },
+  "reports": {
+    "title": "رپورٹس",
+    "viewReport": "رپورٹ دیکھیں",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "سب سے زیادہ ادھار لی گئی کتابیں"
+      },
+      "membershipGrowth": {
+        "label": "ممبرشپ میں اضافہ"
+      },
+      "eventAttendance": {
+        "label": "ایونٹ حاضری"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "فوری اقدامات",
+    "addBook": "کتاب شامل کریں",
+    "inviteMember": "ممبر کو مدعو کریں",
+    "createEvent": "ایونٹ بنائیں",
+    "announcement": "اعلان",
+    "toast": {
+      "addBook": "کتاب شامل کی جا رہی ہے",
+      "inviteMember": "ممبر کو مدعو کیا جا رہا ہے",
+      "createEvent": "ایونٹ بنایا جا رہا ہے",
+      "announcement": "اعلان بھیجا جا رہا ہے"
+    }
+  }
+}

@@ -1,18 +1,21 @@
+import { useTranslation } from 'react-i18next';
+
 import { Badge } from '@/components/ui';
 
 export interface PlaceholderPageProps {
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
 }
 
 // ponytail: one generic page instead of 16 near-identical files; split out once a page grows real content.
-export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
+export function PlaceholderPage({ titleKey, descriptionKey }: PlaceholderPageProps) {
+  const { t } = useTranslation('common');
   return (
     <div className="flex flex-col gap-3 p-8">
-      <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
-      <p className="text-muted-foreground">{description}</p>
+      <h1 className="text-2xl font-semibold text-foreground">{t(titleKey)}</h1>
+      <p className="text-muted-foreground">{t(descriptionKey)}</p>
       <Badge variant="outline" className="w-fit">
-        Coming soon
+        {t('comingSoon.badge')}
       </Badge>
     </div>
   );

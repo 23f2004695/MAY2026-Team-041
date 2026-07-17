@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} থেকে সদস্য",
+    "editProfile": "প্রোফাইল সম্পাদনা",
+    "editProfileAction": "আপনার প্রোফাইল সম্পাদনা করা হচ্ছে"
+  },
+  "stats": {
+    "booksRead": "পড়া বই",
+    "pagesRead": "পড়া পৃষ্ঠা",
+    "hoursRead": "পড়ার ঘণ্টা"
+  },
+  "achievements": {
+    "title": "অর্জন",
+    "items": {
+      "firstBook": {
+        "label": "প্রথম বই",
+        "description": "আপনার প্রথম বই ধার নিন"
+      },
+      "bookWorm": {
+        "label": "বইপোকা",
+        "description": "এক বছরে ১০টি বই পড়ুন"
+      },
+      "topReader": {
+        "label": "শীর্ষ পাঠক",
+        "description": "মাসিক লিডারবোর্ডের শীর্ষে পৌঁছান"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "বর্তমান পড়া",
+    "by": "লেখক {{author}}"
+  },
+  "borrowHistory": {
+    "title": "ধারের ইতিহাস",
+    "columns": {
+      "title": "শিরোনাম",
+      "borrowedOn": "ধার নেওয়ার তারিখ",
+      "returnedOn": "ফেরত দেওয়ার তারিখ"
+    }
+  }
+}

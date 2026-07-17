@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "ਸੀਟ ਬੁਕਿੰਗ",
+    "subtitle": "ਇੱਕ ਸ਼ਾਂਤ ਪੜ੍ਹਾਈ ਵਾਲੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰੋ"
+  },
+  "legend": {
+    "available": "ਉਪਲਬਧ",
+    "reserved": "ਰਿਜ਼ਰਵ ਕੀਤੀ",
+    "occupied": "ਭਰੀ ਹੋਈ"
+  },
+  "summary": {
+    "title": "ਬੁਕਿੰਗ ਸੰਖੇਪ",
+    "seatSelected": "ਅੱਜ ਲਈ ਸੀਟ <bold>{{seat}}</bold> ਚੁਣੀ ਗਈ",
+    "emptyState": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਇੱਕ ਉਪਲਬਧ ਸੀਟ ਚੁਣੋ।",
+    "confirm": "ਬੁਕਿੰਗ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ"
+  },
+  "toast": {
+    "bookingSeat": "ਸੀਟ {{seat}} ਬੁੱਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+  }
+}

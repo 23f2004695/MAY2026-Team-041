@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "ಮತ್ತೆ ಸ್ವಾಗತ, {{name}}",
+    "subtitle": "ನಿಮ್ಮ ಗ್ರಂಥಾಲಯದಲ್ಲಿ ಏನಾಗುತ್ತಿದೆ ಎಂಬುದು ಇಲ್ಲಿದೆ"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "ಎರವಲು ಪಡೆದ ಪುಸ್ತಕಗಳು"
+    },
+    "booksReserved": {
+      "label": "ಕಾಯ್ದಿರಿಸಿದ ಪುಸ್ತಕಗಳು"
+    },
+    "seatBookings": {
+      "label": "ಆಸನ ಬುಕಿಂಗ್‌ಗಳು"
+    },
+    "readingPoints": {
+      "label": "ಓದುವ ಪಾಯಿಂಟ್‌ಗಳು"
+    }
+  },
+  "booksDueSoon": {
+    "title": "ಶೀಘ್ರದಲ್ಲೇ ಗಡುವು ಮುಗಿಯುವ ಪುಸ್ತಕಗಳು",
+    "empty": {
+      "title": "ಶೀಘ್ರದಲ್ಲಿ ಯಾವುದೇ ಗಡುವಿಲ್ಲ",
+      "description": "ನೀವು ಎಲ್ಲವನ್ನೂ ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ."
+    },
+    "dueLabel": "ಗಡುವು {{date}} · {{days}} ದಿನ ಬಾಕಿ"
+  },
+  "currentlyBorrowed": {
+    "title": "ಪ್ರಸ್ತುತ ಎರವಲು ಪಡೆದವು",
+    "since": "{{date}} ರಿಂದ"
+  },
+  "recentNotifications": {
+    "title": "ಇತ್ತೀಚಿನ ಅಧಿಸೂಚನೆಗಳು"
+  },
+  "upcomingEvents": {
+    "title": "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"
+  },
+  "readingProgress": {
+    "title": "ಓದುವ ಪ್ರಗತಿ",
+    "pages": "{{total}} ಪುಟಗಳಲ್ಲಿ {{read}}"
+  },
+  "monthlyChallenge": {
+    "title": "ಮಾಸಿಕ ಸವಾಲು",
+    "books": "{{target}} ಪುಸ್ತಕಗಳಲ್ಲಿ {{current}}"
+  },
+  "quickActions": {
+    "title": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳು",
+    "browseBooks": "ಪುಸ್ತಕಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ",
+    "bookSeat": "ಆಸನ ಬುಕ್ ಮಾಡಿ",
+    "viewReservations": "ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳನ್ನು ನೋಡಿ"
+  }
+}

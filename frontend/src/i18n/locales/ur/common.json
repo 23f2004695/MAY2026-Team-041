@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "ڈیش بورڈ",
+    "books": "کتابیں",
+    "reservations": "ریزرویشنز",
+    "seatBooking": "سیٹ بکنگ",
+    "community": "کمیونٹی",
+    "events": "ایونٹس",
+    "readingProgress": "مطالعے کی پیش رفت",
+    "leaderboard": "لیڈر بورڈ",
+    "reviews": "تبصرے",
+    "notifications": "اطلاعات",
+    "settings": "ترتیبات",
+    "adminOverview": "ایڈمن جائزہ",
+    "backToApp": "ایپ پر واپس جائیں"
+  },
+  "actions": {
+    "signIn": "سائن اِن",
+    "logOut": "لاگ آؤٹ",
+    "profile": "پروفائل",
+    "settings": "ترتیبات",
+    "backHome": "ہوم پر واپس",
+    "backToHome": "ہوم پر واپس جائیں",
+    "viewAll": "سب دیکھیں"
+  },
+  "aria": {
+    "openNavigation": "نیویگیشن کھولیں",
+    "openAccountMenu": "اکاؤنٹ مینو کھولیں",
+    "menu": "مینو",
+    "account": "اکاؤنٹ"
+  },
+  "language": {
+    "selectLabel": "زبان تبدیل کریں"
+  },
+  "theme": {
+    "toLight": "لائٹ موڈ پر جائیں",
+    "toDark": "ڈارک موڈ پر جائیں"
+  },
+  "appearance": {
+    "label": "خلائی پس منظر مقرر کریں",
+    "background": {
+      "title": "صفحے کا پس منظر",
+      "description": "صفحے پر ہر چیز کے پیچھے کا رنگ۔"
+    },
+    "cards": {
+      "title": "کارڈز اور پینلز",
+      "description": "کارڈز، نیو بار، اِن پٹ اور ڈائیلاگ سب یہی رنگ استعمال کرتے ہیں۔"
+    },
+    "custom": "حسبِ مرضی",
+    "preview": "پیش منظر",
+    "sampleCard": "نمونہ کارڈ",
+    "sampleText": "متن کا رنگ پڑھنے کے قابل رہنے کے لیے خودکار طور پر ایڈجسٹ ہو جاتا ہے۔",
+    "primaryAction": "بنیادی ایکشن",
+    "lowContrast": "کم کنٹراسٹ — بہترین پڑھائی کے لیے ہلکے رنگوں کو ہلکے کے ساتھ اور گہرے رنگوں کو گہرے کے ساتھ ملائیں۔",
+    "reset": "تھیم کی ڈیفالٹ پر ری سیٹ کریں",
+    "done": "ہو گیا"
+  },
+  "comingSoon": {
+    "badge": "جلد آ رہا ہے"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} ابھی تیار نہیں ہے",
+      "description": "یہ ایک UI پیش منظر ہے — بیک اینڈ منسلک ہونے کے بعد اصل ورک فلو دستیاب ہوگا۔"
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "کتابیں ادھار لینے، ریڈنگ کلبز، اور کمیونٹی ایونٹس کے لیے ایک جدید لائبریری پلیٹ فارم۔",
+    "siteLinks": "سائٹ لنکس",
+    "navigation": "نیویگیشن",
+    "quickLinks": "فوری لنکس",
+    "contact": "رابطہ",
+    "links": {
+      "home": "ہوم",
+      "login": "لاگ اِن",
+      "register": "رجسٹر",
+      "books": "کتابیں",
+      "community": "کمیونٹی",
+      "events": "ایونٹس"
+    },
+    "social": {
+      "website": "ویب سائٹ",
+      "forum": "کمیونٹی فورم",
+      "newsletter": "نیوز لیٹر"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "یہ صفحہ موجود نہیں ہے۔"
+  },
+  "pages": {
+    "register": {
+      "title": "رجسٹر",
+      "description": "نیا اکاؤنٹ بنائیں۔"
+    },
+    "forgotPassword": {
+      "title": "پاس ورڈ بھول گئے",
+      "description": "اپنا پاس ورڈ ری سیٹ کریں۔"
+    },
+    "community": {
+      "title": "کمیونٹی",
+      "description": "ریڈنگ کلبز اور گفتگو۔"
+    },
+    "settings": {
+      "title": "ترتیبات",
+      "description": "اپنی ترجیحات کا انتظام کریں۔"
+    }
+  }
+}

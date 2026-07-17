@@ -1,0 +1,61 @@
+{
+  "title": "પુસ્તકો",
+  "subtitle": "લાઇબ્રેરી સૂચિ બ્રાઉઝ કરો",
+  "searchPlaceholder": "શીર્ષક કે લેખક પ્રમાણે શોધો…",
+  "searchAriaLabel": "પુસ્તકો શોધો",
+  "filterAriaLabel": "શ્રેણી પ્રમાણે ફિલ્ટર કરો",
+  "backToBooks": "પુસ્તકો પર પાછા જાઓ",
+  "reserveThisBook": "આ પુસ્તક આરક્ષિત કરો",
+  "reserveToast": "\"{{title}}\" આરક્ષિત કરી રહ્યા છીએ",
+  "copiesAvailable": "{{total}} માંથી {{available}} નકલો ઉપલબ્ધ",
+  "categories": {
+    "All": "બધું",
+    "Fiction": "કાલ્પનિક",
+    "Non-Fiction": "બિન-કાલ્પનિક",
+    "Science": "વિજ્ઞાન",
+    "Technology": "ટેકનોલોજી",
+    "Biography": "જીવનચરિત્ર",
+    "Self-Help": "સ્વ-સહાય"
+  },
+  "status": {
+    "available": "ઉપલબ્ધ",
+    "checkedOut": "બહાર ગયેલું"
+  },
+  "empty": {
+    "title": "કોઈ પુસ્તક મળ્યું નથી",
+    "description": "કોઈ અલગ શોધ શબ્દ કે શ્રેણી અજમાવો."
+  },
+  "notFound": {
+    "title": "પુસ્તક મળ્યું નથી",
+    "description": "આ પુસ્તક સૂચિમાંથી કાઢી નાખવામાં આવ્યું હોઈ શકે છે."
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "સારી આદતો બનાવવા અને ખરાબ આદતો છોડવા માટેની વ્યવહારુ માર્ગદર્શિકા."
+    },
+    "sapiens": {
+      "description": "પથ્થર યુગથી આજ સુધીનો માનવજાતનો સંક્ષિપ્ત ઇતિહાસ."
+    },
+    "the-overstory": {
+      "description": "વૃક્ષો સાથેના તેમના સંબંધ દ્વારા નવ અમેરિકનોને જોડતી એક ગૂંથાયેલી નવલકથા."
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn, Keras અને TensorFlow સાથે મશીન લર્નિંગ માટેની વ્યવહારુ માર્ગદર્શિકા."
+    },
+    "a-short-history": {
+      "description": "વિજ્ઞાનના ઇતિહાસમાંથી એક સુલભ સફર."
+    },
+    "cant-hurt-me": {
+      "description": "મુશ્કેલ બાળપણને પાર કરીને ટોચના ખેલાડી બનવાની David Gogginsની કથા."
+    },
+    "deep-work": {
+      "description": "વિચલિત દુનિયામાં કેન્દ્રિત સફળતા માટેના નિયમો."
+    },
+    "the-hundred-page-ml": {
+      "description": "મશીન લર્નિંગના મુખ્ય વિચારોનો સંક્ષિપ્ત પરિચય."
+    },
+    "norwegian-wood": {
+      "description": "1960ના દાયકાના ટોક્યોમાં નુકસાન અને ઊગતી લૈંગિકતાની એક વિષાદભરી કથા."
+    }
+  }
+}

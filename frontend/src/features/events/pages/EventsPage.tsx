@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CalendarCheck, Percent, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { StatisticCard, EventCard } from '@/components/common';
 import { attendanceSummary, events as mockEvents, type Event } from '@/mocks/events';
@@ -7,6 +8,7 @@ import { attendanceSummary, events as mockEvents, type Event } from '@/mocks/eve
 import { EventDetailsDrawer } from '../components/EventDetailsDrawer';
 
 export function EventsPage() {
+  const { t } = useTranslation('events');
   const [events, setEvents] = useState(mockEvents);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
 
@@ -29,24 +31,24 @@ export function EventsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Events</h1>
-        <p className="mt-1 text-muted-foreground">Upcoming library events and community programs</p>
+        <h1 className="text-2xl font-semibold text-foreground">{t('page.title')}</h1>
+        <p className="mt-1 text-muted-foreground">{t('page.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatisticCard
           icon={CalendarCheck}
-          label="Events This Month"
+          label={t('stats.eventsThisMonth')}
           value={String(attendanceSummary.totalEventsThisMonth)}
         />
         <StatisticCard
           icon={Users}
-          label="Total Attendees"
+          label={t('stats.totalAttendees')}
           value={String(attendanceSummary.totalAttendees)}
         />
         <StatisticCard
           icon={Percent}
-          label="Avg. Attendance Rate"
+          label={t('stats.avgAttendanceRate')}
           value={`${Math.round(attendanceSummary.averageAttendanceRate * 100)}%`}
         />
       </div>
@@ -55,9 +57,9 @@ export function EventsPage() {
         {events.map((event) => (
           <EventCard
             key={event.id}
-            title={event.title}
+            title={t(`list.${event.id}.title`)}
             date={event.date}
-            location={event.location}
+            location={t(`list.${event.id}.location`)}
             attendees={event.attendees}
             capacity={event.capacity}
             registered={event.registered}

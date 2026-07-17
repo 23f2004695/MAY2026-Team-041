@@ -1,0 +1,43 @@
+{
+  "page": {
+    "title": "Reservierungen",
+    "subtitle": "Verfolge deine Buchreservierungen und deine Warteposition"
+  },
+  "sections": {
+    "current": "Aktuelle Reservierungen",
+    "queue": "Warteschlange für Reservierungen"
+  },
+  "empty": {
+    "current": {
+      "title": "Keine aktiven Reservierungen",
+      "description": "Reserviere ein Buch aus dem Katalog, um es hier zu sehen."
+    },
+    "queue": {
+      "title": "Du wartest auf nichts",
+      "description": "Sobald du einer Warteschlange beitrittst, erscheinst du hier."
+    }
+  },
+  "queue": {
+    "line": "— Position {{position}} von {{total}}, geschätzte Wartezeit {{wait}}",
+    "cantHurtMe": {
+      "estimatedWait": "~1 Woche"
+    }
+  },
+  "card": {
+    "reservedOn": "Reserviert am {{date}}",
+    "cancel": "Stornieren"
+  },
+  "status": {
+    "ready": "Abholbereit",
+    "waiting": "In der Warteschlange",
+    "expired": "Abgelaufen"
+  },
+  "dialog": {
+    "title": "Reservierung stornieren?",
+    "description": "Dadurch wird deine Reservierung für \"{{title}}\" storniert.",
+    "confirmLabel": "Reservierung stornieren"
+  },
+  "toast": {
+    "cancelling": "\"{{title}}\" wird storniert"
+  }
+}

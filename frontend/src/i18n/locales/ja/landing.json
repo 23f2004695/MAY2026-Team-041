@@ -1,0 +1,246 @@
+{
+  "hero": {
+    "badge": "コミュニティ読書クラブ＆図書館プラットフォーム",
+    "title": "あなたの図書館とコミュニティを、ひとつの場所に。",
+    "description": "紙の台帳やグループチャットは不要。書籍を借り、学習席を予約し、読書クラブに参加して、あなたにぴったりのおすすめを受け取れます。",
+    "joinCommunity": "コミュニティに参加",
+    "browseBooks": "書籍を見る",
+    "dashboard": "ダッシュボード",
+    "currentlyReading": "読書中",
+    "history": "履歴",
+    "nav": {
+      "dashboard": "ダッシュボード",
+      "books": "書籍",
+      "reservations": "予約",
+      "seatBooking": "座席予約"
+    },
+    "readingList": {
+      "atomicHabits": { "status": "返却期限まであと4日" },
+      "sapiens": { "status": "受け取り可能" },
+      "theOverstory": { "status": "順番待ち 2番目" }
+    }
+  },
+  "statistics": {
+    "srHeading": "プラットフォームの統計",
+    "items": {
+      "booksAvailable": { "label": "利用可能な書籍" },
+      "members": { "label": "メンバー" },
+      "readingClubs": { "label": "読書クラブ" },
+      "eventsHosted": { "label": "開催イベント" },
+      "booksBorrowed": { "label": "貸出冊数" },
+      "studySeats": { "label": "学習席" }
+    }
+  },
+  "features": {
+    "heading": "モダンな図書館に必要なすべて",
+    "description": "貸し出し、発見、コミュニティ、そして図書館の日々の運営まで、すべてをひとつのプラットフォームで。",
+    "items": {
+      "digitalLibrary": {
+        "title": "デジタルライブラリー",
+        "description": "書籍、著者、カテゴリーの全カタログを検索・絞り込み・閲覧できます。"
+      },
+      "qrBorrowing": {
+        "title": "QRで貸し出し",
+        "description": "書籍のQRコードをスキャンするだけで、書類手続きなしに数秒で貸し出し・返却ができます。"
+      },
+      "seatBooking": {
+        "title": "座席予約",
+        "description": "静かな学習席を事前に予約し、空き状況をリアルタイムで確認できます。"
+      },
+      "aiLibrarian": {
+        "title": "AI司書",
+        "description": "対話型の読書アシスタントが、あなたにぴったりの書籍を提案します。"
+      },
+      "readingChallenges": {
+        "title": "読書チャレンジ",
+        "description": "読み進めるほど進捗を記録し、実績を獲得できます。"
+      },
+      "communityDiscussions": {
+        "title": "コミュニティディスカッション",
+        "description": "読書クラブに参加し、レビューを共有して、お気に入りの本について語り合いましょう。"
+      },
+      "bookDonations": {
+        "title": "書籍の寄贈",
+        "description": "読み終えた本を寄贈して、みんなのコレクションを充実させましょう。"
+      },
+      "analyticsDashboard": {
+        "title": "分析ダッシュボード",
+        "description": "司書や管理者は、トレンド、人気の書籍、利用状況を把握できます。"
+      }
+    }
+  },
+  "howItWorks": {
+    "heading": "ご利用の流れ",
+    "steps": {
+      "register": {
+        "title": "登録する",
+        "description": "1分もかからず無料メンバーシップを作成できます。"
+      },
+      "searchBooks": {
+        "title": "書籍を探す",
+        "description": "カテゴリー、著者、気分から本を見つけましょう。"
+      },
+      "borrowReserve": {
+        "title": "借りる・予約する",
+        "description": "手元に取り寄せるか、貸出中の本を予約しましょう。"
+      },
+      "readParticipate": {
+        "title": "読んで参加する",
+        "description": "進捗を記録し、その本を囲むコミュニティに参加しましょう。"
+      }
+    }
+  },
+  "aiLibrarian": {
+    "heading": "AI司書に会ってみよう",
+    "description": "普段の言葉でおすすめを尋ねれば、厳選した候補リストが返ってきます。",
+    "conversation": {
+      "userPrompt": {
+        "message": "機械学習の初心者向けの本を教えて。"
+      },
+      "aiResponse": {
+        "message": "おすすめの5冊はこちらです:「Hands-On Machine Learning」「The Hundred-Page ML Book」「Python Machine Learning」「Deep Learning for Coders」「Grokking Machine Learning」。"
+      }
+    }
+  },
+  "mood": {
+    "heading": "今どんな気分で読みたいですか？",
+    "description": "気分を選ぶと、おすすめエンジンが提案する内容のプレビューをご覧いただけます。",
+    "groupLabel": "読書の気分",
+    "recommendedFor": "{{mood}}な気分におすすめ",
+    "moods": {
+      "happy": { "label": "楽しい" },
+      "relaxed": { "label": "リラックス" },
+      "curious": { "label": "好奇心" },
+      "motivated": { "label": "やる気" },
+      "studyMode": { "label": "勉強モード" }
+    }
+  },
+  "readingChallenge": {
+    "heading": "読書チャレンジと実績",
+    "description": "読むほどに解除できるバッジで、モチベーションを保ちましょう。",
+    "achievements": {
+      "firstBook": {
+        "label": "はじめの1冊",
+        "description": "最初の1冊を借りる"
+      },
+      "bookWorm": {
+        "label": "本の虫",
+        "description": "1年間で10冊読む"
+      },
+      "topReader": {
+        "label": "トップリーダー",
+        "description": "月間ランキングの1位に到達する"
+      },
+      "monthlyChampion": {
+        "label": "マンスリーチャンピオン",
+        "description": "1か月間、毎週のチャレンジをすべて達成する"
+      }
+    }
+  },
+  "community": {
+    "heading": "コミュニティを中心に",
+    "description": "図書館はカタログ以上の存在です。読んでいる本について語り合い、恩返しをする場所です。",
+    "highlights": {
+      "bookDiscussions": {
+        "title": "本のディスカッション",
+        "description": "物語の展開やテーマについて、ほかの読者と語り合いましょう。"
+      },
+      "reviews": {
+        "title": "レビュー",
+        "description": "本を評価・レビューして、コミュニティの次の1冊選びを手伝いましょう。"
+      },
+      "readingClubs": {
+        "title": "読書クラブ",
+        "description": "好きなジャンルや読書ペースに合ったクラブに参加しましょう。"
+      },
+      "volunteerPrograms": {
+        "title": "ボランティアプログラム",
+        "description": "イベントの運営、寄贈品の仕分け、新メンバーのサポートを手伝いましょう。"
+      }
+    }
+  },
+  "seatAvailability": {
+    "heading": "座席の空き状況（リアルタイム）",
+    "description": "出かける前に学習室をチェック。これはサンプルデータを使ったプレビューです。",
+    "legend": {
+      "available": "空席",
+      "reserved": "予約済み",
+      "occupied": "使用中"
+    }
+  },
+  "testimonials": {
+    "heading": "メンバーの声",
+    "people": {
+      "priyaSharma": {
+        "role": "2023年からのメンバー",
+        "quote": "座席予約機能があるだけで、満席の図書館へ無駄足を運ぶことがなくなりました。"
+      },
+      "danielCho": {
+        "role": "読書クラブ リーダー",
+        "quote": "ディスカッションボードが組み込まれているので、毎月の読書会の運営がずっと楽になりました。"
+      },
+      "amaraOkafor": {
+        "role": "ボランティア",
+        "quote": "寄贈品やイベントの調整は以前はすべて表計算頼みでしたが、今はすべてひとつの場所にまとまっています。"
+      },
+      "liamFitzgerald": {
+        "role": "2024年からのメンバー",
+        "quote": "AI司書は自分では絶対に選ばない本を勧めてくれて、それがどれも大好きになりました。"
+      },
+      "ananyaIyer": {
+        "role": "2022年からのメンバー",
+        "quote": "今はスマホから本を延長したり読書の連続記録を確認したりできます。おかげで読書がまた毎日の習慣になりました。"
+      },
+      "marcusBenson": {
+        "role": "読書チャレンジ優勝者",
+        "quote": "ランキングのおかげで、読書の目標がフロアのみんなとの楽しい競争になりました。"
+      },
+      "fatimaAlRashid": {
+        "role": "イベント主催者",
+        "quote": "著者トークの準備やRSVPの管理が今では数分で済みます。参加を始めてから来場者数が倍になりました。"
+      },
+      "kenjiTanaka": {
+        "role": "2025年からのメンバー",
+        "quote": "試験前に静かな学習席を予約できたおかげで、その学期を乗り切れました。もう席探しに苦労しません。"
+      },
+      "graceMwangi": {
+        "role": "ブッククラブ メンバー",
+        "quote": "ディスカッションボードのおかげで、毎月の集まりが終わったあとも会話がずっと続きます。"
+      },
+      "diegoFernandez": {
+        "role": "ボランティア",
+        "quote": "QRスキャナーで寄贈本を登録するのがとても速くて、目録づくりがもはや楽しいくらいです。"
+      },
+      "sarahOConnor": {
+        "role": "2023年からのメンバー",
+        "quote": "返却期限の前に通知が届くので、この1年以上、延滞料金を払っていません。"
+      }
+    }
+  },
+  "faq": {
+    "heading": "よくある質問",
+    "items": {
+      "reservations": {
+        "question": "予約はどのように機能しますか？",
+        "answer": "本が貸出中の場合は予約でき、棚に戻り次第すぐにお知らせします。"
+      },
+      "seatBookings": {
+        "question": "座席予約はどのように機能しますか？",
+        "answer": "座席マップで空いている時間帯を選ぶと、利用開始まで席が確保されます。"
+      },
+      "donations": {
+        "question": "本を寄贈できますか？",
+        "answer": "はい。寄贈リクエストを送信すると、司書が確認のうえ、みんなのコレクションへの追加を承認します。"
+      },
+      "aiLibrarian": {
+        "question": "AI司書とは何ですか？",
+        "answer": "あなたの興味、気分、読書履歴に基づいて本を提案する対話型アシスタントです。"
+      }
+    }
+  },
+  "cta": {
+    "heading": "メンバーになって、今日から読書を始めよう",
+    "description": "読書コミュニティに参加し、図書館を探索して、もう本を見失うことはありません。",
+    "action": "読書コミュニティに参加する"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "title": "ಅಡ್ಮಿನ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+  "subtitle": "ವೇದಿಕೆ ಅವಲೋಕನ ಮತ್ತು ಆಡಳಿತ",
+  "stats": {
+    "totalBooks": {
+      "label": "ಒಟ್ಟು ಪುಸ್ತಕಗಳು"
+    },
+    "totalMembers": {
+      "label": "ಒಟ್ಟು ಸದಸ್ಯರು"
+    },
+    "eventsThisMonth": {
+      "label": "ಈ ತಿಂಗಳ ಕಾರ್ಯಕ್ರಮಗಳು"
+    },
+    "revenueMtd": {
+      "label": "ಆದಾಯ (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "ಬಾಕಿ ಇರುವ ವಿನಂತಿಗಳು",
+    "from": "{{requester}} ಅವರಿಂದ",
+    "reject": "ತಿರಸ್ಕರಿಸಿ",
+    "approve": "ಅನುಮೋದಿಸಿ",
+    "requestTypes": {
+      "donation": "ಪುಸ್ತಕ ದೇಣಿಗೆ",
+      "membershipRenewal": "ಸದಸ್ಯತ್ವ ನವೀಕರಣ",
+      "reservationDispute": "ಕಾಯ್ದಿರಿಸುವಿಕೆ ವಿವಾದ"
+    },
+    "items": {
+      "pr1": {
+        "summary": "3 Sci-Fi ಶೀರ್ಷಿಕೆಗಳು ಸೇರಿದಂತೆ 8 ಪುಸ್ತಕಗಳನ್ನು ದೇಣಿಗೆ ನೀಡಲಾಗುತ್ತಿದೆ"
+      },
+      "pr2": {
+        "summary": "ಪ್ರೀಮಿಯಂ ಸದಸ್ಯತ್ವ ನವೀಕರಣ ವಿನಂತಿ"
+      },
+      "pr3": {
+        "summary": "ಕಾಯ್ದಿರಿಸುವಿಕೆ ಸರತಿ ಸ್ಥಾನ ತಪ್ಪಾಗಿ ಕಾಣಿಸುತ್ತಿದೆ ಎಂದು ವರದಿ ಮಾಡಲಾಗಿದೆ"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} ಅವರ ವಿನಂತಿಯನ್ನು ತಿರಸ್ಕರಿಸಲಾಗುತ್ತಿದೆ",
+      "approve": "{{requester}} ಅವರ ವಿನಂತಿಯನ್ನು ಅನುಮೋದಿಸಲಾಗುತ್ತಿದೆ"
+    }
+  },
+  "reports": {
+    "title": "ವರದಿಗಳು",
+    "viewReport": "ವರದಿ ನೋಡಿ",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "ಅತಿ ಹೆಚ್ಚು ಎರವಲು ಪಡೆದ ಪುಸ್ತಕಗಳು"
+      },
+      "membershipGrowth": {
+        "label": "ಸದಸ್ಯತ್ವ ಬೆಳವಣಿಗೆ"
+      },
+      "eventAttendance": {
+        "label": "ಕಾರ್ಯಕ್ರಮ ಹಾಜರಾತಿ"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳು",
+    "addBook": "ಪುಸ್ತಕ ಸೇರಿಸಿ",
+    "inviteMember": "ಸದಸ್ಯರನ್ನು ಆಹ್ವಾನಿಸಿ",
+    "createEvent": "ಕಾರ್ಯಕ್ರಮ ರಚಿಸಿ",
+    "announcement": "ಪ್ರಕಟಣೆ",
+    "toast": {
+      "addBook": "ಪುಸ್ತಕವನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ",
+      "inviteMember": "ಸದಸ್ಯರನ್ನು ಆಹ್ವಾನಿಸಲಾಗುತ್ತಿದೆ",
+      "createEvent": "ಕಾರ್ಯಕ್ರಮವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ",
+      "announcement": "ಪ್ರಕಟಣೆಯನ್ನು ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ"
+    }
+  }
+}

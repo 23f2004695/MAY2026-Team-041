@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} سے ممبر",
+    "editProfile": "پروفائل ترمیم کریں",
+    "editProfileAction": "آپ کی پروفائل میں ترمیم"
+  },
+  "stats": {
+    "booksRead": "پڑھی گئی کتابیں",
+    "pagesRead": "پڑھے گئے صفحات",
+    "hoursRead": "پڑھنے کے گھنٹے"
+  },
+  "achievements": {
+    "title": "اعزازات",
+    "items": {
+      "firstBook": {
+        "label": "پہلی کتاب",
+        "description": "اپنی پہلی کتاب ادھار لیں"
+      },
+      "bookWorm": {
+        "label": "کتابی کیڑا",
+        "description": "ایک سال میں 10 کتابیں پڑھیں"
+      },
+      "topReader": {
+        "label": "ٹاپ ریڈر",
+        "description": "ماہانہ لیڈر بورڈ کے سرِفہرست پہنچیں"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "موجودہ مطالعہ",
+    "by": "از {{author}}"
+  },
+  "borrowHistory": {
+    "title": "ادھار کی ہسٹری",
+    "columns": {
+      "title": "عنوان",
+      "borrowedOn": "ادھار لینے کی تاریخ",
+      "returnedOn": "واپسی کی تاریخ"
+    }
+  }
+}

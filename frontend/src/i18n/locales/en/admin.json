@@ -1,0 +1,72 @@
+{
+  "title": "Admin Dashboard",
+  "subtitle": "Platform overview and administration",
+  "stats": {
+    "totalBooks": {
+      "label": "Total Books"
+    },
+    "totalMembers": {
+      "label": "Total Members"
+    },
+    "eventsThisMonth": {
+      "label": "Events This Month"
+    },
+    "revenueMtd": {
+      "label": "Revenue (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "Pending Requests",
+    "from": "From {{requester}}",
+    "reject": "Reject",
+    "approve": "Approve",
+    "requestTypes": {
+      "donation": "Book Donation",
+      "membershipRenewal": "Membership Renewal",
+      "reservationDispute": "Reservation Dispute"
+    },
+    "items": {
+      "pr1": {
+        "summary": "Donating 8 books, including 3 Sci-Fi titles"
+      },
+      "pr2": {
+        "summary": "Premium membership renewal request"
+      },
+      "pr3": {
+        "summary": "Reports reservation queue position looks incorrect"
+      }
+    },
+    "toast": {
+      "reject": "Rejecting request from {{requester}}",
+      "approve": "Approving request from {{requester}}"
+    }
+  },
+  "reports": {
+    "title": "Reports",
+    "viewReport": "View report",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "Most Borrowed Books"
+      },
+      "membershipGrowth": {
+        "label": "Membership Growth"
+      },
+      "eventAttendance": {
+        "label": "Event Attendance"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "addBook": "Add Book",
+    "inviteMember": "Invite Member",
+    "createEvent": "Create Event",
+    "announcement": "Announcement",
+    "toast": {
+      "addBook": "Adding a book",
+      "inviteMember": "Inviting a member",
+      "createEvent": "Creating an event",
+      "announcement": "Sending an announcement"
+    }
+  }
+}

@@ -10,7 +10,7 @@ export interface AppShellLayoutProps {
 export function AppShellLayout({ items }: AppShellLayoutProps) {
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-60 shrink-0 border-r border-border bg-surface md:block">
+      <aside className="hidden w-60 shrink-0 border-e border-border bg-surface md:block">
         <Sidebar items={items} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">

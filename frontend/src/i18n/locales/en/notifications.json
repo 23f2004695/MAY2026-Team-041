@@ -1,0 +1,39 @@
+{
+  "title": "Notifications",
+  "unreadBadge": "{{count}} unread",
+  "filterAriaLabel": "Filter notifications",
+  "filters": {
+    "all": "All",
+    "unread": "Unread"
+  },
+  "empty": {
+    "title": "Nothing to see here",
+    "description": "You're all caught up on notifications."
+  },
+  "card": {
+    "unreadDot": "Unread",
+    "markAsRead": "Mark as read"
+  },
+  "items": {
+    "n1": {
+      "title": "Book due soon",
+      "message": "\"{{book}}\" is due in {{count}} days."
+    },
+    "n2": {
+      "title": "Reservation ready",
+      "message": "\"{{book}}\" is ready for pickup."
+    },
+    "n3": {
+      "title": "New arrival",
+      "message": "\"{{book}}\" has been added to the {{category}} collection."
+    },
+    "n4": {
+      "title": "Achievement unlocked",
+      "message": "You earned the \"{{badge}}\" badge for reading {{count}} books this year."
+    },
+    "n5": {
+      "title": "Membership renewal",
+      "message": "Your premium membership renews in {{count}} days."
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "कार्यक्रम",
+    "subtitle": "आगामी ग्रंथालय कार्यक्रम आणि सामुदायिक उपक्रम"
+  },
+  "stats": {
+    "eventsThisMonth": "या महिन्यातील कार्यक्रम",
+    "totalAttendees": "एकूण उपस्थित",
+    "avgAttendanceRate": "सरासरी उपस्थिती दर"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} उपस्थित",
+    "registered": "नोंदणीकृत",
+    "open": "खुले",
+    "viewDetails": "तपशील पहा"
+  },
+  "drawer": {
+    "title": "कार्यक्रम तपशील",
+    "registration": "नोंदणी",
+    "registered": "तुम्ही नोंदणी केली आहे",
+    "notRegistered": "नोंदणी केलेली नाही",
+    "cancelRegistration": "नोंदणी रद्द करा",
+    "register": "नोंदणी करा",
+    "volunteerAssignments": "स्वयंसेवक जबाबदाऱ्या",
+    "noVolunteers": "अजून कोणतेही स्वयंसेवक नियुक्त केलेले नाहीत.",
+    "toast": {
+      "cancelling": "नोंदणी रद्द करत आहे",
+      "registering": "नोंदणी करत आहे"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "Sci-Fi बुक क्लब भेट",
+      "location": "मुख्य सभागृह, कम्युनिटी लायब्ररी",
+      "description": "या महिन्याच्या निवडीवर मासिक चर्चा, \"Project Hail Mary\".",
+      "volunteers": {
+        "amaraOkafor": "चर्चा प्रमुख",
+        "liamFitzgerald": "व्यवस्था"
+      }
+    },
+    "author-talk": {
+      "title": "लेखक संवाद: स्थानिक लेखक रात्र",
+      "location": "सभागृह, कम्युनिटी लायब्ररी",
+      "description": "तीन स्थानिक लेखकांसोबत त्यांच्या पहिल्या कादंबऱ्यांवर चर्चा करणारी एक संध्याकाळ.",
+      "volunteers": {
+        "danielCho": "नोंदणी कक्ष"
+      }
+    },
+    "kids-story-hour": {
+      "title": "मुलांचा गोष्टींचा तास",
+      "location": "बाल विभाग",
+      "description": "4-8 वयोगटातील मुलांसाठी साप्ताहिक गोष्ट सांगण्याचे सत्र.",
+      "volunteers": {
+        "priyaSharma": "गोष्ट सांगणारी"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "स्वयंसेवक ओळख सत्र",
+      "location": "बैठक कक्ष B",
+      "description": "ग्रंथालय कार्यक्रमांमध्ये सामील होणाऱ्या नवीन स्वयंसेवकांसाठी ओळख सत्र.",
+      "volunteers": {}
+    }
+  }
+}

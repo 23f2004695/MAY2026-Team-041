@@ -1,0 +1,61 @@
+{
+  "title": "पुस्तके",
+  "subtitle": "ग्रंथालय कॅटलॉग पहा",
+  "searchPlaceholder": "शीर्षक किंवा लेखकानुसार शोधा…",
+  "searchAriaLabel": "पुस्तके शोधा",
+  "filterAriaLabel": "श्रेणीनुसार फिल्टर करा",
+  "backToBooks": "पुस्तकांकडे परत",
+  "reserveThisBook": "हे पुस्तक आरक्षित करा",
+  "reserveToast": "\"{{title}}\" आरक्षित करत आहे",
+  "copiesAvailable": "{{total}} पैकी {{available}} प्रती उपलब्ध",
+  "categories": {
+    "All": "सर्व",
+    "Fiction": "काल्पनिक",
+    "Non-Fiction": "वास्तविक",
+    "Science": "विज्ञान",
+    "Technology": "तंत्रज्ञान",
+    "Biography": "चरित्र",
+    "Self-Help": "स्वयं-मदत"
+  },
+  "status": {
+    "available": "उपलब्ध",
+    "checkedOut": "उधार दिलेले"
+  },
+  "empty": {
+    "title": "कोणतीही पुस्तके सापडली नाहीत",
+    "description": "वेगळा शोध शब्द किंवा श्रेणी वापरून पहा."
+  },
+  "notFound": {
+    "title": "पुस्तक सापडले नाही",
+    "description": "हे पुस्तक कदाचित कॅटलॉगमधून काढून टाकले गेले असावे."
+  },
+  "books": {
+    "atomic-habits": {
+      "description": "चांगल्या सवयी लावण्यासाठी आणि वाईट सवयी सोडण्यासाठी एक व्यावहारिक मार्गदर्शक."
+    },
+    "sapiens": {
+      "description": "पाषाणयुगापासून वर्तमानापर्यंत मानवजातीचा एक संक्षिप्त इतिहास."
+    },
+    "the-overstory": {
+      "description": "झाडांशी असलेल्या नात्याद्वारे नऊ अमेरिकनांना जोडणारी एक गुंतागुंतीची कादंबरी."
+    },
+    "hands-on-ml": {
+      "description": "Scikit-Learn, Keras आणि TensorFlow सह मशीन लर्निंगसाठी एक व्यावहारिक मार्गदर्शक."
+    },
+    "a-short-history": {
+      "description": "विज्ञानाच्या इतिहासातून एक सुलभ प्रवास."
+    },
+    "cant-hurt-me": {
+      "description": "कठीण बालपणावर मात करून एक अव्वल खेळाडू बनण्याची David Goggins यांची कहाणी."
+    },
+    "deep-work": {
+      "description": "विचलित जगात केंद्रित यशासाठीचे नियम."
+    },
+    "the-hundred-page-ml": {
+      "description": "मशीन लर्निंगच्या मूलभूत संकल्पनांची संक्षिप्त ओळख."
+    },
+    "norwegian-wood": {
+      "description": "1960 च्या दशकातील टोकियोमधील हानी आणि उमलत्या भावनांची एक स्मरणरम्य कहाणी."
+    }
+  }
+}

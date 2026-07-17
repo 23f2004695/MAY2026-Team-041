@@ -1,0 +1,15 @@
+{
+  "title": "排行榜",
+  "subtitle": "本月社区阅读达人",
+  "table": {
+    "rank": "排名",
+    "reader": "读者",
+    "points": "积分",
+    "badges": "徽章",
+    "hoursRead": "阅读时长",
+    "hoursValue": "{{hours}} 小时"
+  },
+  "badge": {
+    "you": "你"
+  }
+}

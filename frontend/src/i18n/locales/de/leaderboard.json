@@ -1,0 +1,15 @@
+{
+  "title": "Bestenliste",
+  "subtitle": "Die besten Leser der Community in diesem Monat",
+  "table": {
+    "rank": "Rang",
+    "reader": "Leser",
+    "points": "Punkte",
+    "badges": "Abzeichen",
+    "hoursRead": "Gelesene Stunden",
+    "hoursValue": "{{hours}} h"
+  },
+  "badge": {
+    "you": "Du"
+  }
+}

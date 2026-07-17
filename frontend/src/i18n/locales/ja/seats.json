@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "座席予約",
+    "subtitle": "静かな学習席を予約"
+  },
+  "legend": {
+    "available": "空席",
+    "reserved": "予約済み",
+    "occupied": "使用中"
+  },
+  "summary": {
+    "title": "予約内容の確認",
+    "seatSelected": "本日の席として<bold>{{seat}}</bold>を選択しました",
+    "emptyState": "空いている席を選択して続けてください。",
+    "confirm": "予約を確定"
+  },
+  "toast": {
+    "bookingSeat": "座席{{seat}}を予約中"
+  }
+}

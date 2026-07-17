@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "पुस्तक परीक्षणे",
+    "byAuthor": "लेखक {{author}}",
+    "writeReview": "परीक्षण लिहा",
+    "comments": "टिप्पण्या"
+  },
+  "allReviews": {
+    "heading": "आमचे सदस्य काय म्हणतात",
+    "subtitle": "समुदायातील वाचक, क्लब प्रमुख, स्वयंसेवक आणि कार्यक्रम आयोजकांचा खरा अभिप्राय."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} परीक्षण",
+    "reviewCount_other": "{{count}} परीक्षणे",
+    "starsLabel_one": "{{count}} तारा",
+    "starsLabel_other": "{{count}} तारे"
+  },
+  "modal": {
+    "title": "परीक्षण लिहा",
+    "cancel": "रद्द करा",
+    "submit": "परीक्षण पोस्ट करा",
+    "errors": {
+      "imageFailed": "प्रतिमा जोडता आली नाही.",
+      "missingFields": "तुमचे नाव, रेटिंग आणि टिप्पणी जोडा."
+    },
+    "toast": {
+      "posted": "परीक्षण पोस्ट झाले"
+    },
+    "fields": {
+      "name": {
+        "label": "तुमचे नाव",
+        "placeholder": "उदा. Priya Sharma"
+      },
+      "rating": {
+        "label": "रेटिंग",
+        "starLabel_one": "{{count}} तारा",
+        "starLabel_other": "{{count}} तारे"
+      },
+      "comment": {
+        "label": "टिप्पणी",
+        "placeholder": "या पुस्तकाबद्दल तुम्हाला काय वाटले ते शेअर करा..."
+      },
+      "photo": {
+        "label": "फोटो (पर्यायी)",
+        "previewAlt": "परीक्षण जोडणी पूर्वावलोकन",
+        "remove": "प्रतिमा काढा",
+        "uploading": "जोडत आहे...",
+        "upload": "प्रतिमा अपलोड करा"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "page": {
+    "title": "పుస్తక సమీక్షలు",
+    "byAuthor": "{{author}} రచించినది",
+    "writeReview": "సమీక్ష రాయండి",
+    "comments": "వ్యాఖ్యలు"
+  },
+  "allReviews": {
+    "heading": "మా సభ్యులు ఏమి చెబుతున్నారు",
+    "subtitle": "కమ్యూనిటీ అంతటా పాఠకులు, క్లబ్ లీడ్‌లు, వాలంటీర్లు మరియు ఈవెంట్ నిర్వాహకుల నుండి నిజమైన అభిప్రాయాలు."
+  },
+  "summary": {
+    "reviewCount_one": "{{count}} సమీక్ష",
+    "reviewCount_other": "{{count}} సమీక్షలు",
+    "starsLabel_one": "{{count}} స్టార్",
+    "starsLabel_other": "{{count}} స్టార్లు"
+  },
+  "modal": {
+    "title": "సమీక్ష రాయండి",
+    "cancel": "రద్దు చేయండి",
+    "submit": "సమీక్షను పోస్ట్ చేయండి",
+    "errors": {
+      "imageFailed": "చిత్రాన్ని జోడించలేకపోయింది.",
+      "missingFields": "మీ పేరు, ఒక రేటింగ్ మరియు ఒక వ్యాఖ్యను జోడించండి."
+    },
+    "toast": {
+      "posted": "సమీక్ష పోస్ట్ చేయబడింది"
+    },
+    "fields": {
+      "name": {
+        "label": "మీ పేరు",
+        "placeholder": "ఉదా. Priya Sharma"
+      },
+      "rating": {
+        "label": "రేటింగ్",
+        "starLabel_one": "{{count}} స్టార్",
+        "starLabel_other": "{{count}} స్టార్లు"
+      },
+      "comment": {
+        "label": "వ్యాఖ్య",
+        "placeholder": "ఈ పుస్తకం గురించి మీరు ఏమనుకుంటున్నారో పంచుకోండి..."
+      },
+      "photo": {
+        "label": "ఫోటో (ఐచ్ఛికం)",
+        "previewAlt": "సమీక్ష జోడింపు ప్రివ్యూ",
+        "remove": "చిత్రాన్ని తీసివేయండి",
+        "uploading": "జోడిస్తోంది...",
+        "upload": "ఒక చిత్రాన్ని అప్‌లోడ్ చేయండి"
+      }
+    }
+  }
+}

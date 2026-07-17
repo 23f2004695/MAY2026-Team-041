@@ -1,0 +1,33 @@
+{
+  "title": "読書の進捗",
+  "subtitle": "この1年間のあなたの読書活動",
+  "goal": {
+    "title": "{{year}}年の読書目標",
+    "progress": "{{target}}冊中{{current}}冊"
+  },
+  "streak": {
+    "title": "連続読書記録",
+    "currentDays": "{{days}}日",
+    "longest": "最長記録: {{days}}日"
+  },
+  "lists": {
+    "currentlyReading": {
+      "title": "読書中",
+      "empty": "本を読み始めると、ここで記録できます。"
+    },
+    "completed": {
+      "title": "読了",
+      "empty": "読み終えた本がここに表示されます。"
+    },
+    "wantToRead": {
+      "title": "読みたい本",
+      "empty": "次に読む予定の本を保存しましょう。"
+    }
+  },
+  "book": {
+    "by": "著者: {{author}}"
+  },
+  "emptyState": {
+    "title": "まだ何もありません"
+  }
+}

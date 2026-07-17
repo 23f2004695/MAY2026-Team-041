@@ -1,0 +1,15 @@
+{
+  "title": "લીડરબોર્ડ",
+  "subtitle": "આ મહિને સમુદાયના ટોચના વાચકો",
+  "table": {
+    "rank": "ક્રમ",
+    "reader": "વાચક",
+    "points": "પોઇન્ટ્સ",
+    "badges": "બેજ",
+    "hoursRead": "વાંચનના કલાકો",
+    "hoursValue": "{{hours}} ક"
+  },
+  "badge": {
+    "you": "તમે"
+  }
+}

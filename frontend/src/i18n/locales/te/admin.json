@@ -1,0 +1,72 @@
+{
+  "title": "అడ్మిన్ డాష్‌బోర్డ్",
+  "subtitle": "ప్లాట్‌ఫారమ్ అవలోకనం మరియు నిర్వహణ",
+  "stats": {
+    "totalBooks": {
+      "label": "మొత్తం పుస్తకాలు"
+    },
+    "totalMembers": {
+      "label": "మొత్తం సభ్యులు"
+    },
+    "eventsThisMonth": {
+      "label": "ఈ నెల ఈవెంట్లు"
+    },
+    "revenueMtd": {
+      "label": "ఆదాయం (MTD)"
+    }
+  },
+  "pendingRequests": {
+    "title": "పెండింగ్ అభ్యర్థనలు",
+    "from": "{{requester}} నుండి",
+    "reject": "తిరస్కరించండి",
+    "approve": "ఆమోదించండి",
+    "requestTypes": {
+      "donation": "పుస్తక విరాళం",
+      "membershipRenewal": "సభ్యత్వ రెన్యూవల్",
+      "reservationDispute": "రిజర్వేషన్ వివాదం"
+    },
+    "items": {
+      "pr1": {
+        "summary": "3 సైన్స్-ఫై శీర్షికలతో సహా 8 పుస్తకాలను విరాళంగా ఇస్తోంది"
+      },
+      "pr2": {
+        "summary": "ప్రీమియం సభ్యత్వ రెన్యూవల్ అభ్యర్థన"
+      },
+      "pr3": {
+        "summary": "రిజర్వేషన్ క్యూ స్థానం తప్పుగా కనిపిస్తోందని నివేదిస్తోంది"
+      }
+    },
+    "toast": {
+      "reject": "{{requester}} నుండి వచ్చిన అభ్యర్థనను తిరస్కరిస్తోంది",
+      "approve": "{{requester}} నుండి వచ్చిన అభ్యర్థనను ఆమోదిస్తోంది"
+    }
+  },
+  "reports": {
+    "title": "నివేదికలు",
+    "viewReport": "నివేదికను చూడండి",
+    "items": {
+      "mostBorrowedBooks": {
+        "label": "అత్యధికంగా అరువుగా తీసుకున్న పుస్తకాలు"
+      },
+      "membershipGrowth": {
+        "label": "సభ్యత్వ వృద్ధి"
+      },
+      "eventAttendance": {
+        "label": "ఈవెంట్ హాజరు"
+      }
+    }
+  },
+  "quickActions": {
+    "title": "త్వరిత చర్యలు",
+    "addBook": "పుస్తకాన్ని జోడించండి",
+    "inviteMember": "సభ్యుడిని ఆహ్వానించండి",
+    "createEvent": "ఈవెంట్‌ను సృష్టించండి",
+    "announcement": "ప్రకటన",
+    "toast": {
+      "addBook": "ఒక పుస్తకాన్ని జోడిస్తోంది",
+      "inviteMember": "ఒక సభ్యుడిని ఆహ్వానిస్తోంది",
+      "createEvent": "ఒక ఈవెంట్‌ను సృష్టిస్తోంది",
+      "announcement": "ఒక ప్రకటనను పంపుతోంది"
+    }
+  }
+}

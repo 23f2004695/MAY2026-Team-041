@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "عضو منذ {{date}}",
+    "editProfile": "تعديل الملف الشخصي",
+    "editProfileAction": "جارٍ تعديل ملفك الشخصي"
+  },
+  "stats": {
+    "booksRead": "الكتب المقروءة",
+    "pagesRead": "الصفحات المقروءة",
+    "hoursRead": "ساعات القراءة"
+  },
+  "achievements": {
+    "title": "الإنجازات",
+    "items": {
+      "firstBook": {
+        "label": "أول كتاب",
+        "description": "استعر كتابك الأول"
+      },
+      "bookWorm": {
+        "label": "عاشق الكتب",
+        "description": "اقرأ 10 كتب في العام"
+      },
+      "topReader": {
+        "label": "القارئ المتصدّر",
+        "description": "تصدّر لوحة المتصدرين الشهرية"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "القراءة الحالية",
+    "by": "بقلم {{author}}"
+  },
+  "borrowHistory": {
+    "title": "سجل الاستعارة",
+    "columns": {
+      "title": "العنوان",
+      "borrowedOn": "تاريخ الاستعارة",
+      "returnedOn": "تاريخ الإرجاع"
+    }
+  }
+}

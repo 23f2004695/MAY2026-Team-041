@@ -1,0 +1,52 @@
+{
+  "welcome": {
+    "greeting": "欢迎回来，{{name}}",
+    "subtitle": "看看你的图书馆有哪些新动态"
+  },
+  "stats": {
+    "booksBorrowed": {
+      "label": "已借图书"
+    },
+    "booksReserved": {
+      "label": "已预约图书"
+    },
+    "seatBookings": {
+      "label": "座位预订"
+    },
+    "readingPoints": {
+      "label": "阅读积分"
+    }
+  },
+  "booksDueSoon": {
+    "title": "即将到期的图书",
+    "empty": {
+      "title": "近期没有到期图书",
+      "description": "你已全部处理完毕。"
+    },
+    "dueLabel": "{{date}}到期 · 还剩 {{days}} 天"
+  },
+  "currentlyBorrowed": {
+    "title": "当前借阅",
+    "since": "自 {{date}} 起"
+  },
+  "recentNotifications": {
+    "title": "最近通知"
+  },
+  "upcomingEvents": {
+    "title": "近期活动"
+  },
+  "readingProgress": {
+    "title": "阅读进度",
+    "pages": "已读 {{read}} 页，共 {{total}} 页"
+  },
+  "monthlyChallenge": {
+    "title": "月度挑战",
+    "books": "已读 {{current}} 本，目标 {{target}} 本"
+  },
+  "quickActions": {
+    "title": "快捷操作",
+    "browseBooks": "浏览图书",
+    "bookSeat": "预订座位",
+    "viewReservations": "查看预约"
+  }
+}

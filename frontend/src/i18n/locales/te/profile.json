@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "{{date}} నుండి సభ్యుడు",
+    "editProfile": "ప్రొఫైల్‌ను ఎడిట్ చేయండి",
+    "editProfileAction": "మీ ప్రొఫైల్‌ను ఎడిట్ చేస్తోంది"
+  },
+  "stats": {
+    "booksRead": "చదివిన పుస్తకాలు",
+    "pagesRead": "చదివిన పేజీలు",
+    "hoursRead": "చదివిన గంటలు"
+  },
+  "achievements": {
+    "title": "విజయాలు",
+    "items": {
+      "firstBook": {
+        "label": "మొదటి పుస్తకం",
+        "description": "మీ మొదటి పుస్తకాన్ని అరువుగా తీసుకోండి"
+      },
+      "bookWorm": {
+        "label": "బుక్ వార్మ్",
+        "description": "ఒక సంవత్సరంలో 10 పుస్తకాలు చదవండి"
+      },
+      "topReader": {
+        "label": "టాప్ రీడర్",
+        "description": "నెలవారీ లీడర్‌బోర్డ్‌లో అగ్రస్థానానికి చేరుకోండి"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "ప్రస్తుత పఠనం",
+    "by": "{{author}} రచించినది"
+  },
+  "borrowHistory": {
+    "title": "అరువు చరిత్ర",
+    "columns": {
+      "title": "శీర్షిక",
+      "borrowedOn": "అరువుగా తీసుకున్న తేదీ",
+      "returnedOn": "తిరిగి ఇచ్చిన తేదీ"
+    }
+  }
+}

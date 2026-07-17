@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "Miembro desde {{date}}",
+    "editProfile": "Editar perfil",
+    "editProfileAction": "Editando tu perfil"
+  },
+  "stats": {
+    "booksRead": "Libros leídos",
+    "pagesRead": "Páginas leídas",
+    "hoursRead": "Horas leídas"
+  },
+  "achievements": {
+    "title": "Logros",
+    "items": {
+      "firstBook": {
+        "label": "Primer libro",
+        "description": "Toma prestado tu primer libro"
+      },
+      "bookWorm": {
+        "label": "Ratón de biblioteca",
+        "description": "Lee 10 libros en un año"
+      },
+      "topReader": {
+        "label": "Mejor lector",
+        "description": "Alcanza lo más alto de la clasificación mensual"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "Leyendo ahora",
+    "by": "de {{author}}"
+  },
+  "borrowHistory": {
+    "title": "Historial de préstamos",
+    "columns": {
+      "title": "Título",
+      "borrowedOn": "Prestado el",
+      "returnedOn": "Devuelto el"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "header": {
+    "memberSince": "Member since {{date}}",
+    "editProfile": "Edit Profile",
+    "editProfileAction": "Editing your profile"
+  },
+  "stats": {
+    "booksRead": "Books Read",
+    "pagesRead": "Pages Read",
+    "hoursRead": "Hours Read"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "items": {
+      "firstBook": {
+        "label": "First Book",
+        "description": "Borrow your first book"
+      },
+      "bookWorm": {
+        "label": "Book Worm",
+        "description": "Read 10 books in a year"
+      },
+      "topReader": {
+        "label": "Top Reader",
+        "description": "Reach the top of the monthly leaderboard"
+      }
+    }
+  },
+  "currentReading": {
+    "title": "Current Reading",
+    "by": "by {{author}}"
+  },
+  "borrowHistory": {
+    "title": "Borrow History",
+    "columns": {
+      "title": "Title",
+      "borrowedOn": "Borrowed On",
+      "returnedOn": "Returned On"
+    }
+  }
+}

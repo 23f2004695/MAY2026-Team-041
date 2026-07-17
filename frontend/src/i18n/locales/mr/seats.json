@@ -1,0 +1,20 @@
+{
+  "page": {
+    "title": "आसन आरक्षण",
+    "subtitle": "एक शांत अभ्यास आसन आरक्षित करा"
+  },
+  "legend": {
+    "available": "उपलब्ध",
+    "reserved": "आरक्षित",
+    "occupied": "व्यापलेले"
+  },
+  "summary": {
+    "title": "आरक्षण सारांश",
+    "seatSelected": "आजसाठी आसन <bold>{{seat}}</bold> निवडले",
+    "emptyState": "पुढे जाण्यासाठी एक उपलब्ध आसन निवडा.",
+    "confirm": "आरक्षण निश्चित करा"
+  },
+  "toast": {
+    "bookingSeat": "आसन {{seat}} आरक्षित करत आहे"
+  }
+}

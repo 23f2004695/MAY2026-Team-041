@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "مراجعات الكتب",
+    "byAuthor": "بقلم {{author}}",
+    "writeReview": "اكتب مراجعة",
+    "comments": "التعليقات"
+  },
+  "allReviews": {
+    "heading": "ماذا يقول أعضاؤنا",
+    "subtitle": "آراء حقيقية من القرّاء وقادة النوادي والمتطوعين ومنظّمي الفعاليات في أنحاء المجتمع."
+  },
+  "summary": {
+    "reviewCount_zero": "{{count}} مراجعة",
+    "reviewCount_one": "{{count}} مراجعة",
+    "reviewCount_two": "{{count}} مراجعتان",
+    "reviewCount_few": "{{count}} مراجعات",
+    "reviewCount_many": "{{count}} مراجعة",
+    "reviewCount_other": "{{count}} مراجعة",
+    "starsLabel_zero": "{{count}} نجمة",
+    "starsLabel_one": "{{count}} نجمة",
+    "starsLabel_two": "{{count}} نجمتان",
+    "starsLabel_few": "{{count}} نجوم",
+    "starsLabel_many": "{{count}} نجمة",
+    "starsLabel_other": "{{count}} نجمة"
+  },
+  "modal": {
+    "title": "اكتب مراجعة",
+    "cancel": "إلغاء",
+    "submit": "نشر المراجعة",
+    "errors": {
+      "imageFailed": "تعذّرت إضافة الصورة.",
+      "missingFields": "أضف اسمك وتقييمًا وتعليقًا."
+    },
+    "toast": {
+      "posted": "تم نشر المراجعة"
+    },
+    "fields": {
+      "name": {
+        "label": "اسمك",
+        "placeholder": "مثال: Priya Sharma"
+      },
+      "rating": {
+        "label": "التقييم",
+        "starLabel_zero": "{{count}} نجمة",
+        "starLabel_one": "{{count}} نجمة",
+        "starLabel_two": "{{count}} نجمتان",
+        "starLabel_few": "{{count}} نجوم",
+        "starLabel_many": "{{count}} نجمة",
+        "starLabel_other": "{{count}} نجمة"
+      },
+      "comment": {
+        "label": "التعليق",
+        "placeholder": "شاركنا رأيك في هذا الكتاب..."
+      },
+      "photo": {
+        "label": "صورة (اختياري)",
+        "previewAlt": "معاينة مرفق المراجعة",
+        "remove": "إزالة الصورة",
+        "uploading": "جارٍ الإضافة...",
+        "upload": "ارفع صورة"
+      }
+    }
+  }
+}

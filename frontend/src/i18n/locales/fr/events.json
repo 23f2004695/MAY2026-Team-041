@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "Événements",
+    "subtitle": "Événements à venir et programmes communautaires de la bibliothèque"
+  },
+  "stats": {
+    "eventsThisMonth": "Événements ce mois-ci",
+    "totalAttendees": "Participants au total",
+    "avgAttendanceRate": "Taux de participation moyen"
+  },
+  "card": {
+    "attending": "{{attendees}}/{{capacity}} participants",
+    "registered": "Inscrit",
+    "open": "Ouvert",
+    "viewDetails": "Voir les détails"
+  },
+  "drawer": {
+    "title": "Détails de l'événement",
+    "registration": "Inscription",
+    "registered": "Vous êtes inscrit",
+    "notRegistered": "Non inscrit",
+    "cancelRegistration": "Annuler l'inscription",
+    "register": "S'inscrire",
+    "volunteerAssignments": "Affectations des bénévoles",
+    "noVolunteers": "Aucun bénévole affecté pour l'instant.",
+    "toast": {
+      "cancelling": "Annulation de l'inscription",
+      "registering": "Inscription en cours"
+    }
+  },
+  "list": {
+    "scifi-book-club": {
+      "title": "Rencontre du club de lecture Science-Fiction",
+      "location": "Grande salle, Community Library",
+      "description": "Discussion mensuelle sur la sélection du mois, \"Project Hail Mary\".",
+      "volunteers": {
+        "amaraOkafor": "Animatrice de la discussion",
+        "liamFitzgerald": "Installation"
+      }
+    },
+    "author-talk": {
+      "title": "Rencontre d'auteurs : soirée des écrivains locaux",
+      "location": "Auditorium, Community Library",
+      "description": "Une soirée avec trois auteurs locaux qui présentent leurs premiers romans.",
+      "volunteers": {
+        "danielCho": "Accueil et inscriptions"
+      }
+    },
+    "kids-story-hour": {
+      "title": "L'heure du conte pour enfants",
+      "location": "Aile des enfants",
+      "description": "Séance hebdomadaire de contes pour les enfants de 4 à 8 ans.",
+      "volunteers": {
+        "priyaSharma": "Conteuse"
+      }
+    },
+    "volunteer-orientation": {
+      "title": "Réunion d'accueil des bénévoles",
+      "location": "Salle de réunion B",
+      "description": "Séance d'accueil pour les nouveaux bénévoles rejoignant les programmes de la bibliothèque.",
+      "volunteers": {}
+    }
+  }
+}

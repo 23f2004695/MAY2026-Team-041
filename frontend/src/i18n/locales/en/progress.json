@@ -1,0 +1,33 @@
+{
+  "title": "Reading Progress",
+  "subtitle": "Your reading activity across the year",
+  "goal": {
+    "title": "{{year}} Reading Goal",
+    "progress": "{{current}} of {{target}} books"
+  },
+  "streak": {
+    "title": "Reading Streak",
+    "currentDays": "{{days}} days",
+    "longest": "Longest streak: {{days}} days"
+  },
+  "lists": {
+    "currentlyReading": {
+      "title": "Currently Reading",
+      "empty": "Start a book to track it here."
+    },
+    "completed": {
+      "title": "Completed",
+      "empty": "Books you finish will show up here."
+    },
+    "wantToRead": {
+      "title": "Want To Read",
+      "empty": "Save books you plan to read next."
+    }
+  },
+  "book": {
+    "by": "by {{author}}"
+  },
+  "emptyState": {
+    "title": "Nothing here yet"
+  }
+}

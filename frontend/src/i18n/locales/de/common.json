@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "books": "Bücher",
+    "reservations": "Reservierungen",
+    "seatBooking": "Sitzplatzbuchung",
+    "community": "Community",
+    "events": "Veranstaltungen",
+    "readingProgress": "Lesefortschritt",
+    "leaderboard": "Bestenliste",
+    "reviews": "Rezensionen",
+    "notifications": "Benachrichtigungen",
+    "settings": "Einstellungen",
+    "adminOverview": "Admin-Übersicht",
+    "backToApp": "Zurück zur App"
+  },
+  "actions": {
+    "signIn": "Anmelden",
+    "logOut": "Abmelden",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "backHome": "Zurück zur Startseite",
+    "backToHome": "Zurück zur Startseite",
+    "viewAll": "Alle anzeigen"
+  },
+  "aria": {
+    "openNavigation": "Navigation öffnen",
+    "openAccountMenu": "Kontomenü öffnen",
+    "menu": "Menü",
+    "account": "Konto"
+  },
+  "language": {
+    "selectLabel": "Sprache ändern"
+  },
+  "theme": {
+    "toLight": "Zum hellen Modus wechseln",
+    "toDark": "Zum dunklen Modus wechseln"
+  },
+  "appearance": {
+    "label": "Weltraum-Hintergrund festlegen",
+    "background": {
+      "title": "Seitenhintergrund",
+      "description": "Die Farbe hinter allen Inhalten der Seite."
+    },
+    "cards": {
+      "title": "Karten & Panels",
+      "description": "Karten, die Navigationsleiste, Eingabefelder und Dialoge nutzen diese Farbe."
+    },
+    "custom": "Benutzerdefiniert",
+    "preview": "Vorschau",
+    "sampleCard": "Beispielkarte",
+    "sampleText": "Die Textfarbe passt sich automatisch an, damit alles gut lesbar bleibt.",
+    "primaryAction": "Hauptaktion",
+    "lowContrast": "Geringer Kontrast — für die beste Lesbarkeit kombiniere helle mit hellen oder dunkle mit dunklen Farben.",
+    "reset": "Auf Design-Standard zurücksetzen",
+    "done": "Fertig"
+  },
+  "comingSoon": {
+    "badge": "Bald verfügbar"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} ist noch nicht aktiv",
+      "description": "Dies ist eine UI-Vorschau — der eigentliche Ablauf folgt, sobald das Backend angebunden ist."
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "Eine moderne Bibliotheksplattform für Ausleihen, Lesekreise und Community-Veranstaltungen.",
+    "siteLinks": "Seitenlinks",
+    "navigation": "Navigation",
+    "quickLinks": "Schnellzugriffe",
+    "contact": "Kontakt",
+    "links": {
+      "home": "Startseite",
+      "login": "Anmelden",
+      "register": "Registrieren",
+      "books": "Bücher",
+      "community": "Community",
+      "events": "Veranstaltungen"
+    },
+    "social": {
+      "website": "Website",
+      "forum": "Community-Forum",
+      "newsletter": "Newsletter"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "Diese Seite existiert nicht."
+  },
+  "pages": {
+    "register": {
+      "title": "Registrieren",
+      "description": "Ein neues Konto erstellen."
+    },
+    "forgotPassword": {
+      "title": "Passwort vergessen",
+      "description": "Setze dein Passwort zurück."
+    },
+    "community": {
+      "title": "Community",
+      "description": "Lesekreise und Diskussionen."
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "description": "Verwalte deine Präferenzen."
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "brand": {
+    "name": "Community Reading Club",
+    "short": "Reading Club"
+  },
+  "nav": {
+    "dashboard": "ড্যাশবোর্ড",
+    "books": "বই",
+    "reservations": "সংরক্ষণ",
+    "seatBooking": "আসন বুকিং",
+    "community": "কমিউনিটি",
+    "events": "ইভেন্ট",
+    "readingProgress": "পড়ার অগ্রগতি",
+    "leaderboard": "লিডারবোর্ড",
+    "reviews": "রিভিউ",
+    "notifications": "নোটিফিকেশন",
+    "settings": "সেটিংস",
+    "adminOverview": "অ্যাডমিন ওভারভিউ",
+    "backToApp": "অ্যাপে ফিরে যান"
+  },
+  "actions": {
+    "signIn": "সাইন ইন",
+    "logOut": "লগ আউট",
+    "profile": "প্রোফাইল",
+    "settings": "সেটিংস",
+    "backHome": "হোমে ফিরুন",
+    "backToHome": "হোমে ফিরে যান",
+    "viewAll": "সব দেখুন"
+  },
+  "aria": {
+    "openNavigation": "নেভিগেশন খুলুন",
+    "openAccountMenu": "অ্যাকাউন্ট মেনু খুলুন",
+    "menu": "মেনু",
+    "account": "অ্যাকাউন্ট"
+  },
+  "language": {
+    "selectLabel": "ভাষা পরিবর্তন করুন"
+  },
+  "theme": {
+    "toLight": "লাইট মোডে যান",
+    "toDark": "ডার্ক মোডে যান"
+  },
+  "appearance": {
+    "label": "স্পেস ব্যাকগ্রাউন্ড সেট করুন",
+    "background": {
+      "title": "পৃষ্ঠার ব্যাকগ্রাউন্ড",
+      "description": "পৃষ্ঠার সবকিছুর পেছনের রঙ।"
+    },
+    "cards": {
+      "title": "কার্ড ও প্যানেল",
+      "description": "কার্ড, নেভবার, ইনপুট এবং ডায়ালগ এই রঙটি ব্যবহার করে।"
+    },
+    "custom": "কাস্টম",
+    "preview": "প্রিভিউ",
+    "sampleCard": "নমুনা কার্ড",
+    "sampleText": "পড়ার সুবিধার জন্য টেক্সটের রঙ স্বয়ংক্রিয়ভাবে সামঞ্জস্য হয়।",
+    "primaryAction": "প্রধান অ্যাকশন",
+    "lowContrast": "কম কনট্রাস্ট — সবচেয়ে পাঠযোগ্য ফলাফলের জন্য হালকার সাথে হালকা বা গাঢ়র সাথে গাঢ় রঙ মেলান।",
+    "reset": "থিম ডিফল্টে রিসেট করুন",
+    "done": "সম্পন্ন"
+  },
+  "comingSoon": {
+    "badge": "শীঘ্রই আসছে"
+  },
+  "toast": {
+    "comingSoon": {
+      "title": "{{action}} এখনও চালু হয়নি",
+      "description": "এটি একটি UI প্রিভিউ — ব্যাকএন্ড সংযুক্ত হলে আসল ওয়ার্কফ্লো চালু হবে।"
+    }
+  },
+  "footer": {
+    "brand": "Community Reading Club",
+    "tagline": "বই ধার নেওয়া, রিডিং ক্লাব এবং কমিউনিটি ইভেন্টের জন্য একটি আধুনিক লাইব্রেরি প্ল্যাটফর্ম।",
+    "siteLinks": "সাইট লিঙ্ক",
+    "navigation": "নেভিগেশন",
+    "quickLinks": "দ্রুত লিঙ্ক",
+    "contact": "যোগাযোগ",
+    "links": {
+      "home": "হোম",
+      "login": "লগ ইন",
+      "register": "রেজিস্টার",
+      "books": "বই",
+      "community": "কমিউনিটি",
+      "events": "ইভেন্ট"
+    },
+    "social": {
+      "website": "ওয়েবসাইট",
+      "forum": "কমিউনিটি ফোরাম",
+      "newsletter": "নিউজলেটার"
+    }
+  },
+  "notFound": {
+    "code": "404",
+    "message": "এই পৃষ্ঠাটি নেই।"
+  },
+  "pages": {
+    "register": {
+      "title": "রেজিস্টার",
+      "description": "নতুন অ্যাকাউন্ট তৈরি করুন।"
+    },
+    "forgotPassword": {
+      "title": "পাসওয়ার্ড ভুলে গেছেন",
+      "description": "আপনার পাসওয়ার্ড রিসেট করুন।"
+    },
+    "community": {
+      "title": "কমিউনিটি",
+      "description": "রিডিং ক্লাব ও আলোচনা।"
+    },
+    "settings": {
+      "title": "সেটিংস",
+      "description": "আপনার পছন্দগুলো পরিচালনা করুন।"
+    }
+  }
+}
