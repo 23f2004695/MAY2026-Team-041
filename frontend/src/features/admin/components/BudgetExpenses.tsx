@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { ProgressBar } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import { formatCurrency, type ExpenseCategory } from '@/mocks/admin';
+import { formatCurrency } from '@/lib/format';
+import type { ExpenseCategory } from '@/mocks/admin';
 
 export function BudgetExpenses({ categories }: { categories: ExpenseCategory[] }) {
   const { t } = useTranslation();

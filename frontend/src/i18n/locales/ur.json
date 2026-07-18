@@ -6,6 +6,9 @@
     "getStarted": "شروع کریں",
     "you": "آپ",
     "quickActionsTitle": "فوری اقدامات",
+    "trend": {
+      "vsLastMonth": "پچھلے مہینے کے مقابلے میں"
+    },
     "time": {
       "hoursAgo": "{{count}} گھنٹے پہلے",
       "daysAgo": "{{count}} دن پہلے",
@@ -143,6 +146,25 @@
     "message": "یہ صفحہ موجود نہیں ہے۔",
     "backHome": "ہوم پیج پر واپس جائیں"
   },
+  "payment": {
+    "pageTitle": "ادائیگی",
+    "defaultLabel": "لائبریری ادائیگی",
+    "amountDue": "واجب الادا رقم",
+    "payWithRazorpay": "Razorpay سے ادائیگی کریں",
+    "payOnlineToast": "₹{{amount}} کی ادائیگی پر کارروائی کی جا رہی ہے",
+    "payAtLibraryTitle": "ذاتی طور پر ادائیگی کرنا چاہتے ہیں؟",
+    "payAtLibraryDescription": "آن لائن ادائیگی چھوڑیں — کاؤنٹر پر جائیں اور منیجر کو نقد ادائیگی کریں۔",
+    "contactManager": "منیجر کو مطلع کریں",
+    "payAtLibraryToast": "منیجر کو مطلع کر دیا گیا ہے — کاؤنٹر پر نقد ادائیگی کریں",
+    "secureNotice": "ادائیگیاں محفوظ طریقے سے کارروائی کی جاتی ہیں"
+  },
+  "feedback": {
+    "error": {
+      "title": "کچھ غلط ہو گیا",
+      "description": "ایک غیر متوقع خرابی پیش آئی۔ براہ کرم دوبارہ کوشش کریں۔",
+      "retry": "دوبارہ کوشش کریں"
+    }
+  },
   "placeholder": {
     "comingSoon": "جلد آ رہا ہے",
     "community": { "description": "ریڈنگ کلبز اور مباحثے۔" },
@@ -156,6 +178,8 @@
     "hero": {
       "badge": "کمیونٹی ریڈنگ کلب اینڈ لائبریری پلیٹ فارم",
       "title": "آپ کی لائبریری، آپ کی کمیونٹی، سب ایک ہی جگہ پر۔",
+      "titlePrefix": "بہتر ",
+      "titleWords": ["لائبریریاں", "کمیونٹیز", "تعلیم", "مطالعے کی عادات", "روابط"],
       "subtitle": "کتابیں ادھار لیں، اسٹڈی سیٹ بک کریں، ایک ریڈنگ کلب میں شامل ہوں، اور کاغذی رجسٹرز اور گروپ چیٹس کے بغیر ذاتی نوعیت کی سفارشات حاصل کریں۔",
       "ctaJoin": "کمیونٹی میں شامل ہوں",
       "ctaBrowse": "کتابیں براؤز کریں",
@@ -597,7 +621,10 @@
       },
       "from": "{{name}} کی جانب سے",
       "rejectToast": "{{name}} کی درخواست مسترد کی جا رہی ہے",
-      "approveToast": "{{name}} کی درخواست منظور کی جا رہی ہے"
+      "approveToast": "{{name}} کی درخواست منظور کی جا رہی ہے",
+      "confirmApproveTitle": "کیا یہ درخواست منظور کی جائے؟",
+      "confirmRejectTitle": "کیا یہ درخواست مسترد کی جائے؟",
+      "confirmDescription": "{{name}} کی {{amount}} کی درخواست۔ یہ کارروائی واپس نہیں کی جا سکتی۔"
     },
     "auditLog": {
       "title": "مالیاتی سرگرمی لاگ",
@@ -784,6 +811,16 @@
       "standard": "اسٹینڈرڈ رکن",
       "basic": "بیسک رکن"
     },
+    "subscription": {
+      "title": "آپ کی رکنیت",
+      "expiresOn": "{{date}} کو ختم ہو رہی ہے",
+      "noPlan": "آپ کے پاس ابھی تک کوئی فعال پلان نہیں ہے",
+      "fineOwed": "واجب الادا جرمانہ: {{amount}}",
+      "noFine": "کوئی جرمانہ واجب نہیں",
+      "renew": "تجدید کریں",
+      "viewPlans": "پلانز دیکھیں",
+      "payFine": "جرمانہ ادا کریں"
+    },
     "stats": {
       "booksBorrowed": "ادھار لی گئی کتابیں",
       "booksReserved": "بک کی گئی کتابیں",
@@ -862,38 +899,48 @@
   },
   "managerDashboard": {
     "pageTitle": "منیجر ڈیش بورڈ",
-    "pageDescription": "تقریبات، سیشنز اور حاضری کا جائزہ",
+    "pageDescription": "سیٹ اور کتاب کے لیے واک ان معاونت، اور نئے ارکان کی رجسٹریشن",
     "stats": {
-      "upcomingEvents": "آنے والی تقریبات",
-      "attendeesThisMonth": "اس ماہ کے شرکاء",
-      "avgAttendanceRate": "اوسط حاضری کی شرح",
-      "activeReadingSessions": "فعال ریڈنگ سیشنز"
+      "seatsBookedToday": "آج بک کی گئی سیٹیں",
+      "booksIssuedToday": "آج جاری کی گئی کتابیں",
+      "newRegistrationsToday": "آج کی نئی رجسٹریشنز",
+      "pendingTasks": "زیر التوا کام"
     },
-    "events": {
-      "title": "آنے والی تقریبات",
-      "emptyTitle": "کوئی تقریب طے نہیں",
-      "emptyDescription": "شروع کرنے کے لیے ایک بنائیں۔",
-      "attendingCount": "{{attendees}}/{{capacity}} شریک",
-      "managersAssigned_one": "{{count}} منیجر مقرر",
-      "managersAssigned_other": "{{count}} منیجرز مقرر",
-      "manage": "نظم کریں",
-      "manageToast": "\"{{title}}\" کا نظم کیا جا رہا ہے"
+    "walkIns": {
+      "title": "واک ان معاونت",
+      "emptyTitle": "کوئی واک ان درخواست نہیں",
+      "emptyDescription": "کاؤنٹر پر سیٹ یا کتاب کے لیے مدد چاہنے والے ارکان یہاں ظاہر ہوں گے۔",
+      "seatBadge": "سیٹ",
+      "bookBadge": "کتاب",
+      "requestedAt": "{{time}} کو درخواست کی گئی",
+      "bookSeat": "سیٹ بک کریں",
+      "issueBook": "کتاب جاری کریں",
+      "bookSeatToast": "{{name}} کے لیے سیٹ بک کی جا رہی ہے",
+      "issueBookToast": "{{name}} کے لیے کتاب جاری کی جا رہی ہے"
     },
-    "readingSessions": {
-      "title": "ریڈنگ سیشنز",
-      "emptyTitle": "کوئی سیشن طے نہیں",
-      "emptyDescription": "شروع کرنے کے لیے ایک بنائیں۔",
-      "ledBy": "{{date}} · نگرانی {{facilitator}}",
-      "joined": "{{count}} شامل ہوئے"
+    "registrations": {
+      "title": "نئی رجسٹریشنز",
+      "emptyTitle": "کوئی رجسٹریشن درخواست نہیں",
+      "emptyDescription": "رکن بننے کے منتظر نئے مہمان یہاں ظاہر ہوں گے۔",
+      "requestedAt": "{{time}} کو درخواست کی گئی",
+      "register": "رجسٹر کریں",
+      "registerToast": "{{name}} کو نئے رکن کے طور پر رجسٹر کیا جا رہا ہے"
+    },
+    "payments": {
+      "title": "زیر التوا ادائیگیاں",
+      "emptyTitle": "کوئی زیر التوا نقد ادائیگی نہیں",
+      "emptyDescription": "کاؤنٹر پر ادائیگی کرنے والے ارکان یہاں ظاہر ہوں گے۔",
+      "markPaid": "ادائیگی موصول شدہ نشان زد کریں",
+      "markPaidToast": "{{name}} کی ادائیگی موصول شدہ نشان زد کی جا رہی ہے"
     },
     "quickActions": {
-      "createEvent": "تقریب بنائیں",
-      "recordAttendance": "حاضری درج کریں",
-      "postUpdate": "اپ ڈیٹ پوسٹ کریں",
+      "bookSeatForMember": "رکن کے لیے سیٹ بک کریں",
+      "issueBookForMember": "رکن کے لیے کتاب جاری کریں",
+      "registerNewMember": "نیا رکن رجسٹر کریں",
       "toasts": {
-        "creatingEvent": "تقریب بنائی جا رہی ہے",
-        "recordingAttendance": "حاضری درج کی جا رہی ہے",
-        "postingUpdate": "کمیونٹی اپ ڈیٹ پوسٹ کی جا رہی ہے"
+        "bookingSeat": "رکن کے لیے سیٹ بک کی جا رہی ہے",
+        "issuingBook": "رکن کے لیے کتاب جاری کی جا رہی ہے",
+        "registeringMember": "نئے رکن کو رجسٹر کیا جا رہا ہے"
       }
     }
   },
@@ -912,7 +959,8 @@
     },
     "empty": {
       "title": "کوئی کتاب نہیں ملی",
-      "description": "ایک مختلف تلاشی لفظ یا زمرہ آزمائیں۔"
+      "description": "ایک مختلف تلاشی لفظ یا زمرہ آزمائیں۔",
+      "clearFilters": "فلٹرز صاف کریں"
     },
     "details": {
       "notFound": {
@@ -947,6 +995,10 @@
       },
       "managerAssignmentsTitle": "منیجر کی تقرریاں",
       "noManagersAssigned": "ابھی تک کوئی منیجر مقرر نہیں کیا گیا۔"
+    },
+    "empty": {
+      "title": "کوئی تقریب شیڈول نہیں",
+      "description": "جلد دوبارہ چیک کریں — نئی کمیونٹی تقریبات باقاعدگی سے شامل کی جاتی ہیں۔"
     }
   },
   "reservations": {
@@ -955,7 +1007,8 @@
     "current": {
       "heading": "موجودہ ریزرویشنز",
       "emptyTitle": "کوئی فعال ریزرویشن نہیں",
-      "emptyDescription": "یہاں دیکھنے کے لیے کیٹلاگ سے کوئی کتاب بک کریں۔"
+      "emptyDescription": "یہاں دیکھنے کے لیے کیٹلاگ سے کوئی کتاب بک کریں۔",
+      "browseBooks": "کتابیں دیکھیں"
     },
     "queue": {
       "heading": "ریزرویشن قطار",
@@ -1046,6 +1099,10 @@
       "totalReviews_other": "{{count}} تبصرے",
       "starsLabel_one": "{{count}} ستارہ",
       "starsLabel_other": "{{count}} ستارے"
+    },
+    "empty": {
+      "title": "ابھی تک کوئی تبصرہ نہیں",
+      "description": "اس کتاب کے بارے میں اپنی رائے شیئر کرنے والے پہلے شخص بنیں۔"
     }
   },
   "notifications": {

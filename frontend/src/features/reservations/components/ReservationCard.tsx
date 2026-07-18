@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Badge, Button, Card, CardContent } from '@/components/ui';
 import type { Reservation, ReservationStatus } from '@/mocks/reservations';
 
-const statusVariant: Record<ReservationStatus, 'success' | 'warning' | 'default'> = {
+// waiting = still in queue (informational, not urgent) -> info; expired = neutral; ready = success.
+const statusVariant: Record<ReservationStatus, 'success' | 'info' | 'default'> = {
   ready: 'success',
-  waiting: 'warning',
+  waiting: 'info',
   expired: 'default',
 };
 

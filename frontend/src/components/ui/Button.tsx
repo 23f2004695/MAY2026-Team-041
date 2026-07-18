@@ -4,7 +4,14 @@ import { cn } from '@/lib/cn';
 
 import { Loader } from './Loader';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'outline'
+  | 'ghost'
+  | 'danger'
+  | 'success'
+  | 'warning';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,6 +29,8 @@ const variantClasses: Record<ButtonVariant, string> = {
   outline: 'border border-border bg-transparent text-foreground hover:bg-secondary',
   ghost: 'bg-transparent text-foreground hover:bg-secondary',
   danger: 'bg-danger text-danger-foreground hover:opacity-90',
+  success: 'bg-success text-success-foreground hover:opacity-90',
+  warning: 'bg-warning text-warning-foreground hover:opacity-90',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

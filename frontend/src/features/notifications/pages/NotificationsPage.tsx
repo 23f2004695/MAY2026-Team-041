@@ -1,7 +1,8 @@
+import { BellOff } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NotificationCard } from '@/components/common';
+import { NotificationCard, PageTitle } from '@/components/common';
 import { Badge, Button, EmptyState } from '@/components/ui';
 import { notifications as mockNotifications, type AppNotification } from '@/mocks/notifications';
 
@@ -86,12 +87,16 @@ export function NotificationsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold text-foreground">{t('notifications.pageTitle')}</h1>
-        {unreadCount > 0 && (
-          <Badge variant="success">{t('notifications.unreadBadge', { count: unreadCount })}</Badge>
-        )}
-      </div>
+      <PageTitle
+        title={t('notifications.pageTitle')}
+        titleAdornment={
+          unreadCount > 0 && (
+            <Badge variant="success">
+              {t('notifications.unreadBadge', { count: unreadCount })}
+            </Badge>
+          )
+        }
+      />
 
       <div className="flex gap-2" role="group" aria-label={t('notifications.filterAriaLabel')}>
         <Button
@@ -112,8 +117,16 @@ export function NotificationsPage() {
 
       {visibleNotifications.length === 0 ? (
         <EmptyState
+          icon={BellOff}
           title={t('notifications.empty.title')}
           description={t('notifications.empty.description')}
+          secondaryAction={
+            filter === 'unread' && (
+              <Button size="sm" variant="outline" onClick={() => setFilter('all')}>
+                {t('notifications.filters.all')}
+              </Button>
+            )
+          }
         />
       ) : (
         <div className="flex flex-col gap-3">

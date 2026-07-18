@@ -1,10 +1,13 @@
+import { BookOpen, CalendarCheck, Ticket } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-import { PageHeader, StatisticCard } from '@/components/common';
+import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
+import { ROUTES } from '@/constants/routes';
 import { BooksDueSoon } from '../components/BooksDueSoon';
 import { CurrentlyBorrowed } from '../components/CurrentlyBorrowed';
+import { MemberSubscription } from '../components/MemberSubscription';
 import { MonthlyChallengeCard, ReadingProgressCard } from '../components/ProgressCards';
-import { QuickActions } from '../components/QuickActions';
 import { RecentNotifications, UpcomingEvents } from '../components/RecentActivity';
 import {
   booksDueSoon,
@@ -19,6 +22,7 @@ import {
 
 export function MemberDashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-6">
@@ -35,17 +39,23 @@ export function MemberDashboard() {
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <MemberSubscription
+        planLabel={t(`dashboard.membershipPlans.${dashboardUser.membershipPlanKey}`)}
+        expiresOn={dashboardUser.subscriptionExpiresOn}
+        outstandingFine={dashboardUser.outstandingFine}
+      />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <BooksDueSoon books={booksDueSoon} />
         <CurrentlyBorrowed books={currentlyBorrowedBooks} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <RecentNotifications notifications={recentNotifications} />
         <UpcomingEvents events={upcomingEvents} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ReadingProgressCard
           currentBook={readingProgressSummary.currentBook}
           percentComplete={readingProgressSummary.percentComplete}
@@ -59,7 +69,26 @@ export function MemberDashboard() {
         />
       </div>
 
-      <QuickActions />
+      <QuickActionsCard
+        title={t('dashboard.quickActions.title')}
+        actions={[
+          {
+            label: t('dashboard.quickActions.browseBooks'),
+            icon: BookOpen,
+            onClick: () => navigate(ROUTES.BOOKS),
+          },
+          {
+            label: t('dashboard.quickActions.bookASeat'),
+            icon: CalendarCheck,
+            onClick: () => navigate(ROUTES.SEAT_BOOKING),
+          },
+          {
+            label: t('dashboard.quickActions.viewReservations'),
+            icon: Ticket,
+            onClick: () => navigate(ROUTES.RESERVATIONS),
+          },
+        ]}
+      />
     </div>
   );
 }

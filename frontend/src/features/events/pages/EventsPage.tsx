@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { CalendarCheck, Percent, Users } from 'lucide-react';
+import { CalendarCheck, CalendarX, Percent, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { StatisticCard, EventCard, PageHeader } from '@/components/common';
+import { EmptyState } from '@/components/ui';
 import { attendanceSummary, events as mockEvents, type Event } from '@/mocks/events';
 
 import { EventDetailsDrawer } from '../components/EventDetailsDrawer';
@@ -53,20 +54,28 @@ export function EventsPage() {
         />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {events.map((event) => (
-          <EventCard
-            key={event.id}
-            title={event.title}
-            date={event.date}
-            location={event.location}
-            attendees={event.attendees}
-            capacity={event.capacity}
-            registered={event.registered}
-            onViewDetails={() => setActiveEventId(event.id)}
-          />
-        ))}
-      </div>
+      {events.length === 0 ? (
+        <EmptyState
+          icon={CalendarX}
+          title={t('events.empty.title')}
+          description={t('events.empty.description')}
+        />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {events.map((event) => (
+            <EventCard
+              key={event.id}
+              title={event.title}
+              date={event.date}
+              location={event.location}
+              attendees={event.attendees}
+              capacity={event.capacity}
+              registered={event.registered}
+              onViewDetails={() => setActiveEventId(event.id)}
+            />
+          ))}
+        </div>
+      )}
 
       <EventDetailsDrawer
         event={activeEvent}

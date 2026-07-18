@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SeatCard } from '@/components/common';
+import { PageTitle, SeatCard } from '@/components/common';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { seats } from '@/mocks/seats';
 
@@ -25,10 +25,10 @@ export function SeatBookingPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{t('seatBooking.pageTitle')}</h1>
-        <p className="mt-1 text-muted-foreground">{t('seatBooking.pageDescription')}</p>
-      </div>
+      <PageTitle
+        title={t('seatBooking.pageTitle')}
+        description={t('seatBooking.pageDescription')}
+      />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-6">

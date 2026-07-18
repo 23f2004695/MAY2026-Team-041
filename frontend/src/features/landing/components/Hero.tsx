@@ -4,11 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import libraryIllustration from '@/assets/library-illustration.png';
+import { AnimatedHeading, AnimatedText, Divider, IconBadge } from '@/components/common';
 import { Badge, Button } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { fadeUp } from '@/lib/motion';
 import { statistics } from '@/mocks/landing';
 
 import { FadeUp } from './FadeUp';
+import { RotatingWord } from './RotatingWord';
 
 const trustStats = statistics.slice(0, 3);
 const booksStat = statistics[0];
@@ -29,30 +32,26 @@ export function Hero() {
       />
 
       <div className="relative mx-auto grid max-w-6xl gap-12 px-6 py-20 md:py-28 lg:grid-cols-2 lg:items-center lg:py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
-          className="flex flex-col"
-        >
+        <motion.div variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col">
           <FadeUp>
             <Badge variant="outline" className="w-fit">
               {t('landing.hero.badge')}
             </Badge>
           </FadeUp>
-          <FadeUp delay={1}>
-            <h1
-              id="hero-heading"
-              className="mt-5 max-w-xl text-5xl font-extrabold leading-[1.05] tracking-tight text-foreground md:text-6xl"
-            >
-              {t('landing.hero.title')}
-            </h1>
-          </FadeUp>
-          <FadeUp delay={2}>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted">
-              {t('landing.hero.subtitle')}
-            </p>
-          </FadeUp>
+          <AnimatedHeading
+            as="h1"
+            size="hero"
+            id="hero-heading"
+            delay={1}
+            ariaLabel={t('landing.hero.title')}
+            className="mt-5 max-w-xl text-5xl leading-[1.05] md:text-6xl"
+          >
+            {t('landing.hero.titlePrefix')}
+            <RotatingWord words={t('landing.hero.titleWords', { returnObjects: true }) as string[]} />
+          </AnimatedHeading>
+          <AnimatedText size="lg" spacing={false} delay={2} className="mt-5 max-w-lg">
+            {t('landing.hero.subtitle')}
+          </AnimatedText>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button
               size="lg"
@@ -66,7 +65,10 @@ export function Hero() {
             </Button>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border-muted pt-6 text-sm text-muted-foreground">
+          <Divider
+            spacing="lg"
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-6 text-sm text-muted-foreground"
+          >
             {trustStats.map((stat) => (
               <span key={stat.id} className="flex items-center gap-2">
                 <stat.icon className="size-4 text-primary" />
@@ -74,12 +76,13 @@ export function Hero() {
                 {t(`landing.stats.${stat.id}`)}
               </span>
             ))}
-          </div>
+          </Divider>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
           transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
           whileHover={{ y: -4 }}
           className="relative"
@@ -91,9 +94,7 @@ export function Hero() {
           />
 
           <div className="absolute -bottom-6 -left-6 hidden items-center gap-3 rounded-full border border-border bg-surface px-4 py-2 shadow-panel sm:flex">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <BookOpen className="size-4" />
-            </span>
+            <IconBadge icon={BookOpen} tone="primary-solid" size={9} />
             <span className="text-sm">
               <span className="font-semibold text-foreground">{booksStat.value}</span>{' '}
               <span className="text-muted-foreground">{t(`landing.stats.${booksStat.id}`)}</span>

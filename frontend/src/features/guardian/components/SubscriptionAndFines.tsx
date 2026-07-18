@@ -1,11 +1,20 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
+import { ROUTES } from '@/constants/routes';
 import type { Child } from '@/mocks/guardian';
 
 export function SubscriptionAndFines({ children }: { children: Child[] }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  function payFine(child: Child) {
+    const amount = Number(child.outstandingFine.replace(/[^\d.]/g, ''));
+    navigate(
+      `${ROUTES.PAYMENT}?amount=${amount}&label=${encodeURIComponent(t('guardian.subscription.fineOwed', { amount: child.outstandingFine }) + ' — ' + child.name)}`,
+    );
+  }
 
   return (
     <Card>
@@ -33,27 +42,11 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
               </div>
               <div className="flex gap-2">
                 {hasFine && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() =>
-                      comingSoonToast(
-                        t('guardian.subscription.payFineToast', {
-                          amount: child.outstandingFine,
-                          name: child.name,
-                        }),
-                      )
-                    }
-                  >
+                  <Button size="sm" variant="outline" onClick={() => payFine(child)}>
                     {t('guardian.subscription.payFine')}
                   </Button>
                 )}
-                <Button
-                  size="sm"
-                  onClick={() =>
-                    comingSoonToast(t('guardian.subscription.renewToast', { name: child.name }))
-                  }
-                >
+                <Button size="sm" onClick={() => navigate(ROUTES.PRICING)}>
                   {t('guardian.subscription.renew')}
                 </Button>
               </div>

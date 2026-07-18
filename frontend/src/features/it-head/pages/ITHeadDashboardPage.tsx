@@ -25,20 +25,25 @@ export function ITHeadDashboardPage() {
     <div className="flex flex-col gap-6">
       <PageHeader title={t('itHead.pageTitle')} description={t('itHead.pageDescription')} />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {itHeadStats.map((stat) => (
-          <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />
+          <StatisticCard
+            key={stat.labelKey}
+            icon={stat.icon}
+            label={t(stat.labelKey)}
+            value={stat.value}
+          />
         ))}
       </div>
 
       <AccessControl entries={accessEntries} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <IssueResolution tickets={issueTickets} />
         <BookRecords records={bookRecords} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <FeeStatus entries={feeStatusEntries} />
         <LateReturnFines entries={lateReturnEntries} />
       </div>

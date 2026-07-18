@@ -27,18 +27,24 @@ export function AdminDashboardPage() {
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {adminStats.map((stat) => (
-          <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />
+          <StatisticCard
+            key={stat.labelKey}
+            icon={stat.icon}
+            label={t(stat.labelKey)}
+            value={stat.value}
+            trend={stat.trend}
+          />
         ))}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <CashFlowBreakdown sources={revenueBreakdown} />
         <BudgetExpenses categories={expenseCategories} />
       </div>
 
       <PendingRequests requests={pendingRequests} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <AuditLog entries={auditLog} />
 
         <Card>

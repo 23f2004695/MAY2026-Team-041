@@ -1,30 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Input } from '@/components/ui';
+import { loginSchema, type LoginFormValues } from '@/lib/authSchema';
 import { useAuth, type Role } from '@/providers/AuthProvider';
 
 const ROLES: Role[] = ['admin', 'librarian', 'member', 'manager', 'it-head', 'guardian'];
-
-const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
-
-interface PasswordFormState {
-  email: string;
-  password: string;
-}
-
-interface PasswordFormErrors {
-  email?: string;
-  password?: string;
-}
-
-function validatePasswordForm(form: PasswordFormState): PasswordFormErrors {
-  const errors: PasswordFormErrors = {};
-  if (!EMAIL_PATTERN.test(form.email)) errors.email = 'auth.register.errors.email';
-  if (!form.password) errors.password = 'auth.login.errors.password';
-  return errors;
-}
 
 // ponytail: no real auth form yet (Milestone 3); the password form and Gmail button both
 // just sign the visitor in as a member, and the role buttons below exist only to
@@ -35,18 +18,21 @@ export function Login() {
   const { t } = useTranslation();
   const { login } = useAuth();
 
-  const [passwordForm, setPasswordForm] = useState<PasswordFormState>({ email: '', password: '' });
-  const [passwordErrors, setPasswordErrors] = useState<PasswordFormErrors>({});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
   function signInAs(role: Role) {
     login(role);
   }
 
-  function handlePasswordSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const nextErrors = validatePasswordForm(passwordForm);
-    setPasswordErrors(nextErrors);
-    if (Object.keys(nextErrors).length === 0) login('member');
+  function onSubmit() {
+    login('member');
   }
 
   function handleGmailLogin() {
@@ -60,22 +46,20 @@ export function Login() {
         <p className="text-muted-foreground">{t('auth.login.subtitle')}</p>
       </div>
 
-      <form className="flex flex-col gap-3" onSubmit={handlePasswordSubmit} noValidate>
+      <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)} noValidate>
         <Input
           label={t('auth.login.email')}
           type="email"
           autoComplete="email"
-          value={passwordForm.email}
-          onChange={(e) => setPasswordForm((prev) => ({ ...prev, email: e.target.value }))}
-          error={passwordErrors.email && t(passwordErrors.email)}
+          error={errors.email?.message ? t(errors.email.message) : undefined}
+          {...register('email')}
         />
         <Input
           label={t('auth.login.password')}
           type="password"
           autoComplete="current-password"
-          value={passwordForm.password}
-          onChange={(e) => setPasswordForm((prev) => ({ ...prev, password: e.target.value }))}
-          error={passwordErrors.password && t(passwordErrors.password)}
+          error={errors.password?.message ? t(errors.password.message) : undefined}
+          {...register('password')}
         />
         <Button type="submit">{t('auth.login.logInWithPassword')}</Button>
       </form>

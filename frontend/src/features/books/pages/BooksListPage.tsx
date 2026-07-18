@@ -1,8 +1,10 @@
+import { SearchX } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BookCard, PageHeader } from '@/components/common';
-import { EmptyState, Pagination } from '@/components/ui';
+import { NoResults } from '@/components/feedback';
+import { Button, Pagination } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { books } from '@/mocks/books';
@@ -42,6 +44,12 @@ export function BooksListPage() {
     setPage(1);
   }
 
+  function clearFilters() {
+    setSearch('');
+    setCategory('All');
+    setPage(1);
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={t('books.pageTitle')} description={t('books.pageDescription')} />
@@ -54,7 +62,16 @@ export function BooksListPage() {
       />
 
       {pageBooks.length === 0 ? (
-        <EmptyState title={t('books.empty.title')} description={t('books.empty.description')} />
+        <NoResults
+          icon={SearchX}
+          title={t('books.empty.title')}
+          description={t('books.empty.description')}
+          action={
+            <Button size="sm" variant="outline" onClick={clearFilters}>
+              {t('books.empty.clearFilters')}
+            </Button>
+          }
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {pageBooks.map((book) => (
@@ -66,7 +83,9 @@ export function BooksListPage() {
               available={book.available}
               rating={book.rating}
               href={ROUTES.BOOK_DETAILS.replace(':bookId', book.id)}
-              onReserve={() => comingSoonToast(t('books.details.reservingToast', { title: book.title }))}
+              onReserve={() =>
+                comingSoonToast(t('books.details.reservingToast', { title: book.title }))
+              }
             />
           ))}
         </div>

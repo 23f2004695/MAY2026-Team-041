@@ -1,7 +1,7 @@
 import { Flame, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { ProgressBar } from '@/components/common';
+import { PageTitle, ProgressBar } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import {
   completedBooks,
@@ -18,16 +18,18 @@ export function ReadingProgressPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{t('readingProgress.pageTitle')}</h1>
-        <p className="mt-1 text-muted-foreground">{t('readingProgress.pageDescription')}</p>
-      </div>
+      <PageTitle
+        title={t('readingProgress.pageTitle')}
+        description={t('readingProgress.pageDescription')}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardHeader className="flex-row items-center gap-2 space-y-0">
             <Target className="size-5 text-primary" />
-            <CardTitle>{t('readingProgress.readingGoal.title', { year: readingGoal.year })}</CardTitle>
+            <CardTitle>
+              {t('readingProgress.readingGoal.title', { year: readingGoal.year })}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ProgressBar percent={(readingGoal.current / readingGoal.target) * 100} />
@@ -47,10 +49,14 @@ export function ReadingProgressPage() {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold text-foreground">
-              {t('readingProgress.readingStreak.currentDays', { count: readingStreak.currentStreakDays })}
+              {t('readingProgress.readingStreak.currentDays', {
+                count: readingStreak.currentStreakDays,
+              })}
             </p>
             <p className="text-sm text-muted-foreground">
-              {t('readingProgress.readingStreak.longest', { count: readingStreak.longestStreakDays })}
+              {t('readingProgress.readingStreak.longest', {
+                count: readingStreak.longestStreakDays,
+              })}
             </p>
           </CardContent>
         </Card>

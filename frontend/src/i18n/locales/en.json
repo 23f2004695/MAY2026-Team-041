@@ -6,6 +6,9 @@
     "getStarted": "Get Started",
     "you": "You",
     "quickActionsTitle": "Quick Actions",
+    "trend": {
+      "vsLastMonth": "vs last month"
+    },
     "time": {
       "hoursAgo": "{{count}}h ago",
       "daysAgo": "{{count}}d ago",
@@ -143,6 +146,25 @@
     "message": "This page doesn't exist.",
     "backHome": "Back home"
   },
+  "payment": {
+    "pageTitle": "Payment",
+    "defaultLabel": "Library payment",
+    "amountDue": "Amount due",
+    "payWithRazorpay": "Pay with Razorpay",
+    "payOnlineToast": "Processing ₹{{amount}} payment",
+    "payAtLibraryTitle": "Prefer to pay in person?",
+    "payAtLibraryDescription": "Skip online payment — visit the counter and pay the manager in cash.",
+    "contactManager": "Notify the Manager",
+    "payAtLibraryToast": "The manager has been notified — pay in cash at the counter",
+    "secureNotice": "Payments are processed securely"
+  },
+  "feedback": {
+    "error": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "retry": "Try again"
+    }
+  },
   "admin": {
     "pageTitle": "Admin Dashboard",
     "pageDescription": "Business performance, cash flow, and platform management",
@@ -183,7 +205,10 @@
       },
       "from": "From {{name}}",
       "rejectToast": "Rejecting request from {{name}}",
-      "approveToast": "Approving request from {{name}}"
+      "approveToast": "Approving request from {{name}}",
+      "confirmApproveTitle": "Approve this request?",
+      "confirmRejectTitle": "Reject this request?",
+      "confirmDescription": "{{name}}'s request for {{amount}}. This action cannot be undone."
     },
     "auditLog": {
       "title": "Financial Activity Log",
@@ -370,6 +395,16 @@
       "standard": "Standard Member",
       "basic": "Basic Member"
     },
+    "subscription": {
+      "title": "Your Membership",
+      "expiresOn": "Expires {{date}}",
+      "noPlan": "You don't have an active plan yet",
+      "fineOwed": "Fine owed: {{amount}}",
+      "noFine": "No outstanding fine",
+      "renew": "Renew",
+      "viewPlans": "View Plans",
+      "payFine": "Pay Fine"
+    },
     "stats": {
       "booksBorrowed": "Books Borrowed",
       "booksReserved": "Books Reserved",
@@ -448,38 +483,48 @@
   },
   "managerDashboard": {
     "pageTitle": "Manager Dashboard",
-    "pageDescription": "Events, sessions, and attendance overview",
+    "pageDescription": "Walk-in seat and book assistance, plus new member registrations",
     "stats": {
-      "upcomingEvents": "Upcoming Events",
-      "attendeesThisMonth": "Attendees This Month",
-      "avgAttendanceRate": "Avg. Attendance Rate",
-      "activeReadingSessions": "Active Reading Sessions"
+      "seatsBookedToday": "Seats Booked Today",
+      "booksIssuedToday": "Books Issued Today",
+      "newRegistrationsToday": "New Registrations Today",
+      "pendingTasks": "Pending Tasks"
     },
-    "events": {
-      "title": "Upcoming Events",
-      "emptyTitle": "No events scheduled",
-      "emptyDescription": "Create one to get started.",
-      "attendingCount": "{{attendees}}/{{capacity}} attending",
-      "managersAssigned_one": "{{count}} manager assigned",
-      "managersAssigned_other": "{{count}} managers assigned",
-      "manage": "Manage",
-      "manageToast": "Managing \"{{title}}\""
+    "walkIns": {
+      "title": "Walk-In Assistance",
+      "emptyTitle": "No walk-in requests",
+      "emptyDescription": "Members who need help with a seat or book at the counter will show up here.",
+      "seatBadge": "Seat",
+      "bookBadge": "Book",
+      "requestedAt": "Requested {{time}}",
+      "bookSeat": "Book Seat",
+      "issueBook": "Issue Book",
+      "bookSeatToast": "Booking a seat for {{name}}",
+      "issueBookToast": "Issuing a book for {{name}}"
     },
-    "readingSessions": {
-      "title": "Reading Sessions",
-      "emptyTitle": "No sessions scheduled",
-      "emptyDescription": "Create one to get started.",
-      "ledBy": "{{date}} · led by {{facilitator}}",
-      "joined": "{{count}} joined"
+    "registrations": {
+      "title": "New Registrations",
+      "emptyTitle": "No registration requests",
+      "emptyDescription": "New visitors waiting to register as members will show up here.",
+      "requestedAt": "Requested {{time}}",
+      "register": "Register",
+      "registerToast": "Registering {{name}} as a new member"
+    },
+    "payments": {
+      "title": "Pending Payments",
+      "emptyTitle": "No pending cash payments",
+      "emptyDescription": "Members who choose to pay at the counter will show up here.",
+      "markPaid": "Mark as Paid",
+      "markPaidToast": "Marking {{name}}'s payment as received"
     },
     "quickActions": {
-      "createEvent": "Create Event",
-      "recordAttendance": "Record Attendance",
-      "postUpdate": "Post Update",
+      "bookSeatForMember": "Book Seat for Member",
+      "issueBookForMember": "Issue Book for Member",
+      "registerNewMember": "Register New Member",
       "toasts": {
-        "creatingEvent": "Creating an event",
-        "recordingAttendance": "Recording attendance",
-        "postingUpdate": "Posting a community update"
+        "bookingSeat": "Booking a seat for a member",
+        "issuingBook": "Issuing a book for a member",
+        "registeringMember": "Registering a new member"
       }
     }
   },
@@ -493,6 +538,8 @@
     "hero": {
       "badge": "Community Reading Club & Library Platform",
       "title": "Your library, your community, all in one place.",
+      "titlePrefix": "Build Better ",
+      "titleWords": ["Libraries", "Communities", "Learning", "Reading Habits", "Connections"],
       "subtitle": "Borrow books, reserve a study seat, join a reading club, and get personalized recommendations, without the paper registers and group chats.",
       "ctaJoin": "Join the Community",
       "ctaBrowse": "Browse Books",
@@ -909,7 +956,8 @@
     },
     "empty": {
       "title": "No books found",
-      "description": "Try a different search term or category."
+      "description": "Try a different search term or category.",
+      "clearFilters": "Clear filters"
     },
     "details": {
       "notFound": {
@@ -944,6 +992,10 @@
       },
       "managerAssignmentsTitle": "Manager Assignments",
       "noManagersAssigned": "No managers assigned yet."
+    },
+    "empty": {
+      "title": "No events scheduled",
+      "description": "Check back soon — new community events are added regularly."
     }
   },
   "reservations": {
@@ -952,7 +1004,8 @@
     "current": {
       "heading": "Current Reservations",
       "emptyTitle": "No active reservations",
-      "emptyDescription": "Reserve a book from the catalog to see it here."
+      "emptyDescription": "Reserve a book from the catalog to see it here.",
+      "browseBooks": "Browse Books"
     },
     "queue": {
       "heading": "Reservation Queue",
@@ -1043,6 +1096,10 @@
       "totalReviews_other": "{{count}} reviews",
       "starsLabel_one": "{{count}} star",
       "starsLabel_other": "{{count}} stars"
+    },
+    "empty": {
+      "title": "No reviews yet",
+      "description": "Be the first to share what you thought of this book."
     }
   },
   "notifications": {

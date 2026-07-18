@@ -9,6 +9,7 @@ export const ROUTES = {
   BOOK_DETAILS: '/books/:bookId',
   RESERVATIONS: '/reservations',
   SEAT_BOOKING: '/seat-booking',
+  PAYMENT: '/payment',
   COMMUNITY: '/community',
   EVENTS: '/events',
   NOTIFICATIONS: '/notifications',

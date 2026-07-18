@@ -6,6 +6,9 @@
     "getStarted": "ਸ਼ੁਰੂ ਕਰੋ",
     "you": "ਤੁਸੀਂ",
     "quickActionsTitle": "ਤੁਰੰਤ ਕਾਰਵਾਈਆਂ",
+    "trend": {
+      "vsLastMonth": "ਪਿਛਲੇ ਮਹੀਨੇ ਦੇ ਮੁਕਾਬਲੇ"
+    },
     "time": {
       "hoursAgo": "{{count}} ਘੰਟੇ ਪਹਿਲਾਂ",
       "daysAgo": "{{count}} ਦਿਨ ਪਹਿਲਾਂ",
@@ -143,6 +146,25 @@
     "message": "ਇਹ ਪੰਨਾ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।",
     "backHome": "ਹੋਮ 'ਤੇ ਵਾਪਸ ਜਾਓ"
   },
+  "payment": {
+    "pageTitle": "ਭੁਗਤਾਨ",
+    "defaultLabel": "ਲਾਇਬ੍ਰੇਰੀ ਭੁਗਤਾਨ",
+    "amountDue": "ਬਕਾਇਆ ਰਕਮ",
+    "payWithRazorpay": "Razorpay ਨਾਲ ਭੁਗਤਾਨ ਕਰੋ",
+    "payOnlineToast": "₹{{amount}} ਦਾ ਭੁਗਤਾਨ ਪ੍ਰੋਸੈਸ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+    "payAtLibraryTitle": "ਖੁਦ ਹਾਜ਼ਰ ਹੋ ਕੇ ਭੁਗਤਾਨ ਕਰਨਾ ਪਸੰਦ ਕਰੋਗੇ?",
+    "payAtLibraryDescription": "ਆਨਲਾਈਨ ਭੁਗਤਾਨ ਛੱਡੋ — ਕਾਊਂਟਰ 'ਤੇ ਜਾਓ ਅਤੇ ਮੈਨੇਜਰ ਨੂੰ ਨਕਦ ਭੁਗਤਾਨ ਕਰੋ।",
+    "contactManager": "ਮੈਨੇਜਰ ਨੂੰ ਸੂਚਿਤ ਕਰੋ",
+    "payAtLibraryToast": "ਮੈਨੇਜਰ ਨੂੰ ਸੂਚਿਤ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ — ਕਾਊਂਟਰ 'ਤੇ ਨਕਦ ਭੁਗਤਾਨ ਕਰੋ",
+    "secureNotice": "ਭੁਗਤਾਨ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਪ੍ਰੋਸੈਸ ਕੀਤੇ ਜਾਂਦੇ ਹਨ"
+  },
+  "feedback": {
+    "error": {
+      "title": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ",
+      "description": "ਇੱਕ ਅਣਕਿਆਸੀ ਗਲਤੀ ਆਈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "retry": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"
+    }
+  },
   "admin": {
     "pageTitle": "ਐਡਮਿਨ ਡੈਸ਼ਬੋਰਡ",
     "pageDescription": "ਕਾਰੋਬਾਰੀ ਪ੍ਰਦਰਸ਼ਨ, ਨਕਦੀ ਪ੍ਰਵਾਹ ਅਤੇ ਪਲੇਟਫਾਰਮ ਪ੍ਰਬੰਧਨ",
@@ -183,7 +205,10 @@
       },
       "from": "{{name}} ਵੱਲੋਂ",
       "rejectToast": "{{name}} ਦੀ ਬੇਨਤੀ ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
-      "approveToast": "{{name}} ਦੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+      "approveToast": "{{name}} ਦੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "confirmApproveTitle": "ਕੀ ਇਸ ਬੇਨਤੀ ਨੂੰ ਮਨਜ਼ੂਰ ਕਰਨਾ ਹੈ?",
+      "confirmRejectTitle": "ਕੀ ਇਸ ਬੇਨਤੀ ਨੂੰ ਰੱਦ ਕਰਨਾ ਹੈ?",
+      "confirmDescription": "{{name}} ਦੀ {{amount}} ਦੀ ਬੇਨਤੀ। ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।"
     },
     "auditLog": {
       "title": "ਵਿੱਤੀ ਗਤੀਵਿਧੀ ਲੌਗ",
@@ -370,6 +395,16 @@
       "standard": "ਸਟੈਂਡਰਡ ਮੈਂਬਰ",
       "basic": "ਬੇਸਿਕ ਮੈਂਬਰ"
     },
+    "subscription": {
+      "title": "ਤੁਹਾਡੀ ਮੈਂਬਰਸ਼ਿਪ",
+      "expiresOn": "{{date}} ਨੂੰ ਖਤਮ ਹੋ ਰਹੀ ਹੈ",
+      "noPlan": "ਤੁਹਾਡੇ ਕੋਲ ਅਜੇ ਕੋਈ ਸਰਗਰਮ ਯੋਜਨਾ ਨਹੀਂ ਹੈ",
+      "fineOwed": "ਬਕਾਇਆ ਜੁਰਮਾਨਾ: {{amount}}",
+      "noFine": "ਕੋਈ ਬਕਾਇਆ ਜੁਰਮਾਨਾ ਨਹੀਂ",
+      "renew": "ਨਵੀਨੀਕਰਨ ਕਰੋ",
+      "viewPlans": "ਯੋਜਨਾਵਾਂ ਵੇਖੋ",
+      "payFine": "ਜੁਰਮਾਨਾ ਭਰੋ"
+    },
     "stats": {
       "booksBorrowed": "ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
       "booksReserved": "ਰਿਜ਼ਰਵ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
@@ -448,38 +483,48 @@
   },
   "managerDashboard": {
     "pageTitle": "ਮੈਨੇਜਰ ਡੈਸ਼ਬੋਰਡ",
-    "pageDescription": "ਸਮਾਗਮ, ਸੈਸ਼ਨ ਅਤੇ ਹਾਜ਼ਰੀ ਸੰਖੇਪ ਜਾਣਕਾਰੀ",
+    "pageDescription": "ਸੀਟ ਅਤੇ ਕਿਤਾਬ ਲਈ ਵਾਕ-ਇਨ ਸਹਾਇਤਾ, ਨਾਲ ਹੀ ਨਵੇਂ ਮੈਂਬਰਾਂ ਦੀ ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
     "stats": {
-      "upcomingEvents": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",
-      "attendeesThisMonth": "ਇਸ ਮਹੀਨੇ ਦੇ ਹਾਜ਼ਰੀਨ",
-      "avgAttendanceRate": "ਔਸਤ ਹਾਜ਼ਰੀ ਦਰ",
-      "activeReadingSessions": "ਸਰਗਰਮ ਰੀਡਿੰਗ ਸੈਸ਼ਨ"
+      "seatsBookedToday": "ਅੱਜ ਬੁੱਕ ਕੀਤੀਆਂ ਸੀਟਾਂ",
+      "booksIssuedToday": "ਅੱਜ ਜਾਰੀ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
+      "newRegistrationsToday": "ਅੱਜ ਦੀਆਂ ਨਵੀਆਂ ਰਜਿਸਟ੍ਰੇਸ਼ਨਾਂ",
+      "pendingTasks": "ਬਕਾਇਆ ਕੰਮ"
     },
-    "events": {
-      "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",
-      "emptyTitle": "ਕੋਈ ਸਮਾਗਮ ਤੈਅ ਨਹੀਂ",
-      "emptyDescription": "ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਬਣਾਓ।",
-      "attendingCount": "{{capacity}} ਵਿੱਚੋਂ {{attendees}} ਹਾਜ਼ਰ",
-      "managersAssigned_one": "{{count}} ਮੈਨੇਜਰ ਨਿਯੁਕਤ",
-      "managersAssigned_other": "{{count}} ਮੈਨੇਜਰ ਨਿਯੁਕਤ",
-      "manage": "ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
-      "manageToast": "\"{{title}}\" ਦਾ ਪ੍ਰਬੰਧਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    "walkIns": {
+      "title": "ਵਾਕ-ਇਨ ਸਹਾਇਤਾ",
+      "emptyTitle": "ਕੋਈ ਵਾਕ-ਇਨ ਬੇਨਤੀ ਨਹੀਂ",
+      "emptyDescription": "ਕਾਊਂਟਰ 'ਤੇ ਸੀਟ ਜਾਂ ਕਿਤਾਬ ਲਈ ਮਦਦ ਚਾਹੁੰਦੇ ਮੈਂਬਰ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।",
+      "seatBadge": "ਸੀਟ",
+      "bookBadge": "ਕਿਤਾਬ",
+      "requestedAt": "{{time}} ਨੂੰ ਬੇਨਤੀ ਕੀਤੀ ਗਈ",
+      "bookSeat": "ਸੀਟ ਬੁੱਕ ਕਰੋ",
+      "issueBook": "ਕਿਤਾਬ ਜਾਰੀ ਕਰੋ",
+      "bookSeatToast": "{{name}} ਲਈ ਸੀਟ ਬੁੱਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "issueBookToast": "{{name}} ਲਈ ਕਿਤਾਬ ਜਾਰੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
     },
-    "readingSessions": {
-      "title": "ਰੀਡਿੰਗ ਸੈਸ਼ਨ",
-      "emptyTitle": "ਕੋਈ ਸੈਸ਼ਨ ਤੈਅ ਨਹੀਂ",
-      "emptyDescription": "ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਬਣਾਓ।",
-      "ledBy": "{{date}} · {{facilitator}} ਵੱਲੋਂ ਸੰਚਾਲਿਤ",
-      "joined": "{{count}} ਸ਼ਾਮਲ ਹੋਏ"
+    "registrations": {
+      "title": "ਨਵੀਆਂ ਰਜਿਸਟ੍ਰੇਸ਼ਨਾਂ",
+      "emptyTitle": "ਕੋਈ ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਬੇਨਤੀ ਨਹੀਂ",
+      "emptyDescription": "ਮੈਂਬਰ ਬਣਨ ਦੀ ਉਡੀਕ ਕਰ ਰਹੇ ਨਵੇਂ ਮਹਿਮਾਨ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।",
+      "requestedAt": "{{time}} ਨੂੰ ਬੇਨਤੀ ਕੀਤੀ ਗਈ",
+      "register": "ਰਜਿਸਟਰ ਕਰੋ",
+      "registerToast": "{{name}} ਨੂੰ ਨਵੇਂ ਮੈਂਬਰ ਵਜੋਂ ਰਜਿਸਟਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "payments": {
+      "title": "ਬਕਾਇਆ ਭੁਗਤਾਨ",
+      "emptyTitle": "ਕੋਈ ਬਕਾਇਆ ਨਕਦ ਭੁਗਤਾਨ ਨਹੀਂ",
+      "emptyDescription": "ਕਾਊਂਟਰ 'ਤੇ ਭੁਗਤਾਨ ਕਰਨ ਵਾਲੇ ਮੈਂਬਰ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।",
+      "markPaid": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕਰੋ",
+      "markPaidToast": "{{name}} ਦਾ ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
     },
     "quickActions": {
-      "createEvent": "ਸਮਾਗਮ ਬਣਾਓ",
-      "recordAttendance": "ਹਾਜ਼ਰੀ ਦਰਜ ਕਰੋ",
-      "postUpdate": "ਅੱਪਡੇਟ ਪੋਸਟ ਕਰੋ",
+      "bookSeatForMember": "ਮੈਂਬਰ ਲਈ ਸੀਟ ਬੁੱਕ ਕਰੋ",
+      "issueBookForMember": "ਮੈਂਬਰ ਲਈ ਕਿਤਾਬ ਜਾਰੀ ਕਰੋ",
+      "registerNewMember": "ਨਵਾਂ ਮੈਂਬਰ ਰਜਿਸਟਰ ਕਰੋ",
       "toasts": {
-        "creatingEvent": "ਸਮਾਗਮ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ",
-        "recordingAttendance": "ਹਾਜ਼ਰੀ ਦਰਜ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
-        "postingUpdate": "ਕਮਿਊਨਿਟੀ ਅੱਪਡੇਟ ਪੋਸਟ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+        "bookingSeat": "ਮੈਂਬਰ ਲਈ ਸੀਟ ਬੁੱਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "issuingBook": "ਮੈਂਬਰ ਲਈ ਕਿਤਾਬ ਜਾਰੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "registeringMember": "ਨਵੇਂ ਮੈਂਬਰ ਨੂੰ ਰਜਿਸਟਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
       }
     }
   },
@@ -493,6 +538,8 @@
     "hero": {
       "badge": "ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਲਾਇਬ੍ਰੇਰੀ ਪਲੇਟਫਾਰਮ",
       "title": "ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ, ਤੁਹਾਡੀ ਕਮਿਊਨਿਟੀ, ਸਭ ਇੱਕ ਥਾਂ 'ਤੇ।",
+      "titlePrefix": "ਬਿਹਤਰ ",
+      "titleWords": ["ਲਾਇਬ੍ਰੇਰੀਆਂ", "ਭਾਈਚਾਰੇ", "ਸਿੱਖਿਆ", "ਪੜ੍ਹਨ ਦੀਆਂ ਆਦਤਾਂ", "ਸੰਪਰਕ"],
       "subtitle": "ਕਿਤਾਬਾਂ ਉਧਾਰ ਲਓ, ਸਟੱਡੀ ਸੀਟ ਬੁੱਕ ਕਰੋ, ਇੱਕ ਰੀਡਿੰਗ ਕਲੱਬ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ, ਅਤੇ ਕਾਗਜ਼ੀ ਰਜਿਸਟਰਾਂ ਅਤੇ ਗਰੁੱਪ ਚੈਟਾਂ ਤੋਂ ਬਿਨਾਂ ਨਿੱਜੀ ਸਿਫਾਰਸ਼ਾਂ ਪ੍ਰਾਪਤ ਕਰੋ।",
       "ctaJoin": "ਕਮਿਊਨਿਟੀ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
       "ctaBrowse": "ਕਿਤਾਬਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
@@ -909,7 +956,8 @@
     },
     "empty": {
       "title": "ਕੋਈ ਕਿਤਾਬ ਨਹੀਂ ਮਿਲੀ",
-      "description": "ਕੋਈ ਵੱਖਰਾ ਖੋਜ ਸ਼ਬਦ ਜਾਂ ਸ਼੍ਰੇਣੀ ਅਜ਼ਮਾਓ।"
+      "description": "ਕੋਈ ਵੱਖਰਾ ਖੋਜ ਸ਼ਬਦ ਜਾਂ ਸ਼੍ਰੇਣੀ ਅਜ਼ਮਾਓ।",
+      "clearFilters": "ਫਿਲਟਰ ਸਾਫ਼ ਕਰੋ"
     },
     "details": {
       "notFound": {
@@ -944,6 +992,10 @@
       },
       "managerAssignmentsTitle": "ਮੈਨੇਜਰ ਨਿਯੁਕਤੀਆਂ",
       "noManagersAssigned": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਮੈਨੇਜਰ ਨਿਯੁਕਤ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।"
+    },
+    "empty": {
+      "title": "ਕੋਈ ਸਮਾਗਮ ਤਹਿ ਨਹੀਂ",
+      "description": "ਜਲਦੀ ਹੀ ਦੁਬਾਰਾ ਦੇਖੋ — ਨਵੇਂ ਕਮਿਊਨਿਟੀ ਸਮਾਗਮ ਨਿਯਮਿਤ ਤੌਰ 'ਤੇ ਸ਼ਾਮਲ ਕੀਤੇ ਜਾਂਦੇ ਹਨ।"
     }
   },
   "reservations": {
@@ -952,7 +1004,8 @@
     "current": {
       "heading": "ਮੌਜੂਦਾ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
       "emptyTitle": "ਕੋਈ ਸਰਗਰਮ ਰਿਜ਼ਰਵੇਸ਼ਨ ਨਹੀਂ",
-      "emptyDescription": "ਇੱਥੇ ਵੇਖਣ ਲਈ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਇੱਕ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ।"
+      "emptyDescription": "ਇੱਥੇ ਵੇਖਣ ਲਈ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਇੱਕ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ।",
+      "browseBooks": "ਕਿਤਾਬਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ"
     },
     "queue": {
       "heading": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਕਤਾਰ",
@@ -1043,6 +1096,10 @@
       "totalReviews_other": "{{count}} ਸਮੀਖਿਆਵਾਂ",
       "starsLabel_one": "{{count}} ਸਟਾਰ",
       "starsLabel_other": "{{count}} ਸਟਾਰ"
+    },
+    "empty": {
+      "title": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਸਮੀਖਿਆ ਨਹੀਂ",
+      "description": "ਇਸ ਕਿਤਾਬ ਬਾਰੇ ਆਪਣੀ ਰਾਏ ਸਾਂਝੀ ਕਰਨ ਵਾਲੇ ਪਹਿਲੇ ਵਿਅਕਤੀ ਬਣੋ।"
     }
   },
   "notifications": {

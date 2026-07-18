@@ -15,6 +15,8 @@ export interface QuickActionsCardProps {
 export function QuickActionsCard({ title, actions }: QuickActionsCardProps) {
   const { t } = useTranslation();
 
+  if (actions.length === 0) return null;
+
   return (
     <div className="rounded-lg bg-ink p-6">
       <p className="text-lg font-semibold text-ink-foreground">
@@ -26,7 +28,7 @@ export function QuickActionsCard({ title, actions }: QuickActionsCardProps) {
             key={action.label}
             type="button"
             onClick={action.onClick}
-            className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/6 p-3 text-left transition-colors hover:bg-white/10"
+            className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/6 p-3 text-left transition-all duration-150 hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <action.icon className="size-4" />

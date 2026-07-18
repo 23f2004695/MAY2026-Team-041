@@ -163,7 +163,7 @@ export const feeStatusEntries: FeeStatusEntry[] = [
   },
 ];
 
-export const FINE_PER_DAY = 10;
+const FINE_PER_DAY = 10;
 
 export interface LateReturnEntry {
   id: string;

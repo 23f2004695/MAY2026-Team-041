@@ -6,6 +6,9 @@
     "getStarted": "सुरू करा",
     "you": "तुम्ही",
     "quickActionsTitle": "क्विक अ‍ॅक्शन्स",
+    "trend": {
+      "vsLastMonth": "मागील महिन्याच्या तुलनेत"
+    },
     "time": {
       "hoursAgo": "{{count}} तासांपूर्वी",
       "daysAgo": "{{count}} दिवसांपूर्वी",
@@ -143,6 +146,25 @@
     "message": "हे पान अस्तित्वात नाही.",
     "backHome": "होमवर परत जा"
   },
+  "payment": {
+    "pageTitle": "पेमेंट",
+    "defaultLabel": "लायब्ररी पेमेंट",
+    "amountDue": "देय रक्कम",
+    "payWithRazorpay": "Razorpay द्वारे पैसे भरा",
+    "payOnlineToast": "₹{{amount}} पेमेंट प्रक्रिया करत आहे",
+    "payAtLibraryTitle": "प्रत्यक्ष भरणा करण्यास प्राधान्य देता?",
+    "payAtLibraryDescription": "ऑनलाइन पेमेंट टाळा — काउंटरवर जा आणि व्यवस्थापकाला रोख पैसे द्या.",
+    "contactManager": "व्यवस्थापकाला कळवा",
+    "payAtLibraryToast": "व्यवस्थापकाला कळवले आहे — काउंटरवर रोख पैसे द्या",
+    "secureNotice": "पेमेंट सुरक्षितपणे प्रक्रिया केली जातात"
+  },
+  "feedback": {
+    "error": {
+      "title": "काहीतरी चुकले",
+      "description": "एक अनपेक्षित त्रुटी आली. कृपया पुन्हा प्रयत्न करा.",
+      "retry": "पुन्हा प्रयत्न करा"
+    }
+  },
   "placeholder": {
     "comingSoon": "लवकरच येत आहे",
     "community": { "description": "रीडिंग क्लब आणि चर्चा." },
@@ -153,6 +175,8 @@
     "hero": {
       "badge": "कम्युनिटी रीडिंग क्लब आणि लायब्ररी प्लॅटफॉर्म",
       "title": "तुमची लायब्ररी, तुमची कम्युनिटी, सर्व एकाच ठिकाणी.",
+      "titlePrefix": "उत्तम ",
+      "titleWords": ["ग्रंथालये", "समुदाय", "शिक्षण", "वाचनाच्या सवयी", "संबंध"],
       "subtitle": "पुस्तके उधार घ्या, अभ्यासासाठी सीट बुक करा, रीडिंग क्लबमध्ये सामील व्हा आणि कागदी नोंदवह्या व ग्रुप चॅटशिवाय वैयक्तिकृत शिफारसी मिळवा.",
       "ctaJoin": "कम्युनिटीत सामील व्हा",
       "ctaBrowse": "पुस्तके ब्राउझ करा",
@@ -597,7 +621,10 @@
       },
       "from": "{{name}} कडून",
       "rejectToast": "{{name}} कडून विनंती नाकारत आहे",
-      "approveToast": "{{name}} कडून विनंती मंजूर करत आहे"
+      "approveToast": "{{name}} कडून विनंती मंजूर करत आहे",
+      "confirmApproveTitle": "ही विनंती मंजूर करायची?",
+      "confirmRejectTitle": "ही विनंती नाकारायची?",
+      "confirmDescription": "{{name}} ची {{amount}} ची विनंती. ही क्रिया पूर्ववत केली जाऊ शकत नाही."
     },
     "auditLog": {
       "title": "आर्थिक क्रियाकलाप लॉग",
@@ -784,6 +811,16 @@
       "standard": "स्टँडर्ड सदस्य",
       "basic": "बेसिक सदस्य"
     },
+    "subscription": {
+      "title": "तुमची सदस्यता",
+      "expiresOn": "{{date}} रोजी संपेल",
+      "noPlan": "तुमच्याकडे अद्याप सक्रिय योजना नाही",
+      "fineOwed": "थकबाकी दंड: {{amount}}",
+      "noFine": "कोणताही थकबाकी दंड नाही",
+      "renew": "नूतनीकरण करा",
+      "viewPlans": "योजना पहा",
+      "payFine": "दंड भरा"
+    },
     "stats": {
       "booksBorrowed": "उधार घेतलेली पुस्तके",
       "booksReserved": "राखीव केलेली पुस्तके",
@@ -862,38 +899,48 @@
   },
   "managerDashboard": {
     "pageTitle": "व्यवस्थापक डॅशबोर्ड",
-    "pageDescription": "कार्यक्रम, सत्रे आणि उपस्थिती विहंगावलोकन",
+    "pageDescription": "सीट आणि पुस्तकासाठी वॉक-इन सहाय्य, तसेच नवीन सदस्य नोंदणी",
     "stats": {
-      "upcomingEvents": "आगामी कार्यक्रम",
-      "attendeesThisMonth": "या महिन्यातील उपस्थित",
-      "avgAttendanceRate": "सरासरी उपस्थिती दर",
-      "activeReadingSessions": "सक्रिय वाचन सत्रे"
+      "seatsBookedToday": "आज बुक केलेल्या सीट",
+      "booksIssuedToday": "आज जारी केलेली पुस्तके",
+      "newRegistrationsToday": "आजच्या नवीन नोंदणी",
+      "pendingTasks": "प्रलंबित कामे"
     },
-    "events": {
-      "title": "आगामी कार्यक्रम",
-      "emptyTitle": "कोणतेही कार्यक्रम नियोजित नाहीत",
-      "emptyDescription": "सुरुवात करण्यासाठी एक तयार करा.",
-      "attendingCount": "{{attendees}}/{{capacity}} उपस्थित",
-      "managersAssigned_one": "{{count}} व्यवस्थापक नियुक्त",
-      "managersAssigned_other": "{{count}} व्यवस्थापक नियुक्त",
-      "manage": "व्यवस्थापित करा",
-      "manageToast": "\"{{title}}\" व्यवस्थापित करत आहे"
+    "walkIns": {
+      "title": "वॉक-इन सहाय्य",
+      "emptyTitle": "कोणतीही वॉक-इन विनंती नाही",
+      "emptyDescription": "काउंटरवर सीट किंवा पुस्तकासाठी मदत हवी असलेले सदस्य येथे दिसतील.",
+      "seatBadge": "सीट",
+      "bookBadge": "पुस्तक",
+      "requestedAt": "{{time}} रोजी विनंती केली",
+      "bookSeat": "सीट बुक करा",
+      "issueBook": "पुस्तक जारी करा",
+      "bookSeatToast": "{{name}} साठी सीट बुक करत आहे",
+      "issueBookToast": "{{name}} साठी पुस्तक जारी करत आहे"
     },
-    "readingSessions": {
-      "title": "वाचन सत्रे",
-      "emptyTitle": "कोणतीही सत्रे नियोजित नाहीत",
-      "emptyDescription": "सुरुवात करण्यासाठी एक तयार करा.",
-      "ledBy": "{{date}} · {{facilitator}} द्वारे संचालित",
-      "joined": "{{count}} सहभागी"
+    "registrations": {
+      "title": "नवीन नोंदणी",
+      "emptyTitle": "कोणतीही नोंदणी विनंती नाही",
+      "emptyDescription": "सदस्य होण्याची वाट पाहणारे नवीन पाहुणे येथे दिसतील.",
+      "requestedAt": "{{time}} रोजी विनंती केली",
+      "register": "नोंदणी करा",
+      "registerToast": "{{name}} ला नवीन सदस्य म्हणून नोंदवत आहे"
+    },
+    "payments": {
+      "title": "प्रलंबित पेमेंट्स",
+      "emptyTitle": "कोणतेही प्रलंबित रोख पेमेंट नाही",
+      "emptyDescription": "काउंटरवर पैसे भरणारे सदस्य येथे दिसतील.",
+      "markPaid": "भरणा झाला असे चिन्हांकित करा",
+      "markPaidToast": "{{name}} चा भरणा मिळाला असे चिन्हांकित करत आहे"
     },
     "quickActions": {
-      "createEvent": "कार्यक्रम तयार करा",
-      "recordAttendance": "उपस्थिती नोंदवा",
-      "postUpdate": "अपडेट पोस्ट करा",
+      "bookSeatForMember": "सदस्यासाठी सीट बुक करा",
+      "issueBookForMember": "सदस्यासाठी पुस्तक जारी करा",
+      "registerNewMember": "नवीन सदस्य नोंदवा",
       "toasts": {
-        "creatingEvent": "कार्यक्रम तयार करत आहे",
-        "recordingAttendance": "उपस्थिती नोंदवत आहे",
-        "postingUpdate": "कम्युनिटी अपडेट पोस्ट करत आहे"
+        "bookingSeat": "सदस्यासाठी सीट बुक करत आहे",
+        "issuingBook": "सदस्यासाठी पुस्तक जारी करत आहे",
+        "registeringMember": "नवीन सदस्याची नोंदणी करत आहे"
       }
     }
   },
@@ -912,7 +959,8 @@
     },
     "empty": {
       "title": "कोणतीही पुस्तके सापडली नाहीत",
-      "description": "वेगळा शोध शब्द किंवा श्रेणी वापरून पहा."
+      "description": "वेगळा शोध शब्द किंवा श्रेणी वापरून पहा.",
+      "clearFilters": "फिल्टर साफ करा"
     },
     "details": {
       "notFound": {
@@ -947,6 +995,10 @@
       },
       "managerAssignmentsTitle": "व्यवस्थापक नियुक्त्या",
       "noManagersAssigned": "अद्याप कोणतेही व्यवस्थापक नियुक्त केलेले नाहीत."
+    },
+    "empty": {
+      "title": "कोणतेही कार्यक्रम नियोजित नाहीत",
+      "description": "लवकरच पुन्हा तपासा — नवीन सामुदायिक कार्यक्रम नियमितपणे जोडले जातात."
     }
   },
   "reservations": {
@@ -955,7 +1007,8 @@
     "current": {
       "heading": "सध्याची आरक्षणे",
       "emptyTitle": "कोणतीही सक्रिय आरक्षणे नाहीत",
-      "emptyDescription": "ते येथे पाहण्यासाठी कॅटलॉगमधून एखादे पुस्तक राखीव करा."
+      "emptyDescription": "ते येथे पाहण्यासाठी कॅटलॉगमधून एखादे पुस्तक राखीव करा.",
+      "browseBooks": "पुस्तके ब्राउझ करा"
     },
     "queue": {
       "heading": "आरक्षण रांग",
@@ -1046,6 +1099,10 @@
       "totalReviews_other": "{{count}} पुनरावलोकने",
       "starsLabel_one": "{{count}} स्टार",
       "starsLabel_other": "{{count}} स्टार्स"
+    },
+    "empty": {
+      "title": "अद्याप कोणतीही पुनरावलोकने नाहीत",
+      "description": "या पुस्तकाबद्दल तुमचे मत शेअर करणारे पहिले व्हा."
     }
   },
   "notifications": {

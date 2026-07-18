@@ -3,6 +3,8 @@ import { BookMarked, BookOpen, CalendarCheck, Trophy, type LucideIcon } from 'lu
 export const dashboardUser = {
   name: 'Priya Sharma',
   membershipPlanKey: 'premium',
+  subscriptionExpiresOn: 'Aug 15, 2026',
+  outstandingFine: '₹15',
 };
 
 export interface DashboardStat {

@@ -1,20 +1,40 @@
 import { IndianRupee, TrendingDown, Users, Wallet, type LucideIcon } from 'lucide-react';
 
-export function formatCurrency(amount: number): string {
-  return `₹${amount.toLocaleString('en-IN')}`;
-}
+import type { StatisticTrend } from '@/components/common';
 
 export interface AdminStat {
   icon: LucideIcon;
   labelKey: string;
   value: string;
+  trend: StatisticTrend;
 }
 
 export const adminStats: AdminStat[] = [
-  { icon: IndianRupee, labelKey: 'admin.stats.revenueMtd', value: '₹18,500' },
-  { icon: TrendingDown, labelKey: 'admin.stats.expensesMtd', value: '₹9,200' },
-  { icon: Wallet, labelKey: 'admin.stats.netProfitMtd', value: '₹9,300' },
-  { icon: Users, labelKey: 'admin.stats.totalMembers', value: '138' },
+  {
+    icon: IndianRupee,
+    labelKey: 'admin.stats.revenueMtd',
+    value: '₹18,500',
+    trend: { direction: 'up', percent: 12 },
+  },
+  {
+    icon: TrendingDown,
+    labelKey: 'admin.stats.expensesMtd',
+    value: '₹9,200',
+    // More spending is bad news even though the number itself only went up 4%.
+    trend: { direction: 'up', percent: 4, sentiment: 'negative' },
+  },
+  {
+    icon: Wallet,
+    labelKey: 'admin.stats.netProfitMtd',
+    value: '₹9,300',
+    trend: { direction: 'up', percent: 18 },
+  },
+  {
+    icon: Users,
+    labelKey: 'admin.stats.totalMembers',
+    value: '138',
+    trend: { direction: 'up', percent: 6 },
+  },
 ];
 
 export interface RevenueSource {

@@ -1,8 +1,11 @@
+import { Ticket } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { PageHeader } from '@/components/common';
-import { Dialog, EmptyState } from '@/components/ui';
+import { Button, Dialog, EmptyState } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { currentReservations, reservationQueue } from '@/mocks/reservations';
 
@@ -10,6 +13,7 @@ import { ReservationCard } from '../components/ReservationCard';
 
 export function ReservationsPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [reservations, setReservations] = useState(currentReservations);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
 
@@ -32,8 +36,14 @@ export function ReservationsPage() {
         </h2>
         {reservations.length === 0 ? (
           <EmptyState
+            icon={Ticket}
             title={t('reservations.current.emptyTitle')}
             description={t('reservations.current.emptyDescription')}
+            action={
+              <Button size="sm" onClick={() => navigate(ROUTES.BOOKS)}>
+                {t('reservations.current.browseBooks')}
+              </Button>
+            }
           />
         ) : (
           reservations.map((reservation) => (

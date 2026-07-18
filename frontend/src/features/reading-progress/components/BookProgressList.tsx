@@ -20,7 +20,10 @@ export function BookProgressList({ title, books, emptyDescription }: BookProgres
       </CardHeader>
       <CardContent>
         {books.length === 0 ? (
-          <EmptyState title={t('readingProgress.emptyState.title')} description={emptyDescription} />
+          <EmptyState
+            title={t('readingProgress.emptyState.title')}
+            description={emptyDescription}
+          />
         ) : (
           <div className="flex flex-col gap-4">
             {books.map((book) => (

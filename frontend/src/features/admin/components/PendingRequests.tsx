@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Dialog } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import type { PendingRequest, PendingRequestType } from '@/mocks/admin';
 
@@ -10,8 +11,25 @@ const typeLabelKey: Record<PendingRequestType, string> = {
   'fee-waiver-request': 'admin.pendingRequests.types.feeWaiverRequest',
 };
 
+// Financial actions get a confirmation step (frontend-only placeholder — no request is
+// actually sent) since approving/rejecting money requests shouldn't be a single misclick.
+type PendingAction = { request: PendingRequest; kind: 'approve' | 'reject' };
+
 export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
   const { t } = useTranslation();
+  const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
+
+  function confirm() {
+    if (!pendingAction) return;
+    const { request, kind } = pendingAction;
+    comingSoonToast(
+      t(
+        kind === 'approve' ? 'admin.pendingRequests.approveToast' : 'admin.pendingRequests.rejectToast',
+        { name: request.requester },
+      ),
+    );
+    setPendingAction(null);
+  }
 
   return (
     <Card>
@@ -38,18 +56,15 @@ export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
             <div className="flex gap-2">
               <Button
                 size="sm"
-                variant="outline"
-                onClick={() =>
-                  comingSoonToast(t('admin.pendingRequests.rejectToast', { name: request.requester }))
-                }
+                variant="danger"
+                onClick={() => setPendingAction({ request, kind: 'reject' })}
               >
                 {t('common.actions.reject')}
               </Button>
               <Button
                 size="sm"
-                onClick={() =>
-                  comingSoonToast(t('admin.pendingRequests.approveToast', { name: request.requester }))
-                }
+                variant="success"
+                onClick={() => setPendingAction({ request, kind: 'approve' })}
               >
                 {t('common.actions.approve')}
               </Button>
@@ -57,6 +72,29 @@ export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
           </div>
         ))}
       </CardContent>
+
+      <Dialog
+        open={pendingAction !== null}
+        onClose={() => setPendingAction(null)}
+        onConfirm={confirm}
+        title={t(
+          pendingAction?.kind === 'reject'
+            ? 'admin.pendingRequests.confirmRejectTitle'
+            : 'admin.pendingRequests.confirmApproveTitle',
+        )}
+        description={
+          pendingAction
+            ? t('admin.pendingRequests.confirmDescription', {
+                name: pendingAction.request.requester,
+                amount: pendingAction.request.amount,
+              })
+            : undefined
+        }
+        confirmLabel={t(
+          pendingAction?.kind === 'reject' ? 'common.actions.reject' : 'common.actions.approve',
+        )}
+        confirmVariant={pendingAction?.kind === 'reject' ? 'danger' : 'success'}
+      />
     </Card>
   );
 }

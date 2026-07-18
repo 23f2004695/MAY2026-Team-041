@@ -15,7 +15,9 @@ export function AppShellLayout({ items }: AppShellLayoutProps) {
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar items={items} />
-        <main className="flex-1 p-6">
+        {/* pb-24 reserves space under the fixed ChatbotWidget (size-14 button + margin) so it
+            never sits on top of the last row of dashboard controls. */}
+        <main className="flex-1 p-6 pb-24">
           <Outlet />
         </main>
       </div>

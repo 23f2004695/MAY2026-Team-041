@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion';
 import { Check, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-import { AnimatedNumber } from '@/components/common';
+import { AnimatedNumber, Divider } from '@/components/common';
 import { Badge, Button, Card } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { cn } from '@/lib/cn';
-import { comingSoonToast } from '@/lib/comingSoonToast';
-import { fadeInUp, viewportOnce } from '@/lib/motion';
+import { fadeUp, viewportOnce } from '@/lib/motion';
 import { coreFeatureIds, type PricingDuration } from '@/mocks/pricing';
+import { useAuth } from '@/providers/AuthProvider';
 
 export interface PricingCardProps {
   duration: PricingDuration;
@@ -17,15 +19,26 @@ export interface PricingCardProps {
 
 export function PricingCard({ duration, isActive, index }: PricingCardProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const isHighlighted = duration.badge === 'mostPopular';
   const ctaLabel = t(`pricing.durations.${duration.id}.cta`);
+  const planLabel = t(`pricing.durations.${duration.id}.label`);
+
+  function handleChoosePlan() {
+    if (!isAuthenticated) {
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+    navigate(`${ROUTES.PAYMENT}?amount=${duration.price}&label=${encodeURIComponent(planLabel)}`);
+  }
 
   return (
     <motion.div
       initial="hidden"
       whileInView="visible"
       viewport={viewportOnce}
-      variants={fadeInUp}
+      variants={fadeUp}
       transition={{ duration: 0.4, ease: 'easeOut', delay: index * 0.08 }}
       className="h-full"
     >
@@ -88,18 +101,18 @@ export function PricingCard({ duration, isActive, index }: PricingCardProps) {
           </ul>
 
           {duration.extraFeatureIds.length > 0 && (
-            <ul className="mt-4 flex flex-col gap-2.5 border-t border-border-muted pt-4 text-sm font-medium text-foreground">
+            <Divider as="ul" className="flex flex-col gap-2.5 text-sm font-medium text-foreground">
               {duration.extraFeatureIds.map((id) => (
                 <li key={id} className="flex items-start gap-2">
                   <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
                   {t(`pricing.extraFeatures.${id}`)}
                 </li>
               ))}
-            </ul>
+            </Divider>
           )}
 
           <Button
-            onClick={() => comingSoonToast(ctaLabel)}
+            onClick={handleChoosePlan}
             variant={isHighlighted ? 'primary' : 'outline'}
             className="mt-8 w-full"
           >

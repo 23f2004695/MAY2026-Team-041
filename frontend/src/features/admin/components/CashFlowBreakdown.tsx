@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { formatCurrency, type RevenueSource } from '@/mocks/admin';
+import { formatCurrency } from '@/lib/format';
+import type { RevenueSource } from '@/mocks/admin';
 
 export function CashFlowBreakdown({ sources }: { sources: RevenueSource[] }) {
   const { t } = useTranslation();

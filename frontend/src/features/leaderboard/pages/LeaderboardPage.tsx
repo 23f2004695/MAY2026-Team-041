@@ -1,6 +1,7 @@
 import { Award } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { PageTitle } from '@/components/common';
 import {
   Avatar,
   Badge,
@@ -25,10 +26,10 @@ export function LeaderboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{t('leaderboard.pageTitle')}</h1>
-        <p className="mt-1 text-muted-foreground">{t('leaderboard.pageDescription')}</p>
-      </div>
+      <PageTitle
+        title={t('leaderboard.pageTitle')}
+        description={t('leaderboard.pageDescription')}
+      />
 
       <Table>
         <TableHeader>
