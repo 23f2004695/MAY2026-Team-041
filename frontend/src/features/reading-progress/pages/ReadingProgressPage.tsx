@@ -1,4 +1,5 @@
 import { Flame, Target } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { ProgressBar } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
@@ -13,23 +14,28 @@ import {
 import { BookProgressList } from '../components/BookProgressList';
 
 export function ReadingProgressPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Reading Progress</h1>
-        <p className="mt-1 text-muted-foreground">Your reading activity across the year</p>
+        <h1 className="text-2xl font-semibold text-foreground">{t('readingProgress.pageTitle')}</h1>
+        <p className="mt-1 text-muted-foreground">{t('readingProgress.pageDescription')}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
           <CardHeader className="flex-row items-center gap-2 space-y-0">
             <Target className="size-5 text-primary" />
-            <CardTitle>{readingGoal.year} Reading Goal</CardTitle>
+            <CardTitle>{t('readingProgress.readingGoal.title', { year: readingGoal.year })}</CardTitle>
           </CardHeader>
           <CardContent>
             <ProgressBar percent={(readingGoal.current / readingGoal.target) * 100} />
             <p className="mt-1.5 text-sm text-muted-foreground">
-              {readingGoal.current} of {readingGoal.target} books
+              {t('readingProgress.readingGoal.booksOf', {
+                current: readingGoal.current,
+                target: readingGoal.target,
+              })}
             </p>
           </CardContent>
         </Card>
@@ -37,14 +43,14 @@ export function ReadingProgressPage() {
         <Card>
           <CardHeader className="flex-row items-center gap-2 space-y-0">
             <Flame className="size-5 text-primary" />
-            <CardTitle>Reading Streak</CardTitle>
+            <CardTitle>{t('readingProgress.readingStreak.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-semibold text-foreground">
-              {readingStreak.currentStreakDays} days
+              {t('readingProgress.readingStreak.currentDays', { count: readingStreak.currentStreakDays })}
             </p>
             <p className="text-sm text-muted-foreground">
-              Longest streak: {readingStreak.longestStreakDays} days
+              {t('readingProgress.readingStreak.longest', { count: readingStreak.longestStreakDays })}
             </p>
           </CardContent>
         </Card>
@@ -52,19 +58,19 @@ export function ReadingProgressPage() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <BookProgressList
-          title="Currently Reading"
+          title={t('readingProgress.lists.currentlyReading.title')}
           books={currentlyReadingBooks}
-          emptyDescription="Start a book to track it here."
+          emptyDescription={t('readingProgress.lists.currentlyReading.emptyDescription')}
         />
         <BookProgressList
-          title="Completed"
+          title={t('readingProgress.lists.completed.title')}
           books={completedBooks}
-          emptyDescription="Books you finish will show up here."
+          emptyDescription={t('readingProgress.lists.completed.emptyDescription')}
         />
         <BookProgressList
-          title="Want To Read"
+          title={t('readingProgress.lists.wantToRead.title')}
           books={wantToReadBooks}
-          emptyDescription="Save books you plan to read next."
+          emptyDescription={t('readingProgress.lists.wantToRead.emptyDescription')}
         />
       </div>
     </div>

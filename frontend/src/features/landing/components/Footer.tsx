@@ -14,6 +14,7 @@ export function Footer() {
   ];
 
   const quickLinks = [
+    { label: t('nav.pricing'), to: ROUTES.PRICING },
     { label: t('landing.footer.books'), to: ROUTES.BOOKS },
     { label: t('landing.footer.community'), to: ROUTES.COMMUNITY },
     { label: t('landing.footer.events'), to: ROUTES.EVENTS },

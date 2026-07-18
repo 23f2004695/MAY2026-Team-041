@@ -1,12 +1,69 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { NotificationCard } from '@/components/common';
 import { Badge, Button, EmptyState } from '@/components/ui';
-import { notifications as mockNotifications } from '@/mocks/notifications';
+import { notifications as mockNotifications, type AppNotification } from '@/mocks/notifications';
 
 type Filter = 'all' | 'unread';
 
+function useNotificationTitle(notification: AppNotification) {
+  const { t } = useTranslation();
+  return t(`notifications.titles.${notification.titleKey}`);
+}
+
+function useNotificationMessage(notification: AppNotification): string {
+  const { t } = useTranslation();
+  const { key, params } = notification.message;
+
+  switch (key) {
+    case 'dueInDays':
+      return t('notifications.messages.dueInDays', params);
+    case 'reservationReady':
+      return t('notifications.messages.reservationReady', params);
+    case 'newBookAdded':
+      return t('notifications.messages.newBookAdded', params);
+    case 'achievementEarned':
+      return t('notifications.messages.achievementEarned', params);
+    case 'membershipRenewsInDays':
+      return t('notifications.messages.membershipRenewsInDays', {
+        count: params.count,
+        plan: t(`notifications.plans.${params.plan}`),
+      });
+  }
+}
+
+function useTimeAgoText(timeAgo: { hours: number } | { days: number }) {
+  const { t } = useTranslation();
+  if ('hours' in timeAgo) return t('common.time.hoursAgo', { count: timeAgo.hours });
+  return t('common.time.daysAgo', { count: timeAgo.days });
+}
+
+function NotificationRow({
+  notification,
+  onMarkAsRead,
+}: {
+  notification: AppNotification;
+  onMarkAsRead: () => void;
+}) {
+  const title = useNotificationTitle(notification);
+  const message = useNotificationMessage(notification);
+  const timestamp = useTimeAgoText(notification.timeAgo);
+
+  return (
+    <NotificationCard
+      type={notification.type}
+      title={title}
+      message={message}
+      timestamp={timestamp}
+      read={notification.read}
+      onMarkAsRead={onMarkAsRead}
+    />
+  );
+}
+
 export function NotificationsPage() {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState(mockNotifications);
   const [filter, setFilter] = useState<Filter>('all');
 
@@ -30,42 +87,40 @@ export function NotificationsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold text-foreground">Notifications</h1>
-        {unreadCount > 0 && <Badge variant="success">{unreadCount} unread</Badge>}
+        <h1 className="text-2xl font-semibold text-foreground">{t('notifications.pageTitle')}</h1>
+        {unreadCount > 0 && (
+          <Badge variant="success">{t('notifications.unreadBadge', { count: unreadCount })}</Badge>
+        )}
       </div>
 
-      <div className="flex gap-2" role="group" aria-label="Filter notifications">
+      <div className="flex gap-2" role="group" aria-label={t('notifications.filterAriaLabel')}>
         <Button
           variant={filter === 'all' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setFilter('all')}
         >
-          All
+          {t('notifications.filters.all')}
         </Button>
         <Button
           variant={filter === 'unread' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setFilter('unread')}
         >
-          Unread
+          {t('notifications.filters.unread')}
         </Button>
       </div>
 
       {visibleNotifications.length === 0 ? (
         <EmptyState
-          title="Nothing to see here"
-          description="You're all caught up on notifications."
+          title={t('notifications.empty.title')}
+          description={t('notifications.empty.description')}
         />
       ) : (
         <div className="flex flex-col gap-3">
           {visibleNotifications.map((notification) => (
-            <NotificationCard
+            <NotificationRow
               key={notification.id}
-              type={notification.type}
-              title={notification.title}
-              message={notification.message}
-              timestamp={notification.timestamp}
-              read={notification.read}
+              notification={notification}
               onMarkAsRead={() => markAsRead(notification.id)}
             />
           ))}

@@ -1,4 +1,5 @@
 import { Armchair } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/cn';
 
@@ -18,13 +19,10 @@ const statusClasses: Record<SeatStatus, string> = {
   occupied: 'border-danger/30 bg-danger/10 text-danger',
 };
 
-const statusLabel: Record<SeatStatus, string> = {
-  available: 'Available',
-  reserved: 'Reserved',
-  occupied: 'Occupied',
-};
-
 export function SeatCard({ label, status, className, selected, onSelect }: SeatCardProps) {
+  const { t } = useTranslation();
+  const statusText = t(`landing.seatAvailability.${status}`);
+
   const classes = cn(
     'flex flex-col items-center gap-1 rounded-md border p-2 text-xs font-medium',
     statusClasses[status],
@@ -34,7 +32,10 @@ export function SeatCard({ label, status, className, selected, onSelect }: SeatC
 
   if (!onSelect) {
     return (
-      <div title={`${label}: ${statusLabel[status]}`} className={classes}>
+      <div
+        title={t('common.cards.seat.labelWithStatus', { label, status: statusText })}
+        className={classes}
+      >
         <Armchair className="size-4" />
         {label}
       </div>
@@ -46,7 +47,7 @@ export function SeatCard({ label, status, className, selected, onSelect }: SeatC
       type="button"
       disabled={status !== 'available'}
       aria-pressed={selected}
-      aria-label={`Seat ${label}: ${statusLabel[status]}`}
+      aria-label={t('common.cards.seat.seatLabelWithStatus', { label, status: statusText })}
       onClick={onSelect}
       className={cn(
         classes,

@@ -3,10 +3,56 @@
     "brandFull": "ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ",
     "brandShort": "ਰੀਡਿੰਗ ਕਲੱਬ",
     "signIn": "ਸਾਈਨ ਇਨ ਕਰੋ",
-    "getStarted": "ਸ਼ੁਰੂ ਕਰੋ"
+    "getStarted": "ਸ਼ੁਰੂ ਕਰੋ",
+    "you": "ਤੁਸੀਂ",
+    "quickActionsTitle": "ਤੁਰੰਤ ਕਾਰਵਾਈਆਂ",
+    "time": {
+      "hoursAgo": "{{count}} ਘੰਟੇ ਪਹਿਲਾਂ",
+      "daysAgo": "{{count}} ਦਿਨ ਪਹਿਲਾਂ",
+      "daysLeft": "{{count}} ਦਿਨ ਬਾਕੀ",
+      "since": "{{date}} ਤੋਂ"
+    },
+    "actions": {
+      "reject": "ਰੱਦ ਕਰੋ",
+      "approve": "ਮਨਜ਼ੂਰ ਕਰੋ",
+      "manage": "ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
+      "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ"
+    },
+    "cards": {
+      "event": {
+        "registered": "ਰਜਿਸਟਰ ਕੀਤਾ",
+        "open": "ਖੁੱਲ੍ਹਾ",
+        "viewDetails": "ਵੇਰਵੇ ਵੇਖੋ"
+      },
+      "book": {
+        "reserve": "ਰਿਜ਼ਰਵ ਕਰੋ",
+        "viewDetailsAria": "{{title}} ਲਈ ਵੇਰਵੇ ਵੇਖੋ"
+      },
+      "seat": {
+        "labelWithStatus": "{{label}}: {{status}}",
+        "seatLabelWithStatus": "ਸੀਟ {{label}}: {{status}}"
+      },
+      "notification": {
+        "markAsRead": "ਪੜ੍ਹਿਆ ਹੋਇਆ ਚਿੰਨ੍ਹਿਤ ਕਰੋ",
+        "unread": "ਨਾ ਪੜ੍ਹੀ ਹੋਈ"
+      },
+      "review": {
+        "ratedOutOf5": "5 ਵਿੱਚੋਂ {{rating}} ਰੇਟ ਕੀਤਾ"
+      }
+    }
   },
   "language": {
     "label": "ਭਾਸ਼ਾ"
+  },
+  "chatbot": {
+    "title": "AI ਸਹਾਇਕ",
+    "demoBadge": "ਡੈਮੋ",
+    "greeting": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਲਾਇਬ੍ਰੇਰੀ ਸਹਾਇਕ ਹਾਂ। ਮੈਨੂੰ ਕਿਤਾਬਾਂ, ਸਮਾਗਮਾਂ ਜਾਂ ਤੁਹਾਡੇ ਖਾਤੇ ਬਾਰੇ ਪੁੱਛੋ।",
+    "placeholder": "ਸੁਨੇਹਾ ਲਿਖੋ...",
+    "send": "ਭੇਜੋ",
+    "openChat": "ਚੈਟ ਖੋਲ੍ਹੋ",
+    "closeChat": "ਚੈਟ ਬੰਦ ਕਰੋ",
+    "demoReply": "ਡੈਮੋ ਅਜ਼ਮਾਉਣ ਲਈ ਧੰਨਵਾਦ! ਪੂਰੀ AI-ਸੰਚਾਲਿਤ ਜਵਾਬ ਜਲਦੀ ਆ ਰਹੇ ਹਨ — ਹੁਣ ਲਈ ਇਹ ਸਿਰਫ਼ ਚੈਟ ਅਨੁਭਵ ਦਿਖਾਉਂਦਾ ਹੈ।"
   },
   "topUtilityBar": {
     "website": "ਵੈੱਬਸਾਈਟ",
@@ -15,6 +61,7 @@
   },
   "nav": {
     "dashboard": "ਡੈਸ਼ਬੋਰਡ",
+    "pricing": "ਕੀਮਤਾਂ",
     "books": "ਕਿਤਾਬਾਂ",
     "reservations": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
     "seatBooking": "ਸੀਟ ਬੁਕਿੰਗ",
@@ -26,6 +73,8 @@
     "notifications": "ਸੂਚਨਾਵਾਂ",
     "settings": "ਸੈਟਿੰਗਾਂ",
     "adminOverview": "ਐਡਮਿਨ ਸੰਖੇਪ",
+    "itHeadOverview": "ਆਈਟੀ ਸੰਖੇਪ",
+    "guardianOverview": "ਸਰਪ੍ਰਸਤ ਸੰਖੇਪ ਜਾਣਕਾਰੀ",
     "backToApp": "ਐਪ 'ਤੇ ਵਾਪਸ ਜਾਓ"
   },
   "userMenu": {
@@ -55,7 +104,18 @@
         "admin": "ਐਡਮਿਨ",
         "librarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ",
         "member": "ਮੈਂਬਰ",
-        "manager": "ਮੈਨੇਜਰ"
+        "manager": "ਮੈਨੇਜਰ",
+        "it-head": "ਆਈਟੀ ਹੈੱਡ",
+        "guardian": "ਸਰਪ੍ਰਸਤ"
+      },
+      "or": "ਜਾਂ",
+      "email": "ਈਮੇਲ",
+      "password": "ਪਾਸਵਰਡ",
+      "logInWithPassword": "ਲੌਗ ਇਨ ਕਰੋ",
+      "continueWithGmail": "ਜੀਮੇਲ ਨਾਲ ਜਾਰੀ ਰੱਖੋ",
+      "orPreviewRole": "ਜਾਂ ਇੱਕ ਭੂਮਿਕਾ ਦੀ ਝਲਕ ਵੇਖੋ",
+      "errors": {
+        "password": "ਪਾਸਵਰਡ ਲੋੜੀਂਦਾ ਹੈ।"
       }
     },
     "register": {
@@ -82,6 +142,346 @@
     "title": "404",
     "message": "ਇਹ ਪੰਨਾ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।",
     "backHome": "ਹੋਮ 'ਤੇ ਵਾਪਸ ਜਾਓ"
+  },
+  "admin": {
+    "pageTitle": "ਐਡਮਿਨ ਡੈਸ਼ਬੋਰਡ",
+    "pageDescription": "ਕਾਰੋਬਾਰੀ ਪ੍ਰਦਰਸ਼ਨ, ਨਕਦੀ ਪ੍ਰਵਾਹ ਅਤੇ ਪਲੇਟਫਾਰਮ ਪ੍ਰਬੰਧਨ",
+    "stats": {
+      "revenueMtd": "ਆਮਦਨ (MTD)",
+      "expensesMtd": "ਖਰਚੇ (MTD)",
+      "netProfitMtd": "ਸ਼ੁੱਧ ਲਾਭ (MTD)",
+      "totalMembers": "ਕੁੱਲ ਮੈਂਬਰ"
+    },
+    "cashFlow": {
+      "title": "ਨਕਦੀ ਪ੍ਰਵਾਹ ਵੇਰਵਾ",
+      "total": "ਕੁੱਲ ਆਮਦਨ",
+      "sources": {
+        "membershipFees": "ਮੈਂਬਰਸ਼ਿਪ ਫੀਸ",
+        "eventTickets": "ਸਮਾਗਮ ਟਿਕਟ ਵਿਕਰੀ",
+        "finesCollected": "ਇਕੱਠਾ ਕੀਤਾ ਜੁਰਮਾਨਾ",
+        "donationsValue": "ਦਾਨ (ਅੰਦਾਜ਼ਨ ਮੁੱਲ)"
+      }
+    },
+    "budget": {
+      "title": "ਬਜਟ ਅਤੇ ਖਰਚੇ",
+      "spentOfBudgeted": "{{budgeted}} ਵਿੱਚੋਂ {{spent}} ਖਰਚ ਹੋਇਆ",
+      "logExpense": "ਖਰਚਾ ਦਰਜ ਕਰੋ",
+      "logExpenseToast": "{{category}} ਲਈ ਖਰਚਾ ਦਰਜ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "categories": {
+        "staffSalaries": "ਸਟਾਫ ਤਨਖਾਹਾਂ",
+        "bookProcurement": "ਕਿਤਾਬ ਖਰੀਦ",
+        "utilities": "ਯੂਟਿਲਿਟੀਜ਼ ਅਤੇ ਰੱਖ-ਰਖਾਅ",
+        "marketing": "ਮਾਰਕੀਟਿੰਗ"
+      }
+    },
+    "pendingRequests": {
+      "title": "ਮੈਂਬਰਸ਼ਿਪ ਅਤੇ ਬਿਲਿੰਗ ਬੇਨਤੀਆਂ",
+      "types": {
+        "membershipRenewal": "ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ",
+        "refundRequest": "ਵਾਪਸੀ ਬੇਨਤੀ",
+        "feeWaiverRequest": "ਫੀਸ ਮੁਆਫੀ ਬੇਨਤੀ"
+      },
+      "from": "{{name}} ਵੱਲੋਂ",
+      "rejectToast": "{{name}} ਦੀ ਬੇਨਤੀ ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "approveToast": "{{name}} ਦੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    },
+    "auditLog": {
+      "title": "ਵਿੱਤੀ ਗਤੀਵਿਧੀ ਲੌਗ",
+      "actions": {
+        "fineWaived": "{{name}} ਦੇ \"{{book}}\" ਲੋਨ ਦਾ {{amount}} ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕੀਤਾ",
+        "finePolicyUpdated": "ਜੁਰਮਾਨਾ ਨੀਤੀ ਅੱਪਡੇਟ ਕੀਤੀ: ਗ੍ਰੇਸ ਪੀਰੀਅਡ {{from}} → {{to}} ਦਿਨ",
+        "expenseApproved": "{{category}} ਲਈ {{amount}} ਖਰਚਾ ਮਨਜ਼ੂਰ ਕੀਤਾ",
+        "budgetAdjusted": "{{category}} ਬਜਟ ਵਿਵਸਥਿਤ ਕੀਤਾ: {{from}} → {{to}}",
+        "refundIssued": "{{name}} ਨੂੰ {{amount}} ਵਾਪਸ ਕੀਤਾ ਗਿਆ"
+      }
+    },
+    "reports": {
+      "title": "ਰਿਪੋਰਟਾਂ",
+      "items": {
+        "revenueByPlan": "ਮੈਂਬਰਸ਼ਿਪ ਯੋਜਨਾ ਅਨੁਸਾਰ ਆਮਦਨ",
+        "profitAndLoss": "ਲਾਭ ਅਤੇ ਨੁਕਸਾਨ ਸੰਖੇਪ",
+        "expenseBreakdown": "ਖਰਚੇ ਦਾ ਵੇਰਵਾ",
+        "membershipGrowth": "ਮੈਂਬਰਸ਼ਿਪ ਵਾਧਾ"
+      }
+    },
+    "quickActions": {
+      "logExpense": "ਖਰਚਾ ਦਰਜ ਕਰੋ",
+      "adjustPricing": "ਕੀਮਤ ਯੋਜਨਾਵਾਂ ਵਿਵਸਥਿਤ ਕਰੋ",
+      "inviteMember": "ਮੈਂਬਰ ਸੱਦੋ",
+      "announcement": "ਐਲਾਨ",
+      "viewGrowthReport": "ਵਾਧਾ ਰਿਪੋਰਟ ਵੇਖੋ",
+      "toasts": {
+        "loggingExpense": "ਖਰਚਾ ਦਰਜ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+        "adjustingPricing": "ਮੈਂਬਰਸ਼ਿਪ ਕੀਮਤ ਯੋਜਨਾਵਾਂ ਵਿਵਸਥਿਤ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ",
+        "invitingMember": "ਮੈਂਬਰ ਸੱਦਿਆ ਜਾ ਰਿਹਾ ਹੈ",
+        "sendingAnnouncement": "ਐਲਾਨ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ",
+        "viewingGrowthReport": "ਵਾਧਾ ਰਿਪੋਰਟ ਵੇਖੀ ਜਾ ਰਹੀ ਹੈ"
+      }
+    }
+  },
+  "itHead": {
+    "pageTitle": "ਆਈਟੀ ਹੈੱਡ ਡੈਸ਼ਬੋਰਡ",
+    "pageDescription": "ਪਹੁੰਚ ਕੰਟਰੋਲ, ਸਮੱਸਿਆ ਹੱਲ, ਕਿਤਾਬਾਂ ਦੇ ਰਿਕਾਰਡ ਅਤੇ ਫੀਸ ਸਥਿਤੀ",
+    "stats": {
+      "activeMembers": "ਸਰਗਰਮ ਮੈਂਬਰ",
+      "openIssues": "ਬਕਾਇਆ ਸਮੱਸਿਆਵਾਂ",
+      "pendingPermissions": "ਬਕਾਇਆ ਅਨੁਮਤੀਆਂ",
+      "feesOutstanding": "ਬਕਾਇਆ ਫੀਸ",
+      "lateFinesOutstanding": "ਬਕਾਇਆ ਦੇਰੀ ਜੁਰਮਾਨਾ"
+    },
+    "accessControl": {
+      "title": "ਪਹੁੰਚ ਕੰਟਰੋਲ",
+      "status": {
+        "active": "ਸਰਗਰਮ",
+        "deactivated": "ਨਾ-ਸਰਗਰਮ"
+      },
+      "pendingPermission": "ਬੇਨਤੀ ਕੀਤੀ: {{permission}}",
+      "grantAccess": "ਪਹੁੰਚ ਦਿਓ",
+      "deactivate": "ਨਾ-ਸਰਗਰਮ ਕਰੋ",
+      "reactivate": "ਮੁੜ-ਸਰਗਰਮ ਕਰੋ",
+      "grantToast": "{{name}} ਨੂੰ ਪਹੁੰਚ ਦਿੱਤੀ ਜਾ ਰਹੀ ਹੈ",
+      "deactivateToast": "{{name}} ਨੂੰ ਨਾ-ਸਰਗਰਮ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "reactivateToast": "{{name}} ਨੂੰ ਮੁੜ-ਸਰਗਰਮ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "issueResolution": {
+      "title": "ਸਮੱਸਿਆ ਹੱਲ",
+      "categories": {
+        "technical": "ਤਕਨੀਕੀ",
+        "account": "ਖਾਤਾ",
+        "bookAccess": "ਕਿਤਾਬ ਪਹੁੰਚ",
+        "other": "ਹੋਰ"
+      },
+      "status": {
+        "open": "ਬਕਾਇਆ",
+        "resolved": "ਹੱਲ ਹੋ ਗਿਆ"
+      },
+      "from": "{{name}} ਵੱਲੋਂ ਰਿਪੋਰਟ ਕੀਤਾ ਗਿਆ",
+      "resolve": "ਹੱਲ ਕਰੋ",
+      "resolveToast": "{{name}} ਦੀ ਸਮੱਸਿਆ ਹੱਲ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    },
+    "bookRecords": {
+      "title": "ਕਿਤਾਬਾਂ ਦੇ ਰਿਕਾਰਡ",
+      "types": {
+        "lost": "ਗੁਆਚੀ",
+        "donated": "ਦਾਨ ਕੀਤੀ",
+        "purchased": "ਖਰੀਦੀ"
+      }
+    },
+    "feeStatus": {
+      "title": "ਫੀਸ ਸਥਿਤੀ",
+      "dueDate": "ਦੇਣ ਦੀ ਮਿਤੀ {{date}}",
+      "status": {
+        "paid": "ਅਦਾ ਕੀਤੀ",
+        "due": "ਬਕਾਇਆ",
+        "overdue": "ਮਿਆਦ ਲੰਘੀ"
+      }
+    },
+    "lateFines": {
+      "title": "ਦੇਰੀ ਵਾਪਸੀ ਜੁਰਮਾਨਾ",
+      "borrowedBy": "{{name}} ਵੱਲੋਂ ਉਧਾਰ ਲਈ ਗਈ",
+      "dueDate": "ਵਾਪਸੀ ਦੀ ਮਿਤੀ ਸੀ {{date}}",
+      "daysLate": "{{count}} ਦਿਨ ਦੇਰੀ",
+      "status": {
+        "paid": "ਅਦਾ ਕੀਤੀ",
+        "unpaid": "ਬਕਾਇਆ"
+      },
+      "sendReminder": "ਯਾਦ ਦਹਾਨੀ ਭੇਜੋ",
+      "reminderToast": "{{name}} ਨੂੰ ਜੁਰਮਾਨੇ ਦੀ ਯਾਦ ਦਹਾਨੀ ਭੇਜੀ ਜਾ ਰਹੀ ਹੈ"
+    },
+    "quickActions": {
+      "grantAccess": "ਪਹੁੰਚ ਦਿਓ",
+      "deactivateUser": "ਵਰਤੋਂਕਾਰ ਨਾ-ਸਰਗਰਮ ਕਰੋ",
+      "resolveIssue": "ਸਮੱਸਿਆ ਹੱਲ ਕਰੋ",
+      "logBookChange": "ਕਿਤਾਬ ਰਿਕਾਰਡ ਦਰਜ ਕਰੋ",
+      "toasts": {
+        "grantingAccess": "ਪਹੁੰਚ ਦਿੱਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "deactivatingUser": "ਵਰਤੋਂਕਾਰ ਨਾ-ਸਰਗਰਮ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+        "resolvingIssue": "ਸਮੱਸਿਆ ਹੱਲ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "loggingBookChange": "ਕਿਤਾਬ ਰਿਕਾਰਡ ਤਬਦੀਲੀ ਦਰਜ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+      }
+    }
+  },
+  "guardian": {
+    "pageTitle": "ਸਰਪ੍ਰਸਤ ਡੈਸ਼ਬੋਰਡ",
+    "pageDescription": "ਆਪਣੇ ਬੱਚਿਆਂ ਦੀ ਲਾਇਬ੍ਰੇਰੀ ਗਤੀਵਿਧੀ ਨੂੰ ਟਰੈਕ ਕਰੋ ਅਤੇ ਉਨ੍ਹਾਂ ਦੇ ਖਾਤਿਆਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ",
+    "stats": {
+      "linkedChildren": "ਜੁੜੇ ਹੋਏ ਬੱਚੇ",
+      "currentlyInLibrary": "ਇਸ ਵੇਲੇ ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ",
+      "booksBorrowed": "ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
+      "totalDues": "ਕੁੱਲ ਬਕਾਇਆ"
+    },
+    "presence": {
+      "title": "ਲਾਇਬ੍ਰੇਰੀ ਚੈੱਕ-ਇਨ / ਚੈੱਕ-ਆਊਟ",
+      "emptyTitle": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਬੱਚਾ ਨਹੀਂ ਜੋੜਿਆ ਗਿਆ",
+      "emptyDescription": "ਉਨ੍ਹਾਂ ਦੀ ਲਾਇਬ੍ਰੇਰੀ ਗਤੀਵਿਧੀ ਇੱਥੇ ਦੇਖਣ ਲਈ ਬੱਚੇ ਦੀ ਮੈਂਬਰਸ਼ਿਪ ਜੋੜੋ।",
+      "status": {
+        "inLibrary": "ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ",
+        "left": "ਜਾ ਚੁੱਕੇ"
+      },
+      "checkedInAt": "{{time}} ਵਜੇ ਚੈੱਕ-ਇਨ ਕੀਤਾ",
+      "leftAt": "{{time}} ਵਜੇ ਗਏ"
+    },
+    "borrowedBooks": {
+      "title": "ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
+      "emptyTitle": "ਕੋਈ ਕਿਤਾਬ ਉਧਾਰ ਨਹੀਂ ਲਈ ਗਈ",
+      "emptyDescription": "ਤੁਹਾਡੇ ਬੱਚਿਆਂ ਦੁਆਰਾ ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।",
+      "dueOn": "{{date}} ਨੂੰ ਵਾਪਸ ਕਰਨੀ ਹੈ",
+      "status": {
+        "onTime": "ਸਮੇਂ ਸਿਰ",
+        "dueSoon": "ਜਲਦੀ ਵਾਪਸ ਕਰਨੀ ਹੈ",
+        "overdue": "ਮਿਆਦ ਖਤਮ"
+      }
+    },
+    "subscription": {
+      "title": "ਮੈਂਬਰਸ਼ਿਪ ਅਤੇ ਜੁਰਮਾਨਾ",
+      "expiresOn": "{{date}} ਨੂੰ ਖਤਮ ਹੋ ਰਹੀ ਹੈ",
+      "fineOwed": "ਬਕਾਇਆ ਜੁਰਮਾਨਾ: {{amount}}",
+      "noFine": "ਕੋਈ ਬਕਾਇਆ ਜੁਰਮਾਨਾ ਨਹੀਂ",
+      "renew": "ਨਵੀਨੀਕਰਨ ਕਰੋ",
+      "payFine": "ਜੁਰਮਾਨਾ ਭਰੋ",
+      "renewToast": "{{name}} ਦੀ ਮੈਂਬਰਸ਼ਿਪ ਦਾ ਨਵੀਨੀਕਰਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "payFineToast": "{{name}} ਲਈ {{amount}} ਜੁਰਮਾਨਾ ਭਰਿਆ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "seatReservation": {
+      "title": "ਆਪਣੇ ਬੱਚੇ ਲਈ ਸੀਟ ਬੁੱਕ ਕਰੋ",
+      "selectChild": "ਬੱਚਾ ਚੁਣੋ",
+      "selectChildPlaceholder": "ਇੱਕ ਬੱਚਾ ਚੁਣੋ",
+      "selectPrompt": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਇੱਕ ਉਪਲਬਧ ਸੀਟ ਚੁਣੋ।",
+      "selected": "{{name}} ਲਈ ਸੀਟ {{seatId}} ਚੁਣੀ ਗਈ",
+      "confirmButton": "ਬੁਕਿੰਗ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "confirmToast": "{{name}} ਲਈ ਸੀਟ {{seatId}} ਬੁੱਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    },
+    "quickActions": {
+      "payAllFines": "ਸਾਰੇ ਜੁਰਮਾਨੇ ਭਰੋ",
+      "renewSubscription": "ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ ਕਰੋ",
+      "contactLibrarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
+      "toasts": {
+        "payingAllFines": "ਸਾਰੇ ਬਕਾਇਆ ਜੁਰਮਾਨੇ ਭਰੇ ਜਾ ਰਹੇ ਹਨ",
+        "renewingSubscription": "ਮੈਂਬਰਸ਼ਿਪ ਦਾ ਨਵੀਨੀਕਰਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+        "contactingLibrarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਨਾਲ ਸੰਪਰਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+      }
+    }
+  },
+  "dashboard": {
+    "welcomeBack": "ਵਾਪਸ ਸਵਾਗਤ ਹੈ, {{name}}",
+    "subtitle": "{{plan}} · ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ ਇਹ ਹੋ ਰਿਹਾ ਹੈ",
+    "membershipPlans": {
+      "premium": "ਪ੍ਰੀਮੀਅਮ ਮੈਂਬਰ",
+      "standard": "ਸਟੈਂਡਰਡ ਮੈਂਬਰ",
+      "basic": "ਬੇਸਿਕ ਮੈਂਬਰ"
+    },
+    "stats": {
+      "booksBorrowed": "ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
+      "booksReserved": "ਰਿਜ਼ਰਵ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
+      "seatBookings": "ਸੀਟ ਬੁਕਿੰਗਾਂ",
+      "readingPoints": "ਰੀਡਿੰਗ ਪੁਆਇੰਟ"
+    },
+    "booksDueSoon": {
+      "title": "ਜਲਦੀ ਵਾਪਸ ਕਰਨ ਵਾਲੀਆਂ ਕਿਤਾਬਾਂ",
+      "emptyTitle": "ਜਲਦੀ ਵਾਪਸ ਕਰਨ ਵਾਲਾ ਕੁਝ ਨਹੀਂ",
+      "emptyDescription": "ਤੁਸੀਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਅੱਪ ਟੂ ਡੇਟ ਹੋ।",
+      "due": "{{date}} ਤੱਕ ਵਾਪਸ ਕਰਨੀ ਹੈ · {{days}}"
+    },
+    "currentlyBorrowed": {
+      "title": "ਇਸ ਵੇਲੇ ਉਧਾਰ ਲਈਆਂ"
+    },
+    "readingProgress": {
+      "title": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",
+      "pagesOf": "{{totalPages}} ਵਿੱਚੋਂ {{pagesRead}} ਸਫ਼ੇ"
+    },
+    "monthlyChallenge": {
+      "title": "ਮਹੀਨਾਵਾਰ ਚੈਲੰਜ",
+      "booksOf": "{{target}} ਵਿੱਚੋਂ {{current}} ਕਿਤਾਬਾਂ"
+    },
+    "quickActions": {
+      "title": "ਤੁਰੰਤ ਕਾਰਵਾਈਆਂ",
+      "browseBooks": "ਕਿਤਾਬਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
+      "bookASeat": "ਸੀਟ ਬੁੱਕ ਕਰੋ",
+      "viewReservations": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ ਵੇਖੋ"
+    },
+    "notifications": {
+      "title": "ਹਾਲੀਆ ਸੂਚਨਾਵਾਂ",
+      "reservationReady": "\"{{book}}\" ਲਈ ਤੁਹਾਡੀ ਰਿਜ਼ਰਵੇਸ਼ਨ ਲੈਣ ਲਈ ਤਿਆਰ ਹੈ",
+      "dueInDays": "\"{{book}}\" {{count}} ਦਿਨਾਂ ਵਿੱਚ ਵਾਪਸ ਕਰਨੀ ਹੈ",
+      "achievementEarned": "ਤੁਸੀਂ \"{{achievement}}\" ਪ੍ਰਾਪਤੀ ਹਾਸਲ ਕੀਤੀ"
+    },
+    "upcomingEvents": {
+      "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ"
+    }
+  },
+  "librarianDashboard": {
+    "pageTitle": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਡੈਸ਼ਬੋਰਡ",
+    "pageDescription": "ਕੈਟਾਲਾਗ, ਉਧਾਰ ਅਤੇ ਜੁਰਮਾਨੇ ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ",
+    "stats": {
+      "booksBorrowedToday": "ਅੱਜ ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
+      "overdueBooks": "ਮਿਆਦ ਲੰਘੀਆਂ ਕਿਤਾਬਾਂ",
+      "pendingReservations": "ਬਕਾਇਆ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
+      "finesCollectedMtd": "ਇਕੱਠੇ ਕੀਤੇ ਜੁਰਮਾਨੇ (MTD)"
+    },
+    "overdueBooks": {
+      "title": "ਮਿਆਦ ਲੰਘੀਆਂ ਕਿਤਾਬਾਂ",
+      "emptyTitle": "ਕੋਈ ਮਿਆਦ ਲੰਘੀ ਕਿਤਾਬ ਨਹੀਂ",
+      "emptyDescription": "ਹਰ ਲੋਨ ਸਮੇਂ ਸਿਰ ਹੈ।",
+      "dueOn": "{{borrower}} · {{date}} ਤੱਕ ਵਾਪਸ ਕਰਨੀ ਸੀ",
+      "daysOverdue": "{{count}} ਦਿਨ ਮਿਆਦ ਲੰਘੀ",
+      "remind": "ਯਾਦ ਦਿਵਾਓ",
+      "remindToast": "{{name}} ਨੂੰ ਯਾਦ ਦਿਵਾਇਆ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "pendingReservations": {
+      "title": "ਬਕਾਇਆ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
+      "emptyTitle": "ਕਤਾਰ ਖਾਲੀ ਹੈ",
+      "emptyDescription": "ਇਸ ਵੇਲੇ ਕੋਈ ਰਿਜ਼ਰਵੇਸ਼ਨ ਉਡੀਕ ਨਹੀਂ ਕਰ ਰਹੀ।",
+      "position": "{{member}} · ਸਥਿਤੀ {{total}} ਵਿੱਚੋਂ {{position}}",
+      "notify": "ਸੂਚਿਤ ਕਰੋ",
+      "notifyToast": "{{name}} ਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "quickActions": {
+      "issueBook": "ਕਿਤਾਬ ਜਾਰੀ ਕਰੋ",
+      "returnBook": "ਕਿਤਾਬ ਵਾਪਸ ਕਰੋ",
+      "scanQr": "QR ਸਕੈਨ ਕਰੋ",
+      "toasts": {
+        "issuingBook": "ਕਿਤਾਬ ਜਾਰੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "returningBook": "ਕਿਤਾਬ ਵਾਪਸ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "scanningQr": "QR ਕੋਡ ਸਕੈਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+      }
+    }
+  },
+  "managerDashboard": {
+    "pageTitle": "ਮੈਨੇਜਰ ਡੈਸ਼ਬੋਰਡ",
+    "pageDescription": "ਸਮਾਗਮ, ਸੈਸ਼ਨ ਅਤੇ ਹਾਜ਼ਰੀ ਸੰਖੇਪ ਜਾਣਕਾਰੀ",
+    "stats": {
+      "upcomingEvents": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",
+      "attendeesThisMonth": "ਇਸ ਮਹੀਨੇ ਦੇ ਹਾਜ਼ਰੀਨ",
+      "avgAttendanceRate": "ਔਸਤ ਹਾਜ਼ਰੀ ਦਰ",
+      "activeReadingSessions": "ਸਰਗਰਮ ਰੀਡਿੰਗ ਸੈਸ਼ਨ"
+    },
+    "events": {
+      "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",
+      "emptyTitle": "ਕੋਈ ਸਮਾਗਮ ਤੈਅ ਨਹੀਂ",
+      "emptyDescription": "ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਬਣਾਓ।",
+      "attendingCount": "{{capacity}} ਵਿੱਚੋਂ {{attendees}} ਹਾਜ਼ਰ",
+      "managersAssigned_one": "{{count}} ਮੈਨੇਜਰ ਨਿਯੁਕਤ",
+      "managersAssigned_other": "{{count}} ਮੈਨੇਜਰ ਨਿਯੁਕਤ",
+      "manage": "ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
+      "manageToast": "\"{{title}}\" ਦਾ ਪ੍ਰਬੰਧਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+    },
+    "readingSessions": {
+      "title": "ਰੀਡਿੰਗ ਸੈਸ਼ਨ",
+      "emptyTitle": "ਕੋਈ ਸੈਸ਼ਨ ਤੈਅ ਨਹੀਂ",
+      "emptyDescription": "ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਬਣਾਓ।",
+      "ledBy": "{{date}} · {{facilitator}} ਵੱਲੋਂ ਸੰਚਾਲਿਤ",
+      "joined": "{{count}} ਸ਼ਾਮਲ ਹੋਏ"
+    },
+    "quickActions": {
+      "createEvent": "ਸਮਾਗਮ ਬਣਾਓ",
+      "recordAttendance": "ਹਾਜ਼ਰੀ ਦਰਜ ਕਰੋ",
+      "postUpdate": "ਅੱਪਡੇਟ ਪੋਸਟ ਕਰੋ",
+      "toasts": {
+        "creatingEvent": "ਸਮਾਗਮ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ",
+        "recordingAttendance": "ਹਾਜ਼ਰੀ ਦਰਜ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+        "postingUpdate": "ਕਮਿਊਨਿਟੀ ਅੱਪਡੇਟ ਪੋਸਟ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+      }
+    }
   },
   "placeholder": {
     "comingSoon": "ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ",
@@ -150,8 +550,14 @@
       "titleHighlight": "ਕੰਮ ਕਰਦਾ ਹੈ",
       "stepLabel": "ਪੜਾਅ {{step}}",
       "steps": {
-        "1": { "title": "ਰਜਿਸਟਰ ਕਰੋ", "description": "ਇੱਕ ਮਿੰਟ ਤੋਂ ਵੀ ਘੱਟ ਸਮੇਂ ਵਿੱਚ ਮੁਫ਼ਤ ਮੈਂਬਰਸ਼ਿਪ ਬਣਾਓ।" },
-        "2": { "title": "ਕਿਤਾਬਾਂ ਖੋਜੋ", "description": "ਸ਼੍ਰੇਣੀ, ਲੇਖਕ ਜਾਂ ਮੂਡ ਅਨੁਸਾਰ ਸਿਰਲੇਖ ਲੱਭੋ।" },
+        "1": {
+          "title": "ਰਜਿਸਟਰ ਕਰੋ",
+          "description": "ਇੱਕ ਮਿੰਟ ਤੋਂ ਵੀ ਘੱਟ ਸਮੇਂ ਵਿੱਚ ਮੁਫ਼ਤ ਮੈਂਬਰਸ਼ਿਪ ਬਣਾਓ।"
+        },
+        "2": {
+          "title": "ਕਿਤਾਬਾਂ ਖੋਜੋ",
+          "description": "ਸ਼੍ਰੇਣੀ, ਲੇਖਕ ਜਾਂ ਮੂਡ ਅਨੁਸਾਰ ਸਿਰਲੇਖ ਲੱਭੋ।"
+        },
         "3": {
           "title": "ਉਧਾਰ / ਰਿਜ਼ਰਵ ਕਰੋ",
           "description": "ਇੱਕ ਕਾਪੀ ਲਓ ਜਾਂ ਪਹਿਲਾਂ ਤੋਂ ਜਾਰੀ ਕੀਤੀ ਹੋਈ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ।"
@@ -327,6 +733,390 @@
       "website": "ਵੈੱਬਸਾਈਟ",
       "communityForum": "ਕਮਿਊਨਿਟੀ ਫੋਰਮ",
       "newsletter": "ਨਿਊਜ਼ਲੈਟਰ"
+    }
+  },
+  "pricing": {
+    "hero": {
+      "heading": "ਹਰ ਲਾਇਬ੍ਰੇਰੀ ਲਈ ਸਧਾਰਨ ਕੀਮਤ",
+      "subtitle": "ਆਪਣੀ ਸੰਸਥਾ ਲਈ ਸਭ ਤੋਂ ਢੁਕਵੀਂ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਚੁਣੋ। ਛੋਟੀ ਮਿਆਦ ਦੀ ਯੋਜਨਾ ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ ਜਾਂ ਲੰਬੇ ਸਮੇਂ ਦੀਆਂ ਵਚਨਬੱਧਤਾਵਾਂ ਨਾਲ ਵਧੇਰੇ ਬਚਤ ਕਰੋ।",
+      "badges": {
+        "noHiddenCharges": "ਕੋਈ ਲੁਕਵੇਂ ਖਰਚੇ ਨਹੀਂ",
+        "cancelAnytime": "ਕਿਸੇ ਵੀ ਸਮੇਂ ਰੱਦ ਕਰੋ",
+        "educationalDiscounts": "ਵਿਦਿਅਕ ਛੋਟਾਂ ਉਪਲਬਧ"
+      }
+    },
+    "toggle": {
+      "ariaLabel": "ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਮਿਆਦ",
+      "save": "{{percent}}% ਬਚਾਓ",
+      "noDiscount": "ਕੋਈ ਛੋਟ ਨਹੀਂ"
+    },
+    "durations": {
+      "1m": {
+        "label": "1 ਮਹੀਨਾ",
+        "suitableFor": "ਵਿਦਿਆਰਥੀਆਂ ਅਤੇ ਥੋੜ੍ਹੇ ਸਮੇਂ ਦੀ ਵਰਤੋਂ ਲਈ",
+        "cta": "ਹੁਣੇ ਸ਼ੁਰੂ ਕਰੋ"
+      },
+      "3m": {
+        "label": "3 ਮਹੀਨੇ",
+        "suitableFor": "ਬਿਨਾਂ ਰੁਕਾਵਟ ਲਾਇਬ੍ਰੇਰੀ ਪਹੁੰਚ ਨਾਲ ਇੱਕ ਪੂਰਾ ਸਮੈਸਟਰ",
+        "cta": "ਯੋਜਨਾ ਚੁਣੋ"
+      },
+      "6m": {
+        "label": "6 ਮਹੀਨੇ",
+        "suitableFor": "ਇੱਕ ਪੂਰਾ ਅਕਾਦਮਿਕ ਸੈਸ਼ਨ",
+        "cta": "ਸ਼ੁਰੂ ਕਰੋ"
+      },
+      "12m": {
+        "label": "12 ਮਹੀਨੇ",
+        "suitableFor": "ਸੰਸਥਾਵਾਂ ਅਤੇ ਪਾਵਰ ਯੂਜ਼ਰਾਂ ਲਈ ਸਾਲ ਭਰ ਦੀ ਪਹੁੰਚ",
+        "cta": "ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ"
+      }
+    },
+    "perMonth": "ਪ੍ਰਤੀ ਮਹੀਨਾ",
+    "billedEvery": "ਹਰ {{months}} ਮਹੀਨਿਆਂ ਬਾਅਦ ਬਿੱਲ ਕੀਤਾ ਜਾਂਦਾ ਹੈ",
+    "badges": {
+      "mostPopular": "ਸਭ ਤੋਂ ਪ੍ਰਸਿੱਧ",
+      "bestValue": "ਸਭ ਤੋਂ ਵਧੀਆ ਮੁੱਲ"
+    },
+    "coreFeatures": {
+      "unlimitedBooks": "ਅਸੀਮਿਤ ਕਿਤਾਬਾਂ",
+      "unlimitedMembers": "ਅਸੀਮਿਤ ਮੈਂਬਰ",
+      "qrBorrowing": "QR ਉਧਾਰ",
+      "seatReservation": "ਸੀਟ ਰਿਜ਼ਰਵੇਸ਼ਨ",
+      "aiLibrarian": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
+      "readingChallenges": "ਰੀਡਿੰਗ ਚੈਲੰਜ",
+      "events": "ਸਮਾਗਮ",
+      "emailNotifications": "ਈਮੇਲ ਸੂਚਨਾਵਾਂ",
+      "basicAnalytics": "ਬੇਸਿਕ ਐਨਾਲਿਟਿਕਸ"
+    },
+    "extraFeatures": {
+      "prioritySupport": "ਤਰਜੀਹੀ ਸਹਾਇਤਾ",
+      "earlyAccess": "ਨਵੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਤੱਕ ਜਲਦੀ ਪਹੁੰਚ",
+      "freeOnboarding": "ਮੁਫ਼ਤ ਆਨਬੋਰਡਿੰਗ"
+    },
+    "included": {
+      "heading": "ਹਰ ਯੋਜਨਾ ਵਿੱਚ, ਤੁਹਾਨੂੰ ਲੋੜੀਂਦਾ ਸਭ ਕੁਝ",
+      "subheading": "ਪੱਧਰਾਂ ਦੀ ਤੁਲਨਾ ਕਰਨ ਦੀ ਬਜਾਏ, ਹਰ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਵਿੱਚ ਪਹਿਲੇ ਦਿਨ ਤੋਂ ਹੀ ਪੂਰਾ ਫੀਚਰ ਸੈੱਟ ਸ਼ਾਮਲ ਹੁੰਦਾ ਹੈ।",
+      "items": {
+        "bookManagement": {
+          "title": "ਕਿਤਾਬ ਪ੍ਰਬੰਧਨ",
+          "description": "ਆਪਣੀ ਲਾਇਬ੍ਰੇਰੀ ਦੀ ਹਰ ਕਿਤਾਬ ਨੂੰ ਇੱਕੋ ਥਾਂ ਤੋਂ ਸੂਚੀਬੱਧ, ਜਾਰੀ ਅਤੇ ਟਰੈਕ ਕਰੋ।"
+        },
+        "memberManagement": {
+          "title": "ਮੈਂਬਰ ਪ੍ਰਬੰਧਨ",
+          "description": "ਵਿਦਿਆਰਥੀ ਅਤੇ ਸਟਾਫ ਮੈਂਬਰਸ਼ਿਪ ਨੂੰ ਆਸਾਨੀ ਨਾਲ ਪ੍ਰਬੰਧਿਤ ਕਰੋ।"
+        },
+        "qrBorrowing": {
+          "title": "QR ਕੋਡ ਉਧਾਰ",
+          "description": "ਸਕਿੰਟਾਂ ਵਿੱਚ ਕਿਤਾਬ ਉਧਾਰ ਲੈਣ ਜਾਂ ਵਾਪਸ ਕਰਨ ਲਈ QR ਕੋਡ ਸਕੈਨ ਕਰੋ।"
+        },
+        "aiLibrarian": {
+          "title": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
+          "description": "ਇੱਕ ਗੱਲਬਾਤ ਕਰਨ ਵਾਲੇ ਸਹਾਇਕ ਤੋਂ ਨਿੱਜੀ ਕਿਤਾਬ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ।"
+        },
+        "seatReservation": {
+          "title": "ਸਮਾਰਟ ਸੀਟ ਰਿਜ਼ਰਵੇਸ਼ਨ",
+          "description": "ਪਹਿਲਾਂ ਤੋਂ ਪੜ੍ਹਾਈ ਦੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰੋ ਅਤੇ ਲਾਈਵ ਉਪਲਬਧਤਾ ਵੇਖੋ।"
+        },
+        "eventManagement": {
+          "title": "ਸਮਾਗਮ ਪ੍ਰਬੰਧਨ",
+          "description": "ਰੀਡਿੰਗ ਕਲੱਬਾਂ, ਵਰਕਸ਼ਾਪਾਂ ਅਤੇ ਲਾਇਬ੍ਰੇਰੀ ਸਮਾਗਮਾਂ ਦੀ ਯੋਜਨਾ ਬਣਾਓ ਅਤੇ ਪ੍ਰਬੰਧਿਤ ਕਰੋ।"
+        },
+        "readingChallenges": {
+          "title": "ਰੀਡਿੰਗ ਚੈਲੰਜ",
+          "description": "ਪ੍ਰਾਪਤੀਆਂ ਅਤੇ ਪੜ੍ਹਨ ਦੇ ਟੀਚਿਆਂ ਨਾਲ ਮੈਂਬਰਾਂ ਨੂੰ ਰੁਝੇ ਰੱਖੋ।"
+        },
+        "notifications": {
+          "title": "ਸੂਚਨਾਵਾਂ",
+          "description": "ਰੀਅਲ-ਟਾਈਮ ਈਮੇਲ ਅਤੇ ਇਨ-ਐਪ ਅਲਰਟਸ ਨਾਲ ਸਭ ਨੂੰ ਸੂਚਿਤ ਰੱਖੋ।"
+        },
+        "analytics": {
+          "title": "ਰਿਪੋਰਟਾਂ ਅਤੇ ਐਨਾਲਿਟਿਕਸ",
+          "description": "ਵਰਤੋਂ ਦੇ ਰੁਝਾਨ, ਪ੍ਰਸਿੱਧ ਸਿਰਲੇਖ ਅਤੇ ਮੈਂਬਰ ਗਤੀਵਿਧੀ ਨੂੰ ਟਰੈਕ ਕਰੋ।"
+        },
+        "multiDevice": {
+          "title": "ਮਲਟੀ-ਡਿਵਾਈਸ ਸਹਿਯੋਗ",
+          "description": "ਡੈਸਕਟਾਪ, ਟੈਬਲੇਟ ਅਤੇ ਮੋਬਾਈਲ 'ਤੇ ਬਿਨਾਂ ਰੁਕਾਵਟ ਕੰਮ ਕਰਦਾ ਹੈ।"
+        },
+        "secureAuth": {
+          "title": "ਸੁਰੱਖਿਅਤ ਪ੍ਰਮਾਣੀਕਰਨ",
+          "description": "ਭੂਮਿਕਾ-ਆਧਾਰਿਤ ਪਹੁੰਚ ਮੈਂਬਰ ਅਤੇ ਐਡਮਿਨ ਡਾਟੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਦੀ ਹੈ।"
+        },
+        "responsiveDashboard": {
+          "title": "ਰਿਸਪੌਂਸਿਵ ਡੈਸ਼ਬੋਰਡ",
+          "description": "ਕਿਸੇ ਵੀ ਸਕ੍ਰੀਨ ਆਕਾਰ ਦੇ ਅਨੁਕੂਲ ਹੋਣ ਵਾਲਾ ਸਾਫ਼, ਤੇਜ਼ ਡੈਸ਼ਬੋਰਡ।"
+        }
+      }
+    },
+    "whyLonger": {
+      "heading": "ਲੰਬੀ ਯੋਜਨਾ ਕਿਉਂ ਚੁਣੀਏ?",
+      "subheading": "ਹਰ ਯੋਜਨਾ ਇੱਕੋ ਜਿਹੀਆਂ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਅਨਲੌਕ ਕਰਦੀ ਹੈ — ਲੰਬੀ ਵਚਨਬੱਧਤਾ ਦਾ ਮਤਲਬ ਸਿਰਫ਼ ਵਧੇਰੇ ਬਚਤ ਅਤੇ ਘੱਟ ਚਿੰਤਾ ਹੈ।",
+      "items": {
+        "1m": "ਪਲੇਟਫਾਰਮ ਅਜ਼ਮਾਉਣ ਲਈ ਸੰਪੂਰਨ।",
+        "3m": "ਸਮੈਸਟਰ ਵਰਤੋਂ ਲਈ ਵਧੀਆ।",
+        "6m": "ਅਕਾਦਮਿਕ ਸੈਸ਼ਨਾਂ ਲਈ ਸਭ ਤੋਂ ਵਧੀਆ।",
+        "12m": "ਬਿਨਾਂ ਰੁਕਾਵਟ ਪਹੁੰਚ ਨਾਲ ਵੱਧ ਤੋਂ ਵੱਧ ਬਚਤ।"
+      }
+    },
+    "faq": {
+      "heading": "ਅਕਸਰ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ",
+      "items": {
+        "upgrade": {
+          "question": "ਕੀ ਮੈਂ ਬਾਅਦ ਵਿੱਚ ਆਪਣੀ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਅੱਪਗ੍ਰੇਡ ਕਰ ਸਕਦਾ ਹਾਂ?",
+          "answer": "ਹਾਂ, ਤੁਸੀਂ ਕਿਸੇ ਵੀ ਸਮੇਂ ਲੰਬੀ ਯੋਜਨਾ ਵਿੱਚ ਜਾ ਸਕਦੇ ਹੋ ਅਤੇ ਅਸੀਂ ਫਰਕ ਨੂੰ ਅਨੁਪਾਤਕ ਤੌਰ 'ਤੇ ਐਡਜਸਟ ਕਰਾਂਗੇ।"
+        },
+        "cancel": {
+          "question": "ਕੀ ਮੈਂ ਕਿਸੇ ਵੀ ਸਮੇਂ ਰੱਦ ਕਰ ਸਕਦਾ ਹਾਂ?",
+          "answer": "ਬਿਲਕੁਲ — ਕੋਈ ਲੰਬੇ ਸਮੇਂ ਦੇ ਇਕਰਾਰਨਾਮੇ ਜਾਂ ਰੱਦ ਕਰਨ ਦੀਆਂ ਫੀਸਾਂ ਨਹੀਂ ਹਨ।"
+        },
+        "discount": {
+          "question": "ਕੀ ਤੁਸੀਂ ਵਿਦਿਅਕ ਛੋਟਾਂ ਦਿੰਦੇ ਹੋ?",
+          "answer": "ਹਾਂ, ਮਾਨਤਾ ਪ੍ਰਾਪਤ ਕਾਲਜ ਅਤੇ ਯੂਨੀਵਰਸਿਟੀਆਂ ਯੋਜਨਾ ਦੀ ਬਚਤ ਤੋਂ ਇਲਾਵਾ ਵਾਧੂ ਛੋਟ ਦੇ ਯੋਗ ਹਨ।"
+        },
+        "support": {
+          "question": "ਕੀ ਗਾਹਕ ਸਹਾਇਤਾ ਸ਼ਾਮਲ ਹੈ?",
+          "answer": "ਹਾਂ, ਸਾਰੀਆਂ ਯੋਜਨਾਵਾਂ ਵਿੱਚ ਸਹਾਇਤਾ ਸ਼ਾਮਲ ਹੈ, ਅਤੇ 6-ਮਹੀਨੇ ਅਤੇ 12-ਮਹੀਨੇ ਦੀਆਂ ਯੋਜਨਾਵਾਂ ਵਿੱਚ ਤਰਜੀਹੀ ਸਹਾਇਤਾ ਸ਼ਾਮਲ ਹੈ।"
+        },
+        "switchLonger": {
+          "question": "ਕੀ ਮੈਂ ਬਾਅਦ ਵਿੱਚ ਲੰਬੀ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਵਿੱਚ ਬਦਲ ਸਕਦਾ ਹਾਂ?",
+          "answer": "ਹਾਂ, ਤੁਸੀਂ ਜਦੋਂ ਵੀ ਤਿਆਰ ਹੋਵੋ ਲੰਬੀ ਯੋਜਨਾ ਵਿੱਚ ਬਦਲ ਸਕਦੇ ਹੋ, ਅਤੇ ਤੁਹਾਡਾ ਬਾਕੀ ਸਮਾਂ ਕ੍ਰੈਡਿਟ ਕੀਤਾ ਜਾਵੇਗਾ।"
+        },
+        "freeTrial": {
+          "question": "ਕੀ ਕੋਈ ਮੁਫ਼ਤ ਟਰਾਇਲ ਹੈ?",
+          "answer": "ਇਹ ਪ੍ਰੀਵਿਊ ਤੁਹਾਨੂੰ ਯੋਜਨਾ ਚੁਣਨ ਤੋਂ ਪਹਿਲਾਂ ਹਰ ਵਿਸ਼ੇਸ਼ਤਾ ਦੀ ਪੜਚੋਲ ਕਰਨ ਦਿੰਦਾ ਹੈ — ਕਿਸੇ ਕ੍ਰੈਡਿਟ ਕਾਰਡ ਦੀ ਲੋੜ ਨਹੀਂ।"
+        }
+      }
+    },
+    "cta": {
+      "heading": "ਆਪਣੀ ਲਾਇਬ੍ਰੇਰੀ ਨੂੰ ਆਧੁਨਿਕ ਬਣਾਉਣ ਲਈ ਤਿਆਰ ਹੋ?",
+      "subheading": "ਅੱਜ ਹੀ ਆਪਣੀ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਸ਼ੁਰੂ ਕਰੋ ਅਤੇ ਆਪਣੀ ਲਾਇਬ੍ਰੇਰੀ ਦੇ ਕੰਮ ਕਰਨ ਦੇ ਤਰੀਕੇ ਨੂੰ ਬਦਲੋ।",
+      "primaryButton": "ਸ਼ੁਰੂ ਕਰੋ",
+      "secondaryButton": "ਸੇਲਜ਼ ਨਾਲ ਸੰਪਰਕ ਕਰੋ"
+    }
+  },
+  "books": {
+    "pageTitle": "ਕਿਤਾਬਾਂ",
+    "pageDescription": "ਲਾਇਬ੍ਰੇਰੀ ਕੈਟਾਲਾਗ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
+    "filters": {
+      "searchPlaceholder": "ਸਿਰਲੇਖ ਜਾਂ ਲੇਖਕ ਦੁਆਰਾ ਖੋਜੋ…",
+      "searchAriaLabel": "ਕਿਤਾਬਾਂ ਖੋਜੋ",
+      "categoryAriaLabel": "ਸ਼੍ਰੇਣੀ ਦੁਆਰਾ ਫਿਲਟਰ ਕਰੋ",
+      "allCategories": "ਸਭ"
+    },
+    "status": {
+      "available": "ਉਪਲਬਧ",
+      "checkedOut": "ਜਾਰੀ ਕੀਤੀ ਹੋਈ"
+    },
+    "empty": {
+      "title": "ਕੋਈ ਕਿਤਾਬ ਨਹੀਂ ਮਿਲੀ",
+      "description": "ਕੋਈ ਵੱਖਰਾ ਖੋਜ ਸ਼ਬਦ ਜਾਂ ਸ਼੍ਰੇਣੀ ਅਜ਼ਮਾਓ।"
+    },
+    "details": {
+      "notFound": {
+        "title": "ਕਿਤਾਬ ਨਹੀਂ ਮਿਲੀ",
+        "description": "ਇਹ ਕਿਤਾਬ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਹਟਾਈ ਜਾ ਚੁੱਕੀ ਹੋ ਸਕਦੀ ਹੈ।"
+      },
+      "backToBooks": "ਕਿਤਾਬਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+      "copiesAvailable": "{{total}} ਵਿੱਚੋਂ {{available}} ਕਾਪੀਆਂ ਉਪਲਬਧ",
+      "reserveButton": "ਇਹ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
+      "reservingToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    }
+  },
+  "events": {
+    "pageTitle": "ਸਮਾਗਮ",
+    "pageDescription": "ਆਉਣ ਵਾਲੇ ਲਾਇਬ੍ਰੇਰੀ ਸਮਾਗਮ ਅਤੇ ਕਮਿਊਨਿਟੀ ਪ੍ਰੋਗਰਾਮ",
+    "stats": {
+      "eventsThisMonth": "ਇਸ ਮਹੀਨੇ ਦੇ ਸਮਾਗਮ",
+      "totalAttendees": "ਕੁੱਲ ਹਾਜ਼ਰੀਨ",
+      "avgAttendanceRate": "ਔਸਤ ਹਾਜ਼ਰੀ ਦਰ"
+    },
+    "details": {
+      "defaultTitle": "ਸਮਾਗਮ ਵੇਰਵੇ",
+      "attending": "{{capacity}} ਵਿੱਚੋਂ {{attendees}} ਹਾਜ਼ਰ",
+      "registrationTitle": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
+      "registered": "ਤੁਸੀਂ ਰਜਿਸਟਰ ਹੋ ਚੁੱਕੇ ਹੋ",
+      "notRegistered": "ਰਜਿਸਟਰ ਨਹੀਂ ਹੋਏ",
+      "register": "ਰਜਿਸਟਰ ਕਰੋ",
+      "cancelRegistration": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਰੱਦ ਕਰੋ",
+      "toasts": {
+        "registering": "ਰਜਿਸਟਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+        "cancellingRegistration": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+      },
+      "managerAssignmentsTitle": "ਮੈਨੇਜਰ ਨਿਯੁਕਤੀਆਂ",
+      "noManagersAssigned": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਮੈਨੇਜਰ ਨਿਯੁਕਤ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।"
+    }
+  },
+  "reservations": {
+    "pageTitle": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
+    "pageDescription": "ਆਪਣੀਆਂ ਕਿਤਾਬ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ ਅਤੇ ਕਤਾਰ ਸਥਿਤੀ ਟਰੈਕ ਕਰੋ",
+    "current": {
+      "heading": "ਮੌਜੂਦਾ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
+      "emptyTitle": "ਕੋਈ ਸਰਗਰਮ ਰਿਜ਼ਰਵੇਸ਼ਨ ਨਹੀਂ",
+      "emptyDescription": "ਇੱਥੇ ਵੇਖਣ ਲਈ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਇੱਕ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ।"
+    },
+    "queue": {
+      "heading": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਕਤਾਰ",
+      "emptyTitle": "ਤੁਸੀਂ ਕਿਸੇ ਚੀਜ਼ ਦੀ ਉਡੀਕ ਨਹੀਂ ਕਰ ਰਹੇ",
+      "emptyDescription": "ਜਦੋਂ ਤੁਸੀਂ ਕਿਸੇ ਕਤਾਰ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋਗੇ ਤਾਂ ਤੁਸੀਂ ਇੱਥੇ ਦਿਖਾਈ ਦਿਓਗੇ।",
+      "entry": "— ਸਥਿਤੀ {{total}} ਵਿੱਚੋਂ {{position}}, ਅਨੁਮਾਨਿਤ ਉਡੀਕ {{wait}}"
+    },
+    "status": {
+      "ready": "ਲੈਣ ਲਈ ਤਿਆਰ",
+      "waiting": "ਕਤਾਰ ਵਿੱਚ ਉਡੀਕ ਕਰ ਰਹੇ ਹੋ",
+      "waitingWithPosition": "ਕਤਾਰ ਵਿੱਚ ਉਡੀਕ ਕਰ ਰਹੇ ਹੋ · #{{position}}",
+      "expired": "ਮਿਆਦ ਖਤਮ"
+    },
+    "actions": {
+      "cancel": "ਰੱਦ ਕਰੋ"
+    },
+    "cancelDialog": {
+      "title": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਕਰਨੀ ਹੈ?",
+      "description": "ਇਸ ਨਾਲ \"{{book}}\" ਲਈ ਤੁਹਾਡੀ ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਹੋ ਜਾਵੇਗੀ।",
+      "confirmLabel": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਕਰੋ"
+    },
+    "cancelToast": "\"{{book}}\" ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+  },
+  "seatBooking": {
+    "pageTitle": "ਸੀਟ ਬੁਕਿੰਗ",
+    "pageDescription": "ਇੱਕ ਸ਼ਾਂਤ ਸਟੱਡੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰੋ",
+    "confirmToast": "ਸੀਟ {{seatId}} ਬੁੱਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+    "bookingSummary": {
+      "title": "ਬੁਕਿੰਗ ਸੰਖੇਪ",
+      "selected": "ਸੀਟ {{seatId}} ਅੱਜ ਲਈ ਚੁਣੀ ਗਈ",
+      "selectPrompt": "ਜਾਰੀ ਰੱਖਣ ਲਈ ਇੱਕ ਉਪਲਬਧ ਸੀਟ ਚੁਣੋ।",
+      "confirmButton": "ਬੁਕਿੰਗ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ"
+    }
+  },
+  "readingProgress": {
+    "pageTitle": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",
+    "pageDescription": "ਸਾਲ ਭਰ ਦੌਰਾਨ ਤੁਹਾਡੀ ਪੜ੍ਹਨ ਦੀ ਗਤੀਵਿਧੀ",
+    "readingGoal": {
+      "title": "{{year}} ਦਾ ਰੀਡਿੰਗ ਟੀਚਾ",
+      "booksOf": "{{target}} ਵਿੱਚੋਂ {{current}} ਕਿਤਾਬਾਂ"
+    },
+    "readingStreak": {
+      "title": "ਰੀਡਿੰਗ ਸਟ੍ਰੀਕ",
+      "currentDays_one": "{{count}} ਦਿਨ",
+      "currentDays_other": "{{count}} ਦਿਨ",
+      "longest_one": "ਸਭ ਤੋਂ ਲੰਬੀ ਸਟ੍ਰੀਕ: {{count}} ਦਿਨ",
+      "longest_other": "ਸਭ ਤੋਂ ਲੰਬੀ ਸਟ੍ਰੀਕ: {{count}} ਦਿਨ"
+    },
+    "lists": {
+      "currentlyReading": {
+        "title": "ਇਸ ਵੇਲੇ ਪੜ੍ਹ ਰਹੇ ਹੋ",
+        "emptyDescription": "ਇਸਨੂੰ ਇੱਥੇ ਟਰੈਕ ਕਰਨ ਲਈ ਇੱਕ ਕਿਤਾਬ ਸ਼ੁਰੂ ਕਰੋ।"
+      },
+      "completed": {
+        "title": "ਪੂਰੀਆਂ ਹੋਈਆਂ",
+        "emptyDescription": "ਜੋ ਕਿਤਾਬਾਂ ਤੁਸੀਂ ਪੂਰੀਆਂ ਕਰੋਗੇ ਉਹ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।"
+      },
+      "wantToRead": {
+        "title": "ਪੜ੍ਹਨ ਦੀ ਇੱਛਾ",
+        "emptyDescription": "ਜੋ ਕਿਤਾਬਾਂ ਤੁਸੀਂ ਅੱਗੇ ਪੜ੍ਹਨ ਦੀ ਯੋਜਨਾ ਬਣਾ ਰਹੇ ਹੋ ਉਹ ਸੰਭਾਲੋ।"
+      }
+    },
+    "emptyState": {
+      "title": "ਹਾਲੇ ਇੱਥੇ ਕੁਝ ਨਹੀਂ"
+    },
+    "byAuthor": "{{author}} ਦੁਆਰਾ"
+  },
+  "leaderboard": {
+    "pageTitle": "ਲੀਡਰਬੋਰਡ",
+    "pageDescription": "ਇਸ ਮਹੀਨੇ ਕਮਿਊਨਿਟੀ ਦੇ ਟਾਪ ਪਾਠਕ",
+    "table": {
+      "rank": "ਰੈਂਕ",
+      "reader": "ਪਾਠਕ",
+      "points": "ਪੁਆਇੰਟ",
+      "badges": "ਬੈਜ",
+      "hoursRead": "ਪੜ੍ਹਨ ਦੇ ਘੰਟੇ"
+    },
+    "hoursSuffix": "{{hours}} ਘੰਟੇ"
+  },
+  "reviews": {
+    "pageTitle": "ਕਿਤਾਬ ਸਮੀਖਿਆਵਾਂ",
+    "byAuthor": "{{author}} ਦੁਆਰਾ",
+    "writeReview": "ਸਮੀਖਿਆ ਲਿਖੋ",
+    "writeReviewDisabledHint": "ਸਮੀਖਿਆਵਾਂ ਹਾਲੇ ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਖੁੱਲ੍ਹੀਆਂ ਨਹੀਂ ਹਨ",
+    "commentsHeading": "ਟਿੱਪਣੀਆਂ",
+    "summary": {
+      "totalReviews_one": "{{count}} ਸਮੀਖਿਆ",
+      "totalReviews_other": "{{count}} ਸਮੀਖਿਆਵਾਂ",
+      "starsLabel_one": "{{count}} ਸਟਾਰ",
+      "starsLabel_other": "{{count}} ਸਟਾਰ"
+    }
+  },
+  "notifications": {
+    "pageTitle": "ਸੂਚਨਾਵਾਂ",
+    "unreadBadge_one": "{{count}} ਨਾ ਪੜ੍ਹੀ ਹੋਈ",
+    "unreadBadge_other": "{{count}} ਨਾ ਪੜ੍ਹੀਆਂ ਹੋਈਆਂ",
+    "filterAriaLabel": "ਸੂਚਨਾਵਾਂ ਫਿਲਟਰ ਕਰੋ",
+    "filters": {
+      "all": "ਸਭ",
+      "unread": "ਨਾ ਪੜ੍ਹੀਆਂ ਹੋਈਆਂ"
+    },
+    "empty": {
+      "title": "ਇੱਥੇ ਵੇਖਣ ਲਈ ਕੁਝ ਨਹੀਂ",
+      "description": "ਤੁਸੀਂ ਸੂਚਨਾਵਾਂ 'ਤੇ ਪੂਰੀ ਤਰ੍ਹਾਂ ਅੱਪ ਟੂ ਡੇਟ ਹੋ।"
+    },
+    "titles": {
+      "bookDue": "ਕਿਤਾਬ ਜਲਦੀ ਵਾਪਸ ਕਰਨੀ ਹੈ",
+      "reservationReady": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਤਿਆਰ",
+      "newArrival": "ਨਵੀਂ ਆਮਦ",
+      "achievementUnlocked": "ਪ੍ਰਾਪਤੀ ਅਨਲੌਕ ਹੋਈ",
+      "membershipRenewal": "ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ"
+    },
+    "plans": {
+      "premium": "ਪ੍ਰੀਮੀਅਮ",
+      "standard": "ਸਟੈਂਡਰਡ",
+      "basic": "ਬੇਸਿਕ"
+    },
+    "messages": {
+      "dueInDays_one": "\"{{book}}\" {{count}} ਦਿਨ ਵਿੱਚ ਵਾਪਸ ਕਰਨੀ ਹੈ",
+      "dueInDays_other": "\"{{book}}\" {{count}} ਦਿਨਾਂ ਵਿੱਚ ਵਾਪਸ ਕਰਨੀ ਹੈ",
+      "reservationReady": "\"{{book}}\" ਲੈਣ ਲਈ ਤਿਆਰ ਹੈ",
+      "newBookAdded": "\"{{book}}\" ਨੂੰ {{category}} ਸੰਗ੍ਰਹਿ ਵਿੱਚ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ ਹੈ",
+      "achievementEarned_one": "ਇਸ ਸਾਲ {{count}} ਕਿਤਾਬ ਪੜ੍ਹਨ ਲਈ ਤੁਸੀਂ \"{{achievement}}\" ਬੈਜ ਹਾਸਲ ਕੀਤਾ",
+      "achievementEarned_other": "ਇਸ ਸਾਲ {{count}} ਕਿਤਾਬਾਂ ਪੜ੍ਹਨ ਲਈ ਤੁਸੀਂ \"{{achievement}}\" ਬੈਜ ਹਾਸਲ ਕੀਤਾ",
+      "membershipRenewsInDays_one": "ਤੁਹਾਡੀ {{plan}} ਮੈਂਬਰਸ਼ਿਪ {{count}} ਦਿਨ ਵਿੱਚ ਨਵਿਆਈ ਜਾਵੇਗੀ",
+      "membershipRenewsInDays_other": "ਤੁਹਾਡੀ {{plan}} ਮੈਂਬਰਸ਼ਿਪ {{count}} ਦਿਨਾਂ ਵਿੱਚ ਨਵਿਆਈ ਜਾਵੇਗੀ"
+    }
+  },
+  "profile": {
+    "editProfile": "ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕਰੋ",
+    "editProfileToast": "ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ ਸੰਪਾਦਿਤ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
+    "stats": {
+      "booksRead": "ਪੜ੍ਹੀਆਂ ਕਿਤਾਬਾਂ",
+      "pagesRead": "ਪੜ੍ਹੇ ਸਫ਼ੇ",
+      "hoursRead": "ਪੜ੍ਹਨ ਦੇ ਘੰਟੇ"
+    },
+    "achievements": {
+      "title": "ਪ੍ਰਾਪਤੀਆਂ",
+      "items": {
+        "firstBook": {
+          "label": "ਪਹਿਲੀ ਕਿਤਾਬ",
+          "description": "ਆਪਣੀ ਪਹਿਲੀ ਕਿਤਾਬ ਉਧਾਰ ਲਓ"
+        },
+        "bookWorm": {
+          "label": "ਬੁੱਕ ਵਰਮ",
+          "description": "ਇੱਕ ਸਾਲ ਵਿੱਚ 10 ਕਿਤਾਬਾਂ ਪੜ੍ਹੋ"
+        },
+        "topReader": {
+          "label": "ਟਾਪ ਰੀਡਰ",
+          "description": "ਮਹੀਨਾਵਾਰ ਲੀਡਰਬੋਰਡ ਦੇ ਸਿਖਰ 'ਤੇ ਪਹੁੰਚੋ"
+        }
+      }
+    },
+    "currentReading": {
+      "title": "ਇਸ ਵੇਲੇ ਪੜ੍ਹ ਰਹੇ ਹੋ",
+      "by": "{{author}} ਦੁਆਰਾ"
+    },
+    "borrowHistory": {
+      "title": "ਉਧਾਰ ਇਤਿਹਾਸ",
+      "columns": {
+        "title": "ਸਿਰਲੇਖ",
+        "borrowedOn": "ਉਧਾਰ ਲਿਆ ਗਿਆ",
+        "returnedOn": "ਵਾਪਸ ਕੀਤਾ ਗਿਆ"
+      }
     }
   }
 }

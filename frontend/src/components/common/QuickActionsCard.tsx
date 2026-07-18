@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export interface QuickAction {
   label: string;
@@ -11,10 +12,14 @@ export interface QuickActionsCardProps {
   actions: QuickAction[];
 }
 
-export function QuickActionsCard({ title = 'Quick Actions', actions }: QuickActionsCardProps) {
+export function QuickActionsCard({ title, actions }: QuickActionsCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="rounded-lg bg-ink p-6">
-      <p className="text-lg font-semibold text-ink-foreground">{title}</p>
+      <p className="text-lg font-semibold text-ink-foreground">
+        {title ?? t('common.quickActionsTitle')}
+      </p>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
         {actions.map((action) => (
           <button

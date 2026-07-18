@@ -1,4 +1,5 @@
 import { CalendarPlus, ClipboardList, Megaphone } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { comingSoonToast } from '@/lib/comingSoonToast';
@@ -9,16 +10,18 @@ import { ManagerEvents } from '../components/ManagerEvents';
 import { ReadingSessionsCard } from '../components/ReadingSessionsCard';
 
 export function ManagerDashboard() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Manager Dashboard"
-        description="Events, sessions, and attendance overview"
+        title={t('managerDashboard.pageTitle')}
+        description={t('managerDashboard.pageDescription')}
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {managerStats.map((stat) => (
-          <StatisticCard key={stat.label} icon={stat.icon} label={stat.label} value={stat.value} />
+          <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />
         ))}
       </div>
 
@@ -30,19 +33,20 @@ export function ManagerDashboard() {
       <QuickActionsCard
         actions={[
           {
-            label: 'Create Event',
+            label: t('managerDashboard.quickActions.createEvent'),
             icon: CalendarPlus,
-            onClick: () => comingSoonToast('Creating an event'),
+            onClick: () => comingSoonToast(t('managerDashboard.quickActions.toasts.creatingEvent')),
           },
           {
-            label: 'Record Attendance',
+            label: t('managerDashboard.quickActions.recordAttendance'),
             icon: ClipboardList,
-            onClick: () => comingSoonToast('Recording attendance'),
+            onClick: () =>
+              comingSoonToast(t('managerDashboard.quickActions.toasts.recordingAttendance')),
           },
           {
-            label: 'Post Update',
+            label: t('managerDashboard.quickActions.postUpdate'),
             icon: Megaphone,
-            onClick: () => comingSoonToast('Posting a community update'),
+            onClick: () => comingSoonToast(t('managerDashboard.quickActions.toasts.postingUpdate')),
           },
         ]}
       />

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CalendarCheck, Percent, Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { StatisticCard, EventCard, PageHeader } from '@/components/common';
 import { attendanceSummary, events as mockEvents, type Event } from '@/mocks/events';
@@ -7,6 +8,7 @@ import { attendanceSummary, events as mockEvents, type Event } from '@/mocks/eve
 import { EventDetailsDrawer } from '../components/EventDetailsDrawer';
 
 export function EventsPage() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState(mockEvents);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
 
@@ -29,24 +31,24 @@ export function EventsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Events"
-        description="Upcoming library events and community programs"
+        title={t('events.pageTitle')}
+        description={t('events.pageDescription')}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatisticCard
           icon={CalendarCheck}
-          label="Events This Month"
+          label={t('events.stats.eventsThisMonth')}
           value={String(attendanceSummary.totalEventsThisMonth)}
         />
         <StatisticCard
           icon={Users}
-          label="Total Attendees"
+          label={t('events.stats.totalAttendees')}
           value={String(attendanceSummary.totalAttendees)}
         />
         <StatisticCard
           icon={Percent}
-          label="Avg. Attendance Rate"
+          label={t('events.stats.avgAttendanceRate')}
           value={`${Math.round(attendanceSummary.averageAttendanceRate * 100)}%`}
         />
       </div>

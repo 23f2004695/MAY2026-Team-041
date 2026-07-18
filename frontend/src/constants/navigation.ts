@@ -3,6 +3,7 @@ import {
   BookOpen,
   Calendar,
   CalendarCheck,
+  Cpu,
   Home,
   LayoutDashboard,
   type LucideIcon,
@@ -12,6 +13,7 @@ import {
   Star,
   Ticket,
   Trophy,
+  Users,
 } from 'lucide-react';
 
 import { Icons } from './icons';
@@ -46,5 +48,27 @@ export const adminOverviewNavItem: NavItem = {
 
 export const adminNavigation: NavItem[] = [
   adminOverviewNavItem,
+  { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
+];
+
+export const itHeadOverviewNavItem: NavItem = {
+  label: 'nav.itHeadOverview',
+  path: ROUTES.IT_HEAD,
+  icon: Cpu,
+};
+
+export const itHeadNavigation: NavItem[] = [
+  itHeadOverviewNavItem,
+  { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
+];
+
+export const guardianOverviewNavItem: NavItem = {
+  label: 'nav.guardianOverview',
+  path: ROUTES.GUARDIAN,
+  icon: Users,
+};
+
+export const guardianNavigation: NavItem[] = [
+  guardianOverviewNavItem,
   { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
 ];

@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { PageHeader, StatisticCard } from '@/components/common';
 import { BooksDueSoon } from '../components/BooksDueSoon';
 import { CurrentlyBorrowed } from '../components/CurrentlyBorrowed';
@@ -16,16 +18,20 @@ import {
 } from '@/mocks/dashboard';
 
 export function MemberDashboard() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={`Welcome back, ${dashboardUser.name.split(' ')[0]}`}
-        description={`${dashboardUser.membershipPlan} · Here's what's happening with your library`}
+        title={t('dashboard.welcomeBack', { name: dashboardUser.name.split(' ')[0] })}
+        description={t('dashboard.subtitle', {
+          plan: t(`dashboard.membershipPlans.${dashboardUser.membershipPlanKey}`),
+        })}
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {dashboardStats.map((stat) => (
-          <StatisticCard key={stat.label} icon={stat.icon} label={stat.label} value={stat.value} />
+          <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />
         ))}
       </div>
 

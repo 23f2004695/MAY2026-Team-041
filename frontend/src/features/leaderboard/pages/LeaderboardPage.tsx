@@ -1,4 +1,5 @@
 import { Award } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import {
   Avatar,
@@ -20,21 +21,23 @@ const medalColor: Record<number, string> = {
 };
 
 export function LeaderboardPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Leaderboard</h1>
-        <p className="mt-1 text-muted-foreground">Top readers in the community this month</p>
+        <h1 className="text-2xl font-semibold text-foreground">{t('leaderboard.pageTitle')}</h1>
+        <p className="mt-1 text-muted-foreground">{t('leaderboard.pageDescription')}</p>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Rank</TableHead>
-            <TableHead>Reader</TableHead>
-            <TableHead>Points</TableHead>
-            <TableHead>Badges</TableHead>
-            <TableHead>Hours Read</TableHead>
+            <TableHead>{t('leaderboard.table.rank')}</TableHead>
+            <TableHead>{t('leaderboard.table.reader')}</TableHead>
+            <TableHead>{t('leaderboard.table.points')}</TableHead>
+            <TableHead>{t('leaderboard.table.badges')}</TableHead>
+            <TableHead>{t('leaderboard.table.hoursRead')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -52,14 +55,14 @@ export function LeaderboardPage() {
                   {entry.name}
                   {entry.isCurrentUser && (
                     <Badge variant="outline" className="ml-1">
-                      You
+                      {t('common.you')}
                     </Badge>
                   )}
                 </span>
               </TableCell>
               <TableCell>{entry.points.toLocaleString()}</TableCell>
               <TableCell>{entry.badges}</TableCell>
-              <TableCell>{entry.hoursRead}h</TableCell>
+              <TableCell>{t('leaderboard.hoursSuffix', { hours: entry.hoursRead })}</TableCell>
             </TableRow>
           ))}
         </TableBody>

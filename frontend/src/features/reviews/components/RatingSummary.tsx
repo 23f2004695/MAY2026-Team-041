@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { ProgressBar } from '@/components/common';
 import { Card, CardContent } from '@/components/ui';
@@ -12,6 +13,8 @@ export interface RatingSummaryProps {
 }
 
 export function RatingSummary({ averageRating, totalReviews, breakdown }: RatingSummaryProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardContent className="grid gap-6 p-6 sm:grid-cols-[auto_1fr]">
@@ -28,12 +31,18 @@ export function RatingSummary({ averageRating, totalReviews, breakdown }: Rating
               />
             ))}
           </div>
-          <p className="text-sm text-muted-foreground">{totalReviews} reviews</p>
+          <p className="text-sm text-muted-foreground">
+            {t('reviews.summary.totalReviews', { count: totalReviews })}
+          </p>
         </div>
 
         <div className="flex flex-col gap-2">
           {breakdown.map((row) => (
-            <ProgressBar key={row.stars} percent={row.percent} label={`${row.stars} stars`} />
+            <ProgressBar
+              key={row.stars}
+              percent={row.percent}
+              label={t('reviews.summary.starsLabel', { count: row.stars })}
+            />
           ))}
         </div>
       </CardContent>

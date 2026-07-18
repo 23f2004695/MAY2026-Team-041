@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { Avatar, Card, CardContent, CardHeader } from '@/components/ui';
 import { cn } from '@/lib/cn';
@@ -12,6 +13,8 @@ export interface ReviewCardProps {
 }
 
 export function ReviewCard({ name, role, quote, rating, className }: ReviewCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card className={cn('h-full', className)}>
       <CardHeader className="flex-row items-center gap-3 space-y-0">
@@ -23,7 +26,7 @@ export function ReviewCard({ name, role, quote, rating, className }: ReviewCardP
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {rating != null && (
-          <div className="flex" aria-label={`Rated ${rating} out of 5`}>
+          <div className="flex" aria-label={t('common.cards.review.ratedOutOf5', { rating })}>
             {Array.from({ length: 5 }, (_, index) => (
               <Star
                 key={index}

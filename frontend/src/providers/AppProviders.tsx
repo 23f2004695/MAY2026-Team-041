@@ -1,6 +1,9 @@
 import { useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MotionConfig } from 'framer-motion';
 import { Toaster } from 'sonner';
+
+import { ChatbotWidget } from '@/components/layout';
 
 import { AuthProvider } from './AuthProvider';
 import { LanguageProvider } from './LanguageProvider';
@@ -15,14 +18,18 @@ export function AppProviders({ children }: AppProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <ThemeProvider>
-          <AuthProvider>
-            {children}
-            <Toaster richColors closeButton position="top-right" />
-          </AuthProvider>
-        </ThemeProvider>
-      </LanguageProvider>
+      {/* reduceMotion="user" makes every Framer Motion animation site-wide honor prefers-reduced-motion */}
+      <MotionConfig reducedMotion="user">
+        <LanguageProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              {children}
+              <ChatbotWidget />
+              <Toaster richColors closeButton position="top-right" />
+            </AuthProvider>
+          </ThemeProvider>
+        </LanguageProvider>
+      </MotionConfig>
     </QueryClientProvider>
   );
 }

@@ -1,4 +1,5 @@
 import { BookPlus, QrCode, RotateCcw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { comingSoonToast } from '@/lib/comingSoonToast';
@@ -8,16 +9,18 @@ import { OverdueBooks } from '../components/OverdueBooks';
 import { PendingReservationQueue } from '../components/PendingReservationQueue';
 
 export function LibrarianDashboard() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Librarian Dashboard"
-        description="Catalogue, borrowing, and fines at a glance"
+        title={t('librarianDashboard.pageTitle')}
+        description={t('librarianDashboard.pageDescription')}
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {librarianStats.map((stat) => (
-          <StatisticCard key={stat.label} icon={stat.icon} label={stat.label} value={stat.value} />
+          <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />
         ))}
       </div>
 
@@ -28,13 +31,21 @@ export function LibrarianDashboard() {
 
       <QuickActionsCard
         actions={[
-          { label: 'Issue Book', icon: BookPlus, onClick: () => comingSoonToast('Issuing a book') },
           {
-            label: 'Return Book',
-            icon: RotateCcw,
-            onClick: () => comingSoonToast('Returning a book'),
+            label: t('librarianDashboard.quickActions.issueBook'),
+            icon: BookPlus,
+            onClick: () => comingSoonToast(t('librarianDashboard.quickActions.toasts.issuingBook')),
           },
-          { label: 'Scan QR', icon: QrCode, onClick: () => comingSoonToast('Scanning a QR code') },
+          {
+            label: t('librarianDashboard.quickActions.returnBook'),
+            icon: RotateCcw,
+            onClick: () => comingSoonToast(t('librarianDashboard.quickActions.toasts.returningBook')),
+          },
+          {
+            label: t('librarianDashboard.quickActions.scanQr'),
+            icon: QrCode,
+            onClick: () => comingSoonToast(t('librarianDashboard.quickActions.toasts.scanningQr')),
+          },
         ]}
       />
     </div>

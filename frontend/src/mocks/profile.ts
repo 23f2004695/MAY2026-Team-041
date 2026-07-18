@@ -2,7 +2,7 @@ export const profileOverview = {
   name: 'Priya Sharma',
   email: 'priya.sharma@example.com',
   joinDate: 'March 2023',
-  membershipPlan: 'Premium Member',
+  membershipPlanKey: 'premium',
   role: 'member' as const,
 };
 
@@ -13,14 +13,27 @@ export const readingStats = {
 };
 
 export interface ProfileAchievement {
-  label: string;
-  description: string;
+  id: string;
+  labelKey: string;
+  descriptionKey: string;
 }
 
 export const profileAchievements: ProfileAchievement[] = [
-  { label: 'First Book', description: 'Borrow your first book' },
-  { label: 'Book Worm', description: 'Read 10 books in a year' },
-  { label: 'Top Reader', description: 'Reach the top of the monthly leaderboard' },
+  {
+    id: 'first-book',
+    labelKey: 'profile.achievements.items.firstBook.label',
+    descriptionKey: 'profile.achievements.items.firstBook.description',
+  },
+  {
+    id: 'book-worm',
+    labelKey: 'profile.achievements.items.bookWorm.label',
+    descriptionKey: 'profile.achievements.items.bookWorm.description',
+  },
+  {
+    id: 'top-reader',
+    labelKey: 'profile.achievements.items.topReader.label',
+    descriptionKey: 'profile.achievements.items.topReader.description',
+  },
 ];
 
 export interface CurrentReadingItem {

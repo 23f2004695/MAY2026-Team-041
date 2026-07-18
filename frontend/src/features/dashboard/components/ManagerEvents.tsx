@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import type { Event } from '@/mocks/events';
@@ -7,14 +9,19 @@ export interface ManagerEventsProps {
 }
 
 export function ManagerEvents({ events }: ManagerEventsProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Events</CardTitle>
+        <CardTitle>{t('managerDashboard.events.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         {events.length === 0 ? (
-          <EmptyState title="No events scheduled" description="Create one to get started." />
+          <EmptyState
+            title={t('managerDashboard.events.emptyTitle')}
+            description={t('managerDashboard.events.emptyDescription')}
+          />
         ) : (
           <ul className="flex flex-col gap-3">
             {events.map((event) => (
@@ -25,17 +32,23 @@ export function ManagerEvents({ events }: ManagerEventsProps) {
                 <div>
                   <p className="text-sm font-medium text-foreground">{event.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {event.date} · {event.attendees}/{event.capacity} attending ·{' '}
-                    {event.managers.length} manager{event.managers.length === 1 ? '' : 's'}{' '}
-                    assigned
+                    {event.date} ·{' '}
+                    {t('managerDashboard.events.attendingCount', {
+                      attendees: event.attendees,
+                      capacity: event.capacity,
+                    })}{' '}
+                    ·{' '}
+                    {t('managerDashboard.events.managersAssigned', { count: event.managers.length })}
                   </p>
                 </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => comingSoonToast(`Managing "${event.title}"`)}
+                  onClick={() =>
+                    comingSoonToast(t('managerDashboard.events.manageToast', { title: event.title }))
+                  }
                 >
-                  Manage
+                  {t('managerDashboard.events.manage')}
                 </Button>
               </li>
             ))}

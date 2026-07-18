@@ -2,15 +2,15 @@ import { AlertTriangle, BookCopy, IndianRupee, Ticket, type LucideIcon } from 'l
 
 export interface LibrarianStat {
   icon: LucideIcon;
-  label: string;
+  labelKey: string;
   value: string;
 }
 
 export const librarianStats: LibrarianStat[] = [
-  { icon: BookCopy, label: 'Books Borrowed Today', value: '6' },
-  { icon: AlertTriangle, label: 'Overdue Books', value: '5' },
-  { icon: Ticket, label: 'Pending Reservations', value: '4' },
-  { icon: IndianRupee, label: 'Fines Collected (MTD)', value: '₹640' },
+  { icon: BookCopy, labelKey: 'librarianDashboard.stats.booksBorrowedToday', value: '6' },
+  { icon: AlertTriangle, labelKey: 'librarianDashboard.stats.overdueBooks', value: '5' },
+  { icon: Ticket, labelKey: 'librarianDashboard.stats.pendingReservations', value: '4' },
+  { icon: IndianRupee, labelKey: 'librarianDashboard.stats.finesCollectedMtd', value: '₹640' },
 ];
 
 export interface OverdueLoan {

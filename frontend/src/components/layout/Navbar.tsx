@@ -33,6 +33,7 @@ export function Navbar() {
 
   const navLinks = [
     { label: t('landing.footer.home'), to: ROUTES.HOME, end: true },
+    { label: t('nav.pricing'), to: ROUTES.PRICING, end: false },
     { label: t('nav.books'), to: ROUTES.BOOKS, end: false },
     { label: t('nav.events'), to: ROUTES.EVENTS, end: false },
     { label: t('landing.footer.community'), to: ROUTES.COMMUNITY, end: false },

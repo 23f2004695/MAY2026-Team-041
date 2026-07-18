@@ -4,19 +4,23 @@ import { attendanceSummary, events } from './events';
 
 export interface ManagerStat {
   icon: LucideIcon;
-  label: string;
+  labelKey: string;
   value: string;
 }
 
 export const managerStats: ManagerStat[] = [
-  { icon: Calendar, label: 'Upcoming Events', value: String(events.length) },
-  { icon: Users, label: 'Attendees This Month', value: String(attendanceSummary.totalAttendees) },
+  { icon: Calendar, labelKey: 'managerDashboard.stats.upcomingEvents', value: String(events.length) },
+  {
+    icon: Users,
+    labelKey: 'managerDashboard.stats.attendeesThisMonth',
+    value: String(attendanceSummary.totalAttendees),
+  },
   {
     icon: TrendingUp,
-    label: 'Avg. Attendance Rate',
+    labelKey: 'managerDashboard.stats.avgAttendanceRate',
     value: `${Math.round(attendanceSummary.averageAttendanceRate * 100)}%`,
   },
-  { icon: BookMarked, label: 'Active Reading Sessions', value: '3' },
+  { icon: BookMarked, labelKey: 'managerDashboard.stats.activeReadingSessions', value: '3' },
 ];
 
 export interface ReadingSession {

@@ -1,6 +1,8 @@
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import { AdminLayout } from '@/app/layouts/AdminLayout';
+import { GuardianLayout } from '@/app/layouts/GuardianLayout';
+import { ITHeadLayout } from '@/app/layouts/ITHeadLayout';
 import { PublicLayout } from '@/app/layouts/PublicLayout';
 import { UserLayout } from '@/app/layouts/UserLayout';
 import { ROUTES } from '@/constants/routes';
@@ -9,9 +11,12 @@ import { BookDetailsPage } from '@/features/books/pages/BookDetailsPage';
 import { BooksListPage } from '@/features/books/pages/BooksListPage';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import { EventsPage } from '@/features/events/pages/EventsPage';
+import { GuardianDashboardPage } from '@/features/guardian/pages/GuardianDashboardPage';
+import { ITHeadDashboardPage } from '@/features/it-head/pages/ITHeadDashboardPage';
 import { LandingPage } from '@/features/landing';
 import { LeaderboardPage } from '@/features/leaderboard/pages/LeaderboardPage';
 import { NotificationsPage } from '@/features/notifications/pages/NotificationsPage';
+import { PricingPage } from '@/features/pricing';
 import { ProfilePage } from '@/features/profile/pages/ProfilePage';
 import { ReadingProgressPage } from '@/features/reading-progress/pages/ReadingProgressPage';
 import { ReservationsPage } from '@/features/reservations/pages/ReservationsPage';
@@ -32,6 +37,7 @@ const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { index: true, element: <LandingPage /> },
+      { path: relative(ROUTES.PRICING), element: <PricingPage /> },
       {
         element: (
           <PublicRoute>
@@ -93,6 +99,22 @@ const router = createBrowserRouter([
       </RoleRoute>
     ),
     children: [{ path: relative(ROUTES.ADMIN), element: <AdminDashboardPage /> }],
+  },
+  {
+    element: (
+      <RoleRoute allow={['it-head']}>
+        <ITHeadLayout />
+      </RoleRoute>
+    ),
+    children: [{ path: relative(ROUTES.IT_HEAD), element: <ITHeadDashboardPage /> }],
+  },
+  {
+    element: (
+      <RoleRoute allow={['guardian']}>
+        <GuardianLayout />
+      </RoleRoute>
+    ),
+    children: [{ path: relative(ROUTES.GUARDIAN), element: <GuardianDashboardPage /> }],
   },
   { path: '*', element: <NotFound /> },
 ]);

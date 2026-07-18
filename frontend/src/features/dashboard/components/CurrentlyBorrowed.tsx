@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import type { BorrowedBook } from '@/mocks/dashboard';
 
@@ -6,10 +8,12 @@ export interface CurrentlyBorrowedProps {
 }
 
 export function CurrentlyBorrowed({ books }: CurrentlyBorrowedProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Currently Borrowed</CardTitle>
+        <CardTitle>{t('dashboard.currentlyBorrowed.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="flex flex-col gap-3">
@@ -19,7 +23,7 @@ export function CurrentlyBorrowed({ books }: CurrentlyBorrowedProps) {
                 <p className="font-medium text-foreground">{book.title}</p>
                 <p className="text-muted-foreground">{book.author}</p>
               </div>
-              <span className="text-muted-foreground">Since {book.borrowedOn}</span>
+              <span className="text-muted-foreground">{t('common.time.since', { date: book.borrowedOn })}</span>
             </li>
           ))}
         </ul>

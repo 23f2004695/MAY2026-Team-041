@@ -1,4 +1,5 @@
 import { Award, BookOpen, Clock, FileText } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { ProgressBar, StatisticCard } from '@/components/common';
 import {
@@ -25,40 +26,50 @@ import {
 import { ProfileHeader } from '../components/ProfileHeader';
 
 export function ProfilePage() {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-6">
       <ProfileHeader
         name={profileOverview.name}
         email={profileOverview.email}
         joinDate={profileOverview.joinDate}
-        membershipPlan={profileOverview.membershipPlan}
+        membershipPlanKey={profileOverview.membershipPlanKey}
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatisticCard icon={BookOpen} label="Books Read" value={String(readingStats.booksRead)} />
+        <StatisticCard
+          icon={BookOpen}
+          label={t('profile.stats.booksRead')}
+          value={String(readingStats.booksRead)}
+        />
         <StatisticCard
           icon={FileText}
-          label="Pages Read"
+          label={t('profile.stats.pagesRead')}
           value={readingStats.pagesRead.toLocaleString()}
         />
-        <StatisticCard icon={Clock} label="Hours Read" value={String(readingStats.hoursRead)} />
+        <StatisticCard
+          icon={Clock}
+          label={t('profile.stats.hoursRead')}
+          value={String(readingStats.hoursRead)}
+        />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Achievements</CardTitle>
+          <CardTitle>{t('profile.achievements.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="flex flex-wrap gap-2">
             {profileAchievements.map((achievement) => (
-              <li key={achievement.label}>
+              <li key={achievement.id}>
                 <Badge
                   variant="success"
                   className="gap-1.5 px-3 py-1.5 text-sm"
-                  title={achievement.description}
+                  title={t(achievement.descriptionKey)}
                 >
                   <Award className="size-3.5" />
-                  {achievement.label}
+                  {t(achievement.labelKey)}
                 </Badge>
               </li>
             ))}
@@ -68,14 +79,16 @@ export function ProfilePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Current Reading</CardTitle>
+          <CardTitle>{t('profile.currentReading.title')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {currentReading.map((book) => (
             <div key={book.title}>
               <p className="text-sm font-medium text-foreground">
                 {book.title}{' '}
-                <span className="font-normal text-muted-foreground">by {book.author}</span>
+                <span className="font-normal text-muted-foreground">
+                  {t('profile.currentReading.by', { author: book.author })}
+                </span>
               </p>
               <ProgressBar percent={book.percentComplete} className="mt-1.5" />
             </div>
@@ -85,15 +98,15 @@ export function ProfilePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Borrow History</CardTitle>
+          <CardTitle>{t('profile.borrowHistory.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Borrowed On</TableHead>
-                <TableHead>Returned On</TableHead>
+                <TableHead>{t('profile.borrowHistory.columns.title')}</TableHead>
+                <TableHead>{t('profile.borrowHistory.columns.borrowedOn')}</TableHead>
+                <TableHead>{t('profile.borrowHistory.columns.returnedOn')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

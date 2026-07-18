@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 
 export interface BookingSummaryProps {
@@ -6,21 +8,25 @@ export interface BookingSummaryProps {
 }
 
 export function BookingSummary({ selectedSeatId, onConfirm }: BookingSummaryProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Booking Summary</CardTitle>
+        <CardTitle>{t('seatBooking.bookingSummary.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {selectedSeatId ? (
           <p className="text-sm text-foreground">
-            Seat <span className="font-semibold">{selectedSeatId}</span> selected for today
+            {t('seatBooking.bookingSummary.selected', { seatId: selectedSeatId })}
           </p>
         ) : (
-          <p className="text-sm text-muted-foreground">Select an available seat to continue.</p>
+          <p className="text-sm text-muted-foreground">
+            {t('seatBooking.bookingSummary.selectPrompt')}
+          </p>
         )}
         <Button disabled={!selectedSeatId} onClick={onConfirm}>
-          Confirm Booking
+          {t('seatBooking.bookingSummary.confirmButton')}
         </Button>
       </CardContent>
     </Card>

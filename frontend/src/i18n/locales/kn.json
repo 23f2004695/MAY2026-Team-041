@@ -3,10 +3,56 @@
     "brandFull": "ಕಮ್ಯುನಿಟಿ ರೀಡಿಂಗ್ ಕ್ಲಬ್",
     "brandShort": "ರೀಡಿಂಗ್ ಕ್ಲಬ್",
     "signIn": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
-    "getStarted": "ಪ್ರಾರಂಭಿಸಿ"
+    "getStarted": "ಪ್ರಾರಂಭಿಸಿ",
+    "you": "ನೀವು",
+    "quickActionsTitle": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳು",
+    "time": {
+      "hoursAgo": "{{count}} ಗಂಟೆಗಳ ಹಿಂದೆ",
+      "daysAgo": "{{count}} ದಿನಗಳ ಹಿಂದೆ",
+      "daysLeft": "{{count}} ದಿನ ಬಾಕಿ",
+      "since": "{{date}} ರಿಂದ"
+    },
+    "actions": {
+      "reject": "ತಿರಸ್ಕರಿಸಿ",
+      "approve": "ಅನುಮೋದಿಸಿ",
+      "manage": "ನಿರ್ವಹಿಸಿ",
+      "viewReport": "ವರದಿ ವೀಕ್ಷಿಸಿ"
+    },
+    "cards": {
+      "event": {
+        "registered": "ನೋಂದಾಯಿಸಲಾಗಿದೆ",
+        "open": "ತೆರೆದಿದೆ",
+        "viewDetails": "ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
+      },
+      "book": {
+        "reserve": "ಕಾಯ್ದಿರಿಸಿ",
+        "viewDetailsAria": "{{title}} ಗಾಗಿ ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
+      },
+      "seat": {
+        "labelWithStatus": "{{label}}: {{status}}",
+        "seatLabelWithStatus": "ಸೀಟ್ {{label}}: {{status}}"
+      },
+      "notification": {
+        "markAsRead": "ಓದಿದಂತೆ ಗುರುತಿಸಿ",
+        "unread": "ಓದದಿರುವ"
+      },
+      "review": {
+        "ratedOutOf5": "5 ರಲ್ಲಿ {{rating}} ರೇಟಿಂಗ್"
+      }
+    }
   },
   "language": {
     "label": "ಭಾಷೆ"
+  },
+  "chatbot": {
+    "title": "AI ಸಹಾಯಕ",
+    "demoBadge": "ಡೆಮೊ",
+    "greeting": "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಗ್ರಂಥಾಲಯ ಸಹಾಯಕ. ಪುಸ್ತಕಗಳು, ಕಾರ್ಯಕ್ರಮಗಳು ಅಥವಾ ನಿಮ್ಮ ಖಾತೆಯ ಬಗ್ಗೆ ನನ್ನನ್ನು ಕೇಳಿ.",
+    "placeholder": "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...",
+    "send": "ಕಳುಹಿಸಿ",
+    "openChat": "ಚಾಟ್ ತೆರೆಯಿರಿ",
+    "closeChat": "ಚಾಟ್ ಮುಚ್ಚಿ",
+    "demoReply": "ಡೆಮೊ ಪ್ರಯತ್ನಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು! ಪೂರ್ಣ AI-ಚಾಲಿತ ಉತ್ತರಗಳು ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತಿವೆ — ಸದ್ಯಕ್ಕೆ ಇದು ಚಾಟ್ ಅನುಭವವನ್ನು ಮಾತ್ರ ತೋರಿಸುತ್ತದೆ."
   },
   "topUtilityBar": {
     "website": "ವೆಬ್‌ಸೈಟ್",
@@ -15,6 +61,7 @@
   },
   "nav": {
     "dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "pricing": "ಬೆಲೆಗಳು",
     "books": "ಪುಸ್ತಕಗಳು",
     "reservations": "ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು",
     "seatBooking": "ಸೀಟ್ ಬುಕಿಂಗ್",
@@ -26,6 +73,8 @@
     "notifications": "ಅಧಿಸೂಚನೆಗಳು",
     "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
     "adminOverview": "ಆಡಳಿತ ಅವಲೋಕನ",
+    "itHeadOverview": "ಐಟಿ ಅವಲೋಕನ",
+    "guardianOverview": "ರಕ್ಷಕ ಅವಲೋಕನ",
     "backToApp": "ಆ್ಯಪ್‌ಗೆ ಹಿಂತಿರುಗಿ"
   },
   "userMenu": {
@@ -55,7 +104,18 @@
         "admin": "ಅಡ್ಮಿನ್",
         "librarian": "ಗ್ರಂಥಪಾಲಕ",
         "member": "ಸದಸ್ಯ",
-        "manager": "ವ್ಯವಸ್ಥಾಪಕ"
+        "manager": "ವ್ಯವಸ್ಥಾಪಕ",
+        "it-head": "ಐಟಿ ಮುಖ್ಯಸ್ಥ",
+        "guardian": "ರಕ್ಷಕ"
+      },
+      "or": "ಅಥವಾ",
+      "email": "ಇಮೇಲ್",
+      "password": "ಪಾಸ್‌ವರ್ಡ್",
+      "logInWithPassword": "ಲಾಗ್ ಇನ್ ಮಾಡಿ",
+      "continueWithGmail": "ಜಿಮೇಲ್‌ನೊಂದಿಗೆ ಮುಂದುವರಿಸಿ",
+      "orPreviewRole": "ಅಥವಾ ಒಂದು ಪಾತ್ರವನ್ನು ಪೂರ್ವವೀಕ್ಷಿಸಿ",
+      "errors": {
+        "password": "ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯವಿದೆ."
       }
     },
     "register": {
@@ -87,7 +147,10 @@
     "comingSoon": "ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತಿದೆ",
     "community": { "description": "ರೀಡಿಂಗ್ ಕ್ಲಬ್‌ಗಳು ಮತ್ತು ಚರ್ಚೆಗಳು." },
     "settings": { "description": "ನಿಮ್ಮ ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ." },
-    "forgotPassword": { "title": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ", "description": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ." }
+    "forgotPassword": {
+      "title": "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ",
+      "description": "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ."
+    }
   },
   "landing": {
     "hero": {
@@ -150,8 +213,14 @@
       "titleHighlight": "ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ",
       "stepLabel": "ಹಂತ {{step}}",
       "steps": {
-        "1": { "title": "ನೋಂದಣಿ ಮಾಡಿ", "description": "ಒಂದು ನಿಮಿಷಕ್ಕಿಂತ ಕಡಿಮೆ ಸಮಯದಲ್ಲಿ ಉಚಿತ ಸದಸ್ಯತ್ವವನ್ನು ರಚಿಸಿ." },
-        "2": { "title": "ಪುಸ್ತಕಗಳನ್ನು ಹುಡುಕಿ", "description": "ವರ್ಗ, ಲೇಖಕ ಅಥವಾ ಮನಸ್ಥಿತಿಯ ಆಧಾರದ ಮೇಲೆ ಶೀರ್ಷಿಕೆಗಳನ್ನು ಹುಡುಕಿ." },
+        "1": {
+          "title": "ನೋಂದಣಿ ಮಾಡಿ",
+          "description": "ಒಂದು ನಿಮಿಷಕ್ಕಿಂತ ಕಡಿಮೆ ಸಮಯದಲ್ಲಿ ಉಚಿತ ಸದಸ್ಯತ್ವವನ್ನು ರಚಿಸಿ."
+        },
+        "2": {
+          "title": "ಪುಸ್ತಕಗಳನ್ನು ಹುಡುಕಿ",
+          "description": "ವರ್ಗ, ಲೇಖಕ ಅಥವಾ ಮನಸ್ಥಿತಿಯ ಆಧಾರದ ಮೇಲೆ ಶೀರ್ಷಿಕೆಗಳನ್ನು ಹುಡುಕಿ."
+        },
         "3": {
           "title": "ಎರವಲು / ಕಾಯ್ದಿರಿಸಿ",
           "description": "ಒಂದು ಪ್ರತಿಯನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಈಗಾಗಲೇ ಎರವಲು ಪಡೆದಿರುವುದನ್ನು ಕಾಯ್ದಿರಿಸಿ."
@@ -233,9 +302,15 @@
       "heading": "ಓದುವ ಸವಾಲುಗಳು ಮತ್ತು ಸಾಧನೆಗಳು",
       "subheading": "ನೀವು ಓದುತ್ತಿದ್ದಂತೆ ಅನ್‌ಲಾಕ್ ಆಗುವ ಬ್ಯಾಡ್ಜ್‌ಗಳೊಂದಿಗೆ ಪ್ರೇರಿತರಾಗಿರಿ.",
       "achievements": {
-        "firstBook": { "label": "ಮೊದಲ ಪುಸ್ತಕ", "description": "ನಿಮ್ಮ ಮೊದಲ ಪುಸ್ತಕವನ್ನು ಎರವಲು ಪಡೆಯಿರಿ" },
+        "firstBook": {
+          "label": "ಮೊದಲ ಪುಸ್ತಕ",
+          "description": "ನಿಮ್ಮ ಮೊದಲ ಪುಸ್ತಕವನ್ನು ಎರವಲು ಪಡೆಯಿರಿ"
+        },
         "bookWorm": { "label": "ಬುಕ್ ವರ್ಮ್", "description": "ಒಂದು ವರ್ಷದಲ್ಲಿ 10 ಪುಸ್ತಕಗಳನ್ನು ಓದಿ" },
-        "topReader": { "label": "ಟಾಪ್ ರೀಡರ್", "description": "ಮಾಸಿಕ ಲೀಡರ್‌ಬೋರ್ಡ್‌ನ ಮೇಲ್ಭಾಗವನ್ನು ತಲುಪಿ" },
+        "topReader": {
+          "label": "ಟಾಪ್ ರೀಡರ್",
+          "description": "ಮಾಸಿಕ ಲೀಡರ್‌ಬೋರ್ಡ್‌ನ ಮೇಲ್ಭಾಗವನ್ನು ತಲುಪಿ"
+        },
         "monthlyChampion": {
           "label": "ಮಾಸಿಕ ಚಾಂಪಿಯನ್",
           "description": "ಒಂದು ತಿಂಗಳಲ್ಲಿ ಪ್ರತಿ ವಾರದ ಸವಾಲನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ"
@@ -327,6 +402,730 @@
       "website": "ವೆಬ್‌ಸೈಟ್",
       "communityForum": "ಸಮುದಾಯ ವೇದಿಕೆ",
       "newsletter": "ಸುದ್ದಿಪತ್ರ"
+    }
+  },
+  "pricing": {
+    "hero": {
+      "heading": "ಪ್ರತಿ ಗ್ರಂಥಾಲಯಕ್ಕೂ ಸರಳ ಬೆಲೆ ನಿಗದಿ",
+      "subtitle": "ನಿಮ್ಮ ಸಂಸ್ಥೆಗೆ ಹೆಚ್ಚು ಸೂಕ್ತವಾದ ಚಂದಾದಾರಿಕೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ. ಕಡಿಮೆ ಅವಧಿಯ ಯೋಜನೆಯೊಂದಿಗೆ ಪ್ರಾರಂಭಿಸಿ ಅಥವಾ ದೀರ್ಘಾವಧಿಯ ಬದ್ಧತೆಗಳೊಂದಿಗೆ ಹೆಚ್ಚು ಉಳಿಸಿ.",
+      "badges": {
+        "noHiddenCharges": "ಯಾವುದೇ ಗುಪ್ತ ಶುಲ್ಕಗಳಿಲ್ಲ",
+        "cancelAnytime": "ಯಾವಾಗ ಬೇಕಾದರೂ ರದ್ದುಗೊಳಿಸಿ",
+        "educationalDiscounts": "ಶೈಕ್ಷಣಿಕ ರಿಯಾಯಿತಿಗಳು ಲಭ್ಯವಿದೆ"
+      }
+    },
+    "toggle": {
+      "ariaLabel": "ಚಂದಾದಾರಿಕೆ ಅವಧಿ",
+      "save": "{{percent}}% ಉಳಿಸಿ",
+      "noDiscount": "ರಿಯಾಯಿತಿ ಇಲ್ಲ"
+    },
+    "durations": {
+      "1m": {
+        "label": "1 ತಿಂಗಳು",
+        "suitableFor": "ವಿದ್ಯಾರ್ಥಿಗಳು ಮತ್ತು ಅಲ್ಪಾವಧಿಯ ಬಳಕೆಗಾಗಿ",
+        "cta": "ಈಗಲೇ ಪ್ರಾರಂಭಿಸಿ"
+      },
+      "3m": {
+        "label": "3 ತಿಂಗಳುಗಳು",
+        "suitableFor": "ಅಡೆತಡೆಯಿಲ್ಲದ ಗ್ರಂಥಾಲಯ ಪ್ರವೇಶದೊಂದಿಗೆ ಪೂರ್ಣ ಸೆಮಿಸ್ಟರ್",
+        "cta": "ಯೋಜನೆ ಆಯ್ಕೆಮಾಡಿ"
+      },
+      "6m": {
+        "label": "6 ತಿಂಗಳುಗಳು",
+        "suitableFor": "ಒಂದು ಸಂಪೂರ್ಣ ಶೈಕ್ಷಣಿಕ ಅವಧಿ",
+        "cta": "ಪ್ರಾರಂಭಿಸಿ"
+      },
+      "12m": {
+        "label": "12 ತಿಂಗಳುಗಳು",
+        "suitableFor": "ಸಂಸ್ಥೆಗಳು ಮತ್ತು ಪವರ್ ಬಳಕೆದಾರರಿಗೆ ವರ್ಷಪೂರ್ತಿ ಪ್ರವೇಶ",
+        "cta": "ಚಂದಾದಾರರಾಗಿ"
+      }
+    },
+    "perMonth": "ಪ್ರತಿ ತಿಂಗಳಿಗೆ",
+    "billedEvery": "ಪ್ರತಿ {{months}} ತಿಂಗಳಿಗೊಮ್ಮೆ ಬಿಲ್ ಮಾಡಲಾಗುತ್ತದೆ",
+    "badges": {
+      "mostPopular": "ಅತ್ಯಂತ ಜನಪ್ರಿಯ",
+      "bestValue": "ಅತ್ಯುತ್ತಮ ಮೌಲ್ಯ"
+    },
+    "coreFeatures": {
+      "unlimitedBooks": "ಅಮಿತ ಪುಸ್ತಕಗಳು",
+      "unlimitedMembers": "ಅಮಿತ ಸದಸ್ಯರು",
+      "qrBorrowing": "QR ಎರವಲು",
+      "seatReservation": "ಸೀಟ್ ಕಾಯ್ದಿರಿಸುವಿಕೆ",
+      "aiLibrarian": "AI ಗ್ರಂಥಪಾಲಕ",
+      "readingChallenges": "ಓದುವ ಸವಾಲುಗಳು",
+      "events": "ಕಾರ್ಯಕ್ರಮಗಳು",
+      "emailNotifications": "ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳು",
+      "basicAnalytics": "ಮೂಲಭೂತ ಅನಾಲಿಟಿಕ್ಸ್"
+    },
+    "extraFeatures": {
+      "prioritySupport": "ಆದ್ಯತಾ ಬೆಂಬಲ",
+      "earlyAccess": "ಹೊಸ ವೈಶಿಷ್ಟ್ಯಗಳಿಗೆ ಮುಂಚಿತ ಪ್ರವೇಶ",
+      "freeOnboarding": "ಉಚಿತ ಆನ್‌ಬೋರ್ಡಿಂಗ್"
+    },
+    "included": {
+      "heading": "ಪ್ರತಿ ಯೋಜನೆಯಲ್ಲಿ, ನಿಮಗೆ ಬೇಕಾದ ಎಲ್ಲವೂ",
+      "subheading": "ಹಂತಗಳನ್ನು ಹೋಲಿಸುವ ಬದಲು, ಪ್ರತಿ ಚಂದಾದಾರಿಕೆಯು ಮೊದಲ ದಿನದಿಂದಲೇ ಸಂಪೂರ್ಣ ವೈಶಿಷ್ಟ್ಯ ಸೆಟ್ ಅನ್ನು ಒಳಗೊಂಡಿದೆ.",
+      "items": {
+        "bookManagement": {
+          "title": "ಪುಸ್ತಕ ನಿರ್ವಹಣೆ",
+          "description": "ನಿಮ್ಮ ಗ್ರಂಥಾಲಯದ ಪ್ರತಿ ಪುಸ್ತಕವನ್ನು ಒಂದೇ ಸ್ಥಳದಿಂದ ಪಟ್ಟಿ ಮಾಡಿ, ವಿತರಿಸಿ ಮತ್ತು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ."
+        },
+        "memberManagement": {
+          "title": "ಸದಸ್ಯರ ನಿರ್ವಹಣೆ",
+          "description": "ವಿದ್ಯಾರ್ಥಿ ಮತ್ತು ಸಿಬ್ಬಂದಿ ಸದಸ್ಯತ್ವಗಳನ್ನು ಸುಲಭವಾಗಿ ನಿರ್ವಹಿಸಿ."
+        },
+        "qrBorrowing": {
+          "title": "QR ಕೋಡ್ ಎರವಲು",
+          "description": "ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಪುಸ್ತಕವನ್ನು ಎರವಲು ಪಡೆಯಲು ಅಥವಾ ಹಿಂತಿರುಗಿಸಲು QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ."
+        },
+        "aiLibrarian": {
+          "title": "AI ಗ್ರಂಥಪಾಲಕ",
+          "description": "ಸಂಭಾಷಣಾ ಸಹಾಯಕದಿಂದ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಪುಸ್ತಕ ಶಿಫಾರಸುಗಳನ್ನು ಪಡೆಯಿರಿ."
+        },
+        "seatReservation": {
+          "title": "ಸ್ಮಾರ್ಟ್ ಸೀಟ್ ಕಾಯ್ದಿರಿಸುವಿಕೆ",
+          "description": "ಮುಂಚಿತವಾಗಿ ಅಧ್ಯಯನ ಸೀಟನ್ನು ಕಾಯ್ದಿರಿಸಿ ಮತ್ತು ನೈಜ-ಸಮಯದ ಲಭ್ಯತೆಯನ್ನು ನೋಡಿ."
+        },
+        "eventManagement": {
+          "title": "ಕಾರ್ಯಕ್ರಮ ನಿರ್ವಹಣೆ",
+          "description": "ಓದುವ ಕ್ಲಬ್‌ಗಳು, ಕಾರ್ಯಾಗಾರಗಳು ಮತ್ತು ಗ್ರಂಥಾಲಯ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಯೋಜಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ."
+        },
+        "readingChallenges": {
+          "title": "ಓದುವ ಸವಾಲುಗಳು",
+          "description": "ಸಾಧನೆಗಳು ಮತ್ತು ಓದುವ ಗುರಿಗಳೊಂದಿಗೆ ಸದಸ್ಯರನ್ನು ತೊಡಗಿಸಿಕೊಳ್ಳಿ."
+        },
+        "notifications": {
+          "title": "ಅಧಿಸೂಚನೆಗಳು",
+          "description": "ನೈಜ-ಸಮಯದ ಇಮೇಲ್ ಮತ್ತು ಆಪ್-ಒಳಗಿನ ಎಚ್ಚರಿಕೆಗಳೊಂದಿಗೆ ಎಲ್ಲರನ್ನೂ ತಿಳಿಸಿ."
+        },
+        "analytics": {
+          "title": "ವರದಿಗಳು ಮತ್ತು ಅನಾಲಿಟಿಕ್ಸ್",
+          "description": "ಬಳಕೆಯ ಪ್ರವೃತ್ತಿಗಳು, ಜನಪ್ರಿಯ ಶೀರ್ಷಿಕೆಗಳು ಮತ್ತು ಸದಸ್ಯರ ಚಟುವಟಿಕೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ."
+        },
+        "multiDevice": {
+          "title": "ಬಹು-ಸಾಧನ ಬೆಂಬಲ",
+          "description": "ಡೆಸ್ಕ್‌ಟಾಪ್, ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ಮೊಬೈಲ್‌ನಲ್ಲಿ ಸರಾಗವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ."
+        },
+        "secureAuth": {
+          "title": "ಸುರಕ್ಷಿತ ದೃಢೀಕರಣ",
+          "description": "ಪಾತ್ರ-ಆಧಾರಿತ ಪ್ರವೇಶವು ಸದಸ್ಯ ಮತ್ತು ಆಡಳಿತ ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿರಿಸುತ್ತದೆ."
+        },
+        "responsiveDashboard": {
+          "title": "ರೆಸ್ಪಾನ್ಸಿವ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+          "description": "ಯಾವುದೇ ಪರದೆಯ ಗಾತ್ರಕ್ಕೆ ಹೊಂದಿಕೊಳ್ಳುವ ಶುಚಿಯಾದ, ವೇಗದ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್."
+        }
+      }
+    },
+    "whyLonger": {
+      "heading": "ದೀರ್ಘಾವಧಿಯ ಯೋಜನೆಯನ್ನು ಏಕೆ ಆಯ್ಕೆ ಮಾಡಬೇಕು?",
+      "subheading": "ಪ್ರತಿ ಯೋಜನೆಯು ಒಂದೇ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡುತ್ತದೆ — ದೀರ್ಘಾವಧಿಯ ಬದ್ಧತೆ ಎಂದರೆ ಕೇವಲ ಹೆಚ್ಚು ಉಳಿತಾಯ ಮತ್ತು ಕಡಿಮೆ ಚಿಂತೆ.",
+      "items": {
+        "1m": "ವೇದಿಕೆಯನ್ನು ಪ್ರಯತ್ನಿಸಲು ಸೂಕ್ತವಾಗಿದೆ.",
+        "3m": "ಸೆಮಿಸ್ಟರ್ ಬಳಕೆಗೆ ಉತ್ತಮವಾಗಿದೆ.",
+        "6m": "ಶೈಕ್ಷಣಿಕ ಅವಧಿಗಳಿಗೆ ಅತ್ಯುತ್ತಮವಾಗಿದೆ.",
+        "12m": "ಅಡೆತಡೆಯಿಲ್ಲದ ಪ್ರವೇಶದೊಂದಿಗೆ ಗರಿಷ್ಠ ಉಳಿತಾಯ."
+      }
+    },
+    "faq": {
+      "heading": "ಪದೇ ಪದೇ ಕೇಳಲಾಗುವ ಪ್ರಶ್ನೆಗಳು",
+      "items": {
+        "upgrade": {
+          "question": "ನಾನು ನಂತರ ನನ್ನ ಚಂದಾದಾರಿಕೆಯನ್ನು ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಬಹುದೇ?",
+          "answer": "ಹೌದು, ನೀವು ಯಾವಾಗ ಬೇಕಾದರೂ ದೀರ್ಘಾವಧಿಯ ಯೋಜನೆಗೆ ಬದಲಾಯಿಸಬಹುದು ಮತ್ತು ನಾವು ವ್ಯತ್ಯಾಸವನ್ನು ಪ್ರೊರೇಟ್ ಮಾಡುತ್ತೇವೆ."
+        },
+        "cancel": {
+          "question": "ನಾನು ಯಾವಾಗ ಬೇಕಾದರೂ ರದ್ದುಗೊಳಿಸಬಹುದೇ?",
+          "answer": "ಖಂಡಿತವಾಗಿ — ಯಾವುದೇ ದೀರ್ಘಾವಧಿಯ ಒಪ್ಪಂದಗಳು ಅಥವಾ ರದ್ದತಿ ಶುಲ್ಕಗಳಿಲ್ಲ."
+        },
+        "discount": {
+          "question": "ನೀವು ಶೈಕ್ಷಣಿಕ ರಿಯಾಯಿತಿಗಳನ್ನು ನೀಡುತ್ತೀರಾ?",
+          "answer": "ಹೌದು, ಮಾನ್ಯತೆ ಪಡೆದ ಕಾಲೇಜುಗಳು ಮತ್ತು ವಿಶ್ವವಿದ್ಯಾಲಯಗಳು ಯೋಜನೆಯ ಉಳಿತಾಯದ ಮೇಲೆ ಹೆಚ್ಚುವರಿ ರಿಯಾಯಿತಿಗೆ ಅರ್ಹವಾಗಿವೆ."
+        },
+        "support": {
+          "question": "ಗ್ರಾಹಕ ಬೆಂಬಲ ಸೇರಿದೆಯೇ?",
+          "answer": "ಹೌದು, ಎಲ್ಲಾ ಯೋಜನೆಗಳಲ್ಲಿ ಬೆಂಬಲ ಸೇರಿದೆ, ಮತ್ತು 6-ತಿಂಗಳು ಮತ್ತು 12-ತಿಂಗಳ ಯೋಜನೆಗಳಲ್ಲಿ ಆದ್ಯತಾ ಬೆಂಬಲ ಸೇರಿದೆ."
+        },
+        "switchLonger": {
+          "question": "ನಾನು ನಂತರ ದೀರ್ಘಾವಧಿಯ ಚಂದಾದಾರಿಕೆಗೆ ಬದಲಾಯಿಸಬಹುದೇ?",
+          "answer": "ಹೌದು, ನೀವು ಸಿದ್ಧರಾದಾಗ ದೀರ್ಘಾವಧಿಯ ಯೋಜನೆಗೆ ಬದಲಾಯಿಸಬಹುದು, ಮತ್ತು ನಿಮ್ಮ ಉಳಿದ ಸಮಯವನ್ನು ಕ್ರೆಡಿಟ್ ಮಾಡಲಾಗುತ್ತದೆ."
+        },
+        "freeTrial": {
+          "question": "ಉಚಿತ ಪ್ರಯೋಗ ಇದೆಯೇ?",
+          "answer": "ಈ ಪೂರ್ವವೀಕ್ಷಣೆಯು ಯೋಜನೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡುವ ಮೊದಲು ಪ್ರತಿ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಅನ್ವೇಷಿಸಲು ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ — ಯಾವುದೇ ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಅಗತ್ಯವಿಲ್ಲ."
+        }
+      }
+    },
+    "cta": {
+      "heading": "ನಿಮ್ಮ ಗ್ರಂಥಾಲಯವನ್ನು ಆಧುನೀಕರಿಸಲು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+      "subheading": "ಇಂದೇ ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ ಮತ್ತು ನಿಮ್ಮ ಗ್ರಂಥಾಲಯ ಕಾರ್ಯನಿರ್ವಹಿಸುವ ವಿಧಾನವನ್ನು ಬದಲಾಯಿಸಿ.",
+      "primaryButton": "ಪ್ರಾರಂಭಿಸಿ",
+      "secondaryButton": "ಮಾರಾಟ ತಂಡವನ್ನು ಸಂಪರ್ಕಿಸಿ"
+    }
+  },
+  "admin": {
+    "pageTitle": "ಅಡ್ಮಿನ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "pageDescription": "ವ್ಯಾಪಾರ ಕಾರ್ಯಕ್ಷಮತೆ, ನಗದು ಹರಿವು ಮತ್ತು ವೇದಿಕೆ ನಿರ್ವಹಣೆ",
+    "stats": {
+      "revenueMtd": "ಆದಾಯ (ಈ ತಿಂಗಳವರೆಗೆ)",
+      "expensesMtd": "ವೆಚ್ಚಗಳು (ಈ ತಿಂಗಳವರೆಗೆ)",
+      "netProfitMtd": "ನಿವ್ವಳ ಲಾಭ (ಈ ತಿಂಗಳವರೆಗೆ)",
+      "totalMembers": "ಒಟ್ಟು ಸದಸ್ಯರು"
+    },
+    "cashFlow": {
+      "title": "ನಗದು ಹರಿವಿನ ವಿವರ",
+      "total": "ಒಟ್ಟು ಆದಾಯ",
+      "sources": {
+        "membershipFees": "ಸದಸ್ಯತ್ವ ಶುಲ್ಕ",
+        "eventTickets": "ಕಾರ್ಯಕ್ರಮ ಟಿಕೆಟ್ ಮಾರಾಟ",
+        "finesCollected": "ಸಂಗ್ರಹಿಸಿದ ದಂಡ",
+        "donationsValue": "ದೇಣಿಗೆಗಳು (ಅಂದಾಜು ಮೌಲ್ಯ)"
+      }
+    },
+    "budget": {
+      "title": "ಬಜೆಟ್ ಮತ್ತು ವೆಚ್ಚಗಳು",
+      "spentOfBudgeted": "{{budgeted}} ರಲ್ಲಿ {{spent}} ಖರ್ಚಾಗಿದೆ",
+      "logExpense": "ವೆಚ್ಚ ದಾಖಲಿಸಿ",
+      "logExpenseToast": "{{category}} ಗಾಗಿ ವೆಚ್ಚ ದಾಖಲಿಸಲಾಗುತ್ತಿದೆ",
+      "categories": {
+        "staffSalaries": "ಸಿಬ್ಬಂದಿ ಸಂಬಳ",
+        "bookProcurement": "ಪುಸ್ತಕ ಖರೀದಿ",
+        "utilities": "ಯುಟಿಲಿಟಿಗಳು ಮತ್ತು ನಿರ್ವಹಣೆ",
+        "marketing": "ಮಾರ್ಕೆಟಿಂಗ್"
+      }
+    },
+    "pendingRequests": {
+      "title": "ಸದಸ್ಯತ್ವ ಮತ್ತು ಬಿಲ್ಲಿಂಗ್ ವಿನಂತಿಗಳು",
+      "types": {
+        "membershipRenewal": "ಸದಸ್ಯತ್ವ ನವೀಕರಣ",
+        "refundRequest": "ಮರುಪಾವತಿ ವಿನಂತಿ",
+        "feeWaiverRequest": "ಶುಲ್ಕ ಮನ್ನಾ ವಿನಂತಿ"
+      },
+      "from": "{{name}} ರಿಂದ",
+      "rejectToast": "{{name}} ರ ವಿನಂತಿಯನ್ನು ತಿರಸ್ಕರಿಸಲಾಗುತ್ತಿದೆ",
+      "approveToast": "{{name}} ರ ವಿನಂತಿಯನ್ನು ಅನುಮೋದಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "auditLog": {
+      "title": "ಆರ್ಥಿಕ ಚಟುವಟಿಕೆ ಲಾಗ್",
+      "actions": {
+        "fineWaived": "{{name}} ರ \"{{book}}\" ಎರವಲಿಗೆ {{amount}} ದಂಡವನ್ನು ಮನ್ನಾ ಮಾಡಲಾಗಿದೆ",
+        "finePolicyUpdated": "ದಂಡ ನೀತಿಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ: ಗ್ರೇಸ್ ಅವಧಿ {{from}} → {{to}} ದಿನಗಳು",
+        "expenseApproved": "{{category}} ಗಾಗಿ {{amount}} ವೆಚ್ಚವನ್ನು ಅನುಮೋದಿಸಲಾಗಿದೆ",
+        "budgetAdjusted": "{{category}} ಬಜೆಟ್ ಅನ್ನು ಸರಿಹೊಂದಿಸಲಾಗಿದೆ: {{from}} → {{to}}",
+        "refundIssued": "{{name}} ಗೆ {{amount}} ಮರುಪಾವತಿ ನೀಡಲಾಗಿದೆ"
+      }
+    },
+    "reports": {
+      "title": "ವರದಿಗಳು",
+      "items": {
+        "revenueByPlan": "ಸದಸ್ಯತ್ವ ಯೋಜನೆಯ ಪ್ರಕಾರ ಆದಾಯ",
+        "profitAndLoss": "ಲಾಭ ಮತ್ತು ನಷ್ಟ ಸಾರಾಂಶ",
+        "expenseBreakdown": "ವೆಚ್ಚದ ವಿವರ",
+        "membershipGrowth": "ಸದಸ್ಯತ್ವ ಬೆಳವಣಿಗೆ"
+      }
+    },
+    "quickActions": {
+      "logExpense": "ವೆಚ್ಚ ದಾಖಲಿಸಿ",
+      "adjustPricing": "ಬೆಲೆ ಯೋಜನೆಗಳನ್ನು ಸರಿಹೊಂದಿಸಿ",
+      "inviteMember": "ಸದಸ್ಯರನ್ನು ಆಹ್ವಾನಿಸಿ",
+      "announcement": "ಪ್ರಕಟಣೆ",
+      "viewGrowthReport": "ಬೆಳವಣಿಗೆ ವರದಿ ವೀಕ್ಷಿಸಿ",
+      "toasts": {
+        "loggingExpense": "ವೆಚ್ಚ ದಾಖಲಿಸಲಾಗುತ್ತಿದೆ",
+        "adjustingPricing": "ಸದಸ್ಯತ್ವ ಬೆಲೆ ಯೋಜನೆಗಳನ್ನು ಸರಿಹೊಂದಿಸಲಾಗುತ್ತಿದೆ",
+        "invitingMember": "ಸದಸ್ಯರನ್ನು ಆಹ್ವಾನಿಸಲಾಗುತ್ತಿದೆ",
+        "sendingAnnouncement": "ಪ್ರಕಟಣೆಯನ್ನು ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ",
+        "viewingGrowthReport": "ಬೆಳವಣಿಗೆ ವರದಿ ವೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ"
+      }
+    }
+  },
+  "itHead": {
+    "pageTitle": "ಐಟಿ ಮುಖ್ಯಸ್ಥ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "pageDescription": "ಪ್ರವೇಶ ನಿಯಂತ್ರಣ, ಸಮಸ್ಯೆ ಪರಿಹಾರ, ಪುಸ್ತಕ ದಾಖಲೆಗಳು ಮತ್ತು ಶುಲ್ಕ ಸ್ಥಿತಿ",
+    "stats": {
+      "activeMembers": "ಸಕ್ರಿಯ ಸದಸ್ಯರು",
+      "openIssues": "ಬಾಕಿ ಇರುವ ಸಮಸ್ಯೆಗಳು",
+      "pendingPermissions": "ಬಾಕಿ ಇರುವ ಅನುಮತಿಗಳು",
+      "feesOutstanding": "ಬಾಕಿ ಶುಲ್ಕ",
+      "lateFinesOutstanding": "ಬಾಕಿ ವಿಳಂಬ ದಂಡ"
+    },
+    "accessControl": {
+      "title": "ಪ್ರವೇಶ ನಿಯಂತ್ರಣ",
+      "status": {
+        "active": "ಸಕ್ರಿಯ",
+        "deactivated": "ನಿಷ್ಕ್ರಿಯ"
+      },
+      "pendingPermission": "ವಿನಂತಿಸಲಾಗಿದೆ: {{permission}}",
+      "grantAccess": "ಪ್ರವೇಶ ನೀಡಿ",
+      "deactivate": "ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ",
+      "reactivate": "ಮರುಸಕ್ರಿಯಗೊಳಿಸಿ",
+      "grantToast": "{{name}} ಗೆ ಪ್ರವೇಶ ನೀಡಲಾಗುತ್ತಿದೆ",
+      "deactivateToast": "{{name}} ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತಿದೆ",
+      "reactivateToast": "{{name}} ಅನ್ನು ಮರುಸಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "issueResolution": {
+      "title": "ಸಮಸ್ಯೆ ಪರಿಹಾರ",
+      "categories": {
+        "technical": "ತಾಂತ್ರಿಕ",
+        "account": "ಖಾತೆ",
+        "bookAccess": "ಪುಸ್ತಕ ಪ್ರವೇಶ",
+        "other": "ಇತರೆ"
+      },
+      "status": {
+        "open": "ಬಾಕಿ ಇದೆ",
+        "resolved": "ಪರಿಹರಿಸಲಾಗಿದೆ"
+      },
+      "from": "{{name}} ವರದಿ ಮಾಡಿದ್ದಾರೆ",
+      "resolve": "ಪರಿಹರಿಸಿ",
+      "resolveToast": "{{name}} ರ ಸಮಸ್ಯೆಯನ್ನು ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "bookRecords": {
+      "title": "ಪುಸ್ತಕ ದಾಖಲೆಗಳು",
+      "types": {
+        "lost": "ಕಳೆದುಹೋಗಿದೆ",
+        "donated": "ದೇಣಿಗೆ ನೀಡಲಾಗಿದೆ",
+        "purchased": "ಖರೀದಿಸಲಾಗಿದೆ"
+      }
+    },
+    "feeStatus": {
+      "title": "ಶುಲ್ಕ ಸ್ಥಿತಿ",
+      "dueDate": "ಬಾಕಿ ದಿನಾಂಕ {{date}}",
+      "status": {
+        "paid": "ಪಾವತಿಸಲಾಗಿದೆ",
+        "due": "ಬಾಕಿ",
+        "overdue": "ವಿಳಂಬವಾಗಿದೆ"
+      }
+    },
+    "lateFines": {
+      "title": "ವಿಳಂಬ ಹಿಂತಿರುಗಿಸುವಿಕೆ ದಂಡ",
+      "borrowedBy": "{{name}} ಎರವಲು ಪಡೆದಿದ್ದಾರೆ",
+      "dueDate": "ಹಿಂತಿರುಗಿಸಬೇಕಿದ್ದ ದಿನಾಂಕ {{date}}",
+      "daysLate": "{{count}} ದಿನ ವಿಳಂಬ",
+      "status": {
+        "paid": "ಪಾವತಿಸಲಾಗಿದೆ",
+        "unpaid": "ಬಾಕಿ"
+      },
+      "sendReminder": "ಜ್ಞಾಪನೆ ಕಳುಹಿಸಿ",
+      "reminderToast": "{{name}} ಗೆ ದಂಡದ ಜ್ಞಾಪನೆ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "quickActions": {
+      "grantAccess": "ಪ್ರವೇಶ ನೀಡಿ",
+      "deactivateUser": "ಬಳಕೆದಾರರನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ",
+      "resolveIssue": "ಸಮಸ್ಯೆ ಪರಿಹರಿಸಿ",
+      "logBookChange": "ಪುಸ್ತಕ ದಾಖಲೆ ಬದಲಾವಣೆ ದಾಖಲಿಸಿ",
+      "toasts": {
+        "grantingAccess": "ಪ್ರವೇಶ ನೀಡಲಾಗುತ್ತಿದೆ",
+        "deactivatingUser": "ಬಳಕೆದಾರರನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತಿದೆ",
+        "resolvingIssue": "ಸಮಸ್ಯೆಯನ್ನು ಪರಿಹರಿಸಲಾಗುತ್ತಿದೆ",
+        "loggingBookChange": "ಪುಸ್ತಕ ದಾಖಲೆ ಬದಲಾವಣೆಯನ್ನು ದಾಖಲಿಸಲಾಗುತ್ತಿದೆ"
+      }
+    }
+  },
+  "guardian": {
+    "pageTitle": "ರಕ್ಷಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "pageDescription": "ನಿಮ್ಮ ಮಕ್ಕಳ ಗ್ರಂಥಾಲಯ ಚಟುವಟಿಕೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಅವರ ಖಾತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+    "stats": {
+      "linkedChildren": "ಲಿಂಕ್ ಮಾಡಲಾದ ಮಕ್ಕಳು",
+      "currentlyInLibrary": "ಪ್ರಸ್ತುತ ಗ್ರಂಥಾಲಯದಲ್ಲಿ",
+      "booksBorrowed": "ಎರವಲು ಪಡೆದ ಪುಸ್ತಕಗಳು",
+      "totalDues": "ಒಟ್ಟು ಬಾಕಿ"
+    },
+    "presence": {
+      "title": "ಗ್ರಂಥಾಲಯ ಚೆಕ್-ಇನ್ / ಚೆಕ್-ಔಟ್",
+      "emptyTitle": "ಇನ್ನೂ ಯಾವುದೇ ಮಗುವನ್ನು ಲಿಂಕ್ ಮಾಡಿಲ್ಲ",
+      "emptyDescription": "ಅವರ ಗ್ರಂಥಾಲಯ ಚಟುವಟಿಕೆಯನ್ನು ಇಲ್ಲಿ ನೋಡಲು ಮಗುವಿನ ಸದಸ್ಯತ್ವವನ್ನು ಲಿಂಕ್ ಮಾಡಿ.",
+      "status": {
+        "inLibrary": "ಗ್ರಂಥಾಲಯದಲ್ಲಿ",
+        "left": "ತೊರೆದಿದ್ದಾರೆ"
+      },
+      "checkedInAt": "{{time}} ಗೆ ಚೆಕ್-ಇನ್ ಮಾಡಲಾಗಿದೆ",
+      "leftAt": "{{time}} ಗೆ ತೊರೆದಿದ್ದಾರೆ"
+    },
+    "borrowedBooks": {
+      "title": "ಎರವಲು ಪಡೆದ ಪುಸ್ತಕಗಳು",
+      "emptyTitle": "ಯಾವುದೇ ಪುಸ್ತಕ ಎರವಲು ಪಡೆದಿಲ್ಲ",
+      "emptyDescription": "ನಿಮ್ಮ ಮಕ್ಕಳು ಎರವಲು ಪಡೆಯುವ ಪುಸ್ತಕಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ.",
+      "dueOn": "{{date}} ರಂದು ಹಿಂತಿರುಗಿಸಬೇಕು",
+      "status": {
+        "onTime": "ಸಮಯಕ್ಕೆ",
+        "dueSoon": "ಶೀಘ್ರದಲ್ಲೇ ಬಾಕಿ",
+        "overdue": "ಮಿತಿ ಮೀರಿದೆ"
+      }
+    },
+    "subscription": {
+      "title": "ಚಂದಾದಾರಿಕೆ ಮತ್ತು ದಂಡ",
+      "expiresOn": "{{date}} ರಂದು ಮುಗಿಯುತ್ತದೆ",
+      "fineOwed": "ಬಾಕಿ ದಂಡ: {{amount}}",
+      "noFine": "ಯಾವುದೇ ಬಾಕಿ ದಂಡ ಇಲ್ಲ",
+      "renew": "ನವೀಕರಿಸಿ",
+      "payFine": "ದಂಡ ಪಾವತಿಸಿ",
+      "renewToast": "{{name}} ಅವರ ಚಂದಾದಾರಿಕೆಯನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ",
+      "payFineToast": "{{name}} ಗಾಗಿ {{amount}} ದಂಡವನ್ನು ಪಾವತಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "seatReservation": {
+      "title": "ನಿಮ್ಮ ಮಗುವಿಗೆ ಸೀಟ್ ಕಾಯ್ದಿರಿಸಿ",
+      "selectChild": "ಮಗುವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+      "selectChildPlaceholder": "ಒಂದು ಮಗುವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+      "selectPrompt": "ಮುಂದುವರಿಸಲು ಲಭ್ಯವಿರುವ ಸೀಟನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+      "selected": "{{name}} ಗಾಗಿ ಸೀಟ್ {{seatId}} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
+      "confirmButton": "ಬುಕಿಂಗ್ ದೃಢೀಕರಿಸಿ",
+      "confirmToast": "{{name}} ಗಾಗಿ ಸೀಟ್ {{seatId}} ಬುಕ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+    },
+    "quickActions": {
+      "payAllFines": "ಎಲ್ಲಾ ದಂಡಗಳನ್ನು ಪಾವತಿಸಿ",
+      "renewSubscription": "ಚಂದಾದಾರಿಕೆ ನವೀಕರಿಸಿ",
+      "contactLibrarian": "ಗ್ರಂಥಪಾಲಕರನ್ನು ಸಂಪರ್ಕಿಸಿ",
+      "toasts": {
+        "payingAllFines": "ಎಲ್ಲಾ ಬಾಕಿ ದಂಡಗಳನ್ನು ಪಾವತಿಸಲಾಗುತ್ತಿದೆ",
+        "renewingSubscription": "ಚಂದಾದಾರಿಕೆಯನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ",
+        "contactingLibrarian": "ಗ್ರಂಥಪಾಲಕರನ್ನು ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
+      }
+    }
+  },
+  "dashboard": {
+    "welcomeBack": "ಮತ್ತೆ ಸ್ವಾಗತ, {{name}}",
+    "subtitle": "{{plan}} · ನಿಮ್ಮ ಗ್ರಂಥಾಲಯದಲ್ಲಿ ಏನಾಗುತ್ತಿದೆ ಎಂಬುದು ಇಲ್ಲಿದೆ",
+    "membershipPlans": {
+      "premium": "ಪ್ರೀಮಿಯಂ ಸದಸ್ಯ",
+      "standard": "ಸ್ಟ್ಯಾಂಡರ್ಡ್ ಸದಸ್ಯ",
+      "basic": "ಬೇಸಿಕ್ ಸದಸ್ಯ"
+    },
+    "stats": {
+      "booksBorrowed": "ಎರವಲು ಪಡೆದ ಪುಸ್ತಕಗಳು",
+      "booksReserved": "ಕಾಯ್ದಿರಿಸಿದ ಪುಸ್ತಕಗಳು",
+      "seatBookings": "ಸೀಟ್ ಬುಕಿಂಗ್‌ಗಳು",
+      "readingPoints": "ಓದುವ ಅಂಕಗಳು"
+    },
+    "booksDueSoon": {
+      "title": "ಶೀಘ್ರದಲ್ಲೇ ಹಿಂತಿರುಗಿಸಬೇಕಾದ ಪುಸ್ತಕಗಳು",
+      "emptyTitle": "ಶೀಘ್ರದಲ್ಲಿ ಬಾಕಿ ಏನೂ ಇಲ್ಲ",
+      "emptyDescription": "ನೀವು ಎಲ್ಲದರಲ್ಲೂ ಅಪ್‌ಡೇಟ್ ಆಗಿದ್ದೀರಿ.",
+      "due": "{{date}} ರಂದು ಬಾಕಿ · {{days}}"
+    },
+    "currentlyBorrowed": {
+      "title": "ಪ್ರಸ್ತುತ ಎರವಲು ಪಡೆದಿರುವುದು"
+    },
+    "readingProgress": {
+      "title": "ಓದುವ ಪ್ರಗತಿ",
+      "pagesOf": "{{totalPages}} ರಲ್ಲಿ {{pagesRead}} ಪುಟಗಳು"
+    },
+    "monthlyChallenge": {
+      "title": "ಮಾಸಿಕ ಸವಾಲು",
+      "booksOf": "{{target}} ರಲ್ಲಿ {{current}} ಪುಸ್ತಕಗಳು"
+    },
+    "quickActions": {
+      "title": "ತ್ವರಿತ ಕ್ರಿಯೆಗಳು",
+      "browseBooks": "ಪುಸ್ತಕಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ",
+      "bookASeat": "ಸೀಟ್ ಬುಕ್ ಮಾಡಿ",
+      "viewReservations": "ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ"
+    },
+    "notifications": {
+      "title": "ಇತ್ತೀಚಿನ ಅಧಿಸೂಚನೆಗಳು",
+      "reservationReady": "\"{{book}}\" ಗಾಗಿ ನಿಮ್ಮ ಕಾಯ್ದಿರಿಸುವಿಕೆ ಪಿಕಪ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ",
+      "dueInDays": "\"{{book}}\" {{count}} ದಿನಗಳಲ್ಲಿ ಬಾಕಿಯಾಗಲಿದೆ",
+      "achievementEarned": "ನೀವು \"{{achievement}}\" ಸಾಧನೆಯನ್ನು ಗಳಿಸಿದ್ದೀರಿ"
+    },
+    "upcomingEvents": {
+      "title": "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು"
+    }
+  },
+  "librarianDashboard": {
+    "pageTitle": "ಗ್ರಂಥಪಾಲಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "pageDescription": "ಕ್ಯಾಟಲಾಗ್, ಎರವಲು ಮತ್ತು ದಂಡಗಳ ಒಂದು ನೋಟ",
+    "stats": {
+      "booksBorrowedToday": "ಇಂದು ಎರವಲು ಪಡೆದ ಪುಸ್ತಕಗಳು",
+      "overdueBooks": "ಬಾಕಿ ಪುಸ್ತಕಗಳು",
+      "pendingReservations": "ಬಾಕಿ ಇರುವ ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು",
+      "finesCollectedMtd": "ಸಂಗ್ರಹಿಸಿದ ದಂಡ (ಈ ತಿಂಗಳವರೆಗೆ)"
+    },
+    "overdueBooks": {
+      "title": "ಬಾಕಿ ಪುಸ್ತಕಗಳು",
+      "emptyTitle": "ಯಾವುದೇ ಬಾಕಿ ಪುಸ್ತಕಗಳಿಲ್ಲ",
+      "emptyDescription": "ಪ್ರತಿ ಎರವಲು ಸಮಯಕ್ಕೆ ಸರಿಯಾಗಿದೆ.",
+      "dueOn": "{{borrower}} · {{date}} ರಂದು ಬಾಕಿ",
+      "daysOverdue": "{{count}} ದಿನ ತಡವಾಗಿದೆ",
+      "remind": "ನೆನಪಿಸಿ",
+      "remindToast": "{{name}} ಗೆ ಜ್ಞಾಪನೆ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "pendingReservations": {
+      "title": "ಬಾಕಿ ಇರುವ ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು",
+      "emptyTitle": "ಸರತಿ ಸಾಲು ಖಾಲಿ ಇದೆ",
+      "emptyDescription": "ಸದ್ಯಕ್ಕೆ ಯಾವುದೇ ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು ಕಾಯುತ್ತಿಲ್ಲ.",
+      "position": "{{member}} · {{total}} ರಲ್ಲಿ {{position}} ನೇ ಸ್ಥಾನ",
+      "notify": "ತಿಳಿಸಿ",
+      "notifyToast": "{{name}} ಗೆ ತಿಳಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "quickActions": {
+      "issueBook": "ಪುಸ್ತಕ ವಿತರಿಸಿ",
+      "returnBook": "ಪುಸ್ತಕ ಹಿಂತಿರುಗಿಸಿ",
+      "scanQr": "QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+      "toasts": {
+        "issuingBook": "ಪುಸ್ತಕವನ್ನು ವಿತರಿಸಲಾಗುತ್ತಿದೆ",
+        "returningBook": "ಪುಸ್ತಕವನ್ನು ಹಿಂತಿರುಗಿಸಲಾಗುತ್ತಿದೆ",
+        "scanningQr": "QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+      }
+    }
+  },
+  "managerDashboard": {
+    "pageTitle": "ವ್ಯವಸ್ಥಾಪಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "pageDescription": "ಕಾರ್ಯಕ್ರಮಗಳು, ಅಧಿವೇಶನಗಳು ಮತ್ತು ಹಾಜರಾತಿ ಅವಲೋಕನ",
+    "stats": {
+      "upcomingEvents": "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು",
+      "attendeesThisMonth": "ಈ ತಿಂಗಳ ಹಾಜರಾತಿದಾರರು",
+      "avgAttendanceRate": "ಸರಾಸರಿ ಹಾಜರಾತಿ ದರ",
+      "activeReadingSessions": "ಸಕ್ರಿಯ ಓದುವ ಅಧಿವೇಶನಗಳು"
+    },
+    "events": {
+      "title": "ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು",
+      "emptyTitle": "ಯಾವುದೇ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ನಿಗದಿಪಡಿಸಿಲ್ಲ",
+      "emptyDescription": "ಪ್ರಾರಂಭಿಸಲು ಒಂದನ್ನು ರಚಿಸಿ.",
+      "attendingCount": "{{capacity}} ರಲ್ಲಿ {{attendees}} ಹಾಜರಾಗುತ್ತಿದ್ದಾರೆ",
+      "managersAssigned_one": "{{count}} ವ್ಯವಸ್ಥಾಪಕರನ್ನು ನಿಯೋಜಿಸಲಾಗಿದೆ",
+      "managersAssigned_other": "{{count}} ವ್ಯವಸ್ಥಾಪಕರನ್ನು ನಿಯೋಜಿಸಲಾಗಿದೆ",
+      "manage": "ನಿರ್ವಹಿಸಿ",
+      "manageToast": "\"{{title}}\" ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗುತ್ತಿದೆ"
+    },
+    "readingSessions": {
+      "title": "ಓದುವ ಅಧಿವೇಶನಗಳು",
+      "emptyTitle": "ಯಾವುದೇ ಅಧಿವೇಶನಗಳನ್ನು ನಿಗದಿಪಡಿಸಿಲ್ಲ",
+      "emptyDescription": "ಪ್ರಾರಂಭಿಸಲು ಒಂದನ್ನು ರಚಿಸಿ.",
+      "ledBy": "{{date}} · ನೇತೃತ್ವ {{facilitator}}",
+      "joined": "{{count}} ಸೇರಿದ್ದಾರೆ"
+    },
+    "quickActions": {
+      "createEvent": "ಕಾರ್ಯಕ್ರಮ ರಚಿಸಿ",
+      "recordAttendance": "ಹಾಜರಾತಿ ದಾಖಲಿಸಿ",
+      "postUpdate": "ಅಪ್‌ಡೇಟ್ ಪೋಸ್ಟ್ ಮಾಡಿ",
+      "toasts": {
+        "creatingEvent": "ಕಾರ್ಯಕ್ರಮವನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ",
+        "recordingAttendance": "ಹಾಜರಾತಿಯನ್ನು ದಾಖಲಿಸಲಾಗುತ್ತಿದೆ",
+        "postingUpdate": "ಸಮುದಾಯ ಅಪ್‌ಡೇಟ್ ಪೋಸ್ಟ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+      }
+    }
+  },
+  "books": {
+    "pageTitle": "ಪುಸ್ತಕಗಳು",
+    "pageDescription": "ಗ್ರಂಥಾಲಯ ಕ್ಯಾಟಲಾಗ್ ಬ್ರೌಸ್ ಮಾಡಿ",
+    "filters": {
+      "searchPlaceholder": "ಶೀರ್ಷಿಕೆ ಅಥವಾ ಲೇಖಕರ ಮೂಲಕ ಹುಡುಕಿ…",
+      "searchAriaLabel": "ಪುಸ್ತಕಗಳನ್ನು ಹುಡುಕಿ",
+      "categoryAriaLabel": "ವರ್ಗದ ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ",
+      "allCategories": "ಎಲ್ಲಾ"
+    },
+    "status": {
+      "available": "ಲಭ್ಯವಿದೆ",
+      "checkedOut": "ಎರವಲು ನೀಡಲಾಗಿದೆ"
+    },
+    "empty": {
+      "title": "ಯಾವುದೇ ಪುಸ್ತಕಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+      "description": "ಬೇರೆ ಹುಡುಕಾಟ ಪದ ಅಥವಾ ವರ್ಗವನ್ನು ಪ್ರಯತ್ನಿಸಿ."
+    },
+    "details": {
+      "notFound": {
+        "title": "ಪುಸ್ತಕ ಕಂಡುಬಂದಿಲ್ಲ",
+        "description": "ಈ ಪುಸ್ತಕವನ್ನು ಕ್ಯಾಟಲಾಗ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗಿರಬಹುದು."
+      },
+      "backToBooks": "ಪುಸ್ತಕಗಳಿಗೆ ಹಿಂತಿರುಗಿ",
+      "copiesAvailable": "{{total}} ರಲ್ಲಿ {{available}} ಪ್ರತಿಗಳು ಲಭ್ಯವಿದೆ",
+      "reserveButton": "ಈ ಪುಸ್ತಕವನ್ನು ಕಾಯ್ದಿರಿಸಿ",
+      "reservingToast": "\"{{title}}\" ಅನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗುತ್ತಿದೆ"
+    }
+  },
+  "events": {
+    "pageTitle": "ಕಾರ್ಯಕ್ರಮಗಳು",
+    "pageDescription": "ಮುಂಬರುವ ಗ್ರಂಥಾಲಯ ಕಾರ್ಯಕ್ರಮಗಳು ಮತ್ತು ಸಮುದಾಯ ಕಾರ್ಯಕ್ರಮಗಳು",
+    "stats": {
+      "eventsThisMonth": "ಈ ತಿಂಗಳ ಕಾರ್ಯಕ್ರಮಗಳು",
+      "totalAttendees": "ಒಟ್ಟು ಹಾಜರಾತಿದಾರರು",
+      "avgAttendanceRate": "ಸರಾಸರಿ ಹಾಜರಾತಿ ದರ"
+    },
+    "details": {
+      "defaultTitle": "ಕಾರ್ಯಕ್ರಮದ ವಿವರಗಳು",
+      "attending": "{{capacity}} ರಲ್ಲಿ {{attendees}} ಹಾಜರಾಗುತ್ತಿದ್ದಾರೆ",
+      "registrationTitle": "ನೋಂದಣಿ",
+      "registered": "ನೀವು ನೋಂದಾಯಿಸಿಕೊಂಡಿದ್ದೀರಿ",
+      "notRegistered": "ನೋಂದಾಯಿಸಿಲ್ಲ",
+      "register": "ನೋಂದಾಯಿಸಿ",
+      "cancelRegistration": "ನೋಂದಣಿ ರದ್ದುಗೊಳಿಸಿ",
+      "toasts": {
+        "registering": "ನೋಂದಾಯಿಸಲಾಗುತ್ತಿದೆ",
+        "cancellingRegistration": "ನೋಂದಣಿ ರದ್ದುಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
+      },
+      "managerAssignmentsTitle": "ವ್ಯವಸ್ಥಾಪಕ ನಿಯೋಜನೆಗಳು",
+      "noManagersAssigned": "ಇನ್ನೂ ಯಾವುದೇ ವ್ಯವಸ್ಥಾಪಕರನ್ನು ನಿಯೋಜಿಸಿಲ್ಲ."
+    }
+  },
+  "reservations": {
+    "pageTitle": "ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು",
+    "pageDescription": "ನಿಮ್ಮ ಪುಸ್ತಕ ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು ಮತ್ತು ಸರತಿ ಸಾಲಿನ ಸ್ಥಾನವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
+    "current": {
+      "heading": "ಪ್ರಸ್ತುತ ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳು",
+      "emptyTitle": "ಯಾವುದೇ ಸಕ್ರಿಯ ಕಾಯ್ದಿರಿಸುವಿಕೆಗಳಿಲ್ಲ",
+      "emptyDescription": "ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳಲು ಕ್ಯಾಟಲಾಗ್‌ನಿಂದ ಒಂದು ಪುಸ್ತಕವನ್ನು ಕಾಯ್ದಿರಿಸಿ."
+    },
+    "queue": {
+      "heading": "ಕಾಯ್ದಿರಿಸುವಿಕೆ ಸರತಿ ಸಾಲು",
+      "emptyTitle": "ನೀವು ಯಾವುದಕ್ಕೂ ಕಾಯುತ್ತಿಲ್ಲ",
+      "emptyDescription": "ನೀವು ಸರತಿ ಸಾಲಿಗೆ ಸೇರಿದ ತಕ್ಷಣ ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತೀರಿ.",
+      "entry": "— {{total}} ರಲ್ಲಿ {{position}} ನೇ ಸ್ಥಾನ, ಅಂದಾಜು ಕಾಯುವಿಕೆ {{wait}}"
+    },
+    "status": {
+      "ready": "ಪಿಕಪ್‌ಗೆ ಸಿದ್ಧ",
+      "waiting": "ಸರತಿ ಸಾಲಿನಲ್ಲಿ ಕಾಯುತ್ತಿದೆ",
+      "waitingWithPosition": "ಸರತಿ ಸಾಲಿನಲ್ಲಿ ಕಾಯುತ್ತಿದೆ · #{{position}}",
+      "expired": "ಅವಧಿ ಮುಗಿದಿದೆ"
+    },
+    "actions": {
+      "cancel": "ರದ್ದುಗೊಳಿಸಿ"
+    },
+    "cancelDialog": {
+      "title": "ಕಾಯ್ದಿರಿಸುವಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸುವುದೇ?",
+      "description": "ಇದು \"{{book}}\" ಗಾಗಿ ನಿಮ್ಮ ಕಾಯ್ದಿರಿಸುವಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸುತ್ತದೆ.",
+      "confirmLabel": "ಕಾಯ್ದಿರಿಸುವಿಕೆ ರದ್ದುಗೊಳಿಸಿ"
+    },
+    "cancelToast": "\"{{book}}\" ಅನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
+  },
+  "seatBooking": {
+    "pageTitle": "ಸೀಟ್ ಬುಕಿಂಗ್",
+    "pageDescription": "ಶಾಂತ ಅಧ್ಯಯನ ಆಸನವನ್ನು ಕಾಯ್ದಿರಿಸಿ",
+    "confirmToast": "ಸೀಟ್ {{seatId}} ಬುಕ್ ಮಾಡಲಾಗುತ್ತಿದೆ",
+    "bookingSummary": {
+      "title": "ಬುಕಿಂಗ್ ಸಾರಾಂಶ",
+      "selected": "ಇಂದಿಗೆ ಸೀಟ್ {{seatId}} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
+      "selectPrompt": "ಮುಂದುವರಿಯಲು ಲಭ್ಯವಿರುವ ಸೀಟನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+      "confirmButton": "ಬುಕಿಂಗ್ ದೃಢೀಕರಿಸಿ"
+    }
+  },
+  "readingProgress": {
+    "pageTitle": "ಓದುವ ಪ್ರಗತಿ",
+    "pageDescription": "ವರ್ಷವಿಡೀ ನಿಮ್ಮ ಓದುವ ಚಟುವಟಿಕೆ",
+    "readingGoal": {
+      "title": "{{year}} ಓದುವ ಗುರಿ",
+      "booksOf": "{{target}} ರಲ್ಲಿ {{current}} ಪುಸ್ತಕಗಳು"
+    },
+    "readingStreak": {
+      "title": "ಓದುವ ಸ್ಟ್ರೀಕ್",
+      "currentDays_one": "{{count}} ದಿನ",
+      "currentDays_other": "{{count}} ದಿನ",
+      "longest_one": "ಅತಿ ಉದ್ದದ ಸ್ಟ್ರೀಕ್: {{count}} ದಿನ",
+      "longest_other": "ಅತಿ ಉದ್ದದ ಸ್ಟ್ರೀಕ್: {{count}} ದಿನ"
+    },
+    "lists": {
+      "currentlyReading": {
+        "title": "ಪ್ರಸ್ತುತ ಓದುತ್ತಿರುವುದು",
+        "emptyDescription": "ಇಲ್ಲಿ ಟ್ರ್ಯಾಕ್ ಮಾಡಲು ಒಂದು ಪುಸ್ತಕವನ್ನು ಪ್ರಾರಂಭಿಸಿ."
+      },
+      "completed": {
+        "title": "ಪೂರ್ಣಗೊಂಡಿದೆ",
+        "emptyDescription": "ನೀವು ಮುಗಿಸಿದ ಪುಸ್ತಕಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ."
+      },
+      "wantToRead": {
+        "title": "ಓದಲು ಬಯಸುವುದು",
+        "emptyDescription": "ಮುಂದೆ ಓದಲು ಯೋಜಿಸಿರುವ ಪುಸ್ತಕಗಳನ್ನು ಉಳಿಸಿ."
+      }
+    },
+    "emptyState": {
+      "title": "ಇಲ್ಲಿ ಇನ್ನೂ ಏನೂ ಇಲ್ಲ"
+    },
+    "byAuthor": "{{author}} ಅವರಿಂದ"
+  },
+  "leaderboard": {
+    "pageTitle": "ಲೀಡರ್‌ಬೋರ್ಡ್",
+    "pageDescription": "ಈ ತಿಂಗಳ ಸಮುದಾಯದ ಟಾಪ್ ಓದುಗರು",
+    "table": {
+      "rank": "ಶ್ರೇಣಿ",
+      "reader": "ಓದುಗ",
+      "points": "ಅಂಕಗಳು",
+      "badges": "ಬ್ಯಾಡ್ಜ್‌ಗಳು",
+      "hoursRead": "ಓದಿದ ಗಂಟೆಗಳು"
+    },
+    "hoursSuffix": "{{hours}} ಗಂ"
+  },
+  "reviews": {
+    "pageTitle": "ಪುಸ್ತಕ ವಿಮರ್ಶೆಗಳು",
+    "byAuthor": "{{author}} ಅವರಿಂದ",
+    "writeReview": "ವಿಮರ್ಶೆ ಬರೆಯಿರಿ",
+    "writeReviewDisabledHint": "ವಿಮರ್ಶೆಗಳ ಸಲ್ಲಿಕೆ ಇನ್ನೂ ತೆರೆದಿಲ್ಲ",
+    "commentsHeading": "ಕಾಮೆಂಟ್‌ಗಳು",
+    "summary": {
+      "totalReviews_one": "{{count}} ವಿಮರ್ಶೆಗಳು",
+      "totalReviews_other": "{{count}} ವಿಮರ್ಶೆಗಳು",
+      "starsLabel_one": "{{count}} ನಕ್ಷತ್ರಗಳು",
+      "starsLabel_other": "{{count}} ನಕ್ಷತ್ರಗಳು"
+    }
+  },
+  "notifications": {
+    "pageTitle": "ಅಧಿಸೂಚನೆಗಳು",
+    "unreadBadge_one": "{{count}} ಓದದಿರುವ",
+    "unreadBadge_other": "{{count}} ಓದದಿರುವ",
+    "filterAriaLabel": "ಅಧಿಸೂಚನೆಗಳನ್ನು ಫಿಲ್ಟರ್ ಮಾಡಿ",
+    "filters": {
+      "all": "ಎಲ್ಲಾ",
+      "unread": "ಓದದಿರುವ"
+    },
+    "empty": {
+      "title": "ಇಲ್ಲಿ ನೋಡಲು ಏನೂ ಇಲ್ಲ",
+      "description": "ನೀವು ಎಲ್ಲಾ ಅಧಿಸೂಚನೆಗಳಲ್ಲೂ ಅಪ್‌ಡೇಟ್ ಆಗಿದ್ದೀರಿ."
+    },
+    "titles": {
+      "bookDue": "ಪುಸ್ತಕ ಶೀಘ್ರದಲ್ಲಿ ಬಾಕಿಯಾಗಲಿದೆ",
+      "reservationReady": "ಕಾಯ್ದಿರಿಸುವಿಕೆ ಸಿದ್ಧವಾಗಿದೆ",
+      "newArrival": "ಹೊಸ ಆಗಮನ",
+      "achievementUnlocked": "ಸಾಧನೆ ಅನ್‌ಲಾಕ್ ಆಗಿದೆ",
+      "membershipRenewal": "ಸದಸ್ಯತ್ವ ನವೀಕರಣ"
+    },
+    "plans": {
+      "premium": "ಪ್ರೀಮಿಯಂ",
+      "standard": "ಸ್ಟ್ಯಾಂಡರ್ಡ್",
+      "basic": "ಬೇಸಿಕ್"
+    },
+    "messages": {
+      "dueInDays_one": "\"{{book}}\" {{count}} ದಿನದಲ್ಲಿ ಬಾಕಿಯಾಗಲಿದೆ",
+      "dueInDays_other": "\"{{book}}\" {{count}} ದಿನದಲ್ಲಿ ಬಾಕಿಯಾಗಲಿದೆ",
+      "reservationReady": "\"{{book}}\" ಪಿಕಪ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ",
+      "newBookAdded": "\"{{book}}\" ಅನ್ನು {{category}} ಸಂಗ್ರಹಕ್ಕೆ ಸೇರಿಸಲಾಗಿದೆ",
+      "achievementEarned_one": "ಈ ವರ್ಷ {{count}} ಪುಸ್ತಕಗಳನ್ನು ಓದಿದ್ದಕ್ಕಾಗಿ ನೀವು \"{{achievement}}\" ಬ್ಯಾಡ್ಜ್ ಗಳಿಸಿದ್ದೀರಿ",
+      "achievementEarned_other": "ಈ ವರ್ಷ {{count}} ಪುಸ್ತಕಗಳನ್ನು ಓದಿದ್ದಕ್ಕಾಗಿ ನೀವು \"{{achievement}}\" ಬ್ಯಾಡ್ಜ್ ಗಳಿಸಿದ್ದೀರಿ",
+      "membershipRenewsInDays_one": "ನಿಮ್ಮ {{plan}} ಸದಸ್ಯತ್ವ {{count}} ದಿನದಲ್ಲಿ ನವೀಕರಣಗೊಳ್ಳುತ್ತದೆ",
+      "membershipRenewsInDays_other": "ನಿಮ್ಮ {{plan}} ಸದಸ್ಯತ್ವ {{count}} ದಿನದಲ್ಲಿ ನವೀಕರಣಗೊಳ್ಳುತ್ತದೆ"
+    }
+  },
+  "profile": {
+    "editProfile": "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+    "editProfileToast": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಅನ್ನು ಸಂಪಾದಿಸಲಾಗುತ್ತಿದೆ",
+    "stats": {
+      "booksRead": "ಓದಿದ ಪುಸ್ತಕಗಳು",
+      "pagesRead": "ಓದಿದ ಪುಟಗಳು",
+      "hoursRead": "ಓದಿದ ಗಂಟೆಗಳು"
+    },
+    "achievements": {
+      "title": "ಸಾಧನೆಗಳು",
+      "items": {
+        "firstBook": {
+          "label": "ಮೊದಲ ಪುಸ್ತಕ",
+          "description": "ನಿಮ್ಮ ಮೊದಲ ಪುಸ್ತಕವನ್ನು ಎರವಲು ಪಡೆಯಿರಿ"
+        },
+        "bookWorm": {
+          "label": "ಬುಕ್ ವರ್ಮ್",
+          "description": "ಒಂದು ವರ್ಷದಲ್ಲಿ 10 ಪುಸ್ತಕಗಳನ್ನು ಓದಿ"
+        },
+        "topReader": {
+          "label": "ಟಾಪ್ ರೀಡರ್",
+          "description": "ಮಾಸಿಕ ಲೀಡರ್‌ಬೋರ್ಡ್‌ನ ಮೇಲ್ಭಾಗವನ್ನು ತಲುಪಿ"
+        }
+      }
+    },
+    "currentReading": {
+      "title": "ಪ್ರಸ್ತುತ ಓದುತ್ತಿರುವುದು",
+      "by": "{{author}} ಅವರಿಂದ"
+    },
+    "borrowHistory": {
+      "title": "ಎರವಲು ಇತಿಹಾಸ",
+      "columns": {
+        "title": "ಶೀರ್ಷಿಕೆ",
+        "borrowedOn": "ಎರವಲು ಪಡೆದ ದಿನಾಂಕ",
+        "returnedOn": "ಹಿಂತಿರುಗಿಸಿದ ದಿನಾಂಕ"
+      }
     }
   }
 }

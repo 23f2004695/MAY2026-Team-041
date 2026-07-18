@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import type { ReadingSession } from '@/mocks/manager';
 
@@ -6,16 +8,18 @@ export interface ReadingSessionsCardProps {
 }
 
 export function ReadingSessionsCard({ sessions }: ReadingSessionsCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reading Sessions</CardTitle>
+        <CardTitle>{t('managerDashboard.readingSessions.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         {sessions.length === 0 ? (
           <EmptyState
-            title="No sessions scheduled"
-            description="Create one to get started."
+            title={t('managerDashboard.readingSessions.emptyTitle')}
+            description={t('managerDashboard.readingSessions.emptyDescription')}
           />
         ) : (
           <ul className="flex flex-col gap-3">
@@ -27,10 +31,15 @@ export function ReadingSessionsCard({ sessions }: ReadingSessionsCardProps) {
                 <div>
                   <p className="font-medium text-foreground">{session.title}</p>
                   <p className="text-muted-foreground">
-                    {session.date} · led by {session.facilitator}
+                    {t('managerDashboard.readingSessions.ledBy', {
+                      date: session.date,
+                      facilitator: session.facilitator,
+                    })}
                   </p>
                 </div>
-                <span className="text-muted-foreground">{session.participants} joined</span>
+                <span className="text-muted-foreground">
+                  {t('managerDashboard.readingSessions.joined', { count: session.participants })}
+                </span>
               </li>
             ))}
           </ul>

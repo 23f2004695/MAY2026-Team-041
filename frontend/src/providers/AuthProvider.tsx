@@ -2,7 +2,7 @@ import { createContext, useContext, type ReactNode } from 'react';
 
 import { useLocalStorageState } from '@/lib/useLocalStorageState';
 
-export type Role = 'admin' | 'librarian' | 'member' | 'manager';
+export type Role = 'admin' | 'librarian' | 'member' | 'manager' | 'it-head' | 'guardian';
 
 interface MockAuthState {
   isAuthenticated: boolean;

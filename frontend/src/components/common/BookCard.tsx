@@ -1,4 +1,5 @@
 import { BookOpen, Star } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Badge, Button } from '@/components/ui';
@@ -25,6 +26,8 @@ export function BookCard({
   onReserve,
   className,
 }: BookCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -32,7 +35,11 @@ export function BookCard({
         className,
       )}
     >
-      <Link to={href} className="flex flex-col gap-3" aria-label={`View details for ${title}`}>
+      <Link
+        to={href}
+        className="flex flex-col gap-3"
+        aria-label={t('common.cards.book.viewDetailsAria', { title })}
+      >
         <div className="flex h-32 items-center justify-center rounded-md bg-primary/10 text-primary">
           <BookOpen className="size-8" />
         </div>
@@ -45,7 +52,7 @@ export function BookCard({
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant="outline">{category}</Badge>
         <Badge variant={available ? 'success' : 'danger'}>
-          {available ? 'Available' : 'Checked out'}
+          {available ? t('books.status.available') : t('books.status.checkedOut')}
         </Badge>
       </div>
 
@@ -60,7 +67,7 @@ export function BookCard({
           disabled={!available}
           onClick={onReserve}
         >
-          Reserve
+          {t('common.cards.book.reserve')}
         </Button>
       </div>
     </div>

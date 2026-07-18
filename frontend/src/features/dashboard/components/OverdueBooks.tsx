@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import type { OverdueLoan } from '@/mocks/librarian';
@@ -7,14 +9,19 @@ export interface OverdueBooksProps {
 }
 
 export function OverdueBooks({ loans }: OverdueBooksProps) {
+  const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Overdue Books</CardTitle>
+        <CardTitle>{t('librarianDashboard.overdueBooks.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         {loans.length === 0 ? (
-          <EmptyState title="No overdue books" description="Every loan is on track." />
+          <EmptyState
+            title={t('librarianDashboard.overdueBooks.emptyTitle')}
+            description={t('librarianDashboard.overdueBooks.emptyDescription')}
+          />
         ) : (
           <ul className="flex flex-col gap-3">
             {loans.map((loan) => (
@@ -25,18 +32,27 @@ export function OverdueBooks({ loans }: OverdueBooksProps) {
                 <div>
                   <p className="text-sm font-medium text-foreground">{loan.bookTitle}</p>
                   <p className="text-xs text-muted-foreground">
-                    {loan.borrower} · due {loan.dueDate}
+                    {t('librarianDashboard.overdueBooks.dueOn', {
+                      borrower: loan.borrower,
+                      date: loan.dueDate,
+                    })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="danger">{loan.daysOverdue}d overdue</Badge>
+                  <Badge variant="danger">
+                    {t('librarianDashboard.overdueBooks.daysOverdue', { count: loan.daysOverdue })}
+                  </Badge>
                   <span className="text-xs text-muted-foreground">{loan.fineAccrued}</span>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => comingSoonToast(`Sending a reminder to ${loan.borrower}`)}
+                    onClick={() =>
+                      comingSoonToast(
+                        t('librarianDashboard.overdueBooks.remindToast', { name: loan.borrower }),
+                      )
+                    }
                   >
-                    Remind
+                    {t('librarianDashboard.overdueBooks.remind')}
                   </Button>
                 </div>
               </li>

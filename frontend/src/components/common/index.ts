@@ -1,5 +1,7 @@
+export * from './AnimatedNumber';
 export * from './BookCard';
 export * from './EventCard';
+export * from './FadeUp';
 export * from './FeatureCard';
 export * from './NotificationCard';
 export * from './PageHeader';

@@ -2,20 +2,20 @@ import { BookMarked, BookOpen, CalendarCheck, Trophy, type LucideIcon } from 'lu
 
 export const dashboardUser = {
   name: 'Priya Sharma',
-  membershipPlan: 'Premium Member',
+  membershipPlanKey: 'premium',
 };
 
 export interface DashboardStat {
   icon: LucideIcon;
-  label: string;
+  labelKey: string;
   value: string;
 }
 
 export const dashboardStats: DashboardStat[] = [
-  { icon: BookOpen, label: 'Books Borrowed', value: '4' },
-  { icon: BookMarked, label: 'Books Reserved', value: '2' },
-  { icon: CalendarCheck, label: 'Seat Bookings', value: '1' },
-  { icon: Trophy, label: 'Reading Points', value: '1,280' },
+  { icon: BookOpen, labelKey: 'dashboard.stats.booksBorrowed', value: '4' },
+  { icon: BookMarked, labelKey: 'dashboard.stats.booksReserved', value: '2' },
+  { icon: CalendarCheck, labelKey: 'dashboard.stats.seatBookings', value: '1' },
+  { icon: Trophy, labelKey: 'dashboard.stats.readingPoints', value: '1,280' },
 ];
 
 export interface DueBook {
@@ -48,20 +48,33 @@ export const currentlyBorrowedBooks: BorrowedBook[] = [
   { id: 'deep-work', title: 'Deep Work', author: 'Cal Newport', borrowedOn: 'Jul 1, 2026' },
 ];
 
+export type DashboardNotificationMessage =
+  | { key: 'reservationReady'; params: { book: string } }
+  | { key: 'dueInDays'; params: { book: string; count: number } }
+  | { key: 'achievementEarned'; params: { achievement: string } };
+
 export interface DashboardNotification {
   id: string;
-  title: string;
-  timestamp: string;
+  message: DashboardNotificationMessage;
+  timeAgo: { hours: number } | { days: number };
 }
 
 export const recentNotifications: DashboardNotification[] = [
   {
     id: 'n1',
-    title: 'Your reservation for "The Overstory" is ready for pickup',
-    timestamp: '2h ago',
+    message: { key: 'reservationReady', params: { book: 'The Overstory' } },
+    timeAgo: { hours: 2 },
   },
-  { id: 'n2', title: '"Atomic Habits" is due in 4 days', timestamp: '1d ago' },
-  { id: 'n3', title: 'You earned the "Book Worm" achievement', timestamp: '3d ago' },
+  {
+    id: 'n2',
+    message: { key: 'dueInDays', params: { book: 'Atomic Habits', count: 4 } },
+    timeAgo: { days: 1 },
+  },
+  {
+    id: 'n3',
+    message: { key: 'achievementEarned', params: { achievement: 'Book Worm' } },
+    timeAgo: { days: 3 },
+  },
 ];
 
 export interface DashboardEvent {

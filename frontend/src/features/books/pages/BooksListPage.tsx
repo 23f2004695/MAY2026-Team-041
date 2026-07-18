@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { BookCard, PageHeader } from '@/components/common';
 import { EmptyState, Pagination } from '@/components/ui';
@@ -11,6 +12,7 @@ import { BookFilters } from '../components/BookFilters';
 const PAGE_SIZE = 6;
 
 export function BooksListPage() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [page, setPage] = useState(1);
@@ -42,7 +44,7 @@ export function BooksListPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Books" description="Browse the library catalog" />
+      <PageHeader title={t('books.pageTitle')} description={t('books.pageDescription')} />
 
       <BookFilters
         search={search}
@@ -52,7 +54,7 @@ export function BooksListPage() {
       />
 
       {pageBooks.length === 0 ? (
-        <EmptyState title="No books found" description="Try a different search term or category." />
+        <EmptyState title={t('books.empty.title')} description={t('books.empty.description')} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {pageBooks.map((book) => (
@@ -64,7 +66,7 @@ export function BooksListPage() {
               available={book.available}
               rating={book.rating}
               href={ROUTES.BOOK_DETAILS.replace(':bookId', book.id)}
-              onReserve={() => comingSoonToast(`Reserving "${book.title}"`)}
+              onReserve={() => comingSoonToast(t('books.details.reservingToast', { title: book.title }))}
             />
           ))}
         </div>

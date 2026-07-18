@@ -1,11 +1,18 @@
 import type { NotificationType } from '@/components/common';
 
+export type AppNotificationMessage =
+  | { key: 'dueInDays'; params: { book: string; count: number } }
+  | { key: 'reservationReady'; params: { book: string } }
+  | { key: 'newBookAdded'; params: { book: string; category: string } }
+  | { key: 'achievementEarned'; params: { achievement: string; count: number } }
+  | { key: 'membershipRenewsInDays'; params: { plan: 'premium' | 'standard' | 'basic'; count: number } };
+
 export interface AppNotification {
   id: string;
   type: NotificationType;
-  title: string;
-  message: string;
-  timestamp: string;
+  titleKey: string;
+  message: AppNotificationMessage;
+  timeAgo: { hours: number } | { days: number };
   read: boolean;
 }
 
@@ -13,41 +20,44 @@ export const notifications: AppNotification[] = [
   {
     id: 'n1',
     type: 'book-due',
-    title: 'Book due soon',
-    message: '"Atomic Habits" is due in 4 days.',
-    timestamp: '2 hours ago',
+    titleKey: 'bookDue',
+    message: { key: 'dueInDays', params: { book: 'Atomic Habits', count: 4 } },
+    timeAgo: { hours: 2 },
     read: false,
   },
   {
     id: 'n2',
     type: 'reservation-ready',
-    title: 'Reservation ready',
-    message: '"The Overstory" is ready for pickup.',
-    timestamp: '1 day ago',
+    titleKey: 'reservationReady',
+    message: { key: 'reservationReady', params: { book: 'The Overstory' } },
+    timeAgo: { days: 1 },
     read: false,
   },
   {
     id: 'n3',
     type: 'new-book',
-    title: 'New arrival',
-    message: '"Project Hail Mary" has been added to the Science Fiction collection.',
-    timestamp: '2 days ago',
+    titleKey: 'newArrival',
+    message: {
+      key: 'newBookAdded',
+      params: { book: 'Project Hail Mary', category: 'Science Fiction' },
+    },
+    timeAgo: { days: 2 },
     read: true,
   },
   {
     id: 'n4',
     type: 'reading-challenge',
-    title: 'Achievement unlocked',
-    message: 'You earned the "Book Worm" badge for reading 10 books this year.',
-    timestamp: '3 days ago',
+    titleKey: 'achievementUnlocked',
+    message: { key: 'achievementEarned', params: { achievement: 'Book Worm', count: 10 } },
+    timeAgo: { days: 3 },
     read: true,
   },
   {
     id: 'n5',
     type: 'membership-expiry',
-    title: 'Membership renewal',
-    message: 'Your premium membership renews in 12 days.',
-    timestamp: '5 days ago',
+    titleKey: 'membershipRenewal',
+    message: { key: 'membershipRenewsInDays', params: { plan: 'premium', count: 12 } },
+    timeAgo: { days: 5 },
     read: true,
   },
 ];

@@ -1,5 +1,6 @@
 export const ROUTES = {
   HOME: '/',
+  PRICING: '/pricing',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
@@ -17,4 +18,6 @@ export const ROUTES = {
   REVIEWS: '/reviews',
   SETTINGS: '/settings',
   ADMIN: '/admin',
+  IT_HEAD: '/it-head',
+  GUARDIAN: '/guardian',
 } as const;
