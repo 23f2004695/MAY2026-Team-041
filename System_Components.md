@@ -124,9 +124,8 @@ These two functions are the only place a JWT is decoded anywhere in the backend.
 stateDiagram-v2
     [*] --> available: copy added
     available --> loaned: Loan issued
-    loaned --> available: Loan returned (condition unchanged)
-    loaned --> damaged_lost: Loan returned (condition changed)
-    damaged_lost --> written_off: replacement billed
+    loaned --> available: Loan returned (copy becomes available; condition may change)
+    loaned --> written_off: returned + replacement billed (lost/damaged)
     available --> written_off: staff write-off
     written_off --> [*]
 ```
