@@ -41,7 +41,7 @@ Every router in every component below passes through the Auth dependency before 
 
 ## Step 1 — Auth Component
 
-**Owns:** `User`, `Role`. Everything about proving who is calling and what they are permitted to do.
+**Owns:** `User`, `Role`, plus a persisted auth-session / refresh-token record (e.g., `AuthSession` / `RefreshToken`) needed for rotation, reuse detection, and session-family revocation.
 
 ### Responsibilities
 
