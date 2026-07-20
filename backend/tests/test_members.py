@@ -8,6 +8,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.api.deps import get_current_user
 from app.core.config import get_settings
+from app.core.constants import Role
 from app.core.security import hash_password
 from app.db.prisma import prisma
 from app.main import create_app
@@ -44,12 +45,12 @@ async def _db_connection():
 
 @pytest_asyncio.fixture
 async def admin_user():
-    return await _make_user("admin")
+    return await _make_user(Role.ADMIN)
 
 
 @pytest_asyncio.fixture
 async def member_user():
-    return await _make_user("member")
+    return await _make_user(Role.MEMBER)
 
 
 def _client_as(user) -> AsyncClient:
@@ -85,7 +86,7 @@ async def test_create_member_defaults_to_member_role(admin_user):
     body = response.json()
     assert body["email"] == email
     assert body["full_name"] == "Walk-in Visitor"
-    assert body["role"]["name"] == "member"
+    assert body["role"]["name"] == Role.MEMBER
     assert body["is_active"] is True
     assert "password" not in body
     assert "password_hash" not in body

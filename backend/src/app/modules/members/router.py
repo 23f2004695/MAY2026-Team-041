@@ -5,12 +5,13 @@ from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
 
 from app.api.deps import require_role
+from app.core.constants import Role
 from app.modules.members import service
 from app.modules.members.schemas import MemberCreate, MemberListResponse, MemberOut, MemberUpdate
 
 router = APIRouter(prefix="/members", tags=["members"])
 
-manage_members = require_role("admin", "librarian", "manager")
+manage_members = require_role(Role.ADMIN, Role.LIBRARIAN, Role.MANAGER)
 
 
 @router.get("", response_model=MemberListResponse)

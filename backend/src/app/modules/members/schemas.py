@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
+from app.core.constants import Role
+
 
 class RoleOut(BaseModel):
     id: str
@@ -15,8 +17,8 @@ class MemberCreate(BaseModel):
     phone: str | None = Field(default=None, max_length=20)
     avatar_url: str | None = None
     role_name: str = Field(
-        default="member",
-        description="Defaults to 'member'",
+        default=Role.MEMBER.value,
+        description=f"Defaults to '{Role.MEMBER.value}'",
     )
 
 
