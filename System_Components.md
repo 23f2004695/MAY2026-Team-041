@@ -13,7 +13,7 @@ Phase labels used below — Core MVP, Important (Phase 2), Advanced (Phase 3), F
 
 ### Module Layout
 
-Each component is one `backend/src/app/modules/<name>/` package, split the same way regardless of size:
+Each component will live under `backend/src/app/modules/<name>/` (target layout), split the same way regardless of size:
 
 | File | Contains | Does not contain |
 |---|---|---|
