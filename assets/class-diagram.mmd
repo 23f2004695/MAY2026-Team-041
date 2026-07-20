@@ -1,0 +1,141 @@
+classDiagram
+    class Role {
+        +String id
+        +String name
+        +String description
+    }
+    class User {
+        +String id
+        +String email
+        +String passwordHash
+        +String fullName
+        +String phone
+        +String avatarUrl
+        +Boolean isActive
+        +DateTime lastLoginAt
+        +DateTime createdAt
+        +DateTime updatedAt
+        +DateTime deletedAt
+        +register()
+        +login()
+        +resetPassword()
+    }
+    class MembershipPlan {
+        +String id
+        +String name
+        +String description
+        +Integer durationDays
+        +Integer maxActiveLoans
+        +Decimal feeAmount
+        +Boolean isActive
+    }
+    class Membership {
+        +String id
+        +Date startDate
+        +Date endDate
+        +String status
+        +Boolean autoRenew
+        +DateTime createdAt
+        +isActive()
+        +renew()
+    }
+    class Book {
+        +String id
+        +String title
+        +String isbn
+        +String description
+        +Integer publishedYear
+        +String language
+        +String coverImageUrl
+        +DateTime createdAt
+        +DateTime updatedAt
+        +DateTime deletedAt
+        +search()
+        +addCopy()
+    }
+    class BookCopy {
+        +String id
+        +Integer copyNumber
+        +String scanToken
+        +String condition
+        +Decimal replacementCost
+        +String status
+        +Date acquiredAt
+        +DateTime createdAt
+        +markDamaged()
+        +markLost()
+    }
+    class Loan {
+        +String id
+        +DateTime issuedAt
+        +DateTime dueAt
+        +DateTime returnedAt
+        +Integer renewedCount
+        +String status
+        +DateTime createdAt
+        +issue()
+        +returnBook()
+        +renew()
+        +calculateFine()
+    }
+    class Reservation {
+        +String id
+        +Integer queuePosition
+        +String status
+        +DateTime requestedAt
+        +DateTime readyExpiresAt
+        +promoteNext()
+        +cancel()
+    }
+    class Seat {
+        +String id
+        +String seatNumber
+        +String zoneLabel
+        +String scanToken
+        +String status
+    }
+    class SeatBooking {
+        +String id
+        +Date bookingDate
+        +Time startTime
+        +Time endTime
+        +String status
+        +DateTime checkedInAt
+        +DateTime createdAt
+        +checkIn()
+        +cancel()
+    }
+    class Payment {
+        +String id
+        +String type
+        +Decimal amount
+        +String status
+        +String provider
+        +String providerReference
+        +String relatedEntityType
+        +String relatedEntityId
+        +DateTime paidAt
+        +DateTime createdAt
+        +settle()
+    }
+    class Review {
+        +String id
+        +Integer rating
+        +String body
+        +DateTime createdAt
+    }
+
+    User "many" --> "1" Role : has
+    Membership "many" --> "1" User : held by
+    Membership "many" --> "1" MembershipPlan : follows
+    BookCopy "many" --> "1" Book : copy of
+    Loan "many" --> "1" BookCopy : borrows
+    Loan "many" --> "1" User : borrowed by (member)
+    Loan "many" --> "1" User : issued by (staff)
+    Reservation "many" --> "1" Book : queued for
+    Reservation "many" --> "1" User : requested by
+    SeatBooking "many" --> "1" Seat : books
+    SeatBooking "many" --> "1" User : booked by
+    Payment "many" --> "1" User : paid by
+    Review "many" --> "1" Book : reviews
+    Review "many" --> "1" User : written by
