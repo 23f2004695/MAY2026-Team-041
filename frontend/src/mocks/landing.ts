@@ -43,7 +43,7 @@ export const features: Feature[] = [
   { id: 'digitalLibrary', icon: BookOpen },
   { id: 'qrBorrowing', icon: QrCode },
   { id: 'seatBooking', icon: CalendarCheck },
-  { id: 'aiLibrarian', icon: Bot },
+  { id: 'aiRecommendations', icon: Bot },
   { id: 'readingChallenges', icon: Trophy },
   { id: 'communityDiscussions', icon: MessagesSquare },
   { id: 'bookDonations', icon: Gift },
@@ -144,5 +144,5 @@ export const faqs: FaqItem[] = [
   { id: 'reservations' },
   { id: 'seatBookings' },
   { id: 'donations' },
-  { id: 'aiLibrarian' },
+  { id: 'aiRecommendations' },
 ];

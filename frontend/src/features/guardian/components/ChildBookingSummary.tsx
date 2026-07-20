@@ -4,22 +4,24 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
+import type { Child } from '@/mocks/guardian';
 import type { Seat } from '@/mocks/seats';
 
-export interface BookingSummaryProps {
+export interface ChildBookingSummaryProps {
+  selectedChild: Child | undefined;
   selectedSeat: Seat | null;
   onConfirm: () => void;
 }
 
-export function BookingSummary({ selectedSeat, onConfirm }: BookingSummaryProps) {
+export function ChildBookingSummary({ selectedChild, selectedSeat, onConfirm }: ChildBookingSummaryProps) {
   const { t } = useTranslation();
   const isAvailable = selectedSeat?.status === 'available';
-  const [notifiedSeatIds, setNotifiedSeatIds] = useState<Set<string>>(new Set());
-  const isNotified = selectedSeat ? notifiedSeatIds.has(selectedSeat.id) : false;
+  const [notifiedSeatId, setNotifiedSeatId] = useState<string | null>(null);
+  const isNotified = notifiedSeatId === selectedSeat?.id;
 
-  function requestNotify() {
+  function notifyMeLater() {
     if (!selectedSeat) return;
-    setNotifiedSeatIds((prev) => new Set(prev).add(selectedSeat.id));
+    setNotifiedSeatId(selectedSeat.id);
     comingSoonToast(t('seatBooking.bookingSummary.notifyToast', { seatId: selectedSeat.id }));
   }
 
@@ -35,9 +37,9 @@ export function BookingSummary({ selectedSeat, onConfirm }: BookingSummaryProps)
           </p>
         )}
 
-        {selectedSeat && isAvailable && (
+        {selectedSeat && isAvailable && selectedChild && (
           <p className="text-sm text-foreground">
-            {t('seatBooking.bookingSummary.selected', { seatId: selectedSeat.id })}
+            {t('guardian.seatReservation.selected', { seatId: selectedSeat.id, name: selectedChild.name })}
           </p>
         )}
 
@@ -59,20 +61,20 @@ export function BookingSummary({ selectedSeat, onConfirm }: BookingSummaryProps)
           </div>
         )}
 
-        {selectedSeat &&
-          !isAvailable &&
-          (isNotified ? (
-            <p className="flex items-center gap-1.5 text-sm text-success">
-              <BellRing className="size-4" />
-              {t('seatBooking.bookingSummary.notifySet')}
-            </p>
-          ) : (
-            <Button variant="outline" leadingIcon={<Bell className="size-4" />} onClick={requestNotify}>
-              {t('seatBooking.bookingSummary.notifyButton')}
-            </Button>
-          ))}
+        {selectedSeat && !isAvailable && (
+          <Button
+            variant="outline"
+            disabled={isNotified}
+            leadingIcon={isNotified ? <BellRing className="size-4" /> : <Bell className="size-4" />}
+            onClick={notifyMeLater}
+          >
+            {isNotified
+              ? t('seatBooking.bookingSummary.notifyMeActive')
+              : t('seatBooking.bookingSummary.notifyMe')}
+          </Button>
+        )}
 
-        <Button disabled={!isAvailable} onClick={onConfirm}>
+        <Button disabled={!isAvailable || !selectedChild} onClick={onConfirm}>
           {t('seatBooking.bookingSummary.confirmButton')}
         </Button>
       </CardContent>

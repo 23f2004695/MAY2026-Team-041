@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle, Modal } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 
 export interface MemberSubscriptionProps {
@@ -9,14 +10,29 @@ export interface MemberSubscriptionProps {
   /** No active plan yet (first-time member) when omitted. */
   expiresOn?: string;
   outstandingFine: string;
+  fineReasonKey?: string;
+  fineBookTitle?: string;
+  fineDueDate?: string;
+  fineDailyPenalty?: string;
+  fineEscalatedAmount?: string;
 }
 
 // Mirrors the guardian's SubscriptionAndFines card, but for the signed-in
 // member's own plan. Renew/Subscribe both go to Pricing so the member picks
 // a duration first; the payment page opens once a plan is chosen there.
-export function MemberSubscription({ planLabel, expiresOn, outstandingFine }: MemberSubscriptionProps) {
+export function MemberSubscription({
+  planLabel,
+  expiresOn,
+  outstandingFine,
+  fineReasonKey,
+  fineBookTitle,
+  fineDueDate,
+  fineDailyPenalty,
+  fineEscalatedAmount,
+}: MemberSubscriptionProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [showFineDetails, setShowFineDetails] = useState(false);
   const hasFine = outstandingFine !== '₹0';
 
   function payFine() {
@@ -43,6 +59,15 @@ export function MemberSubscription({ planLabel, expiresOn, outstandingFine }: Me
             {hasFine
               ? t('dashboard.subscription.fineOwed', { amount: outstandingFine })
               : t('dashboard.subscription.noFine')}
+            {hasFine && (
+              <button
+                type="button"
+                onClick={() => setShowFineDetails(true)}
+                className="ml-2 text-sm font-medium text-primary underline underline-offset-2 hover:no-underline"
+              >
+                {t('dashboard.subscription.viewFineDetails')}
+              </button>
+            )}
           </p>
         </div>
         <div className="flex gap-2">
@@ -56,6 +81,43 @@ export function MemberSubscription({ planLabel, expiresOn, outstandingFine }: Me
           </Button>
         </div>
       </CardContent>
+
+      <Modal
+        open={showFineDetails}
+        onClose={() => setShowFineDetails(false)}
+        title={t('dashboard.subscription.fineDetails.title')}
+      >
+        <div className="flex flex-col gap-3 text-sm">
+          <div className="flex justify-between gap-4">
+            <span className="text-muted-foreground">{t('dashboard.subscription.fineDetails.reason')}</span>
+            <span className="text-right font-medium text-foreground">
+              {fineReasonKey ? t(`dashboard.subscription.fineDetails.reasons.${fineReasonKey}`) : '—'}
+              {fineBookTitle ? ` — ${fineBookTitle}` : ''}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4">
+            <span className="text-muted-foreground">{t('dashboard.subscription.fineDetails.amountDue')}</span>
+            <span className="font-semibold text-danger">{outstandingFine}</span>
+          </div>
+          {fineDueDate && (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">{t('dashboard.subscription.fineDetails.payBy')}</span>
+              <span className="font-medium text-foreground">{fineDueDate}</span>
+            </div>
+          )}
+          {fineDailyPenalty && fineEscalatedAmount && (
+            <div className="rounded-md bg-danger/10 p-3 text-danger">
+              {t('dashboard.subscription.fineDetails.escalationNotice', {
+                daily: fineDailyPenalty,
+                escalated: fineEscalatedAmount,
+              })}
+            </div>
+          )}
+          <Button size="sm" onClick={payFine}>
+            {t('dashboard.subscription.payFine')}
+          </Button>
+        </div>
+      </Modal>
     </Card>
   );
 }

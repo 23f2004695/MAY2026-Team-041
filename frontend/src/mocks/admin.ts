@@ -116,7 +116,7 @@ export type AuditLogAction =
 
 export interface AuditLogEntry {
   id: string;
-  actor: { self: true } | { self: false; name: string; role: 'admin' | 'librarian' | 'manager' | 'member' };
+  actor: { self: true } | { self: false; name: string; role: 'admin' | 'manager' | 'member' };
   action: AuditLogAction;
   timeAgo: { hours: number } | { days: number };
 }
@@ -130,7 +130,7 @@ export const auditLog: AuditLogEntry[] = [
   },
   {
     id: 'al2',
-    actor: { self: false, name: 'Priya Sharma', role: 'librarian' },
+    actor: { self: false, name: 'Priya Sharma', role: 'manager' },
     action: { key: 'fineWaived', params: { amount: '₹20', name: 'Rohan Verma', book: 'Sapiens' } },
     timeAgo: { hours: 5 },
   },

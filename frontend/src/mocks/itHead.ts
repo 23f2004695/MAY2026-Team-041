@@ -18,7 +18,7 @@ export interface AccessEntry {
   id: string;
   name: string;
   email: string;
-  role: 'member' | 'librarian' | 'manager';
+  role: 'member' | 'manager';
   status: 'active' | 'deactivated';
   pendingPermission?: string;
 }
@@ -28,7 +28,7 @@ export const accessEntries: AccessEntry[] = [
     id: 'ac1',
     name: 'Simran Kaur',
     email: 'simran.kaur@example.com',
-    role: 'librarian',
+    role: 'manager',
     status: 'active',
     pendingPermission: 'Fine waiver approval',
   },
@@ -72,7 +72,7 @@ export const issueTickets: IssueTicket[] = [
     id: 'it1',
     reporter: 'Ananya Iyer',
     category: 'technical',
-    summary: 'QR scanner not working on the librarian desk kiosk',
+    summary: 'QR scanner not working on the front desk kiosk',
     submittedOn: 'Jul 16, 2026',
     status: 'open',
   },

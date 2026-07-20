@@ -105,7 +105,6 @@
       "continueAs": "{{role}} ਵਜੋਂ ਜਾਰੀ ਰੱਖੋ",
       "roles": {
         "admin": "ਐਡਮਿਨ",
-        "librarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ",
         "member": "ਮੈਂਬਰ",
         "manager": "ਮੈਨੇਜਰ",
         "it-head": "ਆਈਟੀ ਹੈੱਡ",
@@ -379,12 +378,12 @@
     "quickActions": {
       "payAllFines": "ਸਾਰੇ ਜੁਰਮਾਨੇ ਭਰੋ",
       "renewSubscription": "ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ ਕਰੋ",
-      "contactLibrarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
       "toasts": {
         "payingAllFines": "ਸਾਰੇ ਬਕਾਇਆ ਜੁਰਮਾਨੇ ਭਰੇ ਜਾ ਰਹੇ ਹਨ",
         "renewingSubscription": "ਮੈਂਬਰਸ਼ਿਪ ਦਾ ਨਵੀਨੀਕਰਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
-        "contactingLibrarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਨਾਲ ਸੰਪਰਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-      }
+        "contactingStaff": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਨਾਲ ਸੰਪਰਕ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
+      },
+      "contactStaff": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਨਾਲ ਸੰਪਰਕ ਕਰੋ"
     }
   },
   "dashboard": {
@@ -444,43 +443,6 @@
       "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ"
     }
   },
-  "librarianDashboard": {
-    "pageTitle": "ਲਾਇਬ੍ਰੇਰੀਅਨ ਡੈਸ਼ਬੋਰਡ",
-    "pageDescription": "ਕੈਟਾਲਾਗ, ਉਧਾਰ ਅਤੇ ਜੁਰਮਾਨੇ ਇੱਕ ਨਜ਼ਰ ਵਿੱਚ",
-    "stats": {
-      "booksBorrowedToday": "ਅੱਜ ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
-      "overdueBooks": "ਮਿਆਦ ਲੰਘੀਆਂ ਕਿਤਾਬਾਂ",
-      "pendingReservations": "ਬਕਾਇਆ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
-      "finesCollectedMtd": "ਇਕੱਠੇ ਕੀਤੇ ਜੁਰਮਾਨੇ (MTD)"
-    },
-    "overdueBooks": {
-      "title": "ਮਿਆਦ ਲੰਘੀਆਂ ਕਿਤਾਬਾਂ",
-      "emptyTitle": "ਕੋਈ ਮਿਆਦ ਲੰਘੀ ਕਿਤਾਬ ਨਹੀਂ",
-      "emptyDescription": "ਹਰ ਲੋਨ ਸਮੇਂ ਸਿਰ ਹੈ।",
-      "dueOn": "{{borrower}} · {{date}} ਤੱਕ ਵਾਪਸ ਕਰਨੀ ਸੀ",
-      "daysOverdue": "{{count}} ਦਿਨ ਮਿਆਦ ਲੰਘੀ",
-      "remind": "ਯਾਦ ਦਿਵਾਓ",
-      "remindToast": "{{name}} ਨੂੰ ਯਾਦ ਦਿਵਾਇਆ ਜਾ ਰਿਹਾ ਹੈ"
-    },
-    "pendingReservations": {
-      "title": "ਬਕਾਇਆ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
-      "emptyTitle": "ਕਤਾਰ ਖਾਲੀ ਹੈ",
-      "emptyDescription": "ਇਸ ਵੇਲੇ ਕੋਈ ਰਿਜ਼ਰਵੇਸ਼ਨ ਉਡੀਕ ਨਹੀਂ ਕਰ ਰਹੀ।",
-      "position": "{{member}} · ਸਥਿਤੀ {{total}} ਵਿੱਚੋਂ {{position}}",
-      "notify": "ਸੂਚਿਤ ਕਰੋ",
-      "notifyToast": "{{name}} ਨੂੰ ਸੂਚਿਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-    },
-    "quickActions": {
-      "issueBook": "ਕਿਤਾਬ ਜਾਰੀ ਕਰੋ",
-      "returnBook": "ਕਿਤਾਬ ਵਾਪਸ ਕਰੋ",
-      "scanQr": "QR ਸਕੈਨ ਕਰੋ",
-      "toasts": {
-        "issuingBook": "ਕਿਤਾਬ ਜਾਰੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
-        "returningBook": "ਕਿਤਾਬ ਵਾਪਸ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
-        "scanningQr": "QR ਕੋਡ ਸਕੈਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
-      }
-    }
-  },
   "managerDashboard": {
     "pageTitle": "ਮੈਨੇਜਰ ਡੈਸ਼ਬੋਰਡ",
     "pageDescription": "ਸੀਟ ਅਤੇ ਕਿਤਾਬ ਲਈ ਵਾਕ-ਇਨ ਸਹਾਇਤਾ, ਨਾਲ ਹੀ ਨਵੇਂ ਮੈਂਬਰਾਂ ਦੀ ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
@@ -530,16 +492,29 @@
   },
   "placeholder": {
     "comingSoon": "ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ",
-    "community": { "description": "ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਵਿਚਾਰ-ਵਟਾਂਦਰੇ।" },
-    "settings": { "description": "ਆਪਣੀਆਂ ਤਰਜੀਹਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ।" },
-    "forgotPassword": { "title": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ", "description": "ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ।" }
+    "community": {
+      "description": "ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਵਿਚਾਰ-ਵਟਾਂਦਰੇ।"
+    },
+    "settings": {
+      "description": "ਆਪਣੀਆਂ ਤਰਜੀਹਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ।"
+    },
+    "forgotPassword": {
+      "title": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ",
+      "description": "ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ।"
+    }
   },
   "landing": {
     "hero": {
       "badge": "ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਲਾਇਬ੍ਰੇਰੀ ਪਲੇਟਫਾਰਮ",
       "title": "ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ, ਤੁਹਾਡੀ ਕਮਿਊਨਿਟੀ, ਸਭ ਇੱਕ ਥਾਂ 'ਤੇ।",
       "titlePrefix": "ਬਿਹਤਰ ",
-      "titleWords": ["ਲਾਇਬ੍ਰੇਰੀਆਂ", "ਭਾਈਚਾਰੇ", "ਸਿੱਖਿਆ", "ਪੜ੍ਹਨ ਦੀਆਂ ਆਦਤਾਂ", "ਸੰਪਰਕ"],
+      "titleWords": [
+        "ਲਾਇਬ੍ਰੇਰੀਆਂ",
+        "ਭਾਈਚਾਰੇ",
+        "ਸਿੱਖਿਆ",
+        "ਪੜ੍ਹਨ ਦੀਆਂ ਆਦਤਾਂ",
+        "ਸੰਪਰਕ"
+      ],
       "subtitle": "ਕਿਤਾਬਾਂ ਉਧਾਰ ਲਓ, ਸਟੱਡੀ ਸੀਟ ਬੁੱਕ ਕਰੋ, ਇੱਕ ਰੀਡਿੰਗ ਕਲੱਬ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ, ਅਤੇ ਕਾਗਜ਼ੀ ਰਜਿਸਟਰਾਂ ਅਤੇ ਗਰੁੱਪ ਚੈਟਾਂ ਤੋਂ ਬਿਨਾਂ ਨਿੱਜੀ ਸਿਫਾਰਸ਼ਾਂ ਪ੍ਰਾਪਤ ਕਰੋ।",
       "ctaJoin": "ਕਮਿਊਨਿਟੀ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
       "ctaBrowse": "ਕਿਤਾਬਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
@@ -569,10 +544,6 @@
           "title": "ਸੀਟ ਬੁਕਿੰਗ",
           "description": "ਪਹਿਲਾਂ ਤੋਂ ਹੀ ਇੱਕ ਸ਼ਾਂਤ ਸਟੱਡੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰੋ ਅਤੇ ਲਾਈਵ ਉਪਲਬਧਤਾ ਵੇਖੋ।"
         },
-        "aiLibrarian": {
-          "title": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
-          "description": "ਇੱਕ ਗੱਲਬਾਤ ਕਰਨ ਵਾਲੇ ਰੀਡਿੰਗ ਸਹਾਇਕ ਤੋਂ ਨਿੱਜੀ ਕਿਤਾਬ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ।"
-        },
         "readingChallenges": {
           "title": "ਰੀਡਿੰਗ ਚੈਲੰਜ",
           "description": "ਆਪਣੀ ਪ੍ਰਗਤੀ ਨੂੰ ਟਰੈਕ ਕਰੋ ਅਤੇ ਜਿੰਨਾ ਜ਼ਿਆਦਾ ਤੁਸੀਂ ਪੜ੍ਹੋਗੇ ਉੱਨੀਆਂ ਹੀ ਪ੍ਰਾਪਤੀਆਂ ਹਾਸਲ ਕਰੋ।"
@@ -588,6 +559,10 @@
         "analyticsDashboard": {
           "title": "ਐਨਾਲਿਟਿਕਸ ਡੈਸ਼ਬੋਰਡ",
           "description": "ਲਾਇਬ੍ਰੇਰੀਅਨਾਂ ਅਤੇ ਐਡਮਿਨਾਂ ਨੂੰ ਰੁਝਾਨਾਂ, ਪ੍ਰਸਿੱਧ ਕਿਤਾਬਾਂ ਅਤੇ ਵਰਤੋਂ ਬਾਰੇ ਜਾਣਕਾਰੀ ਮਿਲਦੀ ਹੈ।"
+        },
+        "aiRecommendations": {
+          "title": "AI Recommendations",
+          "description": "ਇੱਕ ਗੱਲਬਾਤ ਕਰਨ ਵਾਲੇ ਰੀਡਿੰਗ ਸਹਾਇਕ ਤੋਂ ਨਿੱਜੀ ਕਿਤਾਬ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ।"
         }
       }
     },
@@ -613,21 +588,6 @@
           "title": "ਪੜ੍ਹੋ ਅਤੇ ਹਿੱਸਾ ਲਓ",
           "description": "ਆਪਣੀ ਪ੍ਰਗਤੀ ਨੂੰ ਟਰੈਕ ਕਰੋ ਅਤੇ ਇਸਦੇ ਆਲੇ-ਦੁਆਲੇ ਦੀ ਕਮਿਊਨਿਟੀ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ।"
         }
-      }
-    },
-    "aiLibrarian": {
-      "heading": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ ਨੂੰ ਮਿਲੋ",
-      "subheading": "ਇਸਨੂੰ ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਕਿਵੇਂ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ ਅਤੇ ਇਸਨੂੰ ਤੁਹਾਡੇ ਲਈ ਲਾਈਵ ਕੈਟਾਲਾਗ ਖੋਜਦੇ ਹੋਏ ਦੇਖੋ।",
-      "windowTitle": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
-      "prompt": "ਮੈਨੂੰ ਤਣਾਅ ਮਹਿਸੂਸ ਹੋ ਰਿਹਾ ਹੈ। ਇੱਕ ਹਲਕੀ ਪ੍ਰੇਰਣਾਦਾਇਕ ਕਿਤਾਬ ਦੀ ਸਿਫਾਰਸ਼ ਕਰੋ।",
-      "reply": "ਇੱਥੇ ਕੁਝ ਵਿਕਲਪ ਹਨ ਜੋ ਮਦਦ ਕਰ ਸਕਦੇ ਹਨ:",
-      "available": "ਉਪਲਬਧ",
-      "reserved": "ਰਿਜ਼ਰਵ ਕੀਤਾ",
-      "reserveBook": "ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
-      "shelves": {
-        "atomicHabits": "ਸੈਲਫ-ਹੈਲਪ · ਸ਼ੈਲਫ C2",
-        "psychologyOfMoney": "ਫਾਈਨਾਂਸ · ਸ਼ੈਲਫ D1",
-        "ikigai": "ਸੈਲਫ-ਹੈਲਪ · ਸ਼ੈਲਫ C4"
       }
     },
     "mood": {
@@ -686,9 +646,18 @@
       "heading": "ਰੀਡਿੰਗ ਚੈਲੰਜ ਅਤੇ ਪ੍ਰਾਪਤੀਆਂ",
       "subheading": "ਪੜ੍ਹਦੇ ਹੋਏ ਅਨਲੌਕ ਹੋਣ ਵਾਲੇ ਬੈਜਾਂ ਨਾਲ ਪ੍ਰੇਰਿਤ ਰਹੋ।",
       "achievements": {
-        "firstBook": { "label": "ਪਹਿਲੀ ਕਿਤਾਬ", "description": "ਆਪਣੀ ਪਹਿਲੀ ਕਿਤਾਬ ਉਧਾਰ ਲਓ" },
-        "bookWorm": { "label": "ਬੁੱਕ ਵਰਮ", "description": "ਇੱਕ ਸਾਲ ਵਿੱਚ 10 ਕਿਤਾਬਾਂ ਪੜ੍ਹੋ" },
-        "topReader": { "label": "ਟਾਪ ਰੀਡਰ", "description": "ਮਹੀਨਾਵਾਰ ਲੀਡਰਬੋਰਡ ਦੇ ਸਿਖਰ 'ਤੇ ਪਹੁੰਚੋ" },
+        "firstBook": {
+          "label": "ਪਹਿਲੀ ਕਿਤਾਬ",
+          "description": "ਆਪਣੀ ਪਹਿਲੀ ਕਿਤਾਬ ਉਧਾਰ ਲਓ"
+        },
+        "bookWorm": {
+          "label": "ਬੁੱਕ ਵਰਮ",
+          "description": "ਇੱਕ ਸਾਲ ਵਿੱਚ 10 ਕਿਤਾਬਾਂ ਪੜ੍ਹੋ"
+        },
+        "topReader": {
+          "label": "ਟਾਪ ਰੀਡਰ",
+          "description": "ਮਹੀਨਾਵਾਰ ਲੀਡਰਬੋਰਡ ਦੇ ਸਿਖਰ 'ਤੇ ਪਹੁੰਚੋ"
+        },
         "monthlyChampion": {
           "label": "ਮਹੀਨਾਵਾਰ ਚੈਂਪੀਅਨ",
           "description": "ਇੱਕ ਮਹੀਨੇ ਵਿੱਚ ਹਰ ਹਫ਼ਤਾਵਾਰ ਚੈਲੰਜ ਪੂਰਾ ਕਰੋ"
@@ -753,7 +722,7 @@
           "question": "ਕੀ ਮੈਂ ਕਿਤਾਬਾਂ ਦਾਨ ਕਰ ਸਕਦਾ ਹਾਂ?",
           "answer": "ਹਾਂ, ਇੱਕ ਦਾਨ ਬੇਨਤੀ ਜਮ੍ਹਾਂ ਕਰੋ ਅਤੇ ਇੱਕ ਲਾਇਬ੍ਰੇਰੀਅਨ ਇਸਦੀ ਸਮੀਖਿਆ ਕਰਕੇ ਸਾਂਝੇ ਸੰਗ੍ਰਹਿ ਲਈ ਮਨਜ਼ੂਰੀ ਦੇਵੇਗਾ।"
         },
-        "aiLibrarian": {
+        "aiRecommendations": {
           "question": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ ਕੀ ਹੈ?",
           "answer": "ਤੁਹਾਡੀਆਂ ਰੁਚੀਆਂ, ਮੂਡ ਜਾਂ ਪੜ੍ਹਨ ਦੇ ਇਤਿਹਾਸ ਦੇ ਆਧਾਰ 'ਤੇ ਕਿਤਾਬਾਂ ਦੀ ਸਿਫਾਰਸ਼ ਕਰਨ ਵਾਲਾ ਇੱਕ ਗੱਲਬਾਤ ਸਹਾਇਕ।"
         }
@@ -830,11 +799,11 @@
       "unlimitedMembers": "ਅਸੀਮਿਤ ਮੈਂਬਰ",
       "qrBorrowing": "QR ਉਧਾਰ",
       "seatReservation": "ਸੀਟ ਰਿਜ਼ਰਵੇਸ਼ਨ",
-      "aiLibrarian": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
       "readingChallenges": "ਰੀਡਿੰਗ ਚੈਲੰਜ",
       "events": "ਸਮਾਗਮ",
       "emailNotifications": "ਈਮੇਲ ਸੂਚਨਾਵਾਂ",
-      "basicAnalytics": "ਬੇਸਿਕ ਐਨਾਲਿਟਿਕਸ"
+      "basicAnalytics": "ਬੇਸਿਕ ਐਨਾਲਿਟਿਕਸ",
+      "aiRecommendations": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ"
     },
     "extraFeatures": {
       "prioritySupport": "ਤਰਜੀਹੀ ਸਹਾਇਤਾ",
@@ -856,10 +825,6 @@
         "qrBorrowing": {
           "title": "QR ਕੋਡ ਉਧਾਰ",
           "description": "ਸਕਿੰਟਾਂ ਵਿੱਚ ਕਿਤਾਬ ਉਧਾਰ ਲੈਣ ਜਾਂ ਵਾਪਸ ਕਰਨ ਲਈ QR ਕੋਡ ਸਕੈਨ ਕਰੋ।"
-        },
-        "aiLibrarian": {
-          "title": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
-          "description": "ਇੱਕ ਗੱਲਬਾਤ ਕਰਨ ਵਾਲੇ ਸਹਾਇਕ ਤੋਂ ਨਿੱਜੀ ਕਿਤਾਬ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ।"
         },
         "seatReservation": {
           "title": "ਸਮਾਰਟ ਸੀਟ ਰਿਜ਼ਰਵੇਸ਼ਨ",
@@ -892,6 +857,10 @@
         "responsiveDashboard": {
           "title": "ਰਿਸਪੌਂਸਿਵ ਡੈਸ਼ਬੋਰਡ",
           "description": "ਕਿਸੇ ਵੀ ਸਕ੍ਰੀਨ ਆਕਾਰ ਦੇ ਅਨੁਕੂਲ ਹੋਣ ਵਾਲਾ ਸਾਫ਼, ਤੇਜ਼ ਡੈਸ਼ਬੋਰਡ।"
+        },
+        "aiRecommendations": {
+          "title": "AI ਲਾਇਬ੍ਰੇਰੀਅਨ",
+          "description": "ਇੱਕ ਗੱਲਬਾਤ ਕਰਨ ਵਾਲੇ ਸਹਾਇਕ ਤੋਂ ਨਿੱਜੀ ਕਿਤਾਬ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ।"
         }
       }
     },
@@ -968,6 +937,18 @@
       "copiesAvailable": "{{total}} ਵਿੱਚੋਂ {{available}} ਕਾਪੀਆਂ ਉਪਲਬਧ",
       "reserveButton": "ਇਹ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
       "reservingToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    },
+    "wishlist": {
+      "button": "ਵਿਸ਼ਲਿਸਟ",
+      "add": "ਵਿਸ਼ਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ",
+      "remove": "ਵਿਸ਼ਲਿਸਟ ਤੋਂ ਹਟਾਓ",
+      "addAria": "\"{{title}}\" ਨੂੰ ਵਿਸ਼ਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ",
+      "removeAria": "\"{{title}}\" ਨੂੰ ਵਿਸ਼ਲਿਸਟ ਤੋਂ ਹਟਾਓ",
+      "drawerTitle": "ਮੇਰੀ ਵਿਸ਼ਲਿਸਟ",
+      "empty": {
+        "title": "ਤੁਹਾਡੀ ਵਿਸ਼ਲਿਸਟ ਖਾਲੀ ਹੈ",
+        "description": "ਕਿਸੇ ਵੀ ਕਿਤਾਬ ਨੂੰ ਇੱਥੇ ਸੰਭਾਲਣ ਲਈ ਦਿਲ 'ਤੇ ਟੈਪ ਕਰੋ।"
+      }
     }
   },
   "events": {
@@ -1084,6 +1065,90 @@
       "hoursRead": "ਪੜ੍ਹਨ ਦੇ ਘੰਟੇ"
     },
     "hoursSuffix": "{{hours}} ਘੰਟੇ"
+  },
+  "community": {
+    "pageTitle": "ਕਮਿਊਨਿਟੀ",
+    "pageDescription": "ਕਿਤਾਬਾਂ ਬਾਰੇ ਆਪਣੇ ਵਿਚਾਰ ਸਾਂਝੇ ਕਰੋ ਅਤੇ ਹੋਰ ਮੈਂਬਰਾਂ ਨਾਲ ਜੁੜੋ।",
+    "newPost": "ਨਵੀਂ ਪੋਸਟ",
+    "you": "ਤੁਸੀਂ",
+    "justNow": "ਹੁਣੇ ਹੀ",
+    "filterAriaLabel": "ਪੋਸਟਾਂ ਫਿਲਟਰ ਕਰੋ",
+    "filters": {
+      "all": "ਸਾਰੀਆਂ ਪੋਸਟਾਂ",
+      "saved": "ਸੰਭਾਲੀਆਂ ਗਈਆਂ"
+    },
+    "empty": {
+      "title": "ਅਜੇ ਤੱਕ ਕੋਈ ਪੋਸਟ ਨਹੀਂ",
+      "description": "ਤੁਸੀਂ ਜੋ ਪੜ੍ਹ ਰਹੇ ਹੋ ਉਸਨੂੰ ਸਾਂਝਾ ਕਰਨ ਵਾਲੇ ਪਹਿਲੇ ਬਣੋ।",
+      "savedTitle": "ਅਜੇ ਤੱਕ ਕੋਈ ਸੰਭਾਲੀ ਪੋਸਟ ਨਹੀਂ",
+      "savedDescription": "ਤੁਹਾਡੀਆਂ ਸੰਭਾਲੀਆਂ ਪੋਸਟਾਂ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।"
+    },
+    "post": {
+      "likeAria": "ਪੋਸਟ ਪਸੰਦ ਕਰੋ",
+      "unlikeAria": "ਪਸੰਦ ਹਟਾਓ",
+      "commentAria": "ਟਿੱਪਣੀਆਂ ਵੇਖੋ",
+      "saveAria": "ਪੋਸਟ ਸੰਭਾਲੋ",
+      "unsaveAria": "ਸੰਭਾਲੀ ਪੋਸਟ ਹਟਾਓ",
+      "editAria": "ਪੋਸਟ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "deleteAria": "ਪੋਸਟ ਹਟਾਓ",
+      "commentPlaceholder": "ਟਿੱਪਣੀ ਲਿਖੋ...",
+      "sendComment": "ਟਿੱਪਣੀ ਭੇਜੋ",
+      "reply": "ਜਵਾਬ ਦਿਓ",
+      "replyPlaceholder": "ਜਵਾਬ ਲਿਖੋ...",
+      "sendReply": "ਜਵਾਬ ਭੇਜੋ"
+    },
+    "createPostModal": {
+      "title": "ਪੋਸਟ ਬਣਾਓ",
+      "editTitle": "ਪੋਸਟ ਸੰਪਾਦਿਤ ਕਰੋ",
+      "bookTitleLabel": "ਕਿਤਾਬ (ਵਿਕਲਪਿਕ)",
+      "bookTitlePlaceholder": "ਇਹ ਕਿਸ ਕਿਤਾਬ ਬਾਰੇ ਹੈ?",
+      "contentLabel": "ਤੁਹਾਡੇ ਵਿਚਾਰ",
+      "contentPlaceholder": "ਤੁਹਾਡੇ ਮਨ ਵਿੱਚ ਕੀ ਹੈ?",
+      "imagesLabel": "ਫੋਟੋਆਂ ਸ਼ਾਮਲ ਕਰੋ (ਵਿਕਲਪਿਕ)",
+      "addImage": "ਸ਼ਾਮਲ ਕਰੋ",
+      "removeImage": "ਫੋਟੋ ਹਟਾਓ",
+      "imagesHint": "ਵੱਧ ਤੋਂ ਵੱਧ {{count}} ਫੋਟੋਆਂ",
+      "submit": "ਪੋਸਟ ਕਰੋ",
+      "saveChanges": "ਤਬਦੀਲੀਆਂ ਸੰਭਾਲੋ"
+    },
+    "deleteDialog": {
+      "title": "ਪੋਸਟ ਹਟਾਉਣੀ ਹੈ?",
+      "description": "ਇਸਨੂੰ ਵਾਪਸ ਨਹੀਂ ਲਿਆ ਜਾ ਸਕਦਾ।",
+      "confirmLabel": "ਹਟਾਓ"
+    }
+  },
+  "settings": {
+    "pageTitle": "ਸੈਟਿੰਗਾਂ",
+    "pageDescription": "ਆਪਣਾ ਖਾਤਾ, ਦਿੱਖ ਅਤੇ ਸੂਚਨਾ ਤਰਜੀਹਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ।",
+    "appearance": {
+      "title": "ਦਿੱਖ",
+      "theme": "ਥੀਮ",
+      "themeOptions": {
+        "light": "ਲਾਈਟ",
+        "dark": "ਡਾਰਕ",
+        "system": "ਸਿਸਟਮ"
+      }
+    },
+    "language": {
+      "title": "ਭਾਸ਼ਾ",
+      "label": "ਡਿਸਪਲੇ ਭਾਸ਼ਾ"
+    },
+    "notifications": {
+      "title": "ਸੂਚਨਾਵਾਂ",
+      "items": {
+        "dueDateReminders": "ਬਕਾਇਆ ਮਿਤੀ ਰੀਮਾਈਂਡਰ",
+        "reservationReady": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਤਿਆਰ ਅਲਰਟ",
+        "eventAnnouncements": "ਸਮਾਗਮ ਐਲਾਨ",
+        "achievementBadges": "ਉਪਲਬਧੀ ਬੈਜ"
+      }
+    },
+    "account": {
+      "title": "ਖਾਤਾ",
+      "logOut": "ਲਾਗ ਆਉਟ",
+      "dangerZone": "ਖਤਰੇ ਦਾ ਖੇਤਰ",
+      "deleteAccount": "ਖਾਤਾ ਹਟਾਓ",
+      "deleteAccountHint": "ਆਪਣਾ ਖਾਤਾ ਅਤੇ ਸਾਰਾ ਡੇਟਾ ਸਥਾਈ ਤੌਰ 'ਤੇ ਹਟਾਓ।"
+    }
   },
   "reviews": {
     "pageTitle": "ਕਿਤਾਬ ਸਮੀਖਿਆਵਾਂ",

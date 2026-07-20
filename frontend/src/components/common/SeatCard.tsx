@@ -45,15 +45,10 @@ export function SeatCard({ label, status, className, selected, onSelect }: SeatC
   return (
     <button
       type="button"
-      disabled={status !== 'available'}
       aria-pressed={selected}
       aria-label={t('common.cards.seat.seatLabelWithStatus', { label, status: statusText })}
       onClick={onSelect}
-      className={cn(
-        classes,
-        'disabled:cursor-not-allowed disabled:opacity-60',
-        !selected && 'hover:opacity-80',
-      )}
+      className={cn(classes, !selected && 'hover:opacity-80')}
     >
       <Armchair className="size-4" />
       {label}
