@@ -9,12 +9,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id          String  @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  name        String  @unique @db.VarChar(40)
+  description String?
+
+  users User[]
+
+  @@map("roles")
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String    @id @db.Uuid @default(dbgenerated("gen_random_uuid()"))
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  fullName     String    @map("full_name") @db.VarChar(150)
+  phone        String?   @db.VarChar(20)
+  avatarUrl    String?   @map("avatar_url")
+  roleId       String    @map("role_id") @db.Uuid
+  role         Role      @relation(fields: [roleId], references: [id])
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
 
   @@map("users")
 }
