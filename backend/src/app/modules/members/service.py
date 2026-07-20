@@ -42,12 +42,13 @@ async def update_member(member_id: str, payload: MemberUpdate) -> MemberOut:
     if existing is None or existing.deletedAt is not None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member not found")
 
+    fields_set = payload.model_fields_set
     data: dict = {}
     if payload.full_name is not None:
         data["fullName"] = payload.full_name
-    if payload.phone is not None:
+    if "phone" in fields_set:
         data["phone"] = payload.phone
-    if payload.avatar_url is not None:
+    if "avatar_url" in fields_set:
         data["avatarUrl"] = payload.avatar_url
     if payload.is_active is not None:
         data["isActive"] = payload.is_active

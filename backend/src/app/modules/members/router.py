@@ -1,4 +1,5 @@
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
@@ -32,8 +33,8 @@ async def create_member(
 
 @router.put("/{member_id}", response_model=MemberOut)
 async def update_member(
-    member_id: str,
+    member_id: UUID,
     payload: MemberUpdate,
     _: Annotated[User, Depends(manage_members)],
 ) -> MemberOut:
-    return await service.update_member(member_id, payload)
+    return await service.update_member(str(member_id), payload)

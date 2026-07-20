@@ -10,7 +10,6 @@
   - Added the required column `full_name` to the `users` table without a default value. This is not possible if the table is not empty.
   - Added the required column `password_hash` to the `users` table without a default value. This is not possible if the table is not empty.
   - Added the required column `role_id` to the `users` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `updated_at` to the `users` table without a default value. This is not possible if the table is not empty.
 
 */
 -- AlterTable
@@ -27,7 +26,7 @@ ADD COLUMN     "last_login_at" TIMESTAMP(3),
 ADD COLUMN     "password_hash" VARCHAR(255) NOT NULL,
 ADD COLUMN     "phone" VARCHAR(20),
 ADD COLUMN     "role_id" UUID NOT NULL,
-ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL,
+ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 DROP COLUMN "id",
 ADD COLUMN     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
 ALTER COLUMN "email" SET DATA TYPE VARCHAR(255),

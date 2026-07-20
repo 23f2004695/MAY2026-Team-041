@@ -160,3 +160,36 @@ async def test_update_member_not_found(admin_user):
         )
 
     assert response.status_code == 404
+
+
+async def test_update_member_rejects_malformed_id(admin_user):
+    async with _client_as(admin_user) as client:
+        response = await client.put(
+            "/api/v1/members/not-a-uuid",
+            json={"full_name": "Nobody"},
+        )
+
+    assert response.status_code == 422
+
+
+async def test_update_member_can_clear_nullable_fields(admin_user):
+    async with _client_as(admin_user) as client:
+        created = await client.post(
+            "/api/v1/members",
+            json={
+                "email": _unique_email(),
+                "password": "Password123!",
+                "full_name": "Has Phone",
+                "phone": "+911234567890",
+            },
+        )
+        member_id = created.json()["id"]
+        assert created.json()["phone"] == "+911234567890"
+
+        response = await client.put(
+            f"/api/v1/members/{member_id}",
+            json={"phone": None},
+        )
+
+    assert response.status_code == 200
+    assert response.json()["phone"] is None
