@@ -16,13 +16,18 @@ Stack:
 ## Current Status
 
 - **Milestone 1** (requirements) and **Milestone 2** (design & frontend) are complete.
+  **Milestone 3** (backend business logic) is underway.
 - The frontend has a full application shell (routing, layouts, navigation, route guards,
   light/dark theme) and every core screen built against mock data: Landing, Dashboard,
   Books, Book Details, Reservations, Events, Notifications, Profile, Reading Progress,
   Leaderboard, Reviews, Seat Booking, and an Admin Dashboard.
-- The backend is a working scaffold (health checks, Prisma/PostgreSQL wiring) with no
-  business logic yet — that's **Milestone 3**, which will replace the frontend's mock
-  data with real API calls.
+- The backend has moved past the scaffold stage: the `User`/`Role` schema is migrated
+  (see [Database_Design.md](Database_Design.md)), a JWT + role-guard dependency exists
+  (`app/api/deps.py`), and the first real endpoint — `/api/v1/members` (list/search/
+  paginate, create, update; staff-only) — is implemented and tested. Everything else
+  (login/register, Books, Borrowing, Seat Booking, ...) is still ahead; see
+  [design-of-component.txt](design-of-component.txt) for what's built vs. planned, module
+  by module.
 
 ## Repository Layout
 
@@ -137,6 +142,7 @@ Backend API:
 
 - Live health: http://localhost:8000/health/live
 - Readiness health: http://localhost:8000/health/ready
+- Members (staff-only, needs a bearer token): http://localhost:8000/api/v1/members
 - OpenAPI docs: http://localhost:8000/docs
 
 ## Quality Checks
