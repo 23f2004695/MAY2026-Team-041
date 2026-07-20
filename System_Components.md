@@ -228,7 +228,7 @@ stateDiagram-v2
 
 - Day-level seat reservation is Core MVP; live per-zone availability and a seat occupancy dashboard are Important (Phase 2), sequenced after a caching layer is introduced.
 - Availability is computed by querying `SeatBooking` against the requested date/time window. This is a read-heavy, low-write, latency-sensitive path, read far more often than the underlying data changes, and is the first component flagged for a Redis cache in front of PostgreSQL rather than querying the live table on every page load.
-- A new `SeatBooking` is accepted only if it does not overlap an existing booking for that `seat_id`, checked at the service layer against the `(seat_id, booking_date)` composite index defined in `Database_Design.md`, Section 4.
+- A new `SeatBooking` is accepted only if it does not overlap an existing booking for that `seat_id`; enforce this with a DB-level guarantee (e.g., Postgres exclusion constraint over `(seat_id, time range)` or locking/serializable transaction), not only a service-layer check, while still using the `(seat_id, booking_date)` index for fast lookups.
 - Check-in uses the same `scan_token` mechanism as Book Management (`Seat.scan_token`), resolved through the shared Scanning Subsystem rather than a second, seat-specific implementation. (Important, Phase 2.)
 - No-show handling: a booking not checked into within its grace window flips to `no_show` and frees the seat, using the same scheduled-job pattern as Borrowing's overdue sweep — nothing time-based is computed synchronously on a request.
 
