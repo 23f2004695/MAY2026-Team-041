@@ -28,7 +28,15 @@ Stack:
 
 ```text
 .
+├── assets/                       # Diagrams and reference images (PNGs, class-diagram.mmd)
 ├── backend/                      # FastAPI service, Prisma schema, migrations
+├── docs/                         # Spec, database design, and component design docs
+│   ├── PROJECT_SPECIFICATION.md  # Product scope and architecture rules (source of truth)
+│   ├── Project_Specification_V2.md
+│   ├── Database_Design.md
+│   ├── System_Components.md
+│   ├── design-of-component.txt   # Components mapped to user stories (views/APIs/jobs)
+│   └── user-identification.txt   # Primary/secondary/tertiary user identification
 ├── frontend/                     # React + Vite app
 │   └── src/
 │       ├── app/                  # Router, route guards, layouts
@@ -39,8 +47,7 @@ Stack:
 ├── docker-compose.yml            # Local PostgreSQL
 ├── package.json                  # Root dev scripts (backend/frontend) and Playwright e2e
 ├── start_backend.py              # One-command backend starter (db + uvicorn)
-├── Makefile                      # Common developer commands
-└── PROJECT_SPECIFICATION.md      # Product scope and architecture rules (source of truth)
+└── Makefile                      # Common developer commands
 ```
 
 ## Prerequisites
