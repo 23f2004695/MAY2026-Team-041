@@ -30,11 +30,6 @@ async def refresh_tokens(payload: RefreshRequest) -> TokenPair:
         raise InvalidRefreshTokenError
 
     if token_version != user.tokenVersion:
-        # Reuse of an already-rotated refresh token: treat as a compromise
-        # signal and bump the version again, invalidating every outstanding
-        # refresh token (including the legitimate current one) so the whole
-        # session family has to re-authenticate. See docs/System_Components.md,
-        # Step 1.
         await prisma.user.update(where={"id": user_id}, data={"tokenVersion": {"increment": 1}})
         raise InvalidRefreshTokenError
 

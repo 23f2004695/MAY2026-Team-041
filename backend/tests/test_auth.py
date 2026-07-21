@@ -86,9 +86,6 @@ async def test_refresh_reuse_also_revokes_latest_token(admin_user):
         first = await client.post("/api/v1/auth/refresh", json={"refresh_token": original})
         rotated_token = first.json()["refresh_token"]
 
-        # Reuse of the original (already-rotated) token is a compromise signal;
-        # per docs/System_Components.md Step 1, this should also invalidate the
-        # legitimately-rotated token, not just the reused one.
         replay = await client.post("/api/v1/auth/refresh", json={"refresh_token": original})
         legitimate_attempt = await client.post(
             "/api/v1/auth/refresh", json={"refresh_token": rotated_token}
