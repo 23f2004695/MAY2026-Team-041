@@ -36,3 +36,18 @@ model User {
 
   @@map("users")
 }
+
+model Book {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title          String    @db.VarChar(255)
+  isbn           String?   @unique @db.VarChar(20)
+  description    String?
+  publishedYear  Int?      @map("published_year")
+  language       String?   @db.VarChar(40)
+  coverImageUrl  String?   @map("cover_image_url")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  @@map("books")
+}
