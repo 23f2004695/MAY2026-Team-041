@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 import { useLocalStorageState } from '@/lib/useLocalStorageState';

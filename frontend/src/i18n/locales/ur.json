@@ -78,7 +78,8 @@
     "adminOverview": "ایڈمن جائزہ",
     "itHeadOverview": "آئی ٹی جائزہ",
     "guardianOverview": "سرپرست جائزہ",
-    "backToApp": "ایپ پر واپس جائیں"
+    "backToApp": "ایپ پر واپس جائیں",
+    "contactUs": "ہم سے رابطہ کریں"
   },
   "userMenu": {
     "openAccountMenu": "اکاؤنٹ مینو کھولیں",
@@ -192,7 +193,8 @@
       "subtitle": "کتابیں ادھار لیں، اسٹڈی سیٹ بک کریں، ایک ریڈنگ کلب میں شامل ہوں، اور کاغذی رجسٹرز اور گروپ چیٹس کے بغیر ذاتی نوعیت کی سفارشات حاصل کریں۔",
       "ctaJoin": "کمیونٹی میں شامل ہوں",
       "ctaBrowse": "کتابیں براؤز کریں",
-      "imgAlt": "طلبہ لائبریری کیٹلاگ، کتاب کے اجراء، مطالعے کی جگہ اور رکنیت کی خدمات استعمال کرتے ہوئے کی تصویر"
+      "imgAlt": "طلبہ لائبریری کیٹلاگ، کتاب کے اجراء، مطالعے کی جگہ اور رکنیت کی خدمات استعمال کرتے ہوئے کی تصویر",
+      "ctaContact": "ہم سے رابطہ کریں"
     },
     "stats": {
       "booksAvailable": "دستیاب کتابیں",
@@ -428,7 +430,8 @@
     "cta": {
       "heading": "رکن بنیں اور آج ہی پڑھنا شروع کریں",
       "subheading": "ریڈنگ کمیونٹی میں شامل ہوں، لائبریری دریافت کریں، اور کبھی بھی کسی کتاب کا سراغ نہ کھوئیں۔",
-      "button": "ریڈنگ کمیونٹی میں شامل ہوں"
+      "button": "ریڈنگ کمیونٹی میں شامل ہوں",
+      "contactUs": "ہم سے رابطہ کریں"
     },
     "footer": {
       "heading": "سائٹ لنکس",
@@ -604,7 +607,7 @@
       "heading": "اپنی لائبریری کو جدید بنانے کے لیے تیار ہیں؟",
       "subheading": "آج ہی اپنی سبسکرپشن شروع کریں اور اپنی لائبریری کے کام کرنے کے انداز کو بدل دیں۔",
       "primaryButton": "شروع کریں",
-      "secondaryButton": "سیلز سے رابطہ کریں"
+      "secondaryButton": "ہم سے رابطہ کریں"
     }
   },
   "admin": {
@@ -1270,5 +1273,189 @@
         "returnedOn": "واپسی کی تاریخ"
       }
     }
+  },
+  "contactUs": {
+    "pageTitle": "ہم سے رابطہ کریں",
+    "pageDescription": "اپنی لائبریری، کلب یا کمیونٹی کی استفسار کے لیے ایک پیغام بھیجیں۔",
+    "hero": {
+      "heading": "We're here to help",
+      "subheading": "Get answers to common questions, contact the right department, or reach out to our team for personalized assistance.",
+      "badges": {
+        "quickResponses": "Quick responses",
+        "dedicatedSupportTeams": "Dedicated support teams",
+        "multilingualAssistance": "Multilingual assistance"
+      }
+    },
+    "form": {
+      "heading": "Contact Us",
+      "description": "Reach out to our team for assistance with memberships, reading clubs, donations, seat reservations, library services, and community partnerships.",
+      "name": "Name",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "organization": "Organization / Reading Club",
+      "message": "Message",
+      "submitButton": "Submit Inquiry",
+      "subject": "Subject"
+    },
+    "table": {
+      "heading": "Department Contacts",
+      "description": "Reach the right team for pricing, clubs, bookings, or donations.",
+      "category": "Department",
+      "email": "Email",
+      "phone": "Phone",
+      "pricingAndFines": "Pricing & Fines",
+      "booksAndClubs": "Books & Clubs",
+      "seatBooking": "Seat Booking",
+      "donations": "Donations",
+      "caption": "All contact details are monitored during business hours."
+    },
+    "errors": {
+      "name": "Name is required.",
+      "email": "Enter a valid email address.",
+      "phoneNumber": "A phone number is required.",
+      "organization": "Organization or club name is required.",
+      "message": "Please share a brief message.",
+      "subject": "Subject is required."
+    },
+    "toasts": {
+      "success": "Your inquiry has been sent. We will contact you soon."
+    },
+    "quickNav": {
+      "faq": "FAQ",
+      "contactUs": "Contact Us",
+      "departmentContacts": "Department Contacts"
+    },    "faq": {
+      "heading": "Frequently Asked Questions",
+      "description": "Before contacting our team, you may find an answer below.",
+      "categories": {
+        "membership": "Membership",
+        "books": "Books",
+        "readingClubs": "Reading Clubs",
+        "seatBooking": "Seat Booking",
+        "finesPayments": "Fines & Payments",
+        "donations": "Donations",
+        "events": "Events"
+      },
+      "items": {
+        "becomeMember": {
+          "question": "How do I become a library member?",
+          "answer": "1. Open the Register page.\n2. Choose the member role that fits you.\n3. Fill in your name, email, and contact details.\n4. Submit the form to create your membership."
+        },
+        "renewMembership": {
+          "question": "How do I renew my membership?",
+          "answer": "1. Open your Profile.\n2. Go to the Membership section.\n3. Select Renew membership.\n4. Confirm your details and complete payment if required."
+        },
+        "updateProfile": {
+          "question": "How do I update my profile information?",
+          "answer": "1. Open your Profile page.\n2. Choose Edit profile.\n3. Update your personal details and save your changes."
+        },
+        "resetPassword": {
+          "question": "How do I reset my password?",
+          "answer": "1. Go to the Login page.\n2. Click Forgot password.\n3. Enter your email address.\n4. Follow the instructions in the reset email."
+        },
+        "borrowBook": {
+          "question": "How do I borrow a book?",
+          "answer": "1. Visit the Books page.\n2. Select an available title.\n3. Choose Borrow or Reserve.\n4. Confirm your borrowing details."
+        },
+        "renewBorrowedBook": {
+          "question": "How do I renew a borrowed book?",
+          "answer": "1. Open My Account or Reservations.\n2. Find the book you have borrowed.\n3. Click Renew if the book is eligible.\n4. Confirm the new return date."
+        },
+        "reserveUnavailableBook": {
+          "question": "How do I reserve a book that is currently unavailable?",
+          "answer": "1. Find the unavailable book on the Books page.\n2. Choose Reserve to place a hold.\n3. You will be notified when the book becomes available."
+        },
+        "requestNewBookTitle": {
+          "question": "How do I request a new book title?",
+          "answer": "1. Open the Request a Book form or contact the Books & Clubs department.\n2. Provide the title, author, and edition.\n3. Submit your request for review.\n4. We will follow up with availability details."
+        },
+        "loseBook": {
+          "question": "What happens if I lose a book?",
+          "answer": "1. Report the lost book through your account or the library desk.\n2. You may be charged a replacement fee.\n3. Contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"
+        },
+        "joinReadingClub": {
+          "question": "How do I join a reading club?",
+          "answer": "1. Open the Reading Clubs section.\n2. Browse available clubs.\n3. Select a club that interests you.\n4. Click Join Club.\n5. Your membership request will be submitted."
+        },
+        "createReadingClub": {
+          "question": "How do I create a reading club?",
+          "answer": "Reading club creation requests are reviewed by our community team.\nPlease contact the Books & Clubs department.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
+        },
+        "leaveClub": {
+          "question": "Can I leave a club after joining?",
+          "answer": "1. Open the club details page.\n2. Select Leave Club.\n3. Confirm that you want to leave the club.\n4. Your membership will be removed immediately."
+        },
+        "clubMeetings": {
+          "question": "How are club meetings scheduled?",
+          "answer": "1. Open the reading club details.\n2. Review the meeting schedule listed there.\n3. Join meetings from the club page or calendar.\n4. Contact the club organizer if you need to change your meeting time."
+        },
+        "reserveSeat": {
+          "question": "How do I reserve a reading seat?",
+          "answer": "1. Navigate to the Seat Booking page.\n2. Select your preferred date and time slot.\n3. Choose an available seat from the seating map.\n4. Confirm your reservation.\n5. A confirmation notification will be displayed."
+        },
+        "cancelReservation": {
+          "question": "How do I cancel a reservation?",
+          "answer": "1. Open My Reservations.\n2. Find the seat reservation you want to cancel.\n3. Click Cancel reservation.\n4. Confirm the cancellation."
+        },
+        "seatUnavailable": {
+          "question": "Why is my preferred seat unavailable?",
+          "answer": "Your preferred seat may already be booked or temporarily unavailable.\nPlease choose another slot or time, or contact the Seat Booking department for help.\nEmail: booking@readingclub.org\nPhone: +1 (555) 010-2003"
+        },
+        "bookingLimit": {
+          "question": "How many bookings can I make each week?",
+          "answer": "Most members can make up to five seat bookings per week.\nIf you need additional access, contact the Seat Booking department for more options.\nEmail: booking@readingclub.org\nPhone: +1 (555) 010-2003"
+        },
+        "overdueFines": {
+          "question": "How are overdue fines calculated?",
+          "answer": "1. Fines are based on the number of days overdue and the book type.\n2. Check your account for the exact amount owed.\n3. Review the fine details before paying."
+        },
+        "payFines": {
+          "question": "How can I pay my fines?",
+          "answer": "1. Open My Account.\n2. Navigate to Fines & Payments.\n3. Review outstanding fines.\n4. Select Pay Now.\n5. Complete payment using the available payment method."
+        },
+        "waiveFine": {
+          "question": "Can a fine be waived?",
+          "answer": "Fine waivers are reviewed on a case-by-case basis.\nPlease contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"}
+        },
+        "donateBooks": {
+          "question": "How do I donate books?",
+          "answer": "1. Visit the Donations section or library desk.\n2. Prepare books in good condition.\n3. Drop them off at the designated donation area.\n4. We will review and add approved titles to the collection."
+        },
+        "donationCondition": {
+          "question": "What condition should donated books be in?",
+          "answer": "Please donate gently used books with intact covers, clean pages, and no missing content.\nIf you have a large collection, contact the Donations department for scheduling.\nEmail: donations@readingclub.org\nPhone: +1 (555) 010-2004"
+        },
+        "donateFunds": {
+          "question": "How do I donate funds?",
+          "answer": "1. Open the Donations page.\n2. Select the contribution amount.\n3. Provide your payment details.\n4. Submit your donation.\n5. You will receive a confirmation receipt."
+        },
+        "donationReceipt": {
+          "question": "Will I receive a donation receipt?",
+          "answer": "Yes. After you donate books or funds, we will send a donation receipt to your email address for your records."
+        },
+        "registerEvents": {
+          "question": "How do I register for library events?",
+          "answer": "1. Open the Events page.\n2. Browse available events.\n3. Select an event and click Register.\n4. Confirm your registration details."
+        },
+        "volunteer": {
+          "question": "How can I volunteer?",
+          "answer": "1. Visit the Events or Community page.\n2. Look for volunteer opportunities.\n3. Express interest for a role.\n4. Our team will follow up with next steps."
+        },
+        "organizeEvent": {
+          "question": "Can I organize an event through the library?",
+          "answer": "Yes, you can organize community events through our team.\nPlease contact the Books & Clubs department or use the Contact Us form to discuss your event.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
+        }
+      }
+    },
+    "stillNeedHelp": {
+      "title": "Still Need Help?",
+      "description": "Questions about memberships, reading clubs, donations, seat reservations, or fines? Our team is here to help."
+    },
+    "actions": {
+      "emailUs": "Email Us",
+      "callUs": "Call Us",
+      "contactUs": "Contact Us",
+      "faq": "Help Center",
+      "home": "Home"
+    }
   }
-}
