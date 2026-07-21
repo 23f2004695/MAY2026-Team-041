@@ -1,14 +1,18 @@
 import {
+  Award,
   BarChart3,
   BookMarked,
   BookOpen,
   Bot,
   CalendarCheck,
   CalendarDays,
+  Flame,
   Gift,
   type LucideIcon,
   MessagesSquare,
   QrCode,
+  Star,
+  Target,
   Trophy,
   Users,
 } from 'lucide-react';
@@ -43,7 +47,7 @@ export const features: Feature[] = [
   { id: 'digitalLibrary', icon: BookOpen },
   { id: 'qrBorrowing', icon: QrCode },
   { id: 'seatBooking', icon: CalendarCheck },
-  { id: 'aiLibrarian', icon: Bot },
+  { id: 'aiRecommendations', icon: Bot },
   { id: 'readingChallenges', icon: Trophy },
   { id: 'communityDiscussions', icon: MessagesSquare },
   { id: 'bookDonations', icon: Gift },
@@ -103,13 +107,40 @@ export const seatStats: Record<SeatStatus, number> = {
 
 export interface Achievement {
   id: string;
+  icon: LucideIcon;
+  /** Tailwind bg/text pair — a fixed distinct color per badge, not a semantic status. */
+  colorClass: string;
 }
 
 export const achievements: Achievement[] = [
-  { id: 'firstBook' },
-  { id: 'bookWorm' },
-  { id: 'topReader' },
-  { id: 'monthlyChampion' },
+  { id: 'firstBook', icon: BookOpen, colorClass: 'bg-success/10 text-success' },
+  { id: 'bookWorm', icon: BookMarked, colorClass: 'bg-warning/10 text-warning' },
+  { id: 'topReader', icon: Star, colorClass: 'bg-info/10 text-info' },
+  { id: 'monthlyChampion', icon: Trophy, colorClass: 'bg-primary/10 text-primary' },
+];
+
+export interface ReadingChallengeStep {
+  id: string;
+  icon: LucideIcon;
+}
+
+export const readingChallengeSteps: ReadingChallengeStep[] = [
+  { id: 'setGoals', icon: Target },
+  { id: 'trackProgress', icon: BookOpen },
+  { id: 'earnBadges', icon: Award },
+];
+
+export interface ReadingChallengeStat {
+  id: string;
+  icon: LucideIcon;
+  value: string;
+}
+
+export const readingChallengeStats: ReadingChallengeStat[] = [
+  { id: 'booksRead', icon: BookOpen, value: '24' },
+  { id: 'dayStreak', icon: Flame, value: '12' },
+  { id: 'pointsEarned', icon: Trophy, value: '850' },
+  { id: 'badgesUnlocked', icon: Star, value: '8' },
 ];
 
 export interface CommunityHighlight {
@@ -144,5 +175,5 @@ export const faqs: FaqItem[] = [
   { id: 'reservations' },
   { id: 'seatBookings' },
   { id: 'donations' },
-  { id: 'aiLibrarian' },
+  { id: 'aiRecommendations' },
 ];

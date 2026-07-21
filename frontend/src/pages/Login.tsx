@@ -7,7 +7,7 @@ import { Button, Input } from '@/components/ui';
 import { loginSchema, type LoginFormValues } from '@/lib/authSchema';
 import { useAuth, type Role } from '@/providers/AuthProvider';
 
-const ROLES: Role[] = ['admin', 'librarian', 'member', 'manager', 'it-head', 'guardian'];
+const ROLES: Role[] = ['admin', 'member', 'manager', 'it-head', 'guardian'];
 
 // ponytail: no real auth form yet (Milestone 3); the password form and Gmail button both
 // just sign the visitor in as a member, and the role buttons below exist only to

@@ -1,15 +1,17 @@
-import { SearchX } from 'lucide-react';
+import { Heart, SearchX } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BookCard, PageHeader } from '@/components/common';
 import { NoResults } from '@/components/feedback';
-import { Button, Pagination } from '@/components/ui';
+import { Badge, Button, Pagination } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { books } from '@/mocks/books';
 
 import { BookFilters } from '../components/BookFilters';
+import { WishlistDrawer } from '../components/WishlistDrawer';
+import { useWishlist } from '../hooks/useWishlist';
 
 const PAGE_SIZE = 6;
 
@@ -18,6 +20,9 @@ export function BooksListPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [page, setPage] = useState(1);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
+  const wishlistedBooks = books.filter((book) => wishlistIds.includes(book.id));
 
   const filteredBooks = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -52,7 +57,20 @@ export function BooksListPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title={t('books.pageTitle')} description={t('books.pageDescription')} />
+      <PageHeader
+        title={t('books.pageTitle')}
+        description={t('books.pageDescription')}
+        actions={
+          <Button
+            variant="outline"
+            leadingIcon={<Heart className="size-4" />}
+            onClick={() => setIsWishlistOpen(true)}
+          >
+            {t('books.wishlist.button')}
+            {wishlistIds.length > 0 && <Badge variant="danger">{wishlistIds.length}</Badge>}
+          </Button>
+        }
+      />
 
       <BookFilters
         search={search}
@@ -86,12 +104,21 @@ export function BooksListPage() {
               onReserve={() =>
                 comingSoonToast(t('books.details.reservingToast', { title: book.title }))
               }
+              isWishlisted={isWishlisted(book.id)}
+              onToggleWishlist={() => toggleWishlist(book.id)}
             />
           ))}
         </div>
       )}
 
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+
+      <WishlistDrawer
+        open={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        books={wishlistedBooks}
+        onRemove={toggleWishlist}
+      />
     </div>
   );
 }

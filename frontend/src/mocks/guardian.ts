@@ -23,6 +23,12 @@ export interface Child {
   presenceTime: string;
   subscriptionExpiresOn: string;
   outstandingFine: string;
+  /** Only set when outstandingFine is non-zero — powers the fine details modal. */
+  fineReasonKey?: string;
+  fineBookTitle?: string;
+  fineDueDate?: string;
+  fineDailyPenalty?: string;
+  fineEscalatedAmount?: string;
 }
 
 export const children: Child[] = [
@@ -43,6 +49,11 @@ export const children: Child[] = [
     presenceTime: '4:40 PM',
     subscriptionExpiresOn: 'Aug 3, 2026',
     outstandingFine: '₹40',
+    fineReasonKey: 'lateReturn',
+    fineBookTitle: "Charlotte's Web",
+    fineDueDate: 'Jul 19, 2026',
+    fineDailyPenalty: '₹5',
+    fineEscalatedAmount: '₹80',
   },
 ];
 

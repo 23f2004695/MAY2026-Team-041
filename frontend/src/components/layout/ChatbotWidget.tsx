@@ -12,7 +12,7 @@ interface ChatMessage {
 }
 
 // ponytail: no backend yet — this is a UI-only demo of what an AI chat widget
-// would look/feel like, mirroring the AI Librarian preview on the landing page.
+// would look/feel like.
 export function ChatbotWidget() {
   const { t } = useTranslation();
   const headingId = useId();

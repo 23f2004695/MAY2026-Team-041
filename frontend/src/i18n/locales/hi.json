@@ -105,7 +105,6 @@
       "continueAs": "{{role}} के रूप में जारी रखें",
       "roles": {
         "admin": "एडमिन",
-        "librarian": "लाइब्रेरियन",
         "member": "सदस्य",
         "manager": "मैनेजर",
         "it-head": "आईटी हेड",
@@ -379,12 +378,12 @@
     "quickActions": {
       "payAllFines": "सभी जुर्माने भरें",
       "renewSubscription": "सदस्यता नवीनीकृत करें",
-      "contactLibrarian": "लाइब्रेरियन से संपर्क करें",
       "toasts": {
         "payingAllFines": "सभी बकाया जुर्माने भरे जा रहे हैं",
         "renewingSubscription": "सदस्यता नवीनीकृत की जा रही है",
-        "contactingLibrarian": "लाइब्रेरियन से संपर्क किया जा रहा है"
-      }
+        "contactingStaff": "लाइब्रेरियन से संपर्क किया जा रहा है"
+      },
+      "contactStaff": "लाइब्रेरियन से संपर्क करें"
     }
   },
   "dashboard": {
@@ -444,43 +443,6 @@
       "title": "आगामी आयोजन"
     }
   },
-  "librarianDashboard": {
-    "pageTitle": "लाइब्रेरियन डैशबोर्ड",
-    "pageDescription": "सूची, उधार और जुर्माने का एक नज़र में विवरण",
-    "stats": {
-      "booksBorrowedToday": "आज उधार ली गई पुस्तकें",
-      "overdueBooks": "समयबाह्य पुस्तकें",
-      "pendingReservations": "लंबित आरक्षण",
-      "finesCollectedMtd": "एकत्रित जुर्माना (माह-दर-तारीख)"
-    },
-    "overdueBooks": {
-      "title": "समयबाह्य पुस्तकें",
-      "emptyTitle": "कोई समयबाह्य पुस्तक नहीं",
-      "emptyDescription": "हर लोन समय पर है।",
-      "dueOn": "{{borrower}} · {{date}} को देय",
-      "daysOverdue": "{{count}} दिन देरी",
-      "remind": "याद दिलाएँ",
-      "remindToast": "{{name}} को अनुस्मारक भेजा जा रहा है"
-    },
-    "pendingReservations": {
-      "title": "लंबित आरक्षण",
-      "emptyTitle": "कतार खाली है",
-      "emptyDescription": "अभी कोई आरक्षण प्रतीक्षारत नहीं है।",
-      "position": "{{member}} · स्थिति {{total}} में से {{position}}",
-      "notify": "सूचित करें",
-      "notifyToast": "{{name}} को सूचित किया जा रहा है"
-    },
-    "quickActions": {
-      "issueBook": "पुस्तक जारी करें",
-      "returnBook": "पुस्तक वापस करें",
-      "scanQr": "QR स्कैन करें",
-      "toasts": {
-        "issuingBook": "पुस्तक जारी की जा रही है",
-        "returningBook": "पुस्तक वापस की जा रही है",
-        "scanningQr": "QR कोड स्कैन किया जा रहा है"
-      }
-    }
-  },
   "managerDashboard": {
     "pageTitle": "मैनेजर डैशबोर्ड",
     "pageDescription": "सीट और पुस्तक के लिए वॉक-इन सहायता, साथ ही नए सदस्यों का पंजीकरण",
@@ -530,16 +492,29 @@
   },
   "placeholder": {
     "comingSoon": "जल्द आ रहा है",
-    "community": { "description": "रीडिंग क्लब और चर्चाएँ।" },
-    "settings": { "description": "अपनी प्राथमिकताएँ प्रबंधित करें।" },
-    "forgotPassword": { "title": "पासवर्ड भूल गए", "description": "अपना पासवर्ड रीसेट करें।" }
+    "community": {
+      "description": "रीडिंग क्लब और चर्चाएँ।"
+    },
+    "settings": {
+      "description": "अपनी प्राथमिकताएँ प्रबंधित करें।"
+    },
+    "forgotPassword": {
+      "title": "पासवर्ड भूल गए",
+      "description": "अपना पासवर्ड रीसेट करें।"
+    }
   },
   "landing": {
     "hero": {
       "badge": "कम्युनिटी रीडिंग क्लब एंड लाइब्रेरी प्लेटफ़ॉर्म",
       "title": "आपकी लाइब्रेरी, आपकी कम्युनिटी, सब एक ही जगह।",
       "titlePrefix": "बेहतर ",
-      "titleWords": ["पुस्तकालय", "समुदाय", "शिक्षा", "पढ़ने की आदतें", "जुड़ाव"],
+      "titleWords": [
+        "पुस्तकालय",
+        "समुदाय",
+        "शिक्षा",
+        "पढ़ने की आदतें",
+        "जुड़ाव"
+      ],
       "subtitle": "किताबें उधार लें, स्टडी सीट बुक करें, एक रीडिंग क्लब से जुड़ें, और बिना पेपर रजिस्टर और ग्रुप चैट के व्यक्तिगत सिफारिशें पाएँ।",
       "ctaJoin": "कम्युनिटी से जुड़ें",
       "ctaBrowse": "पुस्तकें ब्राउज़ करें",
@@ -569,10 +544,6 @@
           "title": "सीट बुकिंग",
           "description": "पहले से एक शांत अध्ययन सीट आरक्षित करें और लाइव उपलब्धता देखें।"
         },
-        "aiLibrarian": {
-          "title": "AI लाइब्रेरियन",
-          "description": "एक संवादात्मक रीडिंग सहायक से व्यक्तिगत पुस्तक सुझाव पाएँ।"
-        },
         "readingChallenges": {
           "title": "रीडिंग चैलेंज",
           "description": "अपनी प्रगति ट्रैक करें और जितना अधिक पढ़ें, उतनी उपलब्धियाँ अर्जित करें।"
@@ -588,6 +559,10 @@
         "analyticsDashboard": {
           "title": "एनालिटिक्स डैशबोर्ड",
           "description": "लाइब्रेरियन और एडमिन को रुझानों, लोकप्रिय पुस्तकों और उपयोग की जानकारी मिलती है।"
+        },
+        "aiRecommendations": {
+          "title": "AI Recommendations",
+          "description": "एक संवादात्मक रीडिंग सहायक से व्यक्तिगत पुस्तक सुझाव पाएँ।"
         }
       }
     },
@@ -613,21 +588,6 @@
           "title": "पढ़ें और भाग लें",
           "description": "अपनी प्रगति ट्रैक करें और इससे जुड़ी कम्युनिटी में शामिल हों।"
         }
-      }
-    },
-    "aiLibrarian": {
-      "heading": "AI लाइब्रेरियन से मिलें",
-      "subheading": "उसे बताएँ कि आप कैसा महसूस कर रहे हैं और उसे लाइव आपके लिए सूची खोजते हुए देखें।",
-      "windowTitle": "AI लाइब्रेरियन",
-      "prompt": "मैं तनाव में हूँ। एक हल्की प्रेरक किताब सुझाएँ।",
-      "reply": "यहाँ कुछ विकल्प हैं जो मदद कर सकते हैं:",
-      "available": "उपलब्ध",
-      "reserved": "आरक्षित",
-      "reserveBook": "पुस्तक आरक्षित करें",
-      "shelves": {
-        "atomicHabits": "सेल्फ़-हेल्प · शेल्फ़ C2",
-        "psychologyOfMoney": "फाइनेंस · शेल्फ़ D1",
-        "ikigai": "सेल्फ़-हेल्प · शेल्फ़ C4"
       }
     },
     "mood": {
@@ -683,11 +643,20 @@
       }
     },
     "readingChallenge": {
-      "heading": "रीडिंग चैलेंज और उपलब्धियाँ",
-      "subheading": "पढ़ते समय अनलॉक होने वाले बैज के साथ प्रेरित रहें।",
+      "eyebrow": "उपलब्धियाँ",
+      "heading": "रीडिंग चैलेंज और",
+      "highlight": "उपलब्धियाँ",
+      "subheading": "रोमांचक चुनौतियों के साथ प्रेरित रहें और पढ़ते व बढ़ते हुए बैज अर्जित करें।",
+      "imgAlt": "किताबों के ढेर पर बैठे एक पाठक का चित्रण, जिसके चारों ओर उपलब्धि बैज और एक रीडिंग स्ट्रीक काउंटर है",
       "achievements": {
-        "firstBook": { "label": "पहली पुस्तक", "description": "अपनी पहली किताब उधार लें" },
-        "bookWorm": { "label": "बुक वर्म", "description": "एक साल में 10 किताबें पढ़ें" },
+        "firstBook": {
+          "label": "पहली पुस्तक",
+          "description": "अपनी पहली किताब उधार लें"
+        },
+        "bookWorm": {
+          "label": "बुक वर्म",
+          "description": "एक साल में 10 किताबें पढ़ें"
+        },
         "topReader": {
           "label": "टॉप रीडर",
           "description": "मासिक लीडरबोर्ड में शीर्ष पर पहुँचें"
@@ -696,6 +665,26 @@
           "label": "मासिक चैंपियन",
           "description": "एक महीने की हर साप्ताहिक चुनौती पूरी करें"
         }
+      },
+      "steps": {
+        "setGoals": {
+          "title": "लक्ष्य निर्धारित करें",
+          "description": "अपनी रीडिंग चुनौती और लक्ष्य चुनें"
+        },
+        "trackProgress": {
+          "title": "प्रगति ट्रैक करें",
+          "description": "अपनी रीडिंग स्ट्रीक और प्रगति पर नज़र रखें"
+        },
+        "earnBadges": {
+          "title": "बैज अर्जित करें",
+          "description": "उपलब्धियाँ अनलॉक करें और उन्हें दिखाएं"
+        }
+      },
+      "stats": {
+        "booksRead": "पढ़ी गई किताबें",
+        "dayStreak": "दिन की स्ट्रीक",
+        "pointsEarned": "अर्जित अंक",
+        "badgesUnlocked": "अनलॉक किए गए बैज"
       }
     },
     "community": {
@@ -756,7 +745,7 @@
           "question": "क्या मैं किताबें दान कर सकता हूँ?",
           "answer": "हाँ, एक दान अनुरोध सबमिट करें और एक लाइब्रेरियन इसकी समीक्षा करके साझा संग्रह के लिए इसे स्वीकृत करेगा।"
         },
-        "aiLibrarian": {
+        "aiRecommendations": {
           "question": "AI लाइब्रेरियन क्या है?",
           "answer": "एक संवादात्मक सहायक जो आपकी रुचियों, मूड या पठन इतिहास के आधार पर किताबें सुझाता है।"
         }
@@ -833,11 +822,11 @@
       "unlimitedMembers": "असीमित सदस्य",
       "qrBorrowing": "QR उधार",
       "seatReservation": "सीट आरक्षण",
-      "aiLibrarian": "एआई लाइब्रेरियन",
       "readingChallenges": "रीडिंग चैलेंज",
       "events": "आयोजन",
       "emailNotifications": "ईमेल सूचनाएँ",
-      "basicAnalytics": "बेसिक एनालिटिक्स"
+      "basicAnalytics": "बेसिक एनालिटिक्स",
+      "aiRecommendations": "एआई लाइब्रेरियन"
     },
     "extraFeatures": {
       "prioritySupport": "प्राथमिकता सहायता",
@@ -859,10 +848,6 @@
         "qrBorrowing": {
           "title": "QR कोड उधार",
           "description": "सेकंडों में पुस्तक उधार लेने या लौटाने के लिए QR कोड स्कैन करें।"
-        },
-        "aiLibrarian": {
-          "title": "एआई लाइब्रेरियन",
-          "description": "एक संवादात्मक सहायक से व्यक्तिगत पुस्तक सिफारिशें प्राप्त करें।"
         },
         "seatReservation": {
           "title": "स्मार्ट सीट आरक्षण",
@@ -895,6 +880,10 @@
         "responsiveDashboard": {
           "title": "रिस्पॉन्सिव डैशबोर्ड",
           "description": "एक स्वच्छ, तेज़ डैशबोर्ड जो किसी भी स्क्रीन आकार के अनुकूल होता है।"
+        },
+        "aiRecommendations": {
+          "title": "एआई लाइब्रेरियन",
+          "description": "एक संवादात्मक सहायक से व्यक्तिगत पुस्तक सिफारिशें प्राप्त करें।"
         }
       }
     },
@@ -971,6 +960,18 @@
       "copiesAvailable": "{{total}} में से {{available}} प्रतियाँ उपलब्ध",
       "reserveButton": "यह पुस्तक आरक्षित करें",
       "reservingToast": "\"{{title}}\" आरक्षित की जा रही है"
+    },
+    "wishlist": {
+      "button": "विशलिस्ट",
+      "add": "विशलिस्ट में जोड़ें",
+      "remove": "विशलिस्ट से हटाएं",
+      "addAria": "\"{{title}}\" को विशलिस्ट में जोड़ें",
+      "removeAria": "\"{{title}}\" को विशलिस्ट से हटाएं",
+      "drawerTitle": "मेरी विशलिस्ट",
+      "empty": {
+        "title": "आपकी विशलिस्ट खाली है",
+        "description": "किसी भी किताब को यहाँ सहेजने के लिए हार्ट पर टैप करें।"
+      }
     }
   },
   "events": {
@@ -1004,6 +1005,13 @@
   "reservations": {
     "pageTitle": "आरक्षण",
     "pageDescription": "अपने पुस्तक आरक्षण और कतार में स्थिति ट्रैक करें",
+    "search": {
+      "placeholder": "किताब के नाम से खोजें…",
+      "ariaLabel": "आरक्षण खोजें",
+      "noResultsTitle": "कोई परिणाम नहीं मिला",
+      "noResultsDescription": "एक अलग खोज शब्द आज़माएं।",
+      "clearSearch": "खोज साफ़ करें"
+    },
     "current": {
       "heading": "वर्तमान आरक्षण",
       "emptyTitle": "कोई सक्रिय आरक्षण नहीं",
@@ -1087,6 +1095,90 @@
       "hoursRead": "पढ़े गए घंटे"
     },
     "hoursSuffix": "{{hours}} घं."
+  },
+  "community": {
+    "pageTitle": "कम्युनिटी",
+    "pageDescription": "किताबों पर अपने विचार साझा करें और अन्य सदस्यों से जुड़ें।",
+    "newPost": "नई पोस्ट",
+    "you": "आप",
+    "justNow": "अभी अभी",
+    "filterAriaLabel": "पोस्ट फ़िल्टर करें",
+    "filters": {
+      "all": "सभी पोस्ट",
+      "saved": "सहेजी गई"
+    },
+    "empty": {
+      "title": "अभी तक कोई पोस्ट नहीं",
+      "description": "आप जो पढ़ रहे हैं उसे साझा करने वाले पहले व्यक्ति बनें।",
+      "savedTitle": "अभी तक कोई सहेजी गई पोस्ट नहीं",
+      "savedDescription": "आपकी सहेजी गई पोस्ट यहाँ दिखाई देंगी।"
+    },
+    "post": {
+      "likeAria": "पोस्ट पसंद करें",
+      "unlikeAria": "पसंद हटाएं",
+      "commentAria": "टिप्पणियाँ देखें",
+      "saveAria": "पोस्ट सहेजें",
+      "unsaveAria": "सहेजी गई पोस्ट हटाएं",
+      "editAria": "पोस्ट संपादित करें",
+      "deleteAria": "पोस्ट हटाएं",
+      "commentPlaceholder": "टिप्पणी लिखें...",
+      "sendComment": "टिप्पणी भेजें",
+      "reply": "जवाब दें",
+      "replyPlaceholder": "जवाब लिखें...",
+      "sendReply": "जवाब भेजें"
+    },
+    "createPostModal": {
+      "title": "पोस्ट बनाएं",
+      "editTitle": "पोस्ट संपादित करें",
+      "bookTitleLabel": "किताब (वैकल्पिक)",
+      "bookTitlePlaceholder": "यह किस किताब के बारे में है?",
+      "contentLabel": "आपके विचार",
+      "contentPlaceholder": "आपके मन में क्या है?",
+      "imagesLabel": "फ़ोटो जोड़ें (वैकल्पिक)",
+      "addImage": "जोड़ें",
+      "removeImage": "फ़ोटो हटाएं",
+      "imagesHint": "अधिकतम {{count}} फ़ोटो",
+      "submit": "पोस्ट करें",
+      "saveChanges": "बदलाव सहेजें"
+    },
+    "deleteDialog": {
+      "title": "पोस्ट हटाएं?",
+      "description": "इसे वापस नहीं लाया जा सकता।",
+      "confirmLabel": "हटाएं"
+    }
+  },
+  "settings": {
+    "pageTitle": "सेटिंग्स",
+    "pageDescription": "अपना खाता, रूप-रंग और सूचना प्राथमिकताएं प्रबंधित करें।",
+    "appearance": {
+      "title": "रूप-रंग",
+      "theme": "थीम",
+      "themeOptions": {
+        "light": "लाइट",
+        "dark": "डार्क",
+        "system": "सिस्टम"
+      }
+    },
+    "language": {
+      "title": "भाषा",
+      "label": "प्रदर्शन भाषा"
+    },
+    "notifications": {
+      "title": "सूचनाएं",
+      "items": {
+        "dueDateReminders": "देय तिथि अनुस्मारक",
+        "reservationReady": "आरक्षण तैयार अलर्ट",
+        "eventAnnouncements": "इवेंट घोषणाएं",
+        "achievementBadges": "उपलब्धि बैज"
+      }
+    },
+    "account": {
+      "title": "खाता",
+      "logOut": "लॉग आउट",
+      "dangerZone": "खतरे का क्षेत्र",
+      "deleteAccount": "खाता हटाएं",
+      "deleteAccountHint": "अपना खाता और सभी डेटा स्थायी रूप से हटाएं।"
+    }
   },
   "reviews": {
     "pageTitle": "पुस्तक समीक्षाएँ",

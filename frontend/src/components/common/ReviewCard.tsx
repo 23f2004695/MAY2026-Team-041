@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { Pencil, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar, Card, CardContent, CardHeader } from '@/components/ui';
@@ -9,20 +9,35 @@ export interface ReviewCardProps {
   role: string;
   quote: string;
   rating?: number;
+  images?: string[];
   className?: string;
+  /** Shown as a top-right edit icon (like Google Maps) when the review is the current user's own. */
+  onEdit?: () => void;
 }
 
-export function ReviewCard({ name, role, quote, rating, className }: ReviewCardProps) {
+export function ReviewCard({ name, role, quote, rating, images, className, onEdit }: ReviewCardProps) {
   const { t } = useTranslation();
 
   return (
     <Card className={cn('h-full', className)}>
-      <CardHeader className="flex-row items-center gap-3 space-y-0">
-        <Avatar name={name} size="md" />
-        <div>
-          <p className="text-sm font-semibold text-foreground">{name}</p>
-          <p className="text-xs text-muted-foreground">{role}</p>
+      <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
+        <div className="flex items-center gap-3">
+          <Avatar name={name} size="md" />
+          <div>
+            <p className="text-sm font-semibold text-foreground">{name}</p>
+            <p className="text-xs text-muted-foreground">{role}</p>
+          </div>
         </div>
+        {onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            aria-label={t('common.cards.review.editReview')}
+            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            <Pencil className="size-4" />
+          </button>
+        )}
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {rating != null && (
@@ -39,6 +54,18 @@ export function ReviewCard({ name, role, quote, rating, className }: ReviewCardP
           </div>
         )}
         <p className="text-sm text-muted-foreground">&ldquo;{quote}&rdquo;</p>
+        {images && images.length > 0 && (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {images.map((src, index) => (
+              <img
+                key={index}
+                src={src}
+                alt=""
+                className="size-14 rounded-md border border-border object-cover"
+              />
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

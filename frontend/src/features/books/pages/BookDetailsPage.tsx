@@ -1,17 +1,21 @@
-import { ArrowLeft, BookOpen, Star } from 'lucide-react';
+import { ArrowLeft, BookOpen, Heart, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { cn } from '@/lib/cn';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { books } from '@/mocks/books';
+
+import { useWishlist } from '../hooks/useWishlist';
 
 export function BookDetailsPage() {
   const { t } = useTranslation();
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
   const book = books.find((entry) => entry.id === bookId);
+  const { isWishlisted, toggleWishlist } = useWishlist();
 
   if (!book) {
     return (
@@ -68,12 +72,21 @@ export function BookDetailsPage() {
               })}
             </p>
 
-            <div>
+            <div className="flex gap-2">
               <Button
                 disabled={!book.available}
                 onClick={() => comingSoonToast(t('books.details.reservingToast', { title: book.title }))}
               >
                 {t('books.details.reserveButton')}
+              </Button>
+              <Button
+                variant="outline"
+                leadingIcon={
+                  <Heart className={cn('size-4', isWishlisted(book.id) && 'fill-danger text-danger')} />
+                }
+                onClick={() => toggleWishlist(book.id)}
+              >
+                {t(isWishlisted(book.id) ? 'books.wishlist.remove' : 'books.wishlist.add')}
               </Button>
             </div>
           </div>

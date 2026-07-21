@@ -1,4 +1,4 @@
-import { BookOpen, Star } from 'lucide-react';
+import { BookOpen, Heart, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +13,8 @@ export interface BookCardProps {
   rating: number;
   href: string;
   onReserve?: () => void;
+  isWishlisted?: boolean;
+  onToggleWishlist?: () => void;
   className?: string;
 }
 
@@ -24,6 +26,8 @@ export function BookCard({
   rating,
   href,
   onReserve,
+  isWishlisted,
+  onToggleWishlist,
   className,
 }: BookCardProps) {
   const { t } = useTranslation();
@@ -31,10 +35,28 @@ export function BookCard({
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-primary/40',
+        'relative flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-primary/40',
         className,
       )}
     >
+      {onToggleWishlist && (
+        <button
+          type="button"
+          onClick={onToggleWishlist}
+          aria-pressed={isWishlisted}
+          aria-label={t(
+            isWishlisted ? 'books.wishlist.removeAria' : 'books.wishlist.addAria',
+            { title },
+          )}
+          className={cn(
+            'absolute right-3 top-3 z-10 rounded-full bg-surface/80 p-1.5 transition-colors hover:bg-secondary',
+            isWishlisted ? 'text-danger' : 'text-muted-foreground',
+          )}
+        >
+          <Heart className={cn('size-4', isWishlisted && 'fill-danger')} />
+        </button>
+      )}
+
       <Link
         to={href}
         className="flex flex-col gap-3"

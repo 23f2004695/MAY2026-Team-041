@@ -46,9 +46,9 @@ export function GuardianDashboardPage() {
             onClick: () => comingSoonToast(t('guardian.quickActions.toasts.renewingSubscription')),
           },
           {
-            label: t('guardian.quickActions.contactLibrarian'),
+            label: t('guardian.quickActions.contactStaff'),
             icon: MessageSquare,
-            onClick: () => comingSoonToast(t('guardian.quickActions.toasts.contactingLibrarian')),
+            onClick: () => comingSoonToast(t('guardian.quickActions.toasts.contactingStaff')),
           },
         ]}
       />

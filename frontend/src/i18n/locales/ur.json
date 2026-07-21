@@ -105,7 +105,6 @@
       "continueAs": "{{role}} کے طور پر جاری رکھیں",
       "roles": {
         "admin": "ایڈمن",
-        "librarian": "لائبریرین",
         "member": "رکن",
         "manager": "منیجر",
         "it-head": "آئی ٹی ہیڈ",
@@ -167,8 +166,12 @@
   },
   "placeholder": {
     "comingSoon": "جلد آ رہا ہے",
-    "community": { "description": "ریڈنگ کلبز اور مباحثے۔" },
-    "settings": { "description": "اپنی ترجیحات کا نظم کریں۔" },
+    "community": {
+      "description": "ریڈنگ کلبز اور مباحثے۔"
+    },
+    "settings": {
+      "description": "اپنی ترجیحات کا نظم کریں۔"
+    },
     "forgotPassword": {
       "title": "پاس ورڈ بھول گئے",
       "description": "اپنا پاس ورڈ دوبارہ ترتیب دیں۔"
@@ -179,7 +182,13 @@
       "badge": "کمیونٹی ریڈنگ کلب اینڈ لائبریری پلیٹ فارم",
       "title": "آپ کی لائبریری، آپ کی کمیونٹی، سب ایک ہی جگہ پر۔",
       "titlePrefix": "بہتر ",
-      "titleWords": ["لائبریریاں", "کمیونٹیز", "تعلیم", "مطالعے کی عادات", "روابط"],
+      "titleWords": [
+        "لائبریریاں",
+        "کمیونٹیز",
+        "تعلیم",
+        "مطالعے کی عادات",
+        "روابط"
+      ],
       "subtitle": "کتابیں ادھار لیں، اسٹڈی سیٹ بک کریں، ایک ریڈنگ کلب میں شامل ہوں، اور کاغذی رجسٹرز اور گروپ چیٹس کے بغیر ذاتی نوعیت کی سفارشات حاصل کریں۔",
       "ctaJoin": "کمیونٹی میں شامل ہوں",
       "ctaBrowse": "کتابیں براؤز کریں",
@@ -209,10 +218,6 @@
           "title": "سیٹ بکنگ",
           "description": "پہلے سے ایک پرسکون اسٹڈی سیٹ بک کریں اور لائیو دستیابی دیکھیں۔"
         },
-        "aiLibrarian": {
-          "title": "AI لائبریرین",
-          "description": "ایک گفتگو کرنے والے ریڈنگ اسسٹنٹ سے ذاتی نوعیت کی کتابوں کی تجاویز حاصل کریں۔"
-        },
         "readingChallenges": {
           "title": "ریڈنگ چیلنجز",
           "description": "اپنی پیش رفت کو ٹریک کریں اور جتنا زیادہ پڑھیں گے اتنی ہی کامیابیاں حاصل کریں گے۔"
@@ -228,6 +233,10 @@
         "analyticsDashboard": {
           "title": "اینالیٹکس ڈیش بورڈ",
           "description": "لائبریرینز اور ایڈمنز کو رجحانات، مقبول کتابوں اور استعمال کے بارے میں بصیرت ملتی ہے۔"
+        },
+        "aiRecommendations": {
+          "title": "AI Recommendations",
+          "description": "ایک گفتگو کرنے والے ریڈنگ اسسٹنٹ سے ذاتی نوعیت کی کتابوں کی تجاویز حاصل کریں۔"
         }
       }
     },
@@ -253,21 +262,6 @@
           "title": "پڑھیں اور شامل ہوں",
           "description": "اپنی پیش رفت کو ٹریک کریں اور اس کے گرد بننے والی کمیونٹی میں شامل ہوں۔"
         }
-      }
-    },
-    "aiLibrarian": {
-      "heading": "AI لائبریرین سے ملیں",
-      "subheading": "اسے بتائیں کہ آپ کیسا محسوس کر رہے ہیں اور دیکھیں کہ وہ لائیو آپ کے لیے کیٹلاگ کیسے تلاش کرتا ہے۔",
-      "windowTitle": "AI لائبریرین",
-      "prompt": "میں دباؤ محسوس کر رہا ہوں۔ ایک ہلکی سی حوصلہ افزا کتاب تجویز کریں۔",
-      "reply": "یہاں کچھ انتخاب ہیں جو مدد کر سکتے ہیں:",
-      "available": "دستیاب",
-      "reserved": "بک شدہ",
-      "reserveBook": "کتاب بک کریں",
-      "shelves": {
-        "atomicHabits": "سیلف ہیلپ · شیلف C2",
-        "psychologyOfMoney": "فنانس · شیلف D1",
-        "ikigai": "سیلف ہیلپ · شیلف C4"
       }
     },
     "mood": {
@@ -323,16 +317,48 @@
       }
     },
     "readingChallenge": {
-      "heading": "ریڈنگ چیلنجز اور کامیابیاں",
-      "subheading": "پڑھتے ہوئے کھلنے والے بیجز کے ساتھ حوصلہ افزائی برقرار رکھیں۔",
+      "eyebrow": "کامیابیاں",
+      "heading": "ریڈنگ چیلنجز اور",
+      "highlight": "کامیابیاں",
+      "subheading": "دلچسپ چیلنجز کے ساتھ حوصلہ افزائی رکھیں اور پڑھتے اور بڑھتے ہوئے بیجز حاصل کریں۔",
+      "imgAlt": "کتابوں کے ڈھیر پر بیٹھے ایک قاری کی تصویر، ارد گرد کامیابی کے بیجز اور ایک ریڈنگ سٹریک کاؤنٹر",
       "achievements": {
-        "firstBook": { "label": "پہلی کتاب", "description": "اپنی پہلی کتاب ادھار لیں" },
-        "bookWorm": { "label": "بک ورم", "description": "ایک سال میں 10 کتابیں پڑھیں" },
-        "topReader": { "label": "ٹاپ ریڈر", "description": "ماہانہ لیڈربورڈ کے سرِفہرست پہنچیں" },
+        "firstBook": {
+          "label": "پہلی کتاب",
+          "description": "اپنی پہلی کتاب ادھار لیں"
+        },
+        "bookWorm": {
+          "label": "بک ورم",
+          "description": "ایک سال میں 10 کتابیں پڑھیں"
+        },
+        "topReader": {
+          "label": "ٹاپ ریڈر",
+          "description": "ماہانہ لیڈربورڈ کے سرِفہرست پہنچیں"
+        },
         "monthlyChampion": {
           "label": "ماہانہ چیمپئن",
           "description": "ایک ماہ میں ہر ہفتہ وار چیلنج مکمل کریں"
         }
+      },
+      "steps": {
+        "setGoals": {
+          "title": "اہداف مقرر کریں",
+          "description": "اپنا ریڈنگ چیلنج اور ہدف منتخب کریں"
+        },
+        "trackProgress": {
+          "title": "پیش رفت ٹریک کریں",
+          "description": "اپنی ریڈنگ سٹریک اور پیش رفت کی نگرانی کریں"
+        },
+        "earnBadges": {
+          "title": "بیجز حاصل کریں",
+          "description": "کامیابیاں ان لاک کریں اور انہیں دکھائیں"
+        }
+      },
+      "stats": {
+        "booksRead": "پڑھی گئی کتابیں",
+        "dayStreak": "دن کی سٹریک",
+        "pointsEarned": "حاصل کردہ پوائنٹس",
+        "badgesUnlocked": "ان لاک شدہ بیجز"
       }
     },
     "community": {
@@ -393,7 +419,7 @@
           "question": "کیا میں کتابیں عطیہ کر سکتا ہوں؟",
           "answer": "جی ہاں، ایک عطیہ کی درخواست جمع کروائیں اور ایک لائبریرین اس کا جائزہ لے کر مشترکہ ذخیرے کے لیے منظور کرے گا۔"
         },
-        "aiLibrarian": {
+        "aiRecommendations": {
           "question": "AI لائبریرین کیا ہے؟",
           "answer": "ایک گفتگو کرنے والا اسسٹنٹ جو آپ کی دلچسپیوں، موڈ یا مطالعے کی تاریخ کی بنیاد پر کتابیں تجویز کرتا ہے۔"
         }
@@ -470,11 +496,11 @@
       "unlimitedMembers": "لامحدود اراکین",
       "qrBorrowing": "QR ادھار",
       "seatReservation": "سیٹ ریزرویشن",
-      "aiLibrarian": "اے آئی لائبریرین",
       "readingChallenges": "ریڈنگ چیلنجز",
       "events": "تقریبات",
       "emailNotifications": "ای میل اطلاعات",
-      "basicAnalytics": "بنیادی تجزیات"
+      "basicAnalytics": "بنیادی تجزیات",
+      "aiRecommendations": "اے آئی لائبریرین"
     },
     "extraFeatures": {
       "prioritySupport": "ترجیحی معاونت",
@@ -496,10 +522,6 @@
         "qrBorrowing": {
           "title": "QR کوڈ ادھار",
           "description": "سیکنڈوں میں کتاب ادھار لینے یا واپس کرنے کے لیے QR کوڈ اسکین کریں۔"
-        },
-        "aiLibrarian": {
-          "title": "اے آئی لائبریرین",
-          "description": "ایک گفتگو کرنے والے اسسٹنٹ سے ذاتی نوعیت کی کتابوں کی تجاویز حاصل کریں۔"
         },
         "seatReservation": {
           "title": "سمارٹ سیٹ ریزرویشن",
@@ -532,6 +554,10 @@
         "responsiveDashboard": {
           "title": "ریسپانسیو ڈیش بورڈ",
           "description": "ایک صاف ستھرا، تیز ڈیش بورڈ جو کسی بھی اسکرین سائز کے مطابق ڈھل جاتا ہے۔"
+        },
+        "aiRecommendations": {
+          "title": "اے آئی لائبریرین",
+          "description": "ایک گفتگو کرنے والے اسسٹنٹ سے ذاتی نوعیت کی کتابوں کی تجاویز حاصل کریں۔"
         }
       }
     },
@@ -795,12 +821,12 @@
     "quickActions": {
       "payAllFines": "تمام جرمانے ادا کریں",
       "renewSubscription": "رکنیت کی تجدید کریں",
-      "contactLibrarian": "لائبریرین سے رابطہ کریں",
       "toasts": {
         "payingAllFines": "تمام واجب الادا جرمانے ادا کیے جا رہے ہیں",
         "renewingSubscription": "رکنیت کی تجدید کی جا رہی ہے",
-        "contactingLibrarian": "لائبریرین سے رابطہ کیا جا رہا ہے"
-      }
+        "contactingStaff": "لائبریرین سے رابطہ کیا جا رہا ہے"
+      },
+      "contactStaff": "لائبریرین سے رابطہ کریں"
     }
   },
   "dashboard": {
@@ -858,43 +884,6 @@
     },
     "upcomingEvents": {
       "title": "آنے والی تقریبات"
-    }
-  },
-  "librarianDashboard": {
-    "pageTitle": "لائبریرین ڈیش بورڈ",
-    "pageDescription": "کیٹلاگ، ادھار اور جرمانوں کا ایک نظر میں جائزہ",
-    "stats": {
-      "booksBorrowedToday": "آج ادھار لی گئی کتابیں",
-      "overdueBooks": "میعاد گزشتہ کتابیں",
-      "pendingReservations": "زیر التوا ریزرویشنز",
-      "finesCollectedMtd": "وصول شدہ جرمانہ (رواں ماہ)"
-    },
-    "overdueBooks": {
-      "title": "میعاد گزشتہ کتابیں",
-      "emptyTitle": "کوئی میعاد گزشتہ کتاب نہیں",
-      "emptyDescription": "ہر لون وقت پر ہے۔",
-      "dueOn": "{{borrower}} · واپسی کی تاریخ {{date}}",
-      "daysOverdue": "{{count}} دن تاخیر",
-      "remind": "یاد دہانی",
-      "remindToast": "{{name}} کو یاد دہانی بھیجی جا رہی ہے"
-    },
-    "pendingReservations": {
-      "title": "زیر التوا ریزرویشنز",
-      "emptyTitle": "قطار خالی ہے",
-      "emptyDescription": "فی الحال کوئی ریزرویشن منتظر نہیں ہے۔",
-      "position": "{{member}} · پوزیشن {{total}} میں سے {{position}}",
-      "notify": "مطلع کریں",
-      "notifyToast": "{{name}} کو مطلع کیا جا رہا ہے"
-    },
-    "quickActions": {
-      "issueBook": "کتاب جاری کریں",
-      "returnBook": "کتاب واپس کریں",
-      "scanQr": "QR اسکین کریں",
-      "toasts": {
-        "issuingBook": "کتاب جاری کی جا رہی ہے",
-        "returningBook": "کتاب واپس کی جا رہی ہے",
-        "scanningQr": "QR کوڈ اسکین کیا جا رہا ہے"
-      }
     }
   },
   "managerDashboard": {
@@ -971,6 +960,18 @@
       "copiesAvailable": "{{total}} میں سے {{available}} کاپیاں دستیاب ہیں",
       "reserveButton": "یہ کتاب بک کریں",
       "reservingToast": "\"{{title}}\" بک کی جا رہی ہے"
+    },
+    "wishlist": {
+      "button": "پسندیدہ فہرست",
+      "add": "پسندیدہ فہرست میں شامل کریں",
+      "remove": "پسندیدہ فہرست سے ہٹائیں",
+      "addAria": "\"{{title}}\" کو پسندیدہ فہرست میں شامل کریں",
+      "removeAria": "\"{{title}}\" کو پسندیدہ فہرست سے ہٹائیں",
+      "drawerTitle": "میری پسندیدہ فہرست",
+      "empty": {
+        "title": "آپ کی پسندیدہ فہرست خالی ہے",
+        "description": "کسی بھی کتاب کو یہاں محفوظ کرنے کے لیے دل پر ٹیپ کریں۔"
+      }
     }
   },
   "events": {
@@ -1004,6 +1005,13 @@
   "reservations": {
     "pageTitle": "ریزرویشنز",
     "pageDescription": "اپنی کتابوں کی ریزرویشنز اور قطار میں پوزیشن دیکھیں",
+    "search": {
+      "placeholder": "کتاب کے عنوان سے تلاش کریں…",
+      "ariaLabel": "ریزرویشنز تلاش کریں",
+      "noResultsTitle": "کوئی نتیجہ نہیں ملا",
+      "noResultsDescription": "ایک مختلف تلاشی لفظ آزمائیں۔",
+      "clearSearch": "تلاش صاف کریں"
+    },
     "current": {
       "heading": "موجودہ ریزرویشنز",
       "emptyTitle": "کوئی فعال ریزرویشن نہیں",
@@ -1087,6 +1095,90 @@
       "hoursRead": "پڑھنے کے گھنٹے"
     },
     "hoursSuffix": "{{hours}} گھنٹے"
+  },
+  "community": {
+    "pageTitle": "کمیونٹی",
+    "pageDescription": "کتابوں کے بارے میں اپنے خیالات شیئر کریں اور دیگر ممبران سے جڑیں۔",
+    "newPost": "نئی پوسٹ",
+    "you": "آپ",
+    "justNow": "ابھی ابھی",
+    "filterAriaLabel": "پوسٹس فلٹر کریں",
+    "filters": {
+      "all": "تمام پوسٹس",
+      "saved": "محفوظ شدہ"
+    },
+    "empty": {
+      "title": "ابھی تک کوئی پوسٹ نہیں",
+      "description": "آپ جو پڑھ رہے ہیں اسے شیئر کرنے والے پہلے فرد بنیں۔",
+      "savedTitle": "ابھی تک کوئی محفوظ شدہ پوسٹ نہیں",
+      "savedDescription": "آپ کی محفوظ کردہ پوسٹس یہاں نظر آئیں گی۔"
+    },
+    "post": {
+      "likeAria": "پوسٹ پسند کریں",
+      "unlikeAria": "پسندیدگی ہٹائیں",
+      "commentAria": "تبصرے دیکھیں",
+      "saveAria": "پوسٹ محفوظ کریں",
+      "unsaveAria": "محفوظ شدہ پوسٹ ہٹائیں",
+      "editAria": "پوسٹ میں ترمیم کریں",
+      "deleteAria": "پوسٹ حذف کریں",
+      "commentPlaceholder": "تبصرہ لکھیں...",
+      "sendComment": "تبصرہ بھیجیں",
+      "reply": "جواب دیں",
+      "replyPlaceholder": "جواب لکھیں...",
+      "sendReply": "جواب بھیجیں"
+    },
+    "createPostModal": {
+      "title": "پوسٹ بنائیں",
+      "editTitle": "پوسٹ میں ترمیم کریں",
+      "bookTitleLabel": "کتاب (اختیاری)",
+      "bookTitlePlaceholder": "یہ کس کتاب کے بارے میں ہے؟",
+      "contentLabel": "آپ کے خیالات",
+      "contentPlaceholder": "آپ کے ذہن میں کیا ہے؟",
+      "imagesLabel": "تصاویر شامل کریں (اختیاری)",
+      "addImage": "شامل کریں",
+      "removeImage": "تصویر ہٹائیں",
+      "imagesHint": "زیادہ سے زیادہ {{count}} تصاویر",
+      "submit": "پوسٹ کریں",
+      "saveChanges": "تبدیلیاں محفوظ کریں"
+    },
+    "deleteDialog": {
+      "title": "پوسٹ حذف کریں؟",
+      "description": "یہ واپس نہیں کیا جا سکتا۔",
+      "confirmLabel": "حذف کریں"
+    }
+  },
+  "settings": {
+    "pageTitle": "ترتیبات",
+    "pageDescription": "اپنا اکاؤنٹ، ظاہری شکل، اور اطلاع کی ترجیحات کا نظم کریں۔",
+    "appearance": {
+      "title": "ظاہری شکل",
+      "theme": "تھیم",
+      "themeOptions": {
+        "light": "لائٹ",
+        "dark": "ڈارک",
+        "system": "سسٹم"
+      }
+    },
+    "language": {
+      "title": "زبان",
+      "label": "ڈسپلے زبان"
+    },
+    "notifications": {
+      "title": "اطلاعات",
+      "items": {
+        "dueDateReminders": "واجب الادا تاریخ کی یاد دہانیاں",
+        "reservationReady": "ریزرویشن تیار الرٹس",
+        "eventAnnouncements": "تقریب کے اعلانات",
+        "achievementBadges": "کامیابی بیجز"
+      }
+    },
+    "account": {
+      "title": "اکاؤنٹ",
+      "logOut": "لاگ آؤٹ",
+      "dangerZone": "خطرناک زون",
+      "deleteAccount": "اکاؤنٹ حذف کریں",
+      "deleteAccountHint": "اپنا اکاؤنٹ اور تمام ڈیٹا مستقل طور پر حذف کریں۔"
+    }
   },
   "reviews": {
     "pageTitle": "کتابوں کے تبصرے",

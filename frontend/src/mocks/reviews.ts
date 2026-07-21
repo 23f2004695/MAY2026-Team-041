@@ -20,6 +20,9 @@ export interface BookReview {
   rating: number;
   comment: string;
   date: string;
+  images?: string[];
+  /** True when the signed-in member authored this review, enabling edit. */
+  isOwn?: boolean;
 }
 
 export const bookReviews: BookReview[] = [

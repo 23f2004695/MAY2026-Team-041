@@ -5,6 +5,11 @@ export const dashboardUser = {
   membershipPlanKey: 'premium',
   subscriptionExpiresOn: 'Aug 15, 2026',
   outstandingFine: '₹15',
+  fineReasonKey: 'lateReturn',
+  fineBookTitle: 'The Midnight Library',
+  fineDueDate: 'Jul 25, 2026',
+  fineDailyPenalty: '₹5',
+  fineEscalatedAmount: '₹35',
 };
 
 export interface DashboardStat {

@@ -40,7 +40,8 @@
         "unread": "Unread"
       },
       "review": {
-        "ratedOutOf5": "Rated {{rating}} out of 5"
+        "ratedOutOf5": "Rated {{rating}} out of 5",
+        "editReview": "Edit review"
       }
     }
   },
@@ -105,7 +106,6 @@
       "continueAs": "Continue as {{role}}",
       "roles": {
         "admin": "Admin",
-        "librarian": "Librarian",
         "member": "Member",
         "manager": "Manager",
         "it-head": "IT Head",
@@ -365,7 +365,18 @@
       "renew": "Renew",
       "payFine": "Pay Fine",
       "renewToast": "Renewing {{name}}'s subscription",
-      "payFineToast": "Paying {{amount}} fine for {{name}}"
+      "payFineToast": "Paying {{amount}} fine for {{name}}",
+      "viewFineDetails": "View Details",
+      "fineDetails": {
+        "title": "Fine Details",
+        "reason": "Reason",
+        "amountDue": "Amount Due",
+        "payBy": "Pay By",
+        "escalationNotice": "If unpaid after the due date, this fine increases by {{daily}} per day, up to {{escalated}}.",
+        "reasons": {
+          "lateReturn": "Late book return"
+        }
+      }
     },
     "seatReservation": {
       "title": "Reserve a Seat for Your Child",
@@ -374,17 +385,20 @@
       "selectPrompt": "Select an available seat to continue.",
       "selected": "Seat {{seatId}} selected for {{name}}",
       "confirmButton": "Confirm Booking",
-      "confirmToast": "Booking seat {{seatId}} for {{name}}"
+      "confirmToast": "Booking seat {{seatId}} for {{name}}",
+      "notifyButton": "Notify Me When Available",
+      "notifySet": "We'll notify you when this seat frees up",
+      "notifyToast": "We'll notify you when seat {{seatId}} is available for {{name}}"
     },
     "quickActions": {
       "payAllFines": "Pay All Fines",
       "renewSubscription": "Renew Subscription",
-      "contactLibrarian": "Contact Librarian",
       "toasts": {
         "payingAllFines": "Paying all outstanding fines",
         "renewingSubscription": "Renewing subscription",
-        "contactingLibrarian": "Contacting the librarian"
-      }
+        "contactingStaff": "Contacting the front desk"
+      },
+      "contactStaff": "Contact Staff"
     }
   },
   "dashboard": {
@@ -403,7 +417,18 @@
       "noFine": "No outstanding fine",
       "renew": "Renew",
       "viewPlans": "View Plans",
-      "payFine": "Pay Fine"
+      "payFine": "Pay Fine",
+      "viewFineDetails": "View Details",
+      "fineDetails": {
+        "title": "Fine Details",
+        "reason": "Reason",
+        "amountDue": "Amount Due",
+        "payBy": "Pay By",
+        "escalationNotice": "If unpaid after the due date, this fine increases by {{daily}} per day, up to {{escalated}}.",
+        "reasons": {
+          "lateReturn": "Late book return"
+        }
+      }
     },
     "stats": {
       "booksBorrowed": "Books Borrowed",
@@ -442,43 +467,6 @@
     },
     "upcomingEvents": {
       "title": "Upcoming Events"
-    }
-  },
-  "librarianDashboard": {
-    "pageTitle": "Librarian Dashboard",
-    "pageDescription": "Catalogue, borrowing, and fines at a glance",
-    "stats": {
-      "booksBorrowedToday": "Books Borrowed Today",
-      "overdueBooks": "Overdue Books",
-      "pendingReservations": "Pending Reservations",
-      "finesCollectedMtd": "Fines Collected (MTD)"
-    },
-    "overdueBooks": {
-      "title": "Overdue Books",
-      "emptyTitle": "No overdue books",
-      "emptyDescription": "Every loan is on track.",
-      "dueOn": "{{borrower}} · due {{date}}",
-      "daysOverdue": "{{count}}d overdue",
-      "remind": "Remind",
-      "remindToast": "Sending a reminder to {{name}}"
-    },
-    "pendingReservations": {
-      "title": "Pending Reservations",
-      "emptyTitle": "Queue is empty",
-      "emptyDescription": "No reservations waiting right now.",
-      "position": "{{member}} · position {{position}} of {{total}}",
-      "notify": "Notify",
-      "notifyToast": "Notifying {{name}}"
-    },
-    "quickActions": {
-      "issueBook": "Issue Book",
-      "returnBook": "Return Book",
-      "scanQr": "Scan QR",
-      "toasts": {
-        "issuingBook": "Issuing a book",
-        "returningBook": "Returning a book",
-        "scanningQr": "Scanning a QR code"
-      }
     }
   },
   "managerDashboard": {
@@ -530,16 +518,29 @@
   },
   "placeholder": {
     "comingSoon": "Coming soon",
-    "community": { "description": "Reading clubs and discussions." },
-    "settings": { "description": "Manage your preferences." },
-    "forgotPassword": { "title": "Forgot Password", "description": "Reset your password." }
+    "community": {
+      "description": "Reading clubs and discussions."
+    },
+    "settings": {
+      "description": "Manage your preferences."
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Reset your password."
+    }
   },
   "landing": {
     "hero": {
       "badge": "Community Reading Club & Library Platform",
       "title": "Your library, your community, all in one place.",
       "titlePrefix": "Build Better ",
-      "titleWords": ["Libraries", "Communities", "Learning", "Reading Habits", "Connections"],
+      "titleWords": [
+        "Libraries",
+        "Communities",
+        "Learning",
+        "Reading Habits",
+        "Connections"
+      ],
       "subtitle": "Borrow books, reserve a study seat, join a reading club, and get personalized recommendations, without the paper registers and group chats.",
       "ctaJoin": "Join the Community",
       "ctaBrowse": "Browse Books",
@@ -569,10 +570,6 @@
           "title": "Seat Booking",
           "description": "Reserve a quiet study seat ahead of time and see live availability."
         },
-        "aiLibrarian": {
-          "title": "AI Librarian",
-          "description": "Get personalized book suggestions from a conversational reading assistant."
-        },
         "readingChallenges": {
           "title": "Reading Challenges",
           "description": "Track your progress and earn achievements as you read more."
@@ -587,7 +584,11 @@
         },
         "analyticsDashboard": {
           "title": "Analytics Dashboard",
-          "description": "Librarians and admins get insight into trends, popular books, and usage."
+          "description": "Staff and admins get insight into trends, popular books, and usage."
+        },
+        "aiRecommendations": {
+          "title": "AI Recommendations",
+          "description": "Get personalized book suggestions from a conversational reading assistant."
         }
       }
     },
@@ -597,7 +598,10 @@
       "titleHighlight": "works",
       "stepLabel": "Step {{step}}",
       "steps": {
-        "1": { "title": "Register", "description": "Create a free membership in under a minute." },
+        "1": {
+          "title": "Register",
+          "description": "Create a free membership in under a minute."
+        },
         "2": {
           "title": "Search Books",
           "description": "Find titles by category, author, or mood."
@@ -610,21 +614,6 @@
           "title": "Read & Participate",
           "description": "Track progress and join the community around it."
         }
-      }
-    },
-    "aiLibrarian": {
-      "heading": "Meet the AI Librarian",
-      "subheading": "Tell it how you're feeling and watch it search the catalog for you, live.",
-      "windowTitle": "AI Librarian",
-      "prompt": "I'm feeling stressed. Recommend a light motivational book.",
-      "reply": "Here are a few picks that might help:",
-      "available": "Available",
-      "reserved": "Reserved",
-      "reserveBook": "Reserve Book",
-      "shelves": {
-        "atomicHabits": "Self-Help · Shelf C2",
-        "psychologyOfMoney": "Finance · Shelf D1",
-        "ikigai": "Self-Help · Shelf C4"
       }
     },
     "mood": {
@@ -680,11 +669,20 @@
       }
     },
     "readingChallenge": {
-      "heading": "Reading challenges & achievements",
-      "subheading": "Stay motivated with badges you unlock as you read.",
+      "eyebrow": "Achievements",
+      "heading": "Reading challenges &",
+      "highlight": "achievements",
+      "subheading": "Stay motivated with exciting challenges and earn badges as you read and grow.",
+      "imgAlt": "Illustration of a reader on a stack of books, surrounded by achievement badges and a reading streak counter",
       "achievements": {
-        "firstBook": { "label": "First Book", "description": "Borrow your first book" },
-        "bookWorm": { "label": "Book Worm", "description": "Read 10 books in a year" },
+        "firstBook": {
+          "label": "First Book",
+          "description": "Borrow your first book"
+        },
+        "bookWorm": {
+          "label": "Book Worm",
+          "description": "Read 10 books in a year"
+        },
         "topReader": {
           "label": "Top Reader",
           "description": "Reach the top of the monthly leaderboard"
@@ -693,6 +691,26 @@
           "label": "Monthly Champion",
           "description": "Complete every weekly challenge in a month"
         }
+      },
+      "steps": {
+        "setGoals": {
+          "title": "Set Goals",
+          "description": "Choose your reading challenge and goal"
+        },
+        "trackProgress": {
+          "title": "Track Progress",
+          "description": "Monitor your reading streaks and progress"
+        },
+        "earnBadges": {
+          "title": "Earn Badges",
+          "description": "Unlock achievements and show them off"
+        }
+      },
+      "stats": {
+        "booksRead": "Books Read",
+        "dayStreak": "Day Streak",
+        "pointsEarned": "Points Earned",
+        "badgesUnlocked": "Badges Unlocked"
       }
     },
     "community": {
@@ -734,7 +752,7 @@
         },
         "karanMalhotra": {
           "role": "Member since 2024",
-          "quote": "The AI librarian recommended books I never would have picked myself, and I loved them."
+          "quote": "The AI recommendations feature suggested books I never would have picked myself, and I loved them."
         }
       }
     },
@@ -751,10 +769,10 @@
         },
         "donations": {
           "question": "Can I donate books?",
-          "answer": "Yes, submit a donation request and a librarian will review and approve it for the shared collection."
+          "answer": "Yes, submit a donation request and our team will review and approve it for the shared collection."
         },
-        "aiLibrarian": {
-          "question": "What is AI Librarian?",
+        "aiRecommendations": {
+          "question": "What is AI Recommendations?",
           "answer": "A conversational assistant that recommends books based on your interests, mood, or reading history."
         }
       }
@@ -830,11 +848,11 @@
       "unlimitedMembers": "Unlimited members",
       "qrBorrowing": "QR borrowing",
       "seatReservation": "Seat reservation",
-      "aiLibrarian": "AI librarian",
       "readingChallenges": "Reading challenges",
       "events": "Events",
       "emailNotifications": "Email notifications",
-      "basicAnalytics": "Basic analytics"
+      "basicAnalytics": "Basic analytics",
+      "aiRecommendations": "AI recommendations"
     },
     "extraFeatures": {
       "prioritySupport": "Priority support",
@@ -856,10 +874,6 @@
         "qrBorrowing": {
           "title": "QR Code Borrowing",
           "description": "Scan a QR code to borrow or return books in seconds."
-        },
-        "aiLibrarian": {
-          "title": "AI Librarian",
-          "description": "Get personalized book recommendations from a conversational assistant."
         },
         "seatReservation": {
           "title": "Smart Seat Reservation",
@@ -892,6 +906,10 @@
         "responsiveDashboard": {
           "title": "Responsive Dashboard",
           "description": "A clean, fast dashboard that adapts to any screen size."
+        },
+        "aiRecommendations": {
+          "title": "AI Recommendations",
+          "description": "Get personalized book recommendations from a conversational assistant."
         }
       }
     },
@@ -968,6 +986,18 @@
       "copiesAvailable": "{{available}} of {{total}} copies available",
       "reserveButton": "Reserve this book",
       "reservingToast": "Reserving \"{{title}}\""
+    },
+    "wishlist": {
+      "button": "Wishlist",
+      "add": "Add to Wishlist",
+      "remove": "Remove from Wishlist",
+      "addAria": "Add \"{{title}}\" to wishlist",
+      "removeAria": "Remove \"{{title}}\" from wishlist",
+      "drawerTitle": "My Wishlist",
+      "empty": {
+        "title": "Your wishlist is empty",
+        "description": "Tap the heart on any book to save it here."
+      }
     }
   },
   "events": {
@@ -1001,6 +1031,13 @@
   "reservations": {
     "pageTitle": "Reservations",
     "pageDescription": "Track your book reservations and queue position",
+    "search": {
+      "placeholder": "Search by book title…",
+      "ariaLabel": "Search reservations",
+      "noResultsTitle": "No matches found",
+      "noResultsDescription": "Try a different search term.",
+      "clearSearch": "Clear search"
+    },
     "current": {
       "heading": "Current Reservations",
       "emptyTitle": "No active reservations",
@@ -1037,7 +1074,15 @@
       "title": "Booking Summary",
       "selected": "Seat {{seatId}} selected for today",
       "selectPrompt": "Select an available seat to continue.",
-      "confirmButton": "Confirm Booking"
+      "confirmButton": "Confirm Booking",
+      "statusUntil": {
+        "occupied": "Seat {{seatId}} is occupied until {{time}}",
+        "reserved": "Seat {{seatId}} is reserved until {{time}}"
+      },
+      "availableIn": "Available again in {{count}} minutes",
+      "notifyButton": "Notify Me When Available",
+      "notifySet": "We'll notify you when this seat frees up",
+      "notifyToast": "We'll notify you when seat {{seatId}} is available"
     }
   },
   "readingProgress": {
@@ -1085,11 +1130,94 @@
     },
     "hoursSuffix": "{{hours}}h"
   },
+  "community": {
+    "pageTitle": "Community",
+    "pageDescription": "Share your thoughts on books and connect with fellow members.",
+    "newPost": "New Post",
+    "you": "You",
+    "justNow": "Just now",
+    "filterAriaLabel": "Filter posts",
+    "filters": {
+      "all": "All Posts",
+      "saved": "Saved"
+    },
+    "empty": {
+      "title": "No posts yet",
+      "description": "Be the first to share what you're reading.",
+      "savedTitle": "No saved posts yet",
+      "savedDescription": "Posts you save will show up here."
+    },
+    "post": {
+      "likeAria": "Like post",
+      "unlikeAria": "Unlike post",
+      "commentAria": "View comments",
+      "saveAria": "Save post",
+      "unsaveAria": "Unsave post",
+      "editAria": "Edit post",
+      "deleteAria": "Delete post",
+      "commentPlaceholder": "Write a comment...",
+      "sendComment": "Send comment",
+      "reply": "Reply",
+      "replyPlaceholder": "Write a reply...",
+      "sendReply": "Send reply"
+    },
+    "createPostModal": {
+      "title": "Create Post",
+      "editTitle": "Edit Post",
+      "bookTitleLabel": "Book (optional)",
+      "bookTitlePlaceholder": "Which book is this about?",
+      "contentLabel": "Your thoughts",
+      "contentPlaceholder": "What's on your mind?",
+      "imagesLabel": "Add photos (optional)",
+      "addImage": "Add",
+      "removeImage": "Remove image",
+      "imagesHint": "Up to {{count}} images",
+      "submit": "Post",
+      "saveChanges": "Save Changes"
+    },
+    "deleteDialog": {
+      "title": "Delete post?",
+      "description": "This can't be undone.",
+      "confirmLabel": "Delete"
+    }
+  },
+  "settings": {
+    "pageTitle": "Settings",
+    "pageDescription": "Manage your account, appearance, and notification preferences.",
+    "appearance": {
+      "title": "Appearance",
+      "theme": "Theme",
+      "themeOptions": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "label": "Display language"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "items": {
+        "dueDateReminders": "Due date reminders",
+        "reservationReady": "Reservation ready alerts",
+        "eventAnnouncements": "Event announcements",
+        "achievementBadges": "Achievement badges"
+      }
+    },
+    "account": {
+      "title": "Account",
+      "logOut": "Log out",
+      "dangerZone": "Danger zone",
+      "deleteAccount": "Delete account",
+      "deleteAccountHint": "Permanently delete your account and all your data."
+    }
+  },
   "reviews": {
     "pageTitle": "Book Reviews",
     "byAuthor": "by {{author}}",
     "writeReview": "Write a Review",
-    "writeReviewDisabledHint": "Reviews aren't open for submission yet",
     "commentsHeading": "Comments",
     "summary": {
       "totalReviews_one": "{{count}} review",
@@ -1100,6 +1228,20 @@
     "empty": {
       "title": "No reviews yet",
       "description": "Be the first to share what you thought of this book."
+    },
+    "writeReviewModal": {
+      "title": "Write a Review",
+      "you": "You",
+      "ratingLabel": "Your rating",
+      "commentLabel": "Your review",
+      "commentPlaceholder": "What did you think of this book?",
+      "imagesLabel": "Add photos (optional)",
+      "addImage": "Add",
+      "removeImage": "Remove image",
+      "imagesHint": "Up to {{count}} images",
+      "submit": "Post Review",
+      "editTitle": "Edit Review",
+      "saveChanges": "Save Changes"
     }
   },
   "notifications": {

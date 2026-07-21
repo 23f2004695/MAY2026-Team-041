@@ -43,6 +43,11 @@ export function MemberDashboard() {
         planLabel={t(`dashboard.membershipPlans.${dashboardUser.membershipPlanKey}`)}
         expiresOn={dashboardUser.subscriptionExpiresOn}
         outstandingFine={dashboardUser.outstandingFine}
+        fineReasonKey={dashboardUser.fineReasonKey}
+        fineBookTitle={dashboardUser.fineBookTitle}
+        fineDueDate={dashboardUser.fineDueDate}
+        fineDailyPenalty={dashboardUser.fineDailyPenalty}
+        fineEscalatedAmount={dashboardUser.fineEscalatedAmount}
       />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

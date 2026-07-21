@@ -57,6 +57,12 @@ const PaymentPage = lazy(() =>
 const EventsPage = lazy(() =>
   import('@/features/events/pages/EventsPage').then((m) => ({ default: m.EventsPage })),
 );
+const CommunityPage = lazy(() =>
+  import('@/features/community/pages/CommunityPage').then((m) => ({ default: m.CommunityPage })),
+);
+const SettingsPage = lazy(() =>
+  import('@/features/settings/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+);
 const NotificationsPage = lazy(() =>
   import('@/features/notifications/pages/NotificationsPage').then((m) => ({
     default: m.NotificationsPage,
@@ -138,30 +144,14 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.RESERVATIONS), element: withSuspense(<ReservationsPage />) },
       { path: relative(ROUTES.SEAT_BOOKING), element: withSuspense(<SeatBookingPage />) },
       { path: relative(ROUTES.PAYMENT), element: withSuspense(<PaymentPage />) },
-      {
-        path: relative(ROUTES.COMMUNITY),
-        element: (
-          <PlaceholderPage
-            titleKey="nav.community"
-            descriptionKey="placeholder.community.description"
-          />
-        ),
-      },
+      { path: relative(ROUTES.COMMUNITY), element: withSuspense(<CommunityPage />) },
       { path: relative(ROUTES.EVENTS), element: withSuspense(<EventsPage />) },
       { path: relative(ROUTES.NOTIFICATIONS), element: withSuspense(<NotificationsPage />) },
       { path: relative(ROUTES.PROFILE), element: withSuspense(<ProfilePage />) },
       { path: relative(ROUTES.READING_PROGRESS), element: withSuspense(<ReadingProgressPage />) },
       { path: relative(ROUTES.LEADERBOARD), element: withSuspense(<LeaderboardPage />) },
       { path: relative(ROUTES.REVIEWS), element: withSuspense(<ReviewsPage />) },
-      {
-        path: relative(ROUTES.SETTINGS),
-        element: (
-          <PlaceholderPage
-            titleKey="nav.settings"
-            descriptionKey="placeholder.settings.description"
-          />
-        ),
-      },
+      { path: relative(ROUTES.SETTINGS), element: withSuspense(<SettingsPage />) },
     ],
   },
   {

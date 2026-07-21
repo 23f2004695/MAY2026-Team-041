@@ -13,14 +13,15 @@ const rows = Array.from(new Set(seats.map((seat) => seat.id[0])));
 export function SeatBookingPage() {
   const { t } = useTranslation();
   const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
+  const selectedSeat = seats.find((seat) => seat.id === selectedSeatId) ?? null;
 
   function toggleSeat(seatId: string) {
     setSelectedSeatId((prev) => (prev === seatId ? null : seatId));
   }
 
   function confirmBooking() {
-    if (!selectedSeatId) return;
-    comingSoonToast(t('seatBooking.confirmToast', { seatId: selectedSeatId }));
+    if (!selectedSeat || selectedSeat.status !== 'available') return;
+    comingSoonToast(t('seatBooking.confirmToast', { seatId: selectedSeat.id }));
   }
 
   return (
@@ -55,7 +56,7 @@ export function SeatBookingPage() {
           </div>
         </div>
 
-        <BookingSummary selectedSeatId={selectedSeatId} onConfirm={confirmBooking} />
+        <BookingSummary selectedSeat={selectedSeat} onConfirm={confirmBooking} />
       </div>
     </div>
   );
