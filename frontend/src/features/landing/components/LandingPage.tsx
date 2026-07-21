@@ -9,6 +9,7 @@ import { ReadingChallenge } from './ReadingChallenge';
 import { SeatAvailability } from './SeatAvailability';
 import { Statistics } from './Statistics';
 import { Testimonials } from './Testimonials';
+import { Footer } from './Footer';
 
 export function LandingPage() {
   return (
@@ -24,6 +25,7 @@ export function LandingPage() {
       <Testimonials />
       <FAQ />
       <CTA />
+      <Footer />
     </>
   );
 }
