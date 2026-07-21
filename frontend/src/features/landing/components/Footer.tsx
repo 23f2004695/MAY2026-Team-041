@@ -1,5 +1,4 @@
 import { motion, type Variants } from 'framer-motion';
-import { Globe, Link2, Mail, MessageCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -22,11 +21,6 @@ const itemVariants: Variants = {
 const linkVariants: Variants = {
   hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-};
-
-const socialVariants: Variants = {
-  hidden: { opacity: 0, scale: 0 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 200, damping: 10 } },
 };
 
 interface FooterNavLink {
@@ -80,12 +74,6 @@ export function Footer() {
     { label: t('landing.footer.events'), to: ROUTES.EVENTS },
   ];
 
-  const socialLinks = [
-    { label: t('landing.footer.website'), href: '#', icon: Globe },
-    { label: t('landing.footer.communityForum'), href: '#', icon: MessageCircle },
-    { label: t('landing.footer.newsletter'), href: '#', icon: Link2 },
-  ];
-
   return (
     // ponytail: clip-path sticky-reveal trick, swap for scroll-driven animation API when browser support allows
     <div
@@ -121,7 +109,7 @@ export function Footer() {
               }}
             />
 
-            <div className="relative z-10 grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-12 lg:gap-20">
+            <div className="relative z-10 grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-12 lg:gap-20">
               <motion.div variants={itemVariants}>
                 <p className="text-sm font-semibold text-foreground">{t('landing.footer.brand')}</p>
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -130,37 +118,6 @@ export function Footer() {
               </motion.div>
               <NavList title={t('landing.footer.navigation')} links={navLinks} />
               <NavList title={t('landing.footer.quickLinks')} links={quickLinks} />
-              <motion.div variants={itemVariants}>
-                <p className="mb-2 text-sm font-semibold text-foreground">
-                  {t('landing.footer.contact')}
-                </p>
-                <a
-                  href="mailto:hello@communityreadingclub.org"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-                >
-                  <Mail className="size-4" />
-                  hello@communityreadingclub.org
-                </a>
-                <div className="mt-4 flex gap-3">
-                  {socialLinks.map((social) => (
-                    <motion.a
-                      key={social.label}
-                      variants={socialVariants}
-                      href={social.href}
-                      aria-label={social.label}
-                      whileHover={{
-                        scale: 1.2,
-                        rotate: 12,
-                        transition: { type: 'spring', stiffness: 300, damping: 15 },
-                      }}
-                      whileTap={{ scale: 0.9 }}
-                      className="flex size-8 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors duration-300 hover:bg-linear-to-r hover:from-primary hover:to-secondary hover:text-primary-foreground"
-                    >
-                      <social.icon className="size-4" />
-                    </motion.a>
-                  ))}
-                </div>
-              </motion.div>
             </div>
 
             <motion.p

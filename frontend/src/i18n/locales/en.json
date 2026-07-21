@@ -669,8 +669,11 @@
       }
     },
     "readingChallenge": {
-      "heading": "Reading challenges & achievements",
-      "subheading": "Stay motivated with badges you unlock as you read.",
+      "eyebrow": "Achievements",
+      "heading": "Reading challenges &",
+      "highlight": "achievements",
+      "subheading": "Stay motivated with exciting challenges and earn badges as you read and grow.",
+      "imgAlt": "Illustration of a reader on a stack of books, surrounded by achievement badges and a reading streak counter",
       "achievements": {
         "firstBook": {
           "label": "First Book",
@@ -688,6 +691,26 @@
           "label": "Monthly Champion",
           "description": "Complete every weekly challenge in a month"
         }
+      },
+      "steps": {
+        "setGoals": {
+          "title": "Set Goals",
+          "description": "Choose your reading challenge and goal"
+        },
+        "trackProgress": {
+          "title": "Track Progress",
+          "description": "Monitor your reading streaks and progress"
+        },
+        "earnBadges": {
+          "title": "Earn Badges",
+          "description": "Unlock achievements and show them off"
+        }
+      },
+      "stats": {
+        "booksRead": "Books Read",
+        "dayStreak": "Day Streak",
+        "pointsEarned": "Points Earned",
+        "badgesUnlocked": "Badges Unlocked"
       }
     },
     "community": {
@@ -1008,6 +1031,13 @@
   "reservations": {
     "pageTitle": "Reservations",
     "pageDescription": "Track your book reservations and queue position",
+    "search": {
+      "placeholder": "Search by book title…",
+      "ariaLabel": "Search reservations",
+      "noResultsTitle": "No matches found",
+      "noResultsDescription": "Try a different search term.",
+      "clearSearch": "Clear search"
+    },
     "current": {
       "heading": "Current Reservations",
       "emptyTitle": "No active reservations",

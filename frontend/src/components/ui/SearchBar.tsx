@@ -33,6 +33,7 @@ export function SearchBar({
         placeholder={placeholder}
         className={cn(
           'h-10 w-full rounded-md border border-border bg-surface pl-9 text-sm text-foreground',
+          '[&::-webkit-search-cancel-button]:appearance-none',
           value ? 'pr-9' : 'pr-3',
           'placeholder:text-muted-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
