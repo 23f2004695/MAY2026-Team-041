@@ -30,9 +30,6 @@ export function CTA() {
           <Button size="lg" variant="secondary" onClick={() => navigate(ROUTES.REGISTER)}>
             {t('landing.cta.button')}
           </Button>
-          <Button size="lg" variant="outline" onClick={() => navigate(`${ROUTES.CONTACT_US}#contact-us`)}>
-            {t('landing.cta.contactUs')}
-          </Button>
         </div>
       </motion.div>
     </Section>
