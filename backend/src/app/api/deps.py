@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from prisma.models import User
 
-from app.core.security import decode_access_token
+from app.core.security import decode_token
 from app.db.prisma import prisma
 
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -25,9 +25,12 @@ async def get_current_user(
         raise CredentialsError
 
     try:
-        payload = decode_access_token(credentials.credentials)
+        payload = decode_token(credentials.credentials)
     except jwt.InvalidTokenError as exc:
         raise CredentialsError from exc
+
+    if payload.get("type") != "access":
+        raise CredentialsError
 
     user_id = payload.get("sub")
     if not user_id:
