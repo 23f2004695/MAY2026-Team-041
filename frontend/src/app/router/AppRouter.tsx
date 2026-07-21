@@ -29,8 +29,12 @@ const LandingPage = lazy(() =>
 const PricingPage = lazy(() =>
   import('@/features/pricing').then((m) => ({ default: m.PricingPage })),
 );
+const ContactUsPage = lazy(() =>
+  import('@/features/contact/pages/ContactUsPage').then((m) => ({ default: m.ContactUsPage })),
+);
 const Login = lazy(() => import('@/pages/Login').then((m) => ({ default: m.Login })));
 const Register = lazy(() => import('@/pages/Register').then((m) => ({ default: m.Register })));
+
 
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
@@ -108,6 +112,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: withSuspense(<LandingPage />) },
       { path: relative(ROUTES.PRICING), element: withSuspense(<PricingPage />) },
+      { path: relative(ROUTES.CONTACT_US), element: withSuspense(<ContactUsPage />) },
       {
         element: (
           <PublicRoute>

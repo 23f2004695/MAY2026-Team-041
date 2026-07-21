@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatedHeading, AnimatedText, FadeUp, Section } from '@/components/common';
 import { Button } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { comingSoonToast } from '@/lib/comingSoonToast';
 
 export function PricingCTASection() {
   const { t } = useTranslation();
@@ -56,7 +55,7 @@ export function PricingCTASection() {
             variant="outline"
             className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
             leadingIcon={<Phone className="size-4" />}
-            onClick={() => comingSoonToast(t('pricing.cta.secondaryButton'))}
+            onClick={() => navigate(`${ROUTES.CONTACT_US}#contact-us`)}
           >
             {t('pricing.cta.secondaryButton')}
           </Button>

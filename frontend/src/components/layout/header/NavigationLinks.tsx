@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
@@ -21,6 +23,7 @@ export function useHeaderNavLinks(): HeaderNavLink[] {
     { label: t('nav.books'), to: ROUTES.BOOKS, end: false },
     { label: t('nav.events'), to: ROUTES.EVENTS, end: false },
     { label: t('landing.footer.community'), to: ROUTES.COMMUNITY, end: false },
+    { label: t('nav.contactUs'), to: ROUTES.CONTACT_US, end: false },
   ];
 }
 

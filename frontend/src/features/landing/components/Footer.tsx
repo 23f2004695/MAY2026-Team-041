@@ -1,8 +1,10 @@
 import { motion, type Variants } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { ROUTES } from '@/constants/routes';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
@@ -26,6 +28,7 @@ const linkVariants: Variants = {
 interface FooterNavLink {
   label: string;
   to: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 // Hoisted to module scope: a component declared inside Footer's render body would remount
@@ -41,6 +44,7 @@ function NavList({ title, links }: { title: string; links: FooterNavLink[] }) {
           <motion.li key={link.to} variants={linkVariants}>
             <Link
               to={link.to}
+              onClick={link.onClick}
               className="group relative text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
             >
               {link.label}
@@ -61,17 +65,32 @@ function NavList({ title, links }: { title: string; links: FooterNavLink[] }) {
 export function Footer() {
   const { t } = useTranslation();
 
+  const location = useLocation();
+
   const navLinks: FooterNavLink[] = [
     { label: t('landing.footer.home'), to: ROUTES.HOME },
     { label: t('landing.footer.login'), to: ROUTES.LOGIN },
     { label: t('landing.footer.register'), to: ROUTES.REGISTER },
   ];
 
+  // handler: if already on contact page, smooth scroll to the anchor; otherwise navigate to the contact route
+  function contactClickHandler(e: React.MouseEvent) {
+    if (location.pathname === ROUTES.CONTACT_US) {
+      e.preventDefault();
+      const el = document.getElementById('contact-us');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    // allow Link to navigate to the contact page and the ContactUsPage's effect will scroll on mount
+  }
+
   const quickLinks: FooterNavLink[] = [
     { label: t('nav.pricing'), to: ROUTES.PRICING },
     { label: t('landing.footer.books'), to: ROUTES.BOOKS },
     { label: t('landing.footer.community'), to: ROUTES.COMMUNITY },
     { label: t('landing.footer.events'), to: ROUTES.EVENTS },
+    // direct to the contact-us section anchor for smooth scroll/navigation
+    { label: t('landing.footer.contact'), to: `${ROUTES.CONTACT_US}#contact-us`, onClick: contactClickHandler },
   ];
 
   return (
@@ -93,36 +112,29 @@ export function Footer() {
               {t('landing.footer.heading')}
             </h2>
 
-            <motion.div
-              className="absolute right-0 top-0 h-48 w-48 rounded-full bg-primary/5 blur-3xl md:h-96 md:w-96"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
-            />
-            <motion.div
-              className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-secondary/5 blur-3xl md:h-96 md:w-96"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }}
-              transition={{
-                duration: 5,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: 'easeInOut',
-                delay: 1,
-              }}
-            />
 
-            <div className="relative z-10 grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-12 lg:gap-20">
+            <div className="relative z-20 grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-12 lg:gap-20">
               <motion.div variants={itemVariants}>
-                <p className="text-sm font-semibold text-foreground">{t('landing.footer.brand')}</p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {t('landing.footer.description')}
-                </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{t('landing.footer.brand')}</p>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {t('landing.footer.description')}
+                    </p>
+                  </div>
+                  <div className="ml-4 hidden md:block">
+                    {/* LanguageSwitcher for landing footer */}
+                    <LanguageSwitcher />
+                  </div>
+                </div>
               </motion.div>
               <NavList title={t('landing.footer.navigation')} links={navLinks} />
               <NavList title={t('landing.footer.quickLinks')} links={quickLinks} />
             </div>
-
+ 
             <motion.p
               variants={itemVariants}
-              className="relative z-10 mt-6 text-xs text-muted-foreground md:text-sm"
+              className="relative z-20 mt-6 text-xs text-muted-foreground md:text-sm"
             >
               © {new Date().getFullYear()} {t('landing.footer.brand')}.{' '}
               {t('landing.footer.description') && ''}

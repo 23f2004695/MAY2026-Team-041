@@ -4,6 +4,7 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
+  CONTACT_US: '/contact-us',
   DASHBOARD: '/dashboard',
   BOOKS: '/books',
   BOOK_DETAILS: '/books/:bookId',

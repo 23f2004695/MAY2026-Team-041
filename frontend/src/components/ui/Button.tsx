@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 
 import { cn } from '@/lib/cn';

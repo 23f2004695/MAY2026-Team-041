@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createContext, useContext, useEffect, type ReactNode } from 'react';
 
 import i18n from '@/i18n/config';

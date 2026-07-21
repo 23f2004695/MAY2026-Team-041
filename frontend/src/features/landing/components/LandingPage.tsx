@@ -2,7 +2,6 @@ import { Community } from './Community';
 import { CTA } from './CTA';
 import { FAQ } from './FAQ';
 import { Features } from './Features';
-import { Footer } from './Footer';
 import { Hero } from './Hero';
 import { HowItWorks } from './HowItWorks';
 import { MoodRecommendation } from './MoodRecommendation';
@@ -25,7 +24,6 @@ export function LandingPage() {
       <Testimonials />
       <FAQ />
       <CTA />
-      <Footer />
     </>
   );
 }
