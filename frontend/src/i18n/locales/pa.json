@@ -48,14 +48,15 @@
     "label": "ਭਾਸ਼ਾ"
   },
   "chatbot": {
-    "title": "AI ਸਹਾਇਕ",
+    "title": "Shelfie",
     "demoBadge": "ਡੈਮੋ",
-    "greeting": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਲਾਇਬ੍ਰੇਰੀ ਸਹਾਇਕ ਹਾਂ। ਮੈਨੂੰ ਕਿਤਾਬਾਂ, ਸਮਾਗਮਾਂ ਜਾਂ ਤੁਹਾਡੇ ਖਾਤੇ ਬਾਰੇ ਪੁੱਛੋ।",
+    "greeting": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ, ਮੈਂ Shelfie ਹਾਂ 📚 — ਤੁਹਾਡਾ ਦੋਸਤਾਨਾ ਲਾਇਬ੍ਰੇਰੀ ਸਹਾਇਕ! ਕਿਤਾਬਾਂ, ਸਮਾਗਮਾਂ, ਸੀਟਾਂ ਜਾਂ ਆਪਣੇ ਖਾਤੇ ਬਾਰੇ ਮੈਨੂੰ ਪੁੱਛੋ, ਮੈਂ ਮਦਦ ਕਰਾਂਗਾ।",
     "placeholder": "ਸੁਨੇਹਾ ਲਿਖੋ...",
     "send": "ਭੇਜੋ",
-    "openChat": "ਚੈਟ ਖੋਲ੍ਹੋ",
+    "openChat": "Shelfie ਨਾਲ ਗੱਲ ਕਰੋ",
     "closeChat": "ਚੈਟ ਬੰਦ ਕਰੋ",
-    "demoReply": "ਡੈਮੋ ਅਜ਼ਮਾਉਣ ਲਈ ਧੰਨਵਾਦ! ਪੂਰੀ AI-ਸੰਚਾਲਿਤ ਜਵਾਬ ਜਲਦੀ ਆ ਰਹੇ ਹਨ — ਹੁਣ ਲਈ ਇਹ ਸਿਰਫ਼ ਚੈਟ ਅਨੁਭਵ ਦਿਖਾਉਂਦਾ ਹੈ।"
+    "demoReply": "ਮੇਰੇ ਨਾਲ ਗੱਲ ਕਰਨ ਲਈ ਧੰਨਵਾਦ! ਮੈਂ ਅਜੇ ਵੀ ਡੈਮੋ ਮੋਡ ਵਿੱਚ ਹਾਂ, ਇਸ ਲਈ ਮੇਰੇ ਜਵਾਬ ਹੁਣ ਲਈ ਇੱਕ ਝਲਕ ਹਨ — ਪੂਰੇ AI-ਸੰਚਾਲਿਤ ਜਵਾਬ ਜਲਦੀ ਆ ਰਹੇ ਹਨ।",
+    "tooltip": "ਇੱਥੇ Shelfie ਨਾਲ ਗੱਲ ਕਰੋ"
   },
   "topUtilityBar": {
     "website": "ਵੈੱਬਸਾਈਟ",
@@ -1324,7 +1325,8 @@
       "faq": "FAQ",
       "contactUs": "Contact Us",
       "departmentContacts": "Department Contacts"
-    },    "faq": {
+    },
+    "faq": {
       "heading": "Frequently Asked Questions",
       "description": "Before contacting our team, you may find an answer below.",
       "categories": {

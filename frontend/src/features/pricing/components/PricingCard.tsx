@@ -15,9 +15,10 @@ export interface PricingCardProps {
   duration: PricingDuration;
   isActive: boolean;
   index: number;
+  onSelect?: () => void;
 }
 
-export function PricingCard({ duration, isActive, index }: PricingCardProps) {
+export function PricingCard({ duration, isActive, index, onSelect }: PricingCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -55,8 +56,22 @@ export function PricingCard({ duration, isActive, index }: PricingCardProps) {
         )}
 
         <Card
+          onClick={onSelect}
+          role={onSelect ? 'button' : undefined}
+          tabIndex={onSelect ? 0 : undefined}
+          onKeyDown={
+            onSelect
+              ? (event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onSelect();
+                  }
+                }
+              : undefined
+          }
           className={cn(
             'flex h-full flex-col rounded-2xl p-6 sm:p-8',
+            onSelect && 'cursor-pointer',
             isHighlighted ? 'border-primary/50 shadow-panel md:scale-105' : 'border-border',
             isActive && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
           )}

@@ -187,7 +187,7 @@ export function ContactUsPage() {
         </div>
       </Section>
 
-      <Section ariaLabelledBy="faq-heading" tone="surface" className="bg-surface" spacing="pt-12 pb-6">
+      <Section id="faq" ariaLabelledBy="faq-heading" tone="surface" className="bg-surface" spacing="pt-12 pb-6">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
           <SectionHeading
             id="faq-heading"
@@ -312,7 +312,7 @@ export function ContactUsPage() {
           </div>
 
           {/* Department contacts column */}
-          <div className="w-full">
+          <div id="department-contacts" className="w-full">
             <Card className="overflow-hidden rounded-3xl border-border bg-surface shadow-panel">
               <CardHeader>
                 <CardTitle>{t('contactUs.table.heading')}</CardTitle>

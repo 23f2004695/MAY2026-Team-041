@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import { Community } from './Community';
 import { CTA } from './CTA';
 import { FAQ } from './FAQ';
@@ -12,6 +15,18 @@ import { Testimonials } from './Testimonials';
 import { Footer } from './Footer';
 
 export function LandingPage() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const hash = location.hash?.slice(1);
+    if (!hash) return;
+
+    const section = document.getElementById(hash);
+    if (!section) return;
+
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash]);
+
   return (
     <>
       <Hero />

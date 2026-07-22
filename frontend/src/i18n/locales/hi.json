@@ -48,14 +48,15 @@
     "label": "भाषा"
   },
   "chatbot": {
-    "title": "एआई सहायक",
+    "title": "Shelfie",
     "demoBadge": "डेमो",
-    "greeting": "नमस्ते! मैं आपका लाइब्रेरी सहायक हूँ। मुझसे पुस्तकों, कार्यक्रमों या अपने खाते के बारे में पूछें।",
+    "greeting": "नमस्ते, मैं Shelfie हूँ 📚 — आपका मित्रवत लाइब्रेरी सहायक! पुस्तकों, कार्यक्रमों, सीटों या अपने खाते के बारे में मुझसे पूछें, मैं आपकी मदद करूँगा।",
     "placeholder": "संदेश लिखें...",
     "send": "भेजें",
-    "openChat": "चैट खोलें",
+    "openChat": "Shelfie से बात करें",
     "closeChat": "चैट बंद करें",
-    "demoReply": "डेमो आज़माने के लिए धन्यवाद! पूर्ण एआई-संचालित उत्तर जल्द ही आ रहे हैं — अभी के लिए यह सिर्फ चैट अनुभव दिखाता है।"
+    "demoReply": "मुझसे बात करने के लिए धन्यवाद! मैं अभी भी डेमो मोड में हूँ, इसलिए मेरे जवाब फिलहाल एक झलक हैं — पूर्ण एआई-संचालित जवाब जल्द आ रहे हैं।",
+    "tooltip": "यहाँ Shelfie से बात करें"
   },
   "topUtilityBar": {
     "website": "वेबसाइट",
@@ -1324,7 +1325,8 @@
       "faq": "FAQ",
       "contactUs": "Contact Us",
       "departmentContacts": "Department Contacts"
-    },    "faq": {
+    },
+    "faq": {
       "heading": "Frequently Asked Questions",
       "description": "Before contacting our team, you may find an answer below.",
       "categories": {
@@ -1371,91 +1373,92 @@
         },
         "loseBook": {
           "question": "What happens if I lose a book?",
-          "answer": "1. Report the lost book through your account or the library desk.\n2. You may be charged a replacement fee.\n3. Contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"}
-        },
-        "joinReadingClub": {
-          "question": "How do I join a reading club?",
-          "answer": "1. Open the Reading Clubs section.\n2. Browse available clubs.\n3. Select a club that interests you.\n4. Click Join Club.\n5. Your membership request will be submitted."
-        },
-        "createReadingClub": {
-          "question": "How do I create a reading club?",
-          "answer": "Reading club creation requests are reviewed by our community team.\nPlease contact the Books & Clubs department.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
-        },
-        "leaveClub": {
-          "question": "Can I leave a club after joining?",
-          "answer": "1. Open the club details page.\n2. Select Leave Club.\n3. Confirm that you want to leave the club.\n4. Your membership will be removed immediately."
-        },
-        "clubMeetings": {
-          "question": "How are club meetings scheduled?",
-          "answer": "1. Open the reading club details.\n2. Review the meeting schedule listed there.\n3. Join meetings from the club page or calendar.\n4. Contact the club organizer if you need to change your meeting time."
-        },
-        "reserveSeat": {
-          "question": "How do I reserve a reading seat?",
-          "answer": "1. Navigate to the Seat Booking page.\n2. Select your preferred date and time slot.\n3. Choose an available seat from the seating map.\n4. Confirm your reservation.\n5. A confirmation notification will be displayed."
-        },
-        "cancelReservation": {
-          "question": "How do I cancel a reservation?",
-          "answer": "1. Open My Reservations.\n2. Find the seat reservation you want to cancel.\n3. Click Cancel reservation.\n4. Confirm the cancellation."
-        },
-        "seatUnavailable": {
-          "question": "Why is my preferred seat unavailable?",
-          "answer": "Your preferred seat may already be booked or temporarily unavailable.\nPlease choose another slot or time, or contact the Seat Booking department for help.\nEmail: booking@readingclub.org\nPhone: +1 (555) 010-2003"
-        },
-        "bookingLimit": {
-          "question": "How many bookings can I make each week?",
-          "answer": "Most members can make up to five seat bookings per week.\nIf you need additional access, contact the Seat Booking department for more options.\nEmail: booking@readingclub.org\nPhone: +1 (555) 010-2003"
-        },
-        "overdueFines": {
-          "question": "How are overdue fines calculated?",
-          "answer": "1. Fines are based on the number of days overdue and the book type.\n2. Check your account for the exact amount owed.\n3. Review the fine details before paying."
-        },
-        "payFines": {
-          "question": "How can I pay my fines?",
-          "answer": "1. Open My Account.\n2. Navigate to Fines & Payments.\n3. Review outstanding fines.\n4. Select Pay Now.\n5. Complete payment using the available payment method."
-        },
-        "waiveFine": {
-          "question": "Can a fine be waived?",
-          "answer": "Fine waivers are reviewed on a case-by-case basis.\nPlease contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"
-        },
-        "donateBooks": {
-          "question": "How do I donate books?",
-          "answer": "1. Visit the Donations section or library desk.\n2. Prepare books in good condition.\n3. Drop them off at the designated donation area.\n4. We will review and add approved titles to the collection."
-        },
-        "donationCondition": {
-          "question": "What condition should donated books be in?",
-          "answer": "Please donate gently used books with intact covers, clean pages, and no missing content.\nIf you have a large collection, contact the Donations department for scheduling.\nEmail: donations@readingclub.org\nPhone: +1 (555) 010-2004"
-        },
-        "donateFunds": {
-          "question": "How do I donate funds?",
-          "answer": "1. Open the Donations page.\n2. Select the contribution amount.\n3. Provide your payment details.\n4. Submit your donation.\n5. You will receive a confirmation receipt."
-        },
-        "donationReceipt": {
-          "question": "Will I receive a donation receipt?",
-          "answer": "Yes. After you donate books or funds, we will send a donation receipt to your email address for your records."
-        },
-        "registerEvents": {
-          "question": "How do I register for library events?",
-          "answer": "1. Open the Events page.\n2. Browse available events.\n3. Select an event and click Register.\n4. Confirm your registration details."
-        },
-        "volunteer": {
-          "question": "How can I volunteer?",
-          "answer": "1. Visit the Events or Community page.\n2. Look for volunteer opportunities.\n3. Express interest for a role.\n4. Our team will follow up with next steps."
-        },
-        "organizeEvent": {
-          "question": "Can I organize an event through the library?",
-          "answer": "Yes, you can organize community events through our team.\nPlease contact the Books & Clubs department or use the Contact Us form to discuss your event.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
+          "answer": "1. Report the lost book through your account or the library desk.\n2. You may be charged a replacement fee.\n3. Contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"
         }
+      },
+      "joinReadingClub": {
+        "question": "How do I join a reading club?",
+        "answer": "1. Open the Reading Clubs section.\n2. Browse available clubs.\n3. Select a club that interests you.\n4. Click Join Club.\n5. Your membership request will be submitted."
+      },
+      "createReadingClub": {
+        "question": "How do I create a reading club?",
+        "answer": "Reading club creation requests are reviewed by our community team.\nPlease contact the Books & Clubs department.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
+      },
+      "leaveClub": {
+        "question": "Can I leave a club after joining?",
+        "answer": "1. Open the club details page.\n2. Select Leave Club.\n3. Confirm that you want to leave the club.\n4. Your membership will be removed immediately."
+      },
+      "clubMeetings": {
+        "question": "How are club meetings scheduled?",
+        "answer": "1. Open the reading club details.\n2. Review the meeting schedule listed there.\n3. Join meetings from the club page or calendar.\n4. Contact the club organizer if you need to change your meeting time."
+      },
+      "reserveSeat": {
+        "question": "How do I reserve a reading seat?",
+        "answer": "1. Navigate to the Seat Booking page.\n2. Select your preferred date and time slot.\n3. Choose an available seat from the seating map.\n4. Confirm your reservation.\n5. A confirmation notification will be displayed."
+      },
+      "cancelReservation": {
+        "question": "How do I cancel a reservation?",
+        "answer": "1. Open My Reservations.\n2. Find the seat reservation you want to cancel.\n3. Click Cancel reservation.\n4. Confirm the cancellation."
+      },
+      "seatUnavailable": {
+        "question": "Why is my preferred seat unavailable?",
+        "answer": "Your preferred seat may already be booked or temporarily unavailable.\nPlease choose another slot or time, or contact the Seat Booking department for help.\nEmail: booking@readingclub.org\nPhone: +1 (555) 010-2003"
+      },
+      "bookingLimit": {
+        "question": "How many bookings can I make each week?",
+        "answer": "Most members can make up to five seat bookings per week.\nIf you need additional access, contact the Seat Booking department for more options.\nEmail: booking@readingclub.org\nPhone: +1 (555) 010-2003"
+      },
+      "overdueFines": {
+        "question": "How are overdue fines calculated?",
+        "answer": "1. Fines are based on the number of days overdue and the book type.\n2. Check your account for the exact amount owed.\n3. Review the fine details before paying."
+      },
+      "payFines": {
+        "question": "How can I pay my fines?",
+        "answer": "1. Open My Account.\n2. Navigate to Fines & Payments.\n3. Review outstanding fines.\n4. Select Pay Now.\n5. Complete payment using the available payment method."
+      },
+      "waiveFine": {
+        "question": "Can a fine be waived?",
+        "answer": "Fine waivers are reviewed on a case-by-case basis.\nPlease contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"
+      },
+      "donateBooks": {
+        "question": "How do I donate books?",
+        "answer": "1. Visit the Donations section or library desk.\n2. Prepare books in good condition.\n3. Drop them off at the designated donation area.\n4. We will review and add approved titles to the collection."
+      },
+      "donationCondition": {
+        "question": "What condition should donated books be in?",
+        "answer": "Please donate gently used books with intact covers, clean pages, and no missing content.\nIf you have a large collection, contact the Donations department for scheduling.\nEmail: donations@readingclub.org\nPhone: +1 (555) 010-2004"
+      },
+      "donateFunds": {
+        "question": "How do I donate funds?",
+        "answer": "1. Open the Donations page.\n2. Select the contribution amount.\n3. Provide your payment details.\n4. Submit your donation.\n5. You will receive a confirmation receipt."
+      },
+      "donationReceipt": {
+        "question": "Will I receive a donation receipt?",
+        "answer": "Yes. After you donate books or funds, we will send a donation receipt to your email address for your records."
+      },
+      "registerEvents": {
+        "question": "How do I register for library events?",
+        "answer": "1. Open the Events page.\n2. Browse available events.\n3. Select an event and click Register.\n4. Confirm your registration details."
+      },
+      "volunteer": {
+        "question": "How can I volunteer?",
+        "answer": "1. Visit the Events or Community page.\n2. Look for volunteer opportunities.\n3. Express interest for a role.\n4. Our team will follow up with next steps."
+      },
+      "organizeEvent": {
+        "question": "Can I organize an event through the library?",
+        "answer": "Yes, you can organize community events through our team.\nPlease contact the Books & Clubs department or use the Contact Us form to discuss your event.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
       }
-    },
-    "stillNeedHelp": {
-      "title": "Still Need Help?",
-      "description": "Questions about memberships, reading clubs, donations, seat reservations, or fines? Our team is here to help."
-    },
-    "actions": {
-      "emailUs": "Email Us",
-      "callUs": "Call Us",
-      "contactUs": "Contact Us",
-      "faq": "Help Center",
-      "home": "Home"
     }
+  },
+  "stillNeedHelp": {
+    "title": "Still Need Help?",
+    "description": "Questions about memberships, reading clubs, donations, seat reservations, or fines? Our team is here to help."
+  },
+  "actions": {
+    "emailUs": "Email Us",
+    "callUs": "Call Us",
+    "contactUs": "Contact Us",
+    "faq": "Help Center",
+    "home": "Home"
   }
+}

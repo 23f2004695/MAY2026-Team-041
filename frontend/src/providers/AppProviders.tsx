@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 
 import { ChatbotWidget } from '@/components/layout';
 
+import { ActiveSectionProvider } from './ActiveSectionProvider';
 import { AuthProvider } from './AuthProvider';
 import { LanguageProvider } from './LanguageProvider';
 import { ThemeProvider } from './ThemeProvider';
@@ -23,9 +24,11 @@ export function AppProviders({ children }: AppProvidersProps) {
         <LanguageProvider>
           <ThemeProvider>
             <AuthProvider>
-              {children}
-              <ChatbotWidget />
-              <Toaster richColors closeButton position="top-right" />
+              <ActiveSectionProvider>
+                {children}
+                <ChatbotWidget />
+                <Toaster richColors closeButton position="top-right" />
+              </ActiveSectionProvider>
             </AuthProvider>
           </ThemeProvider>
         </LanguageProvider>

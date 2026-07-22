@@ -48,14 +48,15 @@
     "label": "ಭಾಷೆ"
   },
   "chatbot": {
-    "title": "AI ಸಹಾಯಕ",
+    "title": "Shelfie",
     "demoBadge": "ಡೆಮೊ",
-    "greeting": "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ ಗ್ರಂಥಾಲಯ ಸಹಾಯಕ. ಪುಸ್ತಕಗಳು, ಕಾರ್ಯಕ್ರಮಗಳು ಅಥವಾ ನಿಮ್ಮ ಖಾತೆಯ ಬಗ್ಗೆ ನನ್ನನ್ನು ಕೇಳಿ.",
+    "greeting": "ನಮಸ್ಕಾರ, ನಾನು Shelfie 📚 — ನಿಮ್ಮ ಸ್ನೇಹಪರ ಗ್ರಂಥಾಲಯ ಸಹಾಯಕ! ಪುಸ್ತಕಗಳು, ಕಾರ್ಯಕ್ರಮಗಳು, ಆಸನಗಳು ಅಥವಾ ನಿಮ್ಮ ಖಾತೆಯ ಬಗ್ಗೆ ನನ್ನನ್ನು ಕೇಳಿ, ನಾನು ಸಹಾಯ ಮಾಡುತ್ತೇನೆ.",
     "placeholder": "ಸಂದೇಶ ಟೈಪ್ ಮಾಡಿ...",
     "send": "ಕಳುಹಿಸಿ",
-    "openChat": "ಚಾಟ್ ತೆರೆಯಿರಿ",
+    "openChat": "Shelfie ಜೊತೆ ಮಾತನಾಡಿ",
     "closeChat": "ಚಾಟ್ ಮುಚ್ಚಿ",
-    "demoReply": "ಡೆಮೊ ಪ್ರಯತ್ನಿಸಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು! ಪೂರ್ಣ AI-ಚಾಲಿತ ಉತ್ತರಗಳು ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತಿವೆ — ಸದ್ಯಕ್ಕೆ ಇದು ಚಾಟ್ ಅನುಭವವನ್ನು ಮಾತ್ರ ತೋರಿಸುತ್ತದೆ."
+    "demoReply": "ನನ್ನೊಂದಿಗೆ ಚಾಟ್ ಮಾಡಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು! ನಾನು ಇನ್ನೂ ಡೆಮೊ ಮೋಡ್‌ನಲ್ಲಿದ್ದೇನೆ, ಹಾಗಾಗಿ ನನ್ನ ಉತ್ತರಗಳು ಸದ್ಯಕ್ಕೆ ಒಂದು ಪೂರ್ವವೀಕ್ಷಣೆ — ಪೂರ್ಣ AI-ಚಾಲಿತ ಉತ್ತರಗಳು ಶೀಘ್ರದಲ್ಲೇ ಬರುತ್ತಿವೆ.",
+    "tooltip": "ಇಲ್ಲಿ Shelfie ಜೊತೆ ಮಾತನಾಡಿ"
   },
   "topUtilityBar": {
     "website": "ವೆಬ್‌ಸೈಟ್",
@@ -1324,7 +1325,8 @@
       "faq": "FAQ",
       "contactUs": "Contact Us",
       "departmentContacts": "Department Contacts"
-    },    "faq": {
+    },
+    "faq": {
       "heading": "Frequently Asked Questions",
       "description": "Before contacting our team, you may find an answer below.",
       "categories": {

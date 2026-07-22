@@ -51,7 +51,7 @@ export function DurationToggle({ active, onChange }: DurationToggleProps) {
       </div>
 
       <AnimatePresence mode="wait">
-        {activeDuration && (
+        {activeDuration && activeDuration.savePercent > 0 && (
           <motion.div
             key={activeDuration.id}
             initial={{ opacity: 0, y: -6 }}
@@ -59,10 +59,8 @@ export function DurationToggle({ active, onChange }: DurationToggleProps) {
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            <Badge variant={activeDuration.savePercent > 0 ? 'success' : 'outline'}>
-              {activeDuration.savePercent > 0
-                ? t('pricing.toggle.save', { percent: activeDuration.savePercent })
-                : t('pricing.toggle.noDiscount')}
+            <Badge variant="success">
+              {t('pricing.toggle.save', { percent: activeDuration.savePercent })}
             </Badge>
           </motion.div>
         )}

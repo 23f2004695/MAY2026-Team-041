@@ -25,6 +25,7 @@ export function PricingCardsSection() {
             duration={duration}
             isActive={duration.id === active}
             index={index}
+            onSelect={() => setActive(duration.id)}
           />
         ))}
       </div>
