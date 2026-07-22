@@ -5,8 +5,22 @@ import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ROUTES } from '@/constants/routes';
 
-export function Footer() {
+interface FooterProps {
+  minimal?: boolean;
+}
+
+export function Footer({ minimal }: FooterProps) {
   const { t } = useTranslation();
+
+  if (minimal) {
+    return (
+      <footer className="border-t border-border bg-surface px-6 py-4 text-sm text-muted-foreground">
+        <div className="mx-auto max-w-6xl">
+          © 2026 Community Reading Club & Library Management Platform.
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className="border-t border-border bg-surface px-6 py-4 text-sm text-muted-foreground">
