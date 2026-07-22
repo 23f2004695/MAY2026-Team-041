@@ -49,14 +49,15 @@
     "label": "Language"
   },
   "chatbot": {
-    "title": "AI Assistant",
+    "title": "Shelfie",
     "demoBadge": "Demo",
-    "greeting": "Hi! I'm your library assistant. Ask me about books, events, or your account.",
+    "greeting": "Hi, I'm Shelfie 📚 — your friendly library assistant! Ask me about books, events, seats, or your account, and I'll help you find your way.",
     "placeholder": "Type a message...",
     "send": "Send",
-    "openChat": "Open chat",
+    "openChat": "Talk to Shelfie",
     "closeChat": "Close chat",
-    "demoReply": "Thanks for trying the demo! Full AI-powered answers are coming soon — for now this just showcases the chat experience."
+    "demoReply": "Thanks for chatting with me! I'm still in demo mode, so my answers are a preview for now — full AI-powered replies are coming soon.",
+    "tooltip": "Talk to Shelfie here"
   },
   "topUtilityBar": {
     "website": "Website",
@@ -1371,7 +1372,8 @@
       "faq": "FAQ",
       "contactUs": "Contact Us",
       "departmentContacts": "Department Contacts"
-    },    "faq": {
+    },
+    "faq": {
       "heading": "Frequently Asked Questions",
       "description": "Before contacting our team, you may find an answer below.",
       "categories": {

@@ -48,14 +48,15 @@
     "label": "भाषा"
   },
   "chatbot": {
-    "title": "एआय सहाय्यक",
+    "title": "Shelfie",
     "demoBadge": "डेमो",
-    "greeting": "नमस्कार! मी तुमचा लायब्ररी सहाय्यक आहे. पुस्तके, कार्यक्रम किंवा तुमच्या खात्याबद्दल मला विचारा.",
+    "greeting": "नमस्कार, मी Shelfie आहे 📚 — तुमचा मैत्रीपूर्ण लायब्ररी सहाय्यक! पुस्तके, कार्यक्रम, जागा किंवा तुमच्या खात्याबद्दल मला विचारा, मी मदत करेन.",
     "placeholder": "संदेश टाइप करा...",
     "send": "पाठवा",
-    "openChat": "चॅट उघडा",
+    "openChat": "Shelfie शी बोला",
     "closeChat": "चॅट बंद करा",
-    "demoReply": "डेमो वापरून पाहिल्याबद्दल धन्यवाद! पूर्ण एआय-चालित उत्तरे लवकरच येत आहेत — सध्या हे फक्त चॅट अनुभव दाखवते."
+    "demoReply": "माझ्याशी गप्पा मारल्याबद्दल धन्यवाद! मी अजूनही डेमो मोडमध्ये आहे, त्यामुळे माझी उत्तरे सध्या एक झलक आहेत — पूर्ण एआय-चालित उत्तरे लवकरच येत आहेत.",
+    "tooltip": "इथे Shelfie शी बोला"
   },
   "topUtilityBar": {
     "website": "वेबसाइट",
@@ -1324,7 +1325,8 @@
       "faq": "FAQ",
       "contactUs": "Contact Us",
       "departmentContacts": "Department Contacts"
-    },    "faq": {
+    },
+    "faq": {
       "heading": "Frequently Asked Questions",
       "description": "Before contacting our team, you may find an answer below.",
       "categories": {

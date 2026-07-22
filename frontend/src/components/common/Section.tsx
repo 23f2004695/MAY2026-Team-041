@@ -18,6 +18,7 @@ const DEFAULT_SPACING = 'py-16 md:py-20 lg:py-30';
 
 export interface SectionProps {
   children: ReactNode;
+  id?: string;
   ariaLabelledBy?: string;
   ariaLabel?: string;
   tone?: SectionTone;
@@ -35,6 +36,7 @@ export interface SectionProps {
 
 export function Section({
   children,
+  id,
   ariaLabelledBy,
   ariaLabel,
   tone = 'transparent',
@@ -47,6 +49,7 @@ export function Section({
 }: SectionProps) {
   return (
     <section
+      id={id}
       aria-labelledby={ariaLabelledBy}
       aria-label={ariaLabel}
       className={cn(divider && 'border-b border-border', toneClasses[tone], className)}

@@ -48,14 +48,15 @@
     "label": "زبان"
   },
   "chatbot": {
-    "title": "اے آئی اسسٹنٹ",
+    "title": "Shelfie",
     "demoBadge": "ڈیمو",
-    "greeting": "ہیلو! میں آپ کا لائبریری اسسٹنٹ ہوں۔ مجھ سے کتابوں، تقریبات یا آپ کے اکاؤنٹ کے بارے میں پوچھیں۔",
+    "greeting": "ہیلو، میں Shelfie ہوں 📚 — آپ کا دوستانہ لائبریری اسسٹنٹ! کتابوں، تقریبات، نشستوں یا اپنے اکاؤنٹ کے بارے میں مجھ سے پوچھیں، میں مدد کروں گا۔",
     "placeholder": "پیغام لکھیں...",
     "send": "بھیجیں",
-    "openChat": "چیٹ کھولیں",
+    "openChat": "Shelfie سے بات کریں",
     "closeChat": "چیٹ بند کریں",
-    "demoReply": "ڈیمو آزمانے کا شکریہ! مکمل اے آئی سے چلنے والے جوابات جلد آ رہے ہیں — فی الحال یہ صرف چیٹ کا تجربہ دکھاتا ہے۔"
+    "demoReply": "مجھ سے بات کرنے کا شکریہ! میں ابھی بھی ڈیمو موڈ میں ہوں، اس لیے میرے جوابات فی الحال ایک جھلک ہیں — مکمل اے آئی سے چلنے والے جوابات جلد آ رہے ہیں۔",
+    "tooltip": "یہاں Shelfie سے بات کریں"
   },
   "topUtilityBar": {
     "website": "ویب سائٹ",
@@ -1324,7 +1325,8 @@
       "faq": "FAQ",
       "contactUs": "Contact Us",
       "departmentContacts": "Department Contacts"
-    },    "faq": {
+    },
+    "faq": {
       "heading": "Frequently Asked Questions",
       "description": "Before contacting our team, you may find an answer below.",
       "categories": {
@@ -1415,47 +1417,48 @@
         },
         "waiveFine": {
           "question": "Can a fine be waived?",
-          "answer": "Fine waivers are reviewed on a case-by-case basis.\nPlease contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"}
-        },
-        "donateBooks": {
-          "question": "How do I donate books?",
-          "answer": "1. Visit the Donations section or library desk.\n2. Prepare books in good condition.\n3. Drop them off at the designated donation area.\n4. We will review and add approved titles to the collection."
-        },
-        "donationCondition": {
-          "question": "What condition should donated books be in?",
-          "answer": "Please donate gently used books with intact covers, clean pages, and no missing content.\nIf you have a large collection, contact the Donations department for scheduling.\nEmail: donations@readingclub.org\nPhone: +1 (555) 010-2004"
-        },
-        "donateFunds": {
-          "question": "How do I donate funds?",
-          "answer": "1. Open the Donations page.\n2. Select the contribution amount.\n3. Provide your payment details.\n4. Submit your donation.\n5. You will receive a confirmation receipt."
-        },
-        "donationReceipt": {
-          "question": "Will I receive a donation receipt?",
-          "answer": "Yes. After you donate books or funds, we will send a donation receipt to your email address for your records."
-        },
-        "registerEvents": {
-          "question": "How do I register for library events?",
-          "answer": "1. Open the Events page.\n2. Browse available events.\n3. Select an event and click Register.\n4. Confirm your registration details."
-        },
-        "volunteer": {
-          "question": "How can I volunteer?",
-          "answer": "1. Visit the Events or Community page.\n2. Look for volunteer opportunities.\n3. Express interest for a role.\n4. Our team will follow up with next steps."
-        },
-        "organizeEvent": {
-          "question": "Can I organize an event through the library?",
-          "answer": "Yes, you can organize community events through our team.\nPlease contact the Books & Clubs department or use the Contact Us form to discuss your event.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
+          "answer": "Fine waivers are reviewed on a case-by-case basis.\nPlease contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"
         }
+      },
+      "donateBooks": {
+        "question": "How do I donate books?",
+        "answer": "1. Visit the Donations section or library desk.\n2. Prepare books in good condition.\n3. Drop them off at the designated donation area.\n4. We will review and add approved titles to the collection."
+      },
+      "donationCondition": {
+        "question": "What condition should donated books be in?",
+        "answer": "Please donate gently used books with intact covers, clean pages, and no missing content.\nIf you have a large collection, contact the Donations department for scheduling.\nEmail: donations@readingclub.org\nPhone: +1 (555) 010-2004"
+      },
+      "donateFunds": {
+        "question": "How do I donate funds?",
+        "answer": "1. Open the Donations page.\n2. Select the contribution amount.\n3. Provide your payment details.\n4. Submit your donation.\n5. You will receive a confirmation receipt."
+      },
+      "donationReceipt": {
+        "question": "Will I receive a donation receipt?",
+        "answer": "Yes. After you donate books or funds, we will send a donation receipt to your email address for your records."
+      },
+      "registerEvents": {
+        "question": "How do I register for library events?",
+        "answer": "1. Open the Events page.\n2. Browse available events.\n3. Select an event and click Register.\n4. Confirm your registration details."
+      },
+      "volunteer": {
+        "question": "How can I volunteer?",
+        "answer": "1. Visit the Events or Community page.\n2. Look for volunteer opportunities.\n3. Express interest for a role.\n4. Our team will follow up with next steps."
+      },
+      "organizeEvent": {
+        "question": "Can I organize an event through the library?",
+        "answer": "Yes, you can organize community events through our team.\nPlease contact the Books & Clubs department or use the Contact Us form to discuss your event.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
       }
-    },
-    "stillNeedHelp": {
-      "title": "Still Need Help?",
-      "description": "Questions about memberships, reading clubs, donations, seat reservations, or fines? Our team is here to help."
-    },
-    "actions": {
-      "emailUs": "Email Us",
-      "callUs": "Call Us",
-      "contactUs": "Contact Us",
-      "faq": "Help Center",
-      "home": "Home"
     }
+  },
+  "stillNeedHelp": {
+    "title": "Still Need Help?",
+    "description": "Questions about memberships, reading clubs, donations, seat reservations, or fines? Our team is here to help."
+  },
+  "actions": {
+    "emailUs": "Email Us",
+    "callUs": "Call Us",
+    "contactUs": "Contact Us",
+    "faq": "Help Center",
+    "home": "Home"
   }
+}

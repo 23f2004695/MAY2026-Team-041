@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-import { Sidebar, TopBar } from '@/components/layout';
+import { Footer, Sidebar, TopBar } from '@/components/layout';
 import type { NavItem } from '@/constants/navigation';
 
 export interface AppShellLayoutProps {
@@ -20,6 +20,7 @@ export function AppShellLayout({ items }: AppShellLayoutProps) {
         <main className="flex-1 p-6 pb-24">
           <Outlet />
         </main>
+        <Footer minimal />
       </div>
     </div>
   );
