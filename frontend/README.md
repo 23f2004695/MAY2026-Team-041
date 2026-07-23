@@ -6,7 +6,7 @@ progress, subscribing/paying for a plan, and role-specific dashboards for Member
 Guardians, Librarians, Managers, IT Heads, and Admins.
 
 For the full product context (problem statement, architecture decisions, what's
-mocked vs. real), see [`../PROJECT_SPECIFICATION.md`](../PROJECT_SPECIFICATION.md).
+mocked vs. real), see [`../docs/FINAL_SPEC.md`](../docs/FINAL_SPEC.md).
 This file only covers running and developing the frontend itself.
 
 ## Stack
@@ -17,7 +17,7 @@ This file only covers running and developing the frontend itself.
 - TanStack Query (wired up, not yet used for real fetching — see "Current Status")
 - React Hook Form + Zod (forms/validation)
 - Framer Motion (animations, centralized variants in `lib/motion.ts`)
-- react-i18next (7 languages — see "Internationalization")
+- react-i18next (3 languages — see "Internationalization")
 - Sonner (toasts)
 - Vitest + Testing Library (unit tests), Playwright (e2e, configured at the repo root)
 
@@ -97,7 +97,7 @@ src/
 │   ├── leaderboard/ | notifications/ | profile/ | reading-progress/
 ├── mocks/                    # Mock data per feature, shaped like the future real API
 ├── pages/                    # Login, Register, NotFound, PlaceholderPage
-├── i18n/                     # i18next config + locales/*.json (en, hi, mr, pa, ta, kn, ur)
+├── i18n/                     # i18next config + locales/*.json (en, hi, pa)
 ├── constants/                # ROUTES, navigation items
 ├── lib/                      # cn(), motion.ts (shared Framer Motion variants),
 │                                authSchema.ts (Zod), comingSoonToast, format.ts, ...
@@ -127,10 +127,11 @@ guards in `app/router/guards.tsx`:
 
 ## Internationalization
 
-`src/i18n/config.ts` loads 7 locale bundles (`en`, `hi`, `mr`, `pa`, `ta`, `kn`, `ur`)
-via `react-i18next`; `LanguageProvider` persists the chosen language and syncs
-`<html lang/dir>` (Urdu renders right-to-left). All locale files are kept in exact key
-parity — when adding a new translatable string, add it to all 7 files, not just `en.json`.
+`src/i18n/config.ts` loads 3 locale bundles (`en`, `hi`, `pa`) via `react-i18next`;
+`LanguageProvider` persists the chosen language and syncs `<html lang/dir>` (no
+current locale is RTL, but the mechanism supports one). All locale files are kept in
+exact key parity — when adding a new translatable string, add it to all 3 files, not
+just `en.json`.
 
 ## Environment Variables
 

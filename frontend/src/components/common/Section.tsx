@@ -14,7 +14,7 @@ const toneClasses: Record<SectionTone, string> = {
 };
 
 // The dominant vertical rhythm shared by ~13 marketing sections — override via `spacing`.
-const DEFAULT_SPACING = 'py-16 md:py-20 lg:py-30';
+const DEFAULT_SPACING = 'py-10 md:py-14 lg:py-16';
 
 export interface SectionProps {
   children: ReactNode;
