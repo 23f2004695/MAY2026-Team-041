@@ -8,8 +8,8 @@ import { Features } from './Features';
 import { Hero } from './Hero';
 import { HowItWorks } from './HowItWorks';
 import { MoodRecommendation } from './MoodRecommendation';
+import { PlatformPreview } from './PlatformPreview';
 import { SeatAvailability } from './SeatAvailability';
-import { Statistics } from './Statistics';
 import { Testimonials } from './Testimonials';
 import { Footer } from './Footer';
 
@@ -29,7 +29,7 @@ export function LandingPage() {
   return (
     <>
       <Hero />
-      <Statistics />
+      <PlatformPreview />
       <Features />
       <HowItWorks />
       <MoodRecommendation />

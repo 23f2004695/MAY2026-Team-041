@@ -606,6 +606,10 @@
       "booksBorrowed": "Books Borrowed",
       "studySeats": "Study Seats"
     },
+    "preview": {
+      "title": "See your library, all in one place.",
+      "imgAlt": "Preview of the library platform dashboard"
+    },
     "features": {
       "headingPrefix": "Everything a",
       "headingHighlight": "modern",
@@ -880,7 +884,7 @@
   },
   "pricing": {
     "hero": {
-      "heading": "Simple pricing for every library",
+      "heading": "Find Your Perfect Plan",
       "subtitle": "Choose the subscription that best fits your institution. Start with a shorter plan or save more with longer commitments.",
       "badges": {
         "noHiddenCharges": "No hidden charges",
