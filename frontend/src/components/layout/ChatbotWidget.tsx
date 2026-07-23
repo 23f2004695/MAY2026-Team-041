@@ -47,7 +47,7 @@ export function ChatbotWidget() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
+    <div className="pointer-events-none fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
       <div
         role="dialog"
         aria-modal="false"
@@ -140,27 +140,14 @@ export function ChatbotWidget() {
         </form>
       </div>
 
-      <div className="group relative">
-        {!open && (
-          <span
-            className={cn(
-              'pointer-events-none absolute bottom-1/2 right-full mr-3 translate-y-1/2 whitespace-nowrap',
-              'rounded-lg bg-foreground px-3 py-1.5 text-xs font-medium text-background shadow-panel',
-              'opacity-0 transition-opacity duration-200 group-hover:opacity-100',
-            )}
-          >
-            {t('chatbot.tooltip')}
-          </span>
-        )}
-        <Button
-          variant="primary"
-          onClick={() => setOpen((value) => !value)}
-          aria-label={t(open ? 'chatbot.closeChat' : 'chatbot.openChat')}
-          className="size-14 rounded-full p-0 shadow-panel"
-        >
-          {open ? <X className="size-5" /> : <Bot className="size-5" />}
-        </Button>
-      </div>
+      <Button
+        variant="primary"
+        onClick={() => setOpen((value) => !value)}
+        aria-label={t(open ? 'chatbot.closeChat' : 'chatbot.openChat')}
+        className="pointer-events-auto size-14 rounded-full p-0 shadow-panel"
+      >
+        {open ? <X className="size-5" /> : <Bot className="size-5" />}
+      </Button>
     </div>
   );
 }

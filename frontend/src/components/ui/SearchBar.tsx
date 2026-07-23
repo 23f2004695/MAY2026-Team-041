@@ -34,7 +34,7 @@ export function SearchBar({
         className={cn(
           'h-10 w-full rounded-md border border-border bg-surface pl-9 text-sm text-foreground',
           '[&::-webkit-search-cancel-button]:appearance-none',
-          value ? 'pr-9' : 'pr-3',
+          value ? 'pr-10' : 'pr-3',
           'placeholder:text-muted-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
         )}
@@ -45,7 +45,7 @@ export function SearchBar({
           type="button"
           aria-label="Clear search"
           onClick={() => (onClear ? onClear() : onChange(''))}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          className="absolute right-0 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center text-muted-foreground hover:text-foreground"
         >
           <X className="size-4" />
         </button>

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button, Checkbox, Input } from '@/components/ui';
+import { Button, Checkbox, Input, Select } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { registerSchema, type RegisterFormValues } from '@/lib/authSchema';
 import { useAuth } from '@/providers/AuthProvider';
@@ -17,10 +17,18 @@ export function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '', confirmPassword: '', acceptTerms: false },
+    defaultValues: {
+      name: '',
+      email: '',
+      phoneNumber: '',
+      password: '',
+      confirmPassword: '',
+      membershipPlan: 'basic',
+      acceptTerms: false,
+    },
   });
 
   function onSubmit() {
@@ -48,6 +56,14 @@ export function Register() {
           {...register('email')}
         />
         <Input
+          label={t('auth.register.phoneNumber')}
+          type="tel"
+          autoComplete="tel"
+          placeholder={t('auth.register.phoneNumberPlaceholder')}
+          error={errors.phoneNumber?.message ? t(errors.phoneNumber.message) : undefined}
+          {...register('phoneNumber')}
+        />
+        <Input
           label={t('auth.register.password')}
           type="password"
           autoComplete="new-password"
@@ -61,11 +77,24 @@ export function Register() {
           error={errors.confirmPassword?.message ? t(errors.confirmPassword.message) : undefined}
           {...register('confirmPassword')}
         />
-        <Checkbox label={t('auth.register.terms')} {...register('acceptTerms')} />
-        {errors.acceptTerms?.message && (
-          <p className="text-sm text-danger">{t(errors.acceptTerms.message)}</p>
-        )}
-        <Button type="submit">{t('auth.register.createAccount')}</Button>
+        <Select
+          label={t('auth.register.membershipPlan')}
+          error={errors.membershipPlan?.message ? t(errors.membershipPlan.message) : undefined}
+          options={[
+            { value: 'basic', label: t('dashboard.membershipPlans.basic') },
+            { value: 'standard', label: t('dashboard.membershipPlans.standard') },
+            { value: 'premium', label: t('dashboard.membershipPlans.premium') },
+          ]}
+          {...register('membershipPlan')}
+        />
+        <Checkbox
+          label={t('auth.register.terms')}
+          error={errors.acceptTerms?.message ? t(errors.acceptTerms.message) : undefined}
+          {...register('acceptTerms')}
+        />
+        <Button type="submit" isLoading={isSubmitting}>
+          {t('auth.register.createAccount')}
+        </Button>
       </form>
       <p className="text-sm text-muted-foreground">
         {t('auth.register.alreadyHaveAccount')}{' '}

@@ -4,6 +4,8 @@ export interface PostComment {
   content: string;
   createdAt: string;
   replies?: PostComment[];
+  /** True when a member has flagged this comment for admin review. */
+  reported?: boolean;
 }
 
 export interface CommunityPost {
@@ -18,6 +20,8 @@ export interface CommunityPost {
   isSaved: boolean;
   /** True when the signed-in member authored this post, enabling edit/delete. */
   isOwn?: boolean;
+  /** True when a member or manager has flagged this post for admin review. */
+  reported?: boolean;
   comments: PostComment[];
 }
 
@@ -38,6 +42,13 @@ export const communityPosts: CommunityPost[] = [
         author: 'Neha Kapoor',
         content: 'Same here! Trying to read 10 pages before bed every night.',
         createdAt: '1h ago',
+      },
+      {
+        id: 'c1b',
+        author: 'Unknown User',
+        content: 'Check out my link for free books at [suspicious-site].com!!',
+        createdAt: '45m ago',
+        reported: true,
       },
     ],
   },
@@ -66,6 +77,13 @@ export const communityPosts: CommunityPost[] = [
             content: "You'll love the ending, let me know what you think!",
             createdAt: '4h ago',
           },
+          {
+            id: 'c2r2',
+            author: 'Spam Bot',
+            content: 'Get free gift cards now! Click here to claim your prize.',
+            createdAt: '3h ago',
+            reported: true,
+          },
         ],
       },
       {
@@ -80,7 +98,7 @@ export const communityPosts: CommunityPost[] = [
     id: 'post3',
     author: 'Ananya Iyer',
     content:
-      'Not book-related, but does anyone want to start a monthly meetup here at the library to discuss what we\'re all reading?',
+      "Not book-related, but does anyone want to start a monthly meetup here at the library to discuss what we're all reading?",
     createdAt: '1d ago',
     likeCount: 21,
     isLiked: false,
@@ -92,7 +110,7 @@ export const communityPosts: CommunityPost[] = [
     author: 'Simran Kaur',
     bookTitle: 'Sapiens',
     content:
-      "The chapter on shared myths (money, nations, corporations) completely reframed how I think about society. Highly recommend for the reading challenge.",
+      'The chapter on shared myths (money, nations, corporations) completely reframed how I think about society. Highly recommend for the reading challenge.',
     createdAt: '2d ago',
     likeCount: 34,
     isLiked: true,

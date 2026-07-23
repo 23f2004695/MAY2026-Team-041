@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { PageTitle, ProgressBar } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { children, childrenReadingProgress } from '@/mocks/guardian';
 import {
   completedBooks,
   currentlyReadingBooks,
@@ -10,11 +11,49 @@ import {
   readingStreak,
   wantToReadBooks,
 } from '@/mocks/reading-progress';
+import { useAuth } from '@/providers/AuthProvider';
 
 import { BookProgressList } from '../components/BookProgressList';
 
+function GuardianReadingProgress() {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageTitle
+        title={t('readingProgress.pageTitle')}
+        description={t('readingProgress.guardianPageDescription')}
+      />
+
+      {children.map((child) => {
+        const progress = childrenReadingProgress.find((entry) => entry.childId === child.id);
+        return (
+          <div key={child.id} className="flex flex-col gap-4">
+            <h2 className="text-lg font-semibold text-foreground">{child.name}</h2>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <BookProgressList
+                title={t('readingProgress.lists.currentlyReading.title')}
+                books={progress?.currentlyReading ?? []}
+                emptyDescription={t('readingProgress.lists.currentlyReading.emptyDescription')}
+              />
+              <BookProgressList
+                title={t('readingProgress.lists.completed.title')}
+                books={progress?.completed ?? []}
+                emptyDescription={t('readingProgress.lists.completed.emptyDescription')}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ReadingProgressPage() {
   const { t } = useTranslation();
+  const { role } = useAuth();
+
+  if (role === 'guardian') return <GuardianReadingProgress />;
 
   return (
     <div className="flex flex-col gap-6">

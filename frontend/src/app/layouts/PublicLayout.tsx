@@ -20,7 +20,9 @@ export function PublicLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1">
+      {/* pb-24 reserves space under the fixed ChatbotWidget (size-14 button + margin),
+          matching AppShellLayout's reserve, so it never sits on top of page/footer content. */}
+      <main className="flex-1 pb-24">
         <Outlet />
       </main>
       {isLandingPage ? null : isLargeFooterPage ? <LandingFooter /> : <Footer minimal />}

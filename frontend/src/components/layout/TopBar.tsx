@@ -23,7 +23,7 @@ export function TopBar({ items }: TopBarProps) {
       <Button
         variant="ghost"
         size="sm"
-        className="md:hidden"
+        className="size-10 p-0 md:hidden"
         aria-label={t('topBar.openNavigation')}
         onClick={() => setMobileNavOpen(true)}
       >

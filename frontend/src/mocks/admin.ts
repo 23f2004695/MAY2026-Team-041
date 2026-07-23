@@ -100,6 +100,27 @@ export const pendingRequests: PendingRequest[] = [
   },
 ];
 
+export interface SeatOccupancySlot {
+  hour: string;
+  percentFilled: number;
+}
+
+// Hourly seat-filling frequency for the prior day, hall opens 9 AM–9 PM.
+export const seatOccupancyYesterday: SeatOccupancySlot[] = [
+  { hour: '9 AM', percentFilled: 20 },
+  { hour: '10 AM', percentFilled: 35 },
+  { hour: '11 AM', percentFilled: 55 },
+  { hour: '12 PM', percentFilled: 60 },
+  { hour: '1 PM', percentFilled: 45 },
+  { hour: '2 PM', percentFilled: 50 },
+  { hour: '3 PM', percentFilled: 65 },
+  { hour: '4 PM', percentFilled: 78 },
+  { hour: '5 PM', percentFilled: 90 },
+  { hour: '6 PM', percentFilled: 92 },
+  { hour: '7 PM', percentFilled: 80 },
+  { hour: '8 PM', percentFilled: 58 },
+];
+
 export const adminReports = [
   { labelKey: 'admin.reports.items.revenueByPlan' },
   { labelKey: 'admin.reports.items.profitAndLoss' },

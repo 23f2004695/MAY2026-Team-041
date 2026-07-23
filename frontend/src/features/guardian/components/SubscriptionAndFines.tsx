@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, CardHeader, CardTitle, Modal } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import type { Child } from '@/mocks/guardian';
+import { pricingDurations } from '@/mocks/pricing';
+
+const RENEWAL_PRICE = pricingDurations.find((duration) => duration.id === '1m')?.price ?? 0;
 
 export function SubscriptionAndFines({ children }: { children: Child[] }) {
   const { t } = useTranslation();
@@ -18,6 +21,14 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
     navigate(
       `${ROUTES.PAYMENT}?amount=${amount}&label=${encodeURIComponent(t('guardian.subscription.fineOwed', { amount: child.outstandingFine }) + ' — ' + child.name)}`,
     );
+  }
+
+  // Renew goes straight to Payment for the child's existing plan — Payment
+  // offers a "Change Plan" link back to Pricing for anyone who wants a
+  // different one, same as the member's own subscription card.
+  function renewChild(child: Child) {
+    const label = t('guardian.subscription.renewToast', { name: child.name });
+    navigate(`${ROUTES.PAYMENT}?amount=${RENEWAL_PRICE}&label=${encodeURIComponent(label)}&renewal=1`);
   }
 
   return (
@@ -60,7 +71,7 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
                       {t('guardian.subscription.payFine')}
                     </Button>
                   )}
-                  <Button size="sm" onClick={() => navigate(ROUTES.PRICING)}>
+                  <Button size="sm" onClick={() => renewChild(child)}>
                     {t('guardian.subscription.renew')}
                   </Button>
                 </div>

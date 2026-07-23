@@ -4,7 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { NotificationCard, PageTitle } from '@/components/common';
 import { Badge, Button, EmptyState } from '@/components/ui';
-import { notifications as mockNotifications, type AppNotification } from '@/mocks/notifications';
+import {
+  adminNotifications,
+  itHeadNotifications,
+  managerNotifications,
+  notifications as memberNotifications,
+  type AppNotification,
+} from '@/mocks/notifications';
+import { useAuth, type Role } from '@/providers/AuthProvider';
 
 type Filter = 'all' | 'unread';
 
@@ -31,6 +38,24 @@ function useNotificationMessage(notification: AppNotification): string {
         count: params.count,
         plan: t(`notifications.plans.${params.plan}`),
       });
+    case 'pendingRequestSubmitted':
+      return t('notifications.messages.pendingRequestSubmitted', params);
+    case 'commentReported':
+      return t('notifications.messages.commentReported', params);
+    case 'lowStockAlert':
+      return t('notifications.messages.lowStockAlert', params);
+    case 'walkInRequestSubmitted':
+      return t('notifications.messages.walkInRequestSubmitted', params);
+    case 'registrationRequestSubmitted':
+      return t('notifications.messages.registrationRequestSubmitted', params);
+    case 'paymentPendingAtCounter':
+      return t('notifications.messages.paymentPendingAtCounter', params);
+    case 'accessRequestSubmitted':
+      return t('notifications.messages.accessRequestSubmitted', params);
+    case 'issueTicketSubmitted':
+      return t('notifications.messages.issueTicketSubmitted', params);
+    case 'feeOverdue':
+      return t('notifications.messages.feeOverdue', params);
   }
 }
 
@@ -63,9 +88,18 @@ function NotificationRow({
   );
 }
 
+const notificationsByRole: Partial<Record<Role, AppNotification[]>> = {
+  admin: adminNotifications,
+  manager: managerNotifications,
+  'it-head': itHeadNotifications,
+};
+
 export function NotificationsPage() {
   const { t } = useTranslation();
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const { role } = useAuth();
+  const [notifications, setNotifications] = useState(
+    () => (role && notificationsByRole[role]) ?? memberNotifications,
+  );
   const [filter, setFilter] = useState<Filter>('all');
 
   const unreadCount = notifications.filter((notification) => !notification.read).length;

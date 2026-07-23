@@ -3,40 +3,170 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { PageTitle } from '@/components/common';
-import { Button, Card, CardContent, CardHeader, CardTitle, Select, Switch } from '@/components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Input,
+  Select,
+  Switch,
+} from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { LANGUAGES } from '@/i18n/languages';
 import { comingSoonToast } from '@/lib/comingSoonToast';
+import { isValidEmail } from '@/lib/email';
 import { profileOverview } from '@/mocks/profile';
-import { useAuth } from '@/providers/AuthProvider';
+import { useAuth, type Role } from '@/providers/AuthProvider';
 import { useLanguage } from '@/providers/LanguageProvider';
 import { useTheme, type Theme } from '@/providers/ThemeProvider';
 
 const THEME_OPTIONS: Theme[] = ['light', 'dark', 'system'];
 
-interface NotificationPref {
+interface TogglePref {
   id: string;
   labelKey: string;
   enabled: boolean;
 }
 
-const initialNotificationPrefs: NotificationPref[] = [
-  { id: 'dueDateReminders', labelKey: 'settings.notifications.items.dueDateReminders', enabled: true },
-  { id: 'reservationReady', labelKey: 'settings.notifications.items.reservationReady', enabled: true },
-  { id: 'eventAnnouncements', labelKey: 'settings.notifications.items.eventAnnouncements', enabled: false },
-  { id: 'achievementBadges', labelKey: 'settings.notifications.items.achievementBadges', enabled: true },
+const initialNotificationPrefs: TogglePref[] = [
+  {
+    id: 'dueDateReminders',
+    labelKey: 'settings.notifications.items.dueDateReminders',
+    enabled: true,
+  },
+  {
+    id: 'reservationReady',
+    labelKey: 'settings.notifications.items.reservationReady',
+    enabled: true,
+  },
+  {
+    id: 'eventAnnouncements',
+    labelKey: 'settings.notifications.items.eventAnnouncements',
+    enabled: false,
+  },
+  {
+    id: 'achievementBadges',
+    labelKey: 'settings.notifications.items.achievementBadges',
+    enabled: true,
+  },
 ];
+
+const initialAdminPreferences: TogglePref[] = [
+  {
+    id: 'autoApproveSmallRefunds',
+    labelKey: 'settings.adminPreferences.items.autoApproveSmallRefunds',
+    enabled: false,
+  },
+  {
+    id: 'lowStockAlerts',
+    labelKey: 'settings.adminPreferences.items.lowStockAlerts',
+    enabled: true,
+  },
+  {
+    id: 'pendingRequestDigest',
+    labelKey: 'settings.adminPreferences.items.pendingRequestDigest',
+    enabled: true,
+  },
+  {
+    id: 'financialActivityAlerts',
+    labelKey: 'settings.adminPreferences.items.financialActivityAlerts',
+    enabled: true,
+  },
+];
+
+const initialManagerPreferences: TogglePref[] = [
+  {
+    id: 'walkInRequestAlerts',
+    labelKey: 'settings.managerPreferences.items.walkInRequestAlerts',
+    enabled: true,
+  },
+  {
+    id: 'registrationRequestAlerts',
+    labelKey: 'settings.managerPreferences.items.registrationRequestAlerts',
+    enabled: true,
+  },
+  {
+    id: 'pendingPaymentReminders',
+    labelKey: 'settings.managerPreferences.items.pendingPaymentReminders',
+    enabled: true,
+  },
+  {
+    id: 'endOfDaySummary',
+    labelKey: 'settings.managerPreferences.items.endOfDaySummary',
+    enabled: false,
+  },
+];
+
+const initialItHeadPreferences: TogglePref[] = [
+  {
+    id: 'accessRequestAlerts',
+    labelKey: 'settings.itHeadPreferences.items.accessRequestAlerts',
+    enabled: true,
+  },
+  {
+    id: 'issueTicketAlerts',
+    labelKey: 'settings.itHeadPreferences.items.issueTicketAlerts',
+    enabled: true,
+  },
+  {
+    id: 'feeOutstandingDigest',
+    labelKey: 'settings.itHeadPreferences.items.feeOutstandingDigest',
+    enabled: false,
+  },
+  {
+    id: 'bookRecordAlerts',
+    labelKey: 'settings.itHeadPreferences.items.bookRecordAlerts',
+    enabled: true,
+  },
+];
+
+const preferencesByRole: Partial<Record<Role, TogglePref[]>> = {
+  admin: initialAdminPreferences,
+  manager: initialManagerPreferences,
+  'it-head': initialItHeadPreferences,
+};
+
+const preferencesTitleKeyByRole: Partial<Record<Role, string>> = {
+  admin: 'settings.adminPreferences.title',
+  manager: 'settings.managerPreferences.title',
+  'it-head': 'settings.itHeadPreferences.title',
+};
 
 export function SettingsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { logout } = useAuth();
-  const [notificationPrefs, setNotificationPrefs] = useState(initialNotificationPrefs);
+  const { role, logout } = useAuth();
+  const hasStaffAccount = role === 'admin' || role === 'manager' || role === 'it-head';
+  const [togglePrefs, setTogglePrefs] = useState(
+    () => (role && preferencesByRole[role]) ?? initialNotificationPrefs,
+  );
+  const [guardianEmail, setGuardianEmail] = useState<string | null>(null);
+  const [guardianEmailInput, setGuardianEmailInput] = useState('');
+  const [guardianEmailError, setGuardianEmailError] = useState<string | undefined>();
 
-  function toggleNotificationPref(id: string) {
-    setNotificationPrefs((prev) =>
+  function handleLinkGuardian(event: React.FormEvent) {
+    event.preventDefault();
+    const trimmed = guardianEmailInput.trim();
+    if (!isValidEmail(trimmed)) {
+      setGuardianEmailError(t('settings.guardianLink.invalidEmail'));
+      return;
+    }
+    setGuardianEmailError(undefined);
+    setGuardianEmail(trimmed);
+    setGuardianEmailInput('');
+  }
+
+  function handleUnlinkGuardian() {
+    setGuardianEmail(null);
+  }
+
+  function toggleTogglePref(id: string) {
+    setTogglePrefs((prev) =>
       prev.map((pref) => (pref.id === id ? { ...pref, enabled: !pref.enabled } : pref)),
     );
   }
@@ -55,7 +185,9 @@ export function SettingsPage() {
           <CardTitle>{t('settings.appearance.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-2 text-sm font-medium text-foreground">{t('settings.appearance.theme')}</p>
+          <p className="mb-2 text-sm font-medium text-foreground">
+            {t('settings.appearance.theme')}
+          </p>
           <div className="flex gap-2" role="group" aria-label={t('settings.appearance.theme')}>
             {THEME_OPTIONS.map((option) => (
               <Button
@@ -88,47 +220,104 @@ export function SettingsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('settings.notifications.title')}</CardTitle>
+          <CardTitle>
+            {t((role && preferencesTitleKeyByRole[role]) ?? 'settings.notifications.title')}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          {notificationPrefs.map((pref) => (
+          {togglePrefs.map((pref) => (
             <Switch
               key={pref.id}
               id={pref.id}
               checked={pref.enabled}
-              onCheckedChange={() => toggleNotificationPref(pref.id)}
+              onCheckedChange={() => toggleTogglePref(pref.id)}
               label={t(pref.labelKey)}
             />
           ))}
         </CardContent>
       </Card>
 
+      {role === 'member' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('settings.guardianLink.title')}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <p className="text-sm text-muted-foreground">
+              {t('settings.guardianLink.description')}
+            </p>
+            {guardianEmail ? (
+              <div className="flex items-center justify-between gap-3 rounded-md border border-border p-3">
+                <div>
+                  <Badge variant="success">{t('settings.guardianLink.linked')}</Badge>
+                  <p className="mt-1 text-sm text-foreground">{guardianEmail}</p>
+                </div>
+                <Button variant="outline" size="sm" onClick={handleUnlinkGuardian}>
+                  {t('settings.guardianLink.unlink')}
+                </Button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleLinkGuardian}
+                className="flex flex-col gap-3 sm:flex-row sm:items-end"
+              >
+                <Input
+                  label={t('settings.guardianLink.emailLabel')}
+                  type="email"
+                  placeholder={t('settings.guardianLink.emailPlaceholder')}
+                  value={guardianEmailInput}
+                  onChange={(event) => setGuardianEmailInput(event.target.value)}
+                  error={guardianEmailError}
+                  className="flex-1"
+                />
+                <Button type="submit" className="w-fit">
+                  {t('settings.guardianLink.linkButton')}
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>{t('settings.account.title')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <div>
-            <p className="text-sm font-medium text-foreground">{profileOverview.name}</p>
-            <p className="text-sm text-muted-foreground">{profileOverview.email}</p>
-          </div>
+          {hasStaffAccount ? (
+            <p className="text-sm font-medium text-foreground">{t(`auth.login.roles.${role}`)}</p>
+          ) : (
+            <div>
+              <p className="text-sm font-medium text-foreground">{profileOverview.name}</p>
+              <p className="text-sm text-muted-foreground">{profileOverview.email}</p>
+            </div>
+          )}
 
-          <Button variant="outline" className="w-fit" onClick={handleLogOut}>
-            {t('settings.account.logOut')}
-          </Button>
-
-          <div className="flex flex-col gap-2 rounded-md border border-danger/30 bg-danger/5 p-4">
-            <p className="text-sm font-medium text-danger">{t('settings.account.dangerZone')}</p>
-            <p className="text-sm text-muted-foreground">{t('settings.account.deleteAccountHint')}</p>
-            <Button
-              variant="danger"
-              size="sm"
-              className="w-fit"
-              onClick={() => comingSoonToast(t('settings.account.deleteAccount'))}
-            >
-              {t('settings.account.deleteAccount')}
+          <div className="flex gap-2">
+            <Button variant="outline" className="w-fit" onClick={() => navigate(ROUTES.PROFILE)}>
+              {t('userMenu.profile')}
+            </Button>
+            <Button variant="outline" className="w-fit" onClick={handleLogOut}>
+              {t('settings.account.logOut')}
             </Button>
           </div>
+
+          {!hasStaffAccount && (
+            <div className="flex flex-col gap-2 rounded-md border border-danger/30 bg-danger/5 p-4">
+              <p className="text-sm font-medium text-danger">{t('settings.account.dangerZone')}</p>
+              <p className="text-sm text-muted-foreground">
+                {t('settings.account.deleteAccountHint')}
+              </p>
+              <Button
+                variant="danger"
+                size="sm"
+                className="w-fit"
+                onClick={() => comingSoonToast(t('settings.account.deleteAccount'))}
+              >
+                {t('settings.account.deleteAccount')}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

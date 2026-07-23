@@ -108,7 +108,7 @@ const GuardianDashboardPage = lazy(() =>
 const router = createBrowserRouter([
   {
     element: <PublicLayout />,
-    errorElement: <ErrorState />,
+    errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
     children: [
       { index: true, element: withSuspense(<LandingPage />) },
       { path: relative(ROUTES.PRICING), element: withSuspense(<PricingPage />) },
@@ -133,6 +133,7 @@ const router = createBrowserRouter([
           },
         ],
       },
+      { path: '*', element: <NotFound /> },
     ],
   },
   {
@@ -141,7 +142,7 @@ const router = createBrowserRouter([
         <UserLayout />
       </ProtectedRoute>
     ),
-    errorElement: <ErrorState />,
+    errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
     children: [
       { path: relative(ROUTES.DASHBOARD), element: withSuspense(<DashboardPage />) },
       { path: relative(ROUTES.BOOKS), element: withSuspense(<BooksListPage />) },
@@ -165,7 +166,7 @@ const router = createBrowserRouter([
         <AdminLayout />
       </RoleRoute>
     ),
-    errorElement: <ErrorState />,
+    errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
     children: [{ path: relative(ROUTES.ADMIN), element: withSuspense(<AdminDashboardPage />) }],
   },
   {
@@ -174,7 +175,7 @@ const router = createBrowserRouter([
         <ITHeadLayout />
       </RoleRoute>
     ),
-    errorElement: <ErrorState />,
+    errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
     children: [{ path: relative(ROUTES.IT_HEAD), element: withSuspense(<ITHeadDashboardPage />) }],
   },
   {
@@ -183,12 +184,11 @@ const router = createBrowserRouter([
         <GuardianLayout />
       </RoleRoute>
     ),
-    errorElement: <ErrorState />,
+    errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
     children: [
       { path: relative(ROUTES.GUARDIAN), element: withSuspense(<GuardianDashboardPage />) },
     ],
   },
-  { path: '*', element: <NotFound /> },
 ]);
 
 export function AppRouter() {

@@ -21,7 +21,7 @@ export function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
@@ -61,7 +61,9 @@ export function Login() {
           error={errors.password?.message ? t(errors.password.message) : undefined}
           {...register('password')}
         />
-        <Button type="submit">{t('auth.login.logInWithPassword')}</Button>
+        <Button type="submit" isLoading={isSubmitting}>
+          {t('auth.login.logInWithPassword')}
+        </Button>
       </form>
 
       <div className="flex items-center gap-3 py-1 text-xs text-muted-foreground">

@@ -1,5 +1,7 @@
 import { BookOpen, IndianRupee, UserCheck, Users, type LucideIcon } from 'lucide-react';
 
+import type { ProgressBook } from './reading-progress';
+
 export interface GuardianStat {
   icon: LucideIcon;
   labelKey: string;
@@ -54,6 +56,60 @@ export const children: Child[] = [
     fineDueDate: 'Jul 19, 2026',
     fineDailyPenalty: '₹5',
     fineEscalatedAmount: '₹80',
+  },
+];
+
+export interface ChildReadingProgress {
+  childId: string;
+  currentlyReading: ProgressBook[];
+  completed: ProgressBook[];
+}
+
+export const childrenReadingProgress: ChildReadingProgress[] = [
+  {
+    childId: 'c1',
+    currentlyReading: [
+      {
+        id: 'percy-jackson',
+        title: 'Percy Jackson: The Lightning Thief',
+        author: 'Rick Riordan',
+        percentComplete: 45,
+      },
+      {
+        id: 'wimpy-kid',
+        title: 'Diary of a Wimpy Kid',
+        author: 'Jeff Kinney',
+        percentComplete: 80,
+      },
+    ],
+    completed: [
+      {
+        id: 'sorcerers-stone',
+        title: "Harry Potter and the Sorcerer's Stone",
+        author: 'J.K. Rowling',
+        percentComplete: 100,
+      },
+    ],
+  },
+  {
+    childId: 'c2',
+    currentlyReading: [
+      {
+        id: 'charlottes-web',
+        title: "Charlotte's Web",
+        author: 'E. B. White',
+        percentComplete: 90,
+      },
+    ],
+    completed: [
+      { id: 'matilda', title: 'Matilda', author: 'Roald Dahl', percentComplete: 100 },
+      {
+        id: 'cat-in-the-hat',
+        title: 'The Cat in the Hat',
+        author: 'Dr. Seuss',
+        percentComplete: 100,
+      },
+    ],
   },
 ];
 

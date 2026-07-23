@@ -17,7 +17,7 @@ import {
   Users,
 } from 'lucide-react';
 
-import type { SeatStatus } from '@/components/common';
+import type { IconBadgeTone, SeatStatus } from '@/components/common';
 
 // Display copy for everything below lives in i18n locale files (src/i18n/locales/*.json),
 // keyed by `id`. These mocks hold only structural/icon data plus real-world proper nouns
@@ -56,13 +56,14 @@ export const features: Feature[] = [
 
 export interface HowItWorksStep {
   step: number;
+  tone: IconBadgeTone;
 }
 
 export const howItWorksSteps: HowItWorksStep[] = [
-  { step: 1 },
-  { step: 2 },
-  { step: 3 },
-  { step: 4 },
+  { step: 1, tone: 'primary-tint' },
+  { step: 2, tone: 'success' },
+  { step: 3, tone: 'info' },
+  { step: 4, tone: 'warning' },
 ];
 
 export interface AIRecommendedBook {
@@ -80,6 +81,7 @@ export const aiRecommendedBooks: AIRecommendedBook[] = [
 export interface MoodRecommendation {
   id: string;
   emoji: string;
+  tone: IconBadgeTone;
   books: string[];
 }
 
@@ -87,16 +89,33 @@ export const moodRecommendations: MoodRecommendation[] = [
   {
     id: 'happy',
     emoji: '\u{1F60A}',
+    tone: 'primary-tint',
     books: ['The House in the Cerulean Sea', 'Anne of Green Gables'],
   },
-  { id: 'relaxed', emoji: '\u{1F60C}', books: ['Norwegian Wood', 'The Overstory'] },
+  {
+    id: 'relaxed',
+    emoji: '\u{1F60C}',
+    tone: 'warning',
+    books: ['Norwegian Wood', 'The Overstory'],
+  },
   {
     id: 'curious',
     emoji: '\u{1F92F}',
+    tone: 'success',
     books: ['Sapiens', 'A Short History of Nearly Everything'],
   },
-  { id: 'motivated', emoji: '\u{1F60E}', books: ['Atomic Habits', 'Can’t Hurt Me'] },
-  { id: 'studyMode', emoji: '\u{1F4DA}', books: ['Deep Work', 'How to Read a Book'] },
+  {
+    id: 'motivated',
+    emoji: '\u{1F60E}',
+    tone: 'danger',
+    books: ['Atomic Habits', 'Can’t Hurt Me'],
+  },
+  {
+    id: 'studyMode',
+    emoji: '\u{1F4DA}',
+    tone: 'info',
+    books: ['Deep Work', 'How to Read a Book'],
+  },
 ];
 
 export const seatStats: Record<SeatStatus, number> = {
@@ -146,13 +165,14 @@ export const readingChallengeStats: ReadingChallengeStat[] = [
 export interface CommunityHighlight {
   id: string;
   icon: LucideIcon;
+  tone: IconBadgeTone;
 }
 
 export const communityHighlights: CommunityHighlight[] = [
-  { id: 'bookDiscussions', icon: MessagesSquare },
-  { id: 'reviews', icon: Trophy },
-  { id: 'readingClubs', icon: Users },
-  { id: 'volunteerPrograms', icon: Gift },
+  { id: 'bookDiscussions', icon: MessagesSquare, tone: 'primary-tint' },
+  { id: 'reviews', icon: Star, tone: 'warning' },
+  { id: 'readingClubs', icon: Users, tone: 'info' },
+  { id: 'volunteerPrograms', icon: Gift, tone: 'success' },
 ];
 
 export interface Testimonial {

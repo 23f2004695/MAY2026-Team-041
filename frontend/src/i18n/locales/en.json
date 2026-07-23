@@ -6,6 +6,7 @@
     "getStarted": "Get Started",
     "you": "You",
     "quickActionsTitle": "Quick Actions",
+    "dashboardSectionsHeading": "Dashboard sections",
     "trend": {
       "vsLastMonth": "vs last month"
     },
@@ -41,7 +42,8 @@
       },
       "review": {
         "ratedOutOf5": "Rated {{rating}} out of 5",
-        "editReview": "Edit review"
+        "editReview": "Edit review",
+        "deleteReview": "Delete review"
       }
     }
   },
@@ -128,8 +130,11 @@
       "subtitle": "Real registration ships in Milestone 3. Submitting this form previews the app as a member.",
       "fullName": "Full name",
       "email": "Email",
+      "phoneNumber": "Phone number",
+      "phoneNumberPlaceholder": "+91 98765 43210",
       "password": "Password",
       "confirmPassword": "Confirm password",
+      "membershipPlan": "Membership plan",
       "terms": "I agree to the terms of service",
       "createAccount": "Create account",
       "alreadyHaveAccount": "Already have an account?",
@@ -137,7 +142,8 @@
       "errors": {
         "name": "Name is required.",
         "email": "Enter a valid email address.",
-        "password": "Password must be at least 8 characters.",
+        "phoneNumber": "Enter a valid phone number.",
+        "password": "Password must be at least 8 characters and include a letter and a number.",
         "confirmPassword": "Passwords do not match.",
         "terms": "You must accept the terms to continue."
       }
@@ -158,6 +164,8 @@
     "payAtLibraryDescription": "Skip online payment — visit the counter and pay the manager in cash.",
     "contactManager": "Notify the Manager",
     "payAtLibraryToast": "The manager has been notified — pay in cash at the counter",
+    "renewingCurrentPlan": "Renewing your current plan.",
+    "changePlan": "Change plan",
     "secureNotice": "Payments are processed securely"
   },
   "feedback": {
@@ -175,6 +183,15 @@
       "expensesMtd": "Expenses (MTD)",
       "netProfitMtd": "Net Profit (MTD)",
       "totalMembers": "Total Members"
+    },
+    "seatStatus": {
+      "title": "Live Seat Status"
+    },
+    "seatOccupancy": {
+      "title": "Seat Filling Frequency (Yesterday)",
+      "summary": "Peak at {{peakHour}} ({{peakPercent}}% full) · {{avgPercent}}% average occupancy",
+      "emptyTitle": "No occupancy data yet",
+      "emptyDescription": "Seat filling data will show up here once today's slots are recorded."
     },
     "cashFlow": {
       "title": "Cash Flow Breakdown",
@@ -419,6 +436,7 @@
       "noFine": "No outstanding fine",
       "renew": "Renew",
       "viewPlans": "View Plans",
+      "renewalPaymentLabel": "{{plan}} — Renewal",
       "payFine": "Pay Fine",
       "viewFineDetails": "View Details",
       "fineDetails": {
@@ -516,6 +534,37 @@
         "issuingBook": "Issuing a book for a member",
         "registeringMember": "Registering a new member"
       }
+    },
+    "registerMember": {
+      "title": "Register New Member",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Member's full name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "member@example.com",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "+91 98765 43210",
+      "planLabel": "Membership plan",
+      "submit": "Register Member",
+      "successToast": "{{name}} has been registered as a new member",
+      "errors": {
+        "name": "Name is required.",
+        "email": "Enter a valid email address.",
+        "phoneNumber": "Enter a valid phone number."
+      }
+    },
+    "addGuardian": {
+      "title": "Add Guardian",
+      "description": "Link a guardian to a student using the email each of them registered with.",
+      "studentEmailLabel": "Student's email",
+      "studentEmailPlaceholder": "student@example.com",
+      "guardianEmailLabel": "Guardian's email",
+      "guardianEmailPlaceholder": "guardian@example.com",
+      "submit": "Add Guardian",
+      "successToast": "Linked guardian {{guardianEmail}} to {{studentEmail}}",
+      "errors": {
+        "studentEmail": "Enter a valid email address.",
+        "guardianEmail": "Enter a valid email address."
+      }
     }
   },
   "placeholder": {
@@ -558,8 +607,11 @@
       "studySeats": "Study Seats"
     },
     "features": {
-      "heading": "Everything a modern library needs",
+      "headingPrefix": "Everything a",
+      "headingHighlight": "modern",
+      "headingSuffix": "library needs",
       "subheading": "One platform for borrowing, discovery, community, and the day-to-day running of the library.",
+      "imgAlt": "Illustration of students using digital library search, QR borrowing, seat booking, AI recommendations, and reading challenges",
       "items": {
         "digitalLibrary": {
           "title": "Digital Library",
@@ -599,7 +651,6 @@
       "badge": "Process",
       "titlePrefix": "How it",
       "titleHighlight": "works",
-      "stepLabel": "Step {{step}}",
       "steps": {
         "1": {
           "title": "Register",
@@ -617,19 +668,39 @@
           "title": "Read & Participate",
           "description": "Track progress and join the community around it."
         }
+      },
+      "imgAlt": {
+        "1": "Screen preview of creating a free membership account",
+        "2": "Screen preview of searching books by category, author, or mood",
+        "3": "Two people confirming a book reservation at the library desk",
+        "4": "Screen preview of reading streaks, badges, and community events"
+      },
+      "community": {
+        "headingPrefix": "Together, we build a stronger",
+        "headingHighlight": "reading community.",
+        "subheading": "Read • Learn • Connect",
+        "memberCount": "2K+",
+        "memberCaption": "2K+ members and growing!"
       }
     },
     "mood": {
       "heading": "What are you in the mood to read?",
       "subheading": "Pick a mood and see a preview of what our recommendation engine would suggest.",
       "ariaLabel": "Reading moods",
-      "recommendedFor": "Recommended for {{mood}} mood",
+      "imgAlt": "Illustration of a student surrounded by book recommendations for different reading moods",
       "moods": {
         "happy": "Happy",
         "relaxed": "Relaxed",
         "curious": "Curious",
         "motivated": "Motivated",
         "studyMode": "Study Mode"
+      },
+      "captions": {
+        "happy": "Feel-Good Reads",
+        "relaxed": "Peaceful Reads",
+        "curious": "Explore & Discover",
+        "motivated": "Build & Grow",
+        "studyMode": "Focus & Learn"
       }
     },
     "seatAvailability": {
@@ -717,8 +788,10 @@
       }
     },
     "community": {
-      "heading": "Built around community",
+      "heading": "Built around",
+      "headingHighlight": "community",
       "subheading": "The library is more than a catalog. It's a place to talk about what you're reading and give back.",
+      "imgAlt": "Illustration of members gathered around a table at a reading club meeting, with book discussions, reviews, reading clubs, and volunteer programs highlighted",
       "items": {
         "bookDiscussions": {
           "title": "Book Discussions",
@@ -736,7 +809,8 @@
           "title": "Volunteer Programs",
           "description": "Help run events, sort donations, or mentor new members."
         }
-      }
+      },
+      "exploreAria": "Explore {{title}}"
     },
     "testimonials": {
       "heading": "What our members say",
@@ -1025,7 +1099,10 @@
         "cancellingRegistration": "Cancelling registration"
       },
       "managerAssignmentsTitle": "Manager Assignments",
-      "noManagersAssigned": "No managers assigned yet."
+      "noManagersAssigned": "No managers assigned yet.",
+      "registeredAttendeesTitle": "Registered Attendees",
+      "noRegistrants": "No one has registered yet.",
+      "removeRegistrant": "Remove"
     },
     "empty": {
       "title": "No events scheduled",
@@ -1092,6 +1169,7 @@
   "readingProgress": {
     "pageTitle": "Reading Progress",
     "pageDescription": "Your reading activity across the year",
+    "guardianPageDescription": "Your children's reading activity",
     "readingGoal": {
       "title": "{{year}} Reading Goal",
       "booksOf": "{{current}} of {{target}} books"
@@ -1143,13 +1221,21 @@
     "filterAriaLabel": "Filter posts",
     "filters": {
       "all": "All Posts",
-      "saved": "Saved"
+      "saved": "Saved",
+      "reported": "Reported"
+    },
+    "adminStats": {
+      "totalPosts": "Total Posts",
+      "totalComments": "Total Comments",
+      "reportedComments": "Reported Comments"
     },
     "empty": {
       "title": "No posts yet",
       "description": "Be the first to share what you're reading.",
       "savedTitle": "No saved posts yet",
-      "savedDescription": "Posts you save will show up here."
+      "savedDescription": "Posts you save will show up here.",
+      "reportedTitle": "No reported content",
+      "reportedDescription": "Flagged posts and comments will show up here for review."
     },
     "post": {
       "likeAria": "Like post",
@@ -1163,7 +1249,13 @@
       "sendComment": "Send comment",
       "reply": "Reply",
       "replyPlaceholder": "Write a reply...",
-      "sendReply": "Send reply"
+      "sendReply": "Send reply",
+      "reportedBadge": "Reported",
+      "removeComment": "Remove",
+      "banAria": "Ban {{author}}",
+      "bannedBadge": "Banned",
+      "report": "Report",
+      "reportAria": "Report {{author}}'s post"
     },
     "createPostModal": {
       "title": "Create Post",
@@ -1183,6 +1275,16 @@
       "title": "Delete post?",
       "description": "This can't be undone.",
       "confirmLabel": "Delete"
+    },
+    "banDialog": {
+      "title": "Temporarily ban {{author}}?",
+      "description": "{{author}} won't be able to post or comment in Community for 24 hours. You can unban them anytime.",
+      "confirmLabel": "Ban for 24 hours"
+    },
+    "bannedUsers": {
+      "title": "Banned Users",
+      "status": "Banned for 24 hours",
+      "unban": "Unban"
     }
   },
   "settings": {
@@ -1210,6 +1312,43 @@
         "achievementBadges": "Achievement badges"
       }
     },
+    "adminPreferences": {
+      "title": "Admin Preferences",
+      "items": {
+        "autoApproveSmallRefunds": "Auto-approve refunds under ₹500",
+        "lowStockAlerts": "Low book-stock alerts",
+        "pendingRequestDigest": "Daily pending-request email digest",
+        "financialActivityAlerts": "Real-time financial activity alerts"
+      }
+    },
+    "managerPreferences": {
+      "title": "Manager Preferences",
+      "items": {
+        "walkInRequestAlerts": "Walk-in seat/book request alerts",
+        "registrationRequestAlerts": "New registration request alerts",
+        "pendingPaymentReminders": "Pending counter-payment reminders",
+        "endOfDaySummary": "End-of-day shift summary email"
+      }
+    },
+    "itHeadPreferences": {
+      "title": "IT Head Preferences",
+      "items": {
+        "accessRequestAlerts": "New access-permission request alerts",
+        "issueTicketAlerts": "New issue ticket alerts",
+        "feeOutstandingDigest": "Weekly fee & fine outstanding digest",
+        "bookRecordAlerts": "Book record change alerts (lost/donated/purchased)"
+      }
+    },
+    "guardianLink": {
+      "title": "Guardian",
+      "description": "Link a guardian's email so they can track your library activity.",
+      "emailLabel": "Guardian's email",
+      "emailPlaceholder": "guardian@example.com",
+      "invalidEmail": "Enter a valid email address.",
+      "linkButton": "Link Guardian",
+      "linked": "Linked",
+      "unlink": "Unlink"
+    },
     "account": {
       "title": "Account",
       "logOut": "Log out",
@@ -1223,11 +1362,24 @@
     "byAuthor": "by {{author}}",
     "writeReview": "Write a Review",
     "commentsHeading": "Comments",
+    "admin": {
+      "pageDescription": "Reviews across the whole catalog",
+      "stats": {
+        "totalReviews": "Total Reviews",
+        "averageRating": "Average Rating",
+        "booksReviewed": "Books Reviewed"
+      }
+    },
     "summary": {
       "totalReviews_one": "{{count}} review",
       "totalReviews_other": "{{count}} reviews",
       "starsLabel_one": "{{count}} star",
       "starsLabel_other": "{{count}} stars"
+    },
+    "deleteDialog": {
+      "title": "Delete review?",
+      "description": "This can't be undone.",
+      "confirmLabel": "Delete"
     },
     "empty": {
       "title": "No reviews yet",
@@ -1266,7 +1418,16 @@
       "reservationReady": "Reservation ready",
       "newArrival": "New arrival",
       "achievementUnlocked": "Achievement unlocked",
-      "membershipRenewal": "Membership renewal"
+      "membershipRenewal": "Membership renewal",
+      "pendingRequest": "Pending request",
+      "commentReported": "Comment reported",
+      "lowStock": "Low stock alert",
+      "walkInRequest": "Walk-in request",
+      "registrationRequest": "New registration",
+      "paymentPending": "Payment pending at counter",
+      "accessRequest": "Access request",
+      "issueTicket": "New issue ticket",
+      "feeOverdue": "Fee overdue"
     },
     "plans": {
       "premium": "premium",
@@ -1281,7 +1442,16 @@
       "achievementEarned_one": "You earned the \"{{achievement}}\" badge for reading {{count}} book this year",
       "achievementEarned_other": "You earned the \"{{achievement}}\" badge for reading {{count}} books this year",
       "membershipRenewsInDays_one": "Your {{plan}} membership renews in {{count}} day",
-      "membershipRenewsInDays_other": "Your {{plan}} membership renews in {{count}} days"
+      "membershipRenewsInDays_other": "Your {{plan}} membership renews in {{count}} days",
+      "pendingRequestSubmitted": "{{requester}} submitted a {{type}}",
+      "commentReported": "A comment by {{author}} was flagged for review",
+      "lowStockAlert": "{{category}} stock is at {{percent}}% — consider reordering",
+      "walkInRequestSubmitted": "{{name}} walked in and {{detail}}",
+      "registrationRequestSubmitted": "{{name}} wants to register as a new member",
+      "paymentPendingAtCounter": "{{name}} has a {{amount}} payment pending at the counter",
+      "accessRequestSubmitted": "{{requester}} requested {{permission}} access",
+      "issueTicketSubmitted": "{{reporter}} reported: {{summary}}",
+      "feeOverdue": "{{name}} has a {{amount}} fee overdue"
     }
   },
   "profile": {
@@ -1291,6 +1461,21 @@
       "booksRead": "Books Read",
       "pagesRead": "Pages Read",
       "hoursRead": "Hours Read"
+    },
+    "adminStats": {
+      "actionsThisMonth": "Actions This Month",
+      "expensesApproved": "Expenses Approved",
+      "finesWaived": "Fines Waived"
+    },
+    "itHeadStats": {
+      "openIssues": "Open Issues",
+      "resolvedIssues": "Resolved Issues",
+      "pendingPermissions": "Pending Permissions"
+    },
+    "managerStats": {
+      "walkInRequests": "Walk-In Requests",
+      "newRegistrations": "New Registrations",
+      "pendingPayments": "Pending Payments"
     },
     "achievements": {
       "title": "Achievements",
@@ -1360,7 +1545,7 @@
     "errors": {
       "name": "Name is required.",
       "email": "Enter a valid email address.",
-      "phoneNumber": "A phone number is required.",
+      "phoneNumber": "Enter a valid phone number.",
       "organization": "Organization or club name is required.",
       "message": "Please share a brief message.",
       "subject": "Subject is required."
