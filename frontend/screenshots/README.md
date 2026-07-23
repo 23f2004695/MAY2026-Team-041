@@ -38,6 +38,12 @@ so anything shown here is illustrative, not live data.
 | --------------- | ------------------------------------------------------------------ |
 | Admin Dashboard | [screenshots/admin-dashboard.png](screenshots/admin-dashboard.png) |
 
+## Manager
+
+| Page              | Screenshot                                                               |
+| ----------------- | ------------------------------------------------------------------------- |
+| Manager Dashboard | [screenshots/manager-dashboard.png](screenshots/manager-dashboard.png)    |
+
 Regenerate these any time the UI changes — there's no saved script for it in the repo;
 it was a one-off Playwright pass driving the local dev server (`npm run frontend`) with
 `mock-auth` seeded in `localStorage` per role.

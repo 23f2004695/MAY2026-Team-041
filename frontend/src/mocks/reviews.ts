@@ -23,6 +23,8 @@ export interface BookReview {
   images?: string[];
   /** True when the signed-in member authored this review, enabling edit. */
   isOwn?: boolean;
+  /** Set on cross-book review lists (see `allReviews`) — omitted for single-book lists. */
+  bookTitle?: string;
 }
 
 export const bookReviews: BookReview[] = [
@@ -53,5 +55,35 @@ export const bookReviews: BookReview[] = [
     rating: 4,
     comment: 'Solid, actionable advice. The identity-based habits chapter was my favorite.',
     date: 'Apr 29, 2026',
+  },
+];
+
+// Reviews across the whole catalog, for the admin moderation view — bookReviews above stays
+// scoped to the single featured-book page members see.
+export const allReviews: BookReview[] = [
+  ...bookReviews.map((review) => ({ ...review, bookTitle: 'Atomic Habits' })),
+  {
+    id: 'rev5',
+    reviewer: 'Priya Sharma',
+    rating: 5,
+    comment: 'The idea that every regret is its own parallel life hit different.',
+    date: 'Jun 8, 2026',
+    bookTitle: 'The Midnight Library',
+  },
+  {
+    id: 'rev6',
+    reviewer: 'Simran Kaur',
+    rating: 5,
+    comment: 'The chapter on shared myths completely reframed how I think about society.',
+    date: 'Jun 1, 2026',
+    bookTitle: 'Sapiens',
+  },
+  {
+    id: 'rev7',
+    reviewer: 'Karan Malhotra',
+    rating: 3,
+    comment: 'Interesting premise but the pacing dragged in the middle third.',
+    date: 'May 20, 2026',
+    bookTitle: 'Project Hail Mary',
   },
 ];

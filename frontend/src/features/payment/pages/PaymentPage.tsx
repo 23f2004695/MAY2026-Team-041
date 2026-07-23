@@ -1,9 +1,10 @@
 import { Banknote, ShieldCheck, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { AnimatedNumber, PageHeader } from '@/components/common';
 import { Badge, Button, Card, CardContent } from '@/components/ui';
+import { ROUTES } from '@/constants/routes';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 
 // Auth is already enforced by the ProtectedRoute this page is nested under
@@ -14,6 +15,9 @@ export function PaymentPage() {
 
   const amount = Number(params.get('amount')) || 0;
   const label = params.get('label') ?? t('payment.defaultLabel');
+  // Set only by the "Renew" buttons on the member/guardian subscription cards —
+  // fine payments and other charges don't offer a plan switch.
+  const isRenewal = params.get('renewal') === '1';
 
   // ponytail: no backend yet to create a Razorpay order / verify the payment
   // signature, so this mocks the flow like every other write action in the
@@ -41,6 +45,15 @@ export function PaymentPage() {
           <Badge variant="outline">{label}</Badge>
         </CardContent>
       </Card>
+
+      {isRenewal && (
+        <p className="text-center text-sm text-muted-foreground">
+          {t('payment.renewingCurrentPlan')}{' '}
+          <Link to={ROUTES.PRICING} className="font-medium text-primary hover:underline">
+            {t('payment.changePlan')}
+          </Link>
+        </p>
+      )}
 
       <Button size="lg" className="gap-2" onClick={handleRazorpayPay}>
         <Wallet className="size-4" />

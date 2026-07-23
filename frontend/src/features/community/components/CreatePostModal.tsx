@@ -19,6 +19,7 @@ export interface CreatePostModalProps {
 }
 
 const MAX_IMAGES = 4;
+const MAX_CONTENT_LENGTH = 500;
 
 export function CreatePostModal({ open, onClose, onSubmit, initialValues }: CreatePostModalProps) {
   const { t } = useTranslation();
@@ -51,7 +52,8 @@ export function CreatePostModal({ open, onClose, onSubmit, initialValues }: Crea
     setImages((prev) => prev.filter((_, i) => i !== index));
   }
 
-  function handleSubmit() {
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     if (content.trim().length === 0) return;
     onSubmit({ bookTitle: bookTitle.trim(), content: content.trim(), images });
   }
@@ -64,7 +66,7 @@ export function CreatePostModal({ open, onClose, onSubmit, initialValues }: Crea
       onClose={onClose}
       title={isEditing ? t('community.createPostModal.editTitle') : t('community.createPostModal.title')}
     >
-      <div className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           label={t('community.createPostModal.bookTitleLabel')}
           placeholder={t('community.createPostModal.bookTitlePlaceholder')}
@@ -81,9 +83,13 @@ export function CreatePostModal({ open, onClose, onSubmit, initialValues }: Crea
             value={content}
             onChange={(event) => setContent(event.target.value)}
             rows={4}
+            maxLength={MAX_CONTENT_LENGTH}
             placeholder={t('community.createPostModal.contentPlaceholder')}
             className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
+          <p className="text-right text-xs text-muted-foreground tabular-nums">
+            {content.length}/{MAX_CONTENT_LENGTH}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -125,10 +131,10 @@ export function CreatePostModal({ open, onClose, onSubmit, initialValues }: Crea
           </p>
         </div>
 
-        <Button disabled={!canSubmit} onClick={handleSubmit}>
+        <Button type="submit" disabled={!canSubmit}>
           {isEditing ? t('community.createPostModal.saveChanges') : t('community.createPostModal.submit')}
         </Button>
-      </div>
+      </form>
     </Modal>
   );
 }

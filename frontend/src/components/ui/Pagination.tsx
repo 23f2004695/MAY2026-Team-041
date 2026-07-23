@@ -41,7 +41,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         aria-label="Previous page"
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="inline-flex size-8 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex size-10 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
       >
         <ChevronLeft className="size-4" />
       </button>
@@ -58,7 +58,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
             aria-current={page === currentPage ? 'page' : undefined}
             onClick={() => onPageChange(page)}
             className={cn(
-              'inline-flex size-8 items-center justify-center rounded-md text-sm font-medium',
+              'inline-flex size-10 items-center justify-center rounded-md text-sm font-medium',
               page === currentPage
                 ? 'bg-primary text-primary-foreground'
                 : 'text-foreground hover:bg-secondary',
@@ -74,7 +74,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         aria-label="Next page"
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="inline-flex size-8 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
+        className="inline-flex size-10 items-center justify-center rounded-md text-foreground hover:bg-secondary disabled:pointer-events-none disabled:opacity-50"
       >
         <ChevronRight className="size-4" />
       </button>

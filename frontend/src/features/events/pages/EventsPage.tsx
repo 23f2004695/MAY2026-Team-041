@@ -29,12 +29,23 @@ export function EventsPage() {
     );
   }
 
+  function removeRegistrant(eventId: string, name: string) {
+    setEvents((prev) =>
+      prev.map((entry) =>
+        entry.id === eventId
+          ? {
+              ...entry,
+              registrants: entry.registrants.filter((registrant) => registrant !== name),
+              attendees: entry.attendees - 1,
+            }
+          : entry,
+      ),
+    );
+  }
+
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader
-        title={t('events.pageTitle')}
-        description={t('events.pageDescription')}
-      />
+      <PageHeader title={t('events.pageTitle')} description={t('events.pageDescription')} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatisticCard
@@ -81,6 +92,7 @@ export function EventsPage() {
         event={activeEvent}
         onClose={() => setActiveEventId(null)}
         onToggleRegistration={toggleRegistration}
+        onRemoveRegistrant={removeRegistrant}
       />
     </div>
   );

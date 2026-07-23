@@ -20,6 +20,7 @@ export interface WriteReviewModalProps {
 }
 
 const MAX_IMAGES = 4;
+const MAX_COMMENT_LENGTH = 500;
 
 export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: WriteReviewModalProps) {
   const { t } = useTranslation();
@@ -54,7 +55,8 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
     setImages((prev) => prev.filter((_, i) => i !== index));
   }
 
-  function handleSubmit() {
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
     if (rating === 0 || comment.trim().length === 0) return;
     onSubmit({ rating, comment: comment.trim(), images });
   }
@@ -67,7 +69,7 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
       onClose={onClose}
       title={isEditing ? t('reviews.writeReviewModal.editTitle') : t('reviews.writeReviewModal.title')}
     >
-      <div className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <p className="mb-1.5 text-sm font-medium text-foreground">
             {t('reviews.writeReviewModal.ratingLabel')}
@@ -108,9 +110,13 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             rows={4}
+            maxLength={MAX_COMMENT_LENGTH}
             placeholder={t('reviews.writeReviewModal.commentPlaceholder')}
             className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
+          <p className="text-right text-xs text-muted-foreground tabular-nums">
+            {comment.length}/{MAX_COMMENT_LENGTH}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -154,10 +160,10 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
           </p>
         </div>
 
-        <Button disabled={!canSubmit} onClick={handleSubmit}>
+        <Button type="submit" disabled={!canSubmit}>
           {isEditing ? t('reviews.writeReviewModal.saveChanges') : t('reviews.writeReviewModal.submit')}
         </Button>
-      </div>
+      </form>
     </Modal>
   );
 }

@@ -13,7 +13,16 @@ export interface Event {
   capacity: number;
   registered: boolean;
   managers: EventManager[];
+  registrants: string[];
 }
+
+// Shared name pool for mock registrant lists — sliced per event to match its attendee count.
+const attendeePool = [
+  'Priya Sharma', 'Rohan Verma', 'Ananya Iyer', 'Karan Malhotra', 'Meher Chawla',
+  'Arjun Mehta', 'Aisha Khan', 'Vikram Rao', 'Sneha Pillai', 'Rahul Nair',
+  'Divya Menon', 'Aditya Kapoor', 'Neha Joshi', 'Siddharth Rao', 'Pooja Reddy',
+  'Manish Gupta', 'Kavya Nair', 'Rajesh Kumar', 'Ishaan Bose', 'Tanya Sen',
+];
 
 export const events: Event[] = [
   {
@@ -29,6 +38,7 @@ export const events: Event[] = [
       { name: 'Ananya Iyer', role: 'Discussion Lead' },
       { name: 'Karan Malhotra', role: 'Setup' },
     ],
+    registrants: attendeePool.slice(0, 18),
   },
   {
     id: 'kids-story-hour',
@@ -40,6 +50,7 @@ export const events: Event[] = [
     capacity: 20,
     registered: false,
     managers: [{ name: 'Priya Sharma', role: 'Storyteller' }],
+    registrants: attendeePool.slice(0, 12),
   },
   {
     id: 'manager-orientation',
@@ -51,6 +62,7 @@ export const events: Event[] = [
     capacity: 15,
     registered: false,
     managers: [],
+    registrants: attendeePool.slice(0, 6),
   },
 ];
 

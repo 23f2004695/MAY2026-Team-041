@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, Card, CardContent, CardHeader, CardTitle, Modal } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { pricingDurations } from '@/mocks/pricing';
+
+const RENEWAL_PRICE = pricingDurations.find((duration) => duration.id === '1m')?.price ?? 0;
 
 export interface MemberSubscriptionProps {
   planLabel: string;
@@ -18,8 +21,10 @@ export interface MemberSubscriptionProps {
 }
 
 // Mirrors the guardian's SubscriptionAndFines card, but for the signed-in
-// member's own plan. Renew/Subscribe both go to Pricing so the member picks
-// a duration first; the payment page opens once a plan is chosen there.
+// member's own plan. Renew goes straight to Payment for the existing plan
+// (Payment offers a "Change Plan" link back to Pricing for anyone who wants
+// a different one); with no active plan yet there's nothing to renew, so
+// that case still goes to Pricing to pick a first plan.
 export function MemberSubscription({
   planLabel,
   expiresOn,
@@ -40,6 +45,15 @@ export function MemberSubscription({
     navigate(
       `${ROUTES.PAYMENT}?amount=${amount}&label=${encodeURIComponent(t('dashboard.subscription.fineOwed', { amount: outstandingFine }))}`,
     );
+  }
+
+  function renewOrViewPlans() {
+    if (!expiresOn) {
+      navigate(ROUTES.PRICING);
+      return;
+    }
+    const label = t('dashboard.subscription.renewalPaymentLabel', { plan: planLabel });
+    navigate(`${ROUTES.PAYMENT}?amount=${RENEWAL_PRICE}&label=${encodeURIComponent(label)}&renewal=1`);
   }
 
   return (
@@ -76,7 +90,7 @@ export function MemberSubscription({
               {t('dashboard.subscription.payFine')}
             </Button>
           )}
-          <Button size="sm" onClick={() => navigate(ROUTES.PRICING)}>
+          <Button size="sm" onClick={renewOrViewPlans}>
             {expiresOn ? t('dashboard.subscription.renew') : t('dashboard.subscription.viewPlans')}
           </Button>
         </div>

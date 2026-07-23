@@ -17,6 +17,8 @@ export function GuardianDashboardPage() {
     <div className="flex flex-col gap-6">
       <PageHeader title={t('guardian.pageTitle')} description={t('guardian.pageDescription')} />
 
+      <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {guardianStats.map((stat) => (
           <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />

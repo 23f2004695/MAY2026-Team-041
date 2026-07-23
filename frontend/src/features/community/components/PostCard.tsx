@@ -1,4 +1,4 @@
-import { Bookmark, Heart, MessageCircle, Pencil, Send, Trash2 } from 'lucide-react';
+import { Bookmark, Flag, Heart, MessageCircle, Pencil, Send, Trash2, UserX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,21 +9,34 @@ import type { CommunityPost, PostComment } from '@/mocks/community';
 export interface PostCardProps {
   post: CommunityPost;
   onToggleLike: () => void;
-  onToggleSave: () => void;
+  onToggleSave?: () => void;
   onAddComment: (content: string) => void;
   onAddReply: (commentId: string, content: string) => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  /** Staff-only: lets a reported comment be removed. */
+  onDeleteComment?: (commentId: string) => void;
+  /** IT Head-only: temporarily bans the post's author from Community. */
+  onBan?: () => void;
+  isBanned?: boolean;
+  /** Member/Manager-only: flags this post for admin review. */
+  onReportPost?: () => void;
+  /** Member/Manager-only: flags a comment on this post for admin review. */
+  onReportComment?: (commentId: string) => void;
 }
 
 function CommentRow({
   comment,
   depth = 0,
   onReply,
+  onDeleteComment,
+  onReportComment,
 }: {
   comment: PostComment;
   depth?: number;
   onReply: (commentId: string, content: string) => void;
+  onDeleteComment?: (commentId: string) => void;
+  onReportComment?: (commentId: string) => void;
 }) {
   const { t } = useTranslation();
   const [isReplying, setIsReplying] = useState(false);
@@ -44,16 +57,41 @@ function CommentRow({
         <Avatar name={comment.author} size="sm" />
         <div className="flex-1">
           <div className="rounded-lg bg-secondary/40 px-3 py-2">
-            <p className="text-xs font-semibold text-foreground">{comment.author}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs font-semibold text-foreground">{comment.author}</p>
+              {comment.reported && (
+                <Badge variant="danger">{t('community.post.reportedBadge')}</Badge>
+              )}
+            </div>
             <p className="text-sm text-foreground">{comment.content}</p>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsReplying((open) => !open)}
-            className="mt-1 px-1 text-xs font-medium text-muted-foreground hover:text-foreground"
-          >
-            {t('community.post.reply')}
-          </button>
+          <div className="mt-1 flex items-center gap-3 px-1">
+            <button
+              type="button"
+              onClick={() => setIsReplying((open) => !open)}
+              className="text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              {t('community.post.reply')}
+            </button>
+            {!comment.reported && comment.author !== t('community.you') && onReportComment && (
+              <button
+                type="button"
+                onClick={() => onReportComment(comment.id)}
+                className="text-xs font-medium text-muted-foreground hover:text-danger"
+              >
+                {t('community.post.report')}
+              </button>
+            )}
+            {comment.reported && onDeleteComment && (
+              <button
+                type="button"
+                onClick={() => onDeleteComment(comment.id)}
+                className="text-xs font-medium text-danger hover:underline"
+              >
+                {t('community.post.removeComment')}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -63,6 +101,7 @@ function CommentRow({
             value={replyDraft}
             onChange={(event) => setReplyDraft(event.target.value)}
             placeholder={t('community.post.replyPlaceholder')}
+            aria-label={t('community.post.replyPlaceholder')}
             autoFocus
             className="h-8 flex-1 rounded-md border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
@@ -78,7 +117,14 @@ function CommentRow({
       )}
 
       {comment.replies?.map((reply) => (
-        <CommentRow key={reply.id} comment={reply} depth={depth + 1} onReply={onReply} />
+        <CommentRow
+          key={reply.id}
+          comment={reply}
+          depth={depth + 1}
+          onReply={onReply}
+          onDeleteComment={onDeleteComment}
+          onReportComment={onReportComment}
+        />
       ))}
     </div>
   );
@@ -92,6 +138,11 @@ export function PostCard({
   onAddReply,
   onEdit,
   onDelete,
+  onDeleteComment,
+  onBan,
+  isBanned,
+  onReportPost,
+  onReportComment,
 }: PostCardProps) {
   const { t } = useTranslation();
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -110,10 +161,34 @@ export function PostCard({
       <CardHeader className="flex-row items-center gap-3 space-y-0">
         <Avatar name={post.author} size="md" />
         <div className="flex-1">
-          <p className="text-sm font-semibold text-foreground">{post.author}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-foreground">{post.author}</p>
+            {isBanned && <Badge variant="danger">{t('community.post.bannedBadge')}</Badge>}
+            {post.reported && <Badge variant="danger">{t('community.post.reportedBadge')}</Badge>}
+          </div>
           <p className="text-xs text-muted-foreground">{post.createdAt}</p>
         </div>
         {post.bookTitle && <Badge variant="outline">{post.bookTitle}</Badge>}
+        {onReportPost && !post.reported && (
+          <button
+            type="button"
+            onClick={onReportPost}
+            aria-label={t('community.post.reportAria', { author: post.author })}
+            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
+          >
+            <Flag className="size-4" />
+          </button>
+        )}
+        {onBan && (
+          <button
+            type="button"
+            onClick={onBan}
+            aria-label={t('community.post.banAria', { author: post.author })}
+            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
+          >
+            <UserX className="size-4" />
+          </button>
+        )}
         {onEdit && (
           <button
             type="button"
@@ -177,24 +252,32 @@ export function PostCard({
             {post.comments.length}
           </button>
 
-          <button
-            type="button"
-            onClick={onToggleSave}
-            aria-pressed={post.isSaved}
-            aria-label={t(post.isSaved ? 'community.post.unsaveAria' : 'community.post.saveAria')}
-            className={cn(
-              'ml-auto flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-secondary',
-              post.isSaved ? 'text-primary' : 'text-muted-foreground',
-            )}
-          >
-            <Bookmark className={cn('size-4', post.isSaved && 'fill-primary')} />
-          </button>
+          {onToggleSave && (
+            <button
+              type="button"
+              onClick={onToggleSave}
+              aria-pressed={post.isSaved}
+              aria-label={t(post.isSaved ? 'community.post.unsaveAria' : 'community.post.saveAria')}
+              className={cn(
+                'ml-auto flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-secondary',
+                post.isSaved ? 'text-primary' : 'text-muted-foreground',
+              )}
+            >
+              <Bookmark className={cn('size-4', post.isSaved && 'fill-primary')} />
+            </button>
+          )}
         </div>
 
         {isCommentsOpen && (
           <div className="flex flex-col gap-3 border-t border-border pt-3">
             {post.comments.map((comment) => (
-              <CommentRow key={comment.id} comment={comment} onReply={onAddReply} />
+              <CommentRow
+                key={comment.id}
+                comment={comment}
+                onReply={onAddReply}
+                onDeleteComment={onDeleteComment}
+                onReportComment={onReportComment}
+              />
             ))}
 
             <form onSubmit={handleAddComment} className="flex items-center gap-2">
@@ -202,6 +285,7 @@ export function PostCard({
                 value={commentDraft}
                 onChange={(event) => setCommentDraft(event.target.value)}
                 placeholder={t('community.post.commentPlaceholder')}
+                aria-label={t('community.post.commentPlaceholder')}
                 className="h-9 flex-1 rounded-md border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               />
               <button

@@ -4,7 +4,6 @@ import {
   Calendar,
   CalendarCheck,
   Cpu,
-  Home,
   LayoutDashboard,
   type LucideIcon,
   MessageCircle,
@@ -48,7 +47,22 @@ export const adminOverviewNavItem: NavItem = {
 
 export const adminNavigation: NavItem[] = [
   adminOverviewNavItem,
-  { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
+  { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
+  { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
+  { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
+  { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
+  { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
+];
+
+export const managerNavigation: NavItem[] = [
+  { label: 'nav.dashboard', path: ROUTES.DASHBOARD, icon: LayoutDashboard },
+  { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
+  { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
+  { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
+  { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
+  { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
 export const itHeadOverviewNavItem: NavItem = {
@@ -59,7 +73,12 @@ export const itHeadOverviewNavItem: NavItem = {
 
 export const itHeadNavigation: NavItem[] = [
   itHeadOverviewNavItem,
-  { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
+  { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
+  { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
+  { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
+  { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
+  { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
 export const guardianOverviewNavItem: NavItem = {
@@ -70,5 +89,7 @@ export const guardianOverviewNavItem: NavItem = {
 
 export const guardianNavigation: NavItem[] = [
   guardianOverviewNavItem,
-  { label: 'nav.backToApp', path: ROUTES.DASHBOARD, icon: Home },
+  { label: 'nav.readingProgress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
+  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
+  { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];

@@ -25,11 +25,15 @@ import {
   TableRow,
 } from '@/components/ui';
 import { cn } from '@/lib/cn';
+import { isValidEmail } from '@/lib/email';
+
+// International-friendly: an optional leading +, then 7-15 digits (spaces/dashes/parens allowed).
+const PHONE_PATTERN = /^\+?[\d\s()-]{7,20}$/;
 
 const contactUsSchema = z.object({
   name: z.string().min(1, { message: 'contactUs.errors.name' }),
-  email: z.string().email({ message: 'contactUs.errors.email' }),
-  phoneNumber: z.string().min(1, { message: 'contactUs.errors.phoneNumber' }),
+  email: z.string().refine(isValidEmail, { message: 'contactUs.errors.email' }),
+  phoneNumber: z.string().regex(PHONE_PATTERN, { message: 'contactUs.errors.phoneNumber' }),
   organization: z.string().min(1, { message: 'contactUs.errors.organization' }),
   subject: z.string().min(1, { message: 'contactUs.errors.subject' }),
   message: z.string().min(10, { message: 'contactUs.errors.message' }),
@@ -41,26 +45,22 @@ const contactCategories = [
   {
     id: 'pricingAndFines',
     email: 'pricing@readingclub.org',
-    phone: '+1 (555) 010-2001',
-    indiaPhone: '+91 98765 43210',
+    phone: '+91 84708 12345',
   },
   {
     id: 'booksAndClubs',
     email: 'clubs@readingclub.org',
-    phone: '+1 (555) 010-2002',
-    indiaPhone: '+91 98765 43211',
+    phone: '+91 84708 12345',
   },
   {
     id: 'seatBooking',
     email: 'booking@readingclub.org',
-    phone: '+1 (555) 010-2003',
-    indiaPhone: '+91 98765 43212',
+    phone: '+91 84708 12345',
   },
   {
     id: 'donations',
     email: 'donations@readingclub.org',
-    phone: '+1 (555) 010-2004',
-    indiaPhone: '+91 98765 43213',
+    phone: '+91 84708 12345',
   },
 ];
 
@@ -104,7 +104,7 @@ export function ContactUsPage() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<ContactUsFormValues>({
     resolver: zodResolver(contactUsSchema),
     defaultValues: {
@@ -305,7 +305,9 @@ export function ContactUsPage() {
                       </p>
                     )}
                   </div>
-                  <Button type="submit">{t('contactUs.form.submitButton')}</Button>
+                  <Button type="submit" isLoading={isSubmitting}>
+                    {t('contactUs.form.submitButton')}
+                  </Button>
                 </form>
               </CardContent>
             </Card>
@@ -338,24 +340,13 @@ export function ContactUsPage() {
                           </a>
                         </TableCell>
                         <TableCell>
-                          <div className="flex flex-col">
-                            <a
-                              href={`tel:${contact.phone.replace(/[^+0-9]/g, '')}`}
-                              className="text-foreground hover:text-primary"
-                              aria-label={`${t(`contactUs.table.${contact.id}`)} phone US ${contact.phone}`}
-                            >
-                              {contact.phone}
-                            </a>
-                            {contact.indiaPhone && (
-                              <a
-                                href={`tel:${contact.indiaPhone.replace(/[^+0-9]/g, '')}`}
-                                className="mt-1 text-foreground hover:text-primary"
-                                aria-label={`${t(`contactUs.table.${contact.id}`)} phone India ${contact.indiaPhone}`}
-                              >
-                                {contact.indiaPhone}
-                              </a>
-                            )}
-                          </div>
+                          <a
+                            href={`tel:${contact.phone.replace(/[^+0-9]/g, '')}`}
+                            className="text-foreground hover:text-primary"
+                            aria-label={`${t(`contactUs.table.${contact.id}`)} phone ${contact.phone}`}
+                          >
+                            {contact.phone}
+                          </a>
                         </TableCell>
                       </TableRow>
                     ))}

@@ -1,4 +1,4 @@
-import { Pencil, Star } from 'lucide-react';
+import { Pencil, Star, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar, Card, CardContent, CardHeader } from '@/components/ui';
@@ -13,9 +13,20 @@ export interface ReviewCardProps {
   className?: string;
   /** Shown as a top-right edit icon (like Google Maps) when the review is the current user's own. */
   onEdit?: () => void;
+  /** IT Head-only: lets any review be removed. */
+  onDelete?: () => void;
 }
 
-export function ReviewCard({ name, role, quote, rating, images, className, onEdit }: ReviewCardProps) {
+export function ReviewCard({
+  name,
+  role,
+  quote,
+  rating,
+  images,
+  className,
+  onEdit,
+  onDelete,
+}: ReviewCardProps) {
   const { t } = useTranslation();
 
   return (
@@ -36,6 +47,16 @@ export function ReviewCard({ name, role, quote, rating, images, className, onEdi
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Pencil className="size-4" />
+          </button>
+        )}
+        {onDelete && (
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label={t('common.cards.review.deleteReview')}
+            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
+          >
+            <Trash2 className="size-4" />
           </button>
         )}
       </CardHeader>

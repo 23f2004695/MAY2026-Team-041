@@ -1,15 +1,16 @@
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
 import type { RegistrationRequest } from '@/mocks/manager';
 
 export interface NewRegistrationsProps {
   requests: RegistrationRequest[];
+  /** Opens the register-member form pre-filled with this request's name/email. */
+  onRegister: (request: RegistrationRequest) => void;
 }
 
 // New visitors who want to sign up as members on the spot.
-export function NewRegistrations({ requests }: NewRegistrationsProps) {
+export function NewRegistrations({ requests, onRegister }: NewRegistrationsProps) {
   const { t } = useTranslation();
 
   return (
@@ -38,15 +39,7 @@ export function NewRegistrations({ requests }: NewRegistrationsProps) {
                     {t('managerDashboard.registrations.requestedAt', { time: request.requestedAt })}
                   </p>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() =>
-                    comingSoonToast(
-                      t('managerDashboard.registrations.registerToast', { name: request.name }),
-                    )
-                  }
-                >
+                <Button size="sm" variant="outline" onClick={() => onRegister(request)}>
                   {t('managerDashboard.registrations.register')}
                 </Button>
               </li>

@@ -25,6 +25,8 @@ export function ITHeadDashboardPage() {
     <div className="flex flex-col gap-6">
       <PageHeader title={t('itHead.pageTitle')} description={t('itHead.pageDescription')} />
 
+      <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
+
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {itHeadStats.map((stat) => (
           <StatisticCard

@@ -1,11 +1,41 @@
-import { BellRing, BookMarked, Gift, Trophy, type LucideIcon, UserCheck } from 'lucide-react';
+import {
+  AlertCircle,
+  Armchair,
+  BellRing,
+  BookMarked,
+  ClipboardList,
+  Flag,
+  Gift,
+  IndianRupee,
+  KeyRound,
+  PackageX,
+  Trophy,
+  type LucideIcon,
+  UploadCloud,
+  UserCheck,
+  UserPlus,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 
 export type NotificationType =
-  'book-due' | 'reservation-ready' | 'new-book' | 'reading-challenge' | 'membership-expiry';
+  | 'book-due'
+  | 'reservation-ready'
+  | 'new-book'
+  | 'reading-challenge'
+  | 'membership-expiry'
+  | 'pending-request'
+  | 'reported-comment'
+  | 'low-stock'
+  | 'walk-in-request'
+  | 'registration-request'
+  | 'payment-pending'
+  | 'access-request'
+  | 'issue-ticket'
+  | 'fee-overdue'
+  | 'book-record';
 
 export interface NotificationCardProps {
   type: NotificationType;
@@ -23,6 +53,16 @@ const typeIcon: Record<NotificationType, LucideIcon> = {
   'new-book': Gift,
   'reading-challenge': Trophy,
   'membership-expiry': UserCheck,
+  'pending-request': ClipboardList,
+  'reported-comment': Flag,
+  'low-stock': PackageX,
+  'walk-in-request': Armchair,
+  'registration-request': UserPlus,
+  'payment-pending': IndianRupee,
+  'access-request': KeyRound,
+  'issue-ticket': AlertCircle,
+  'fee-overdue': IndianRupee,
+  'book-record': UploadCloud,
 };
 
 export function NotificationCard({

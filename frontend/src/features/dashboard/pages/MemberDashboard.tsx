@@ -33,6 +33,8 @@ export function MemberDashboard() {
         })}
       />
 
+      <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
+
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {dashboardStats.map((stat) => (
           <StatisticCard key={stat.labelKey} icon={stat.icon} label={t(stat.labelKey)} value={stat.value} />
