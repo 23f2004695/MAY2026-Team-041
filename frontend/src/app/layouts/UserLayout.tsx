@@ -1,5 +1,7 @@
 import { useLocation } from 'react-router-dom';
 
+import { CompleteProfileModal } from '@/components/CompleteProfileModal';
+
 import {
   adminNavigation,
   adminOverviewNavItem,
@@ -44,10 +46,20 @@ export function UserLayout() {
   // overview page — only roles with a separate overview route (admin, guardian) need that;
   // manager's dashboard IS /dashboard, so it always keeps its own sidebar.
   if (dedicatedNav && !(overviewNavItem && pathname === ROUTES.DASHBOARD)) {
-    return <AppShellLayout items={dedicatedNav} />;
+    return (
+      <>
+        <CompleteProfileModal />
+        <AppShellLayout items={dedicatedNav} />
+      </>
+    );
   }
 
   const items = overviewNavItem ? [...userNavigation, overviewNavItem] : userNavigation;
 
-  return <AppShellLayout items={items} />;
+  return (
+    <>
+      <CompleteProfileModal />
+      <AppShellLayout items={items} />
+    </>
+  );
 }

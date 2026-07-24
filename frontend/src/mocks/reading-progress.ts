@@ -1,7 +1,8 @@
 export interface ProgressBook {
   id: string;
   title: string;
-  author: string;
+  /** Omitted for real backend data — the Book table doesn't track authors yet. */
+  author?: string;
   percentComplete: number;
 }
 

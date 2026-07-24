@@ -1,22 +1,26 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { Button, Input } from '@/components/ui';
+import { ApiError } from '@/lib/api';
 import { loginSchema, type LoginFormValues } from '@/lib/authSchema';
+import { renderGoogleSignInButton } from '@/lib/googleIdentity';
 import { useAuth, type Role } from '@/providers/AuthProvider';
 
 const ROLES: Role[] = ['admin', 'member', 'manager', 'it-head', 'guardian'];
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
-// ponytail: no real auth form yet (Milestone 3); the password form and Gmail button both
-// just sign the visitor in as a member, and the role buttons below exist only to
-// demonstrate the ProtectedRoute/RoleRoute guards until real login lands.
+// ponytail: the role buttons below stay for now (dev preview of ProtectedRoute/RoleRoute
+// guards) — remove them before production, per team decision.
 // Redirecting is left entirely to PublicRoute (guards.tsx) reacting to the auth-state
 // change — navigating here too would race PublicRoute's own redirect.
 export function Login() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { login, loginWithCredentials, loginWithGoogleToken } = useAuth();
+  const googleButtonRef = useRef<HTMLDivElement>(null);
 
   const {
     register,
@@ -27,16 +31,26 @@ export function Login() {
     defaultValues: { email: '', password: '' },
   });
 
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID || !googleButtonRef.current) return;
+    renderGoogleSignInButton(googleButtonRef.current, GOOGLE_CLIENT_ID, (idToken) => {
+      loginWithGoogleToken(idToken).catch((err: unknown) => {
+        toast.error(err instanceof ApiError ? err.message : 'Google sign-in failed');
+      });
+    }).catch(() => toast.error('Could not load Google sign-in'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function signInAs(role: Role) {
     login(role);
   }
 
-  function onSubmit() {
-    login('member');
-  }
-
-  function handleGmailLogin() {
-    login('member');
+  async function onSubmit(values: LoginFormValues) {
+    try {
+      await loginWithCredentials(values.email, values.password);
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Log in failed');
+    }
   }
 
   return (
@@ -72,10 +86,13 @@ export function Login() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <Button variant="outline" className="justify-center gap-2" onClick={handleGmailLogin}>
-        <Mail className="size-4" />
-        {t('auth.login.continueWithGmail')}
-      </Button>
+      {GOOGLE_CLIENT_ID ? (
+        <div ref={googleButtonRef} className="flex justify-center" />
+      ) : (
+        <p className="text-center text-xs text-muted-foreground">
+          Google sign-in isn't configured (missing VITE_GOOGLE_CLIENT_ID).
+        </p>
+      )}
 
       <div className="flex items-center gap-3 py-1 text-xs text-muted-foreground">
         <div className="h-px flex-1 bg-border" />

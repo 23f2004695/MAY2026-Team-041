@@ -17,11 +17,16 @@ delete_books = require_role(Role.ADMIN)
 
 @router.get("", response_model=BookListResponse)
 async def list_books(
-    search: Annotated[str | None, Query(description="Match against title or description")] = None,
+    search: Annotated[
+        str | None, Query(description="Match against title, author, or description")
+    ] = None,
+    category: Annotated[str | None, Query(description="Exact category match")] = None,
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> BookListResponse:
-    return await service.list_books(search=search, page=page, page_size=page_size)
+    return await service.list_books(
+        search=search, category=category, page=page, page_size=page_size
+    )
 
 
 @router.get("/{book_id}", response_model=BookOut)

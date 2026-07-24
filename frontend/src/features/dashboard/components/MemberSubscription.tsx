@@ -53,7 +53,9 @@ export function MemberSubscription({
       return;
     }
     const label = t('dashboard.subscription.renewalPaymentLabel', { plan: planLabel });
-    navigate(`${ROUTES.PAYMENT}?amount=${RENEWAL_PRICE}&label=${encodeURIComponent(label)}&renewal=1`);
+    navigate(
+      `${ROUTES.PAYMENT}?amount=${RENEWAL_PRICE}&label=${encodeURIComponent(label)}&months=1&renewal=1`,
+    );
   }
 
   return (

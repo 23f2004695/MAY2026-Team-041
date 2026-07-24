@@ -360,6 +360,24 @@ Before generating code:
 
 ---
 
+## 16. Extra Features Built Beyond Frozen Scope
+
+The frontend has since built the following beyond the §8 frozen list — not part of the original 31 items, kept here so the spec reflects actual scope. See `FRONTEND_VS_SPEC.md` at repo root for the full build-status audit.
+
+- Pricing page (plans, FAQ, CTA)
+- Contact Us page
+- Reading Progress page (goals, streaks, reading lists)
+- Two extra roles not in §1's role model: **IT-Head** and **Guardian**, each with their own dashboard/features
+- Wishlist on Books
+- Guardian-linking in Settings
+- Manager staff-assist tooling (walk-in assistance, new registrations, add guardian)
+- Full i18n system (English/Hindi/Punjabi)
+- Light/dark/system theming
+- Admin Audit Log widget
+- Budget/Expense tracking, Cash Flow breakdown, Pending Requests widgets on the admin dashboard (beyond item 11's basic Revenue/Active Members/Overdue scope)
+
+---
+
 ## Conflict Resolutions (v1 vs v2)
 
 | Point | v1 said | v2 said | Resolved as |

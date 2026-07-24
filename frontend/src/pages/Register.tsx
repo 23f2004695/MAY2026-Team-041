@@ -2,17 +2,25 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { Button, Checkbox, Input, Select } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { ApiError } from '@/lib/api';
 import { registerSchema, type RegisterFormValues } from '@/lib/authSchema';
+import { PLAN_OPTIONS } from '@/lib/planOptions';
 import { useAuth } from '@/providers/AuthProvider';
 
-// ponytail: no backend yet (Milestone 3); submitting the form just signs the visitor
-// in as a member, mirroring the mock role-switcher in Login until real registration lands.
+// ponytail: membershipPlan is collected but not sent to /auth/register — no plan/pricing
+// model exists on the backend yet (see FRONTEND_VS_SPEC.md). It only decides the amount
+// forwarded to Payment.
+//
+// Redirecting to Payment is left to PublicRoute (guards.tsx) reacting to the auth-state
+// change, same as Login.tsx does — navigating here too would race PublicRoute's own
+// redirect and lose, landing the new user on the dashboard instead.
 export function Register() {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { registerAccount } = useAuth();
 
   const {
     register,
@@ -26,13 +34,27 @@ export function Register() {
       phoneNumber: '',
       password: '',
       confirmPassword: '',
-      membershipPlan: 'basic',
+      membershipPlan: PLAN_OPTIONS[0].value,
       acceptTerms: false,
     },
   });
 
-  function onSubmit() {
-    login('member');
+  async function onSubmit(values: RegisterFormValues) {
+    try {
+      const plan = PLAN_OPTIONS.find((option) => option.value === values.membershipPlan);
+      const paymentRedirect = `${ROUTES.PAYMENT}?amount=${plan?.price ?? 0}&label=${encodeURIComponent(plan?.label ?? '')}&months=${plan?.months ?? ''}`;
+      await registerAccount(
+        {
+          email: values.email,
+          password: values.password,
+          full_name: values.name,
+          phone: values.phoneNumber,
+        },
+        paymentRedirect,
+      );
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Registration failed');
+    }
   }
 
   return (
@@ -80,11 +102,7 @@ export function Register() {
         <Select
           label={t('auth.register.membershipPlan')}
           error={errors.membershipPlan?.message ? t(errors.membershipPlan.message) : undefined}
-          options={[
-            { value: 'basic', label: t('dashboard.membershipPlans.basic') },
-            { value: 'standard', label: t('dashboard.membershipPlans.standard') },
-            { value: 'premium', label: t('dashboard.membershipPlans.premium') },
-          ]}
+          options={PLAN_OPTIONS.map(({ value, label }) => ({ value, label }))}
           {...register('membershipPlan')}
         />
         <Checkbox

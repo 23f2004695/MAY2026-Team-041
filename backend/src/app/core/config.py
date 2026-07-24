@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     backend_cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
     jwt_secret: str = Field(default="dev-secret-change-me", validation_alias="JWT_SECRET")
     jwt_algorithm: str = "HS256"
+    google_client_id: str = Field(default="", validation_alias="GOOGLE_CLIENT_ID")
 
     model_config = SettingsConfigDict(
         env_file=("../.env", ".env"),

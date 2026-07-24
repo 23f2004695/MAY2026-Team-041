@@ -8,8 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes.health import router as health_router
 from app.core.config import Settings, get_settings
 from app.db.prisma import prisma
+from app.modules.auth.router import router as auth_router
 from app.modules.books.router import router as books_router
+from app.modules.guardian.router import router as guardian_router
 from app.modules.members.router import router as members_router
+from app.modules.payments.router import router as payments_router
 
 
 @asynccontextmanager
@@ -41,8 +44,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
 
     app.include_router(health_router)
+    app.include_router(auth_router, prefix=settings.api_prefix)
     app.include_router(members_router, prefix=settings.api_prefix)
     app.include_router(books_router, prefix=settings.api_prefix)
+    app.include_router(payments_router, prefix=settings.api_prefix)
+    app.include_router(guardian_router, prefix=settings.api_prefix)
     return app
 
 

@@ -1065,7 +1065,7 @@
         "description": "This book may have been removed from the catalog."
       },
       "backToBooks": "Back to Books",
-      "copiesAvailable": "{{available}} of {{total}} copies available",
+      "copiesAvailable": "{{total}} copies in the library",
       "reserveButton": "Reserve this book",
       "reservingToast": "Reserving \"{{title}}\""
     },
@@ -1483,6 +1483,10 @@
     },
     "achievements": {
       "title": "Achievements",
+      "empty": {
+        "title": "No achievements yet",
+        "description": "Achievements are coming soon."
+      },
       "items": {
         "firstBook": {
           "label": "First Book",
@@ -1504,6 +1508,10 @@
     },
     "borrowHistory": {
       "title": "Borrow History",
+      "empty": {
+        "title": "No borrow history yet",
+        "description": "Books you've borrowed will show up here."
+      },
       "columns": {
         "title": "Title",
         "borrowedOn": "Borrowed On",

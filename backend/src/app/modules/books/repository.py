@@ -13,13 +13,18 @@ async def find_by_isbn(isbn: str) -> Book | None:
     return await prisma.book.find_unique(where={"isbn": isbn})
 
 
-async def list_books(*, search: str | None, page: int, page_size: int) -> tuple[list[Book], int]:
+async def list_books(
+    *, search: str | None, category: str | None, page: int, page_size: int
+) -> tuple[list[Book], int]:
     where: dict = {"deletedAt": None}
     if search:
         where["OR"] = [
             {"title": {"contains": search, "mode": "insensitive"}},
+            {"author": {"contains": search, "mode": "insensitive"}},
             {"description": {"contains": search, "mode": "insensitive"}},
         ]
+    if category and category.lower() != "all":
+        where["category"] = category
 
     total = await prisma.book.count(where=where)
     items = await prisma.book.find_many(

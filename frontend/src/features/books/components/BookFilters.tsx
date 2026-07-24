@@ -1,7 +1,18 @@
 import { useTranslation } from 'react-i18next';
 
 import { SearchBar, Select } from '@/components/ui';
-import { bookCategories } from '@/mocks/books';
+
+// ponytail: a flat, hardcoded list — no Category table yet, add one if categories
+// need to be manager-editable instead of a fixed set.
+const bookCategories = [
+  'All',
+  'Fiction',
+  'Non-Fiction',
+  'Science',
+  'Technology',
+  'Biography',
+  'Self-Help',
+] as const;
 
 export interface BookFiltersProps {
   search: string;

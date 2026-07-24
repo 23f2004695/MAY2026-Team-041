@@ -22,7 +22,7 @@ model Role {
 model User {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String    @unique @db.VarChar(255)
-  passwordHash String    @map("password_hash") @db.VarChar(255)
+  passwordHash String?   @map("password_hash") @db.VarChar(255)
   fullName     String    @map("full_name") @db.VarChar(150)
   phone        String?   @db.VarChar(20)
   avatarUrl    String?   @map("avatar_url")
@@ -34,20 +34,103 @@ model User {
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
   deletedAt    DateTime? @map("deleted_at")
 
+  payments        Payment[]
+  readingProgress ReadingProgress[] @relation("MemberReadingProgress")
+  readingGoal     ReadingGoal?      @relation("MemberReadingGoal")
+  loginActivity   LoginActivity[]   @relation("MemberLoginActivity")
+  guardianOf      GuardianLink[]    @relation("GuardianLinkGuardian")
+  guardianLink    GuardianLink?     @relation("GuardianLinkMember")
+
   @@map("users")
+}
+
+// ponytail: enforces "one guardian per member" via the @unique on memberId —
+// a DB constraint, not just app-level validation.
+model GuardianLink {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guardianId String   @map("guardian_id") @db.Uuid
+  guardian   User     @relation("GuardianLinkGuardian", fields: [guardianId], references: [id])
+  memberId   String   @unique @map("member_id") @db.Uuid
+  member     User     @relation("GuardianLinkMember", fields: [memberId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("guardian_links")
+}
+
+// ponytail: records a payment event only — no order/refund/gateway-reconciliation
+// workflow yet, add one once real Razorpay order creation exists.
+model Payment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  amount     Int
+  label      String   @db.VarChar(255)
+  status     String   @default("success") @db.VarChar(20)
+  // Set only for membership-plan purchases (not fines) — how many months this payment
+  // covers, so membership expiry can be computed as createdAt + planMonths.
+  planMonths Int?     @map("plan_months")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("payments")
 }
 
 model Book {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title          String    @db.VarChar(255)
+  author         String    @db.VarChar(150)
+  category       String    @db.VarChar(80)
   isbn           String?   @unique @db.VarChar(20)
   description    String?
   publishedYear  Int?      @map("published_year")
   language       String?   @db.VarChar(40)
   coverImageUrl  String?   @map("cover_image_url")
+  // ponytail: no per-copy tracking (condition, scan token, loan status) yet — just a
+  // count. "Available" is derived as totalCopies > 0 until borrowing/Loan exists.
+  totalCopies    Int       @default(0) @map("total_copies")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
   deletedAt      DateTime? @map("deleted_at")
 
+  readingProgress ReadingProgress[]
+
   @@map("books")
+}
+
+// ponytail: one active goal per member (upsert), not a history of past years' goals —
+// add a `year` + unique(memberId, year) if tracking goals across years matters later.
+model ReadingGoal {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId    String   @unique @map("member_id") @db.Uuid
+  member      User     @relation("MemberReadingGoal", fields: [memberId], references: [id])
+  yearlyGoal  Int      @map("yearly_goal")
+  monthlyGoal Int      @map("monthly_goal")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("reading_goals")
+}
+
+// ponytail: one row per member per calendar day they logged in — the streak
+// (current/longest consecutive days) is computed from this at read time, not stored.
+model LoginActivity {
+  id       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId String   @map("member_id") @db.Uuid
+  member   User     @relation("MemberLoginActivity", fields: [memberId], references: [id], onDelete: Cascade)
+  date     DateTime @db.Date
+
+  @@unique([memberId, date])
+  @@map("login_activity")
+}
+
+model ReadingProgress {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId        String   @map("member_id") @db.Uuid
+  member          User     @relation("MemberReadingProgress", fields: [memberId], references: [id])
+  bookId          String   @map("book_id") @db.Uuid
+  book            Book     @relation(fields: [bookId], references: [id])
+  status          String   @default("reading") @db.VarChar(20) // reading | completed
+  percentComplete Int      @default(0) @map("percent_complete")
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([memberId, bookId])
+  @@map("reading_progress")
 }
