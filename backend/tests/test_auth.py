@@ -7,8 +7,11 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
 from app.core.config import get_settings
+from app.core.constants import Role
+from app.core.security import create_access_token, create_refresh_token, hash_password
 from app.db.prisma import prisma
 from app.main import create_app
+from app.modules.members import repository as member_repository
 from app.modules.auth import service
 
 os.environ.setdefault("DATABASE_URL", get_settings().database_url)

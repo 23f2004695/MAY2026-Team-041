@@ -17,15 +17,25 @@ def verify_password(password: str, password_hash: str) -> bool:
     return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
 
 
-def create_access_token(user_id: str) -> str:
+def _encode(payload: dict) -> str:
     settings = get_settings()
-    payload = {
-        "sub": user_id,
-        "exp": datetime.now(UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
-    }
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
-def decode_access_token(token: str) -> dict:
+def create_access_token(user_id: str) -> str:
+    settings = get_settings()
+    expires_at = datetime.now(UTC) + timedelta(minutes=settings.access_token_expire_minutes)
+    return _encode({"sub": user_id, "type": "access", "exp": expires_at})
+
+
+def create_refresh_token(user_id: str, token_version: int) -> str:
+    settings = get_settings()
+    expires_at = datetime.now(UTC) + timedelta(days=settings.refresh_token_expire_days)
+    return _encode({"sub": user_id, "type": "refresh", "ver": token_version, "exp": expires_at})
+
+
+def decode_token(token: str) -> dict:
+    """Decode and verify a JWT's signature/expiry. Callers must still check
+    payload["type"] themselves — this does not distinguish access vs refresh."""
     settings = get_settings()
     return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
