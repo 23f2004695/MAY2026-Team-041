@@ -1,8 +1,11 @@
-from prisma.models import Role, User
+from datetime import UTC, datetime
+
+from prisma.models import LoginActivity, ReadingGoal, ReadingProgress, Role, User
 
 from app.db.prisma import prisma
 
 MEMBER_INCLUDE = {"role": True}
+READING_PROGRESS_INCLUDE = {"book": True}
 
 
 async def get_role_by_name(name: str) -> Role | None:
@@ -18,6 +21,20 @@ async def upsert_role(name: str) -> Role:
 
 async def find_by_id(member_id: str) -> User | None:
     return await prisma.user.find_unique(where={"id": member_id}, include=MEMBER_INCLUDE)
+
+
+async def find_by_email(email: str) -> User | None:
+    return await prisma.user.find_unique(where={"email": email}, include=MEMBER_INCLUDE)
+
+
+async def touch_last_login(user_id: str) -> None:
+    now = datetime.now(UTC)
+    today = datetime(now.year, now.month, now.day, tzinfo=UTC)
+    await prisma.user.update(where={"id": user_id}, data={"lastLoginAt": now})
+    await prisma.loginactivity.upsert(
+        where={"memberId_date": {"memberId": user_id, "date": today}},
+        data={"create": {"memberId": user_id, "date": today}, "update": {}},
+    )
 
 
 async def list_members(*, search: str | None, page: int, page_size: int) -> tuple[list[User], int]:
@@ -42,7 +59,7 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> tupl
 async def create_member(
     *,
     email: str,
-    password_hash: str,
+    password_hash: str | None,
     full_name: str,
     phone: str | None,
     avatar_url: str | None,
@@ -63,3 +80,61 @@ async def create_member(
 
 async def update_member(member_id: str, data: dict) -> User:
     return await prisma.user.update(where={"id": member_id}, data=data, include=MEMBER_INCLUDE)
+
+
+async def list_reading_progress(member_id: str) -> list[ReadingProgress]:
+    return await prisma.readingprogress.find_many(
+        where={"memberId": member_id},
+        include=READING_PROGRESS_INCLUDE,
+        order={"updatedAt": "desc"},
+    )
+
+
+async def upsert_reading_progress(
+    *, member_id: str, book_id: str, status: str, percent_complete: int
+) -> ReadingProgress:
+    return await prisma.readingprogress.upsert(
+        where={"memberId_bookId": {"memberId": member_id, "bookId": book_id}},
+        data={
+            "create": {
+                "memberId": member_id,
+                "bookId": book_id,
+                "status": status,
+                "percentComplete": percent_complete,
+            },
+            "update": {"status": status, "percentComplete": percent_complete},
+        },
+        include=READING_PROGRESS_INCLUDE,
+    )
+
+
+async def get_reading_goal(member_id: str) -> ReadingGoal | None:
+    return await prisma.readinggoal.find_unique(where={"memberId": member_id})
+
+
+async def upsert_reading_goal(
+    *, member_id: str, yearly_goal: int, monthly_goal: int
+) -> ReadingGoal:
+    return await prisma.readinggoal.upsert(
+        where={"memberId": member_id},
+        data={
+            "create": {
+                "memberId": member_id,
+                "yearlyGoal": yearly_goal,
+                "monthlyGoal": monthly_goal,
+            },
+            "update": {"yearlyGoal": yearly_goal, "monthlyGoal": monthly_goal},
+        },
+    )
+
+
+async def count_completed_reading_progress(member_id: str, *, since: datetime) -> int:
+    return await prisma.readingprogress.count(
+        where={"memberId": member_id, "status": "completed", "updatedAt": {"gte": since}}
+    )
+
+
+async def list_login_activity(member_id: str) -> list[LoginActivity]:
+    return await prisma.loginactivity.find_many(
+        where={"memberId": member_id}, order={"date": "desc"}
+    )

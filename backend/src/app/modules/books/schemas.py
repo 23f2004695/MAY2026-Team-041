@@ -21,6 +21,8 @@ def _validate_isbn(value: str | None) -> str | None:
 
 class BookCreate(BaseModel):
     title: str = Field(min_length=1, max_length=255)
+    author: str = Field(min_length=1, max_length=150)
+    category: str = Field(min_length=1, max_length=80)
     isbn: str | None = Field(default=None, max_length=20)
     description: str | None = None
     published_year: int | None = Field(
@@ -28,12 +30,15 @@ class BookCreate(BaseModel):
     )
     language: str | None = Field(default=None, max_length=40)
     cover_image_url: str | None = Field(default=None, max_length=2048)
+    total_copies: int = Field(default=0, ge=0)
 
     _validate_isbn = field_validator("isbn")(_validate_isbn)
 
 
 class BookUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=255)
+    author: str | None = Field(default=None, min_length=1, max_length=150)
+    category: str | None = Field(default=None, min_length=1, max_length=80)
     isbn: str | None = Field(default=None, max_length=20)
     description: str | None = None
     published_year: int | None = Field(
@@ -41,6 +46,7 @@ class BookUpdate(BaseModel):
     )
     language: str | None = Field(default=None, max_length=40)
     cover_image_url: str | None = Field(default=None, max_length=2048)
+    total_copies: int | None = Field(default=None, ge=0)
 
     _validate_isbn = field_validator("isbn")(_validate_isbn)
 
@@ -48,11 +54,15 @@ class BookUpdate(BaseModel):
 class BookOut(BaseModel):
     id: str
     title: str
+    author: str
+    category: str
     isbn: str | None
     description: str | None
     published_year: int | None
     language: str | None
     cover_image_url: str | None
+    total_copies: int
+    available: bool
     created_at: datetime
     updated_at: datetime
 
@@ -61,11 +71,15 @@ class BookOut(BaseModel):
         return BookOut(
             id=book.id,
             title=book.title,
+            author=book.author,
+            category=book.category,
             isbn=book.isbn,
             description=book.description,
             published_year=book.publishedYear,
             language=book.language,
             cover_image_url=book.coverImageUrl,
+            total_copies=book.totalCopies,
+            available=book.totalCopies > 0,
             created_at=book.createdAt,
             updated_at=book.updatedAt,
         )

@@ -961,7 +961,7 @@
         "description": "यह पुस्तक सूची से हटाई जा चुकी हो सकती है।"
       },
       "backToBooks": "पुस्तकों पर वापस जाएँ",
-      "copiesAvailable": "{{total}} में से {{available}} प्रतियाँ उपलब्ध",
+      "copiesAvailable": "लाइब्रेरी में {{total}} प्रतियाँ",
       "reserveButton": "यह पुस्तक आरक्षित करें",
       "reservingToast": "\"{{title}}\" आरक्षित की जा रही है"
     },
@@ -1247,6 +1247,10 @@
     },
     "achievements": {
       "title": "उपलब्धियाँ",
+      "empty": {
+        "title": "अभी तक कोई उपलब्धि नहीं",
+        "description": "उपलब्धियाँ जल्द ही आ रही हैं।"
+      },
       "items": {
         "firstBook": {
           "label": "पहली पुस्तक",
@@ -1268,6 +1272,10 @@
     },
     "borrowHistory": {
       "title": "उधार इतिहास",
+      "empty": {
+        "title": "अभी तक कोई उधार इतिहास नहीं",
+        "description": "आपकी उधार ली गई पुस्तकें यहाँ दिखाई देंगी।"
+      },
       "columns": {
         "title": "शीर्षक",
         "borrowedOn": "उधार लेने की तारीख",

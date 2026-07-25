@@ -5,8 +5,12 @@ from app.modules.books import repository
 from app.modules.books.schemas import BookCreate, BookListResponse, BookOut, BookUpdate
 
 
-async def list_books(*, search: str | None, page: int, page_size: int) -> BookListResponse:
-    items, total = await repository.list_books(search=search, page=page, page_size=page_size)
+async def list_books(
+    *, search: str | None, category: str | None, page: int, page_size: int
+) -> BookListResponse:
+    items, total = await repository.list_books(
+        search=search, category=category, page=page, page_size=page_size
+    )
     return BookListResponse(
         items=[BookOut.from_prisma(item) for item in items],
         total=total,
@@ -27,11 +31,14 @@ async def create_book(payload: BookCreate) -> BookOut:
         book = await repository.create_book(
             {
                 "title": payload.title,
+                "author": payload.author,
+                "category": payload.category,
                 "isbn": payload.isbn,
                 "description": payload.description,
                 "publishedYear": payload.published_year,
                 "language": payload.language,
                 "coverImageUrl": payload.cover_image_url,
+                "totalCopies": payload.total_copies,
             }
         )
     except UniqueViolationError as exc:
@@ -52,6 +59,10 @@ async def update_book(book_id: str, payload: BookUpdate) -> BookOut:
     data: dict = {}
     if payload.title is not None:
         data["title"] = payload.title
+    if payload.author is not None:
+        data["author"] = payload.author
+    if payload.category is not None:
+        data["category"] = payload.category
     if "isbn" in fields_set:
         data["isbn"] = payload.isbn
     if "description" in fields_set:
@@ -62,6 +73,8 @@ async def update_book(book_id: str, payload: BookUpdate) -> BookOut:
         data["language"] = payload.language
     if "cover_image_url" in fields_set:
         data["coverImageUrl"] = payload.cover_image_url
+    if payload.total_copies is not None:
+        data["totalCopies"] = payload.total_copies
 
     if not data:
         return BookOut.from_prisma(existing)

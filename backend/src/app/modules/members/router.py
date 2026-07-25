@@ -4,10 +4,20 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
 
-from app.api.deps import require_role
+from app.api.deps import get_current_user, require_role
 from app.core.constants import Role
 from app.modules.members import service
-from app.modules.members.schemas import MemberCreate, MemberListResponse, MemberOut, MemberUpdate
+from app.modules.members.schemas import (
+    MemberCreate,
+    MemberListResponse,
+    MemberOut,
+    MemberUpdate,
+    ReadingGoalOut,
+    ReadingGoalUpsert,
+    ReadingProgressOut,
+    ReadingProgressUpsert,
+    ReadingStreakOut,
+)
 
 router = APIRouter(prefix="/members", tags=["members"])
 
@@ -39,3 +49,40 @@ async def update_member(
     _: Annotated[User, Depends(manage_members)],
 ) -> MemberOut:
     return await service.update_member(str(member_id), payload)
+
+
+@router.get("/me/reading-progress", response_model=list[ReadingProgressOut])
+async def list_my_reading_progress(
+    user: Annotated[User, Depends(get_current_user)],
+) -> list[ReadingProgressOut]:
+    return await service.list_reading_progress(user.id)
+
+
+@router.put("/me/reading-progress", response_model=ReadingProgressOut)
+async def record_my_reading_progress(
+    payload: ReadingProgressUpsert,
+    user: Annotated[User, Depends(get_current_user)],
+) -> ReadingProgressOut:
+    return await service.record_reading_progress(user.id, payload)
+
+
+@router.get("/me/reading-goal", response_model=ReadingGoalOut | None)
+async def get_my_reading_goal(
+    user: Annotated[User, Depends(get_current_user)],
+) -> ReadingGoalOut | None:
+    return await service.get_reading_goal(user.id)
+
+
+@router.put("/me/reading-goal", response_model=ReadingGoalOut)
+async def set_my_reading_goal(
+    payload: ReadingGoalUpsert,
+    user: Annotated[User, Depends(get_current_user)],
+) -> ReadingGoalOut:
+    return await service.upsert_reading_goal(user.id, payload)
+
+
+@router.get("/me/reading-streak", response_model=ReadingStreakOut)
+async def get_my_reading_streak(
+    user: Annotated[User, Depends(get_current_user)],
+) -> ReadingStreakOut:
+    return await service.get_reading_streak(user.id)

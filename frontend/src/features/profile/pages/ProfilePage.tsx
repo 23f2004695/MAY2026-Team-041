@@ -12,35 +12,16 @@ import {
   UserPlus,
   Wallet,
 } from 'lucide-react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ProgressBar, StatisticCard } from '@/components/common';
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui';
+import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { auditLog } from '@/mocks/admin';
 import { children, childBorrowedBooks, guardianStats } from '@/mocks/guardian';
 import { accessEntries, issueTickets } from '@/mocks/itHead';
 import { pendingPayments, registrationRequests, walkInRequests } from '@/mocks/manager';
-import {
-  borrowHistory,
-  currentReading,
-  profileAchievements,
-  profileOverview,
-  readingStats,
-} from '@/mocks/profile';
-import { useAuth } from '@/providers/AuthProvider';
+import { useAuth, type Membership, type ReadingProgressEntry } from '@/providers/AuthProvider';
 
 import { AuditLog } from '@/features/admin/components/AuditLog';
 import { NewRegistrations } from '@/features/dashboard/components/NewRegistrations';
@@ -185,40 +166,43 @@ function ITHeadProfile() {
   );
 }
 
-export function ProfilePage() {
-  const { t } = useTranslation();
-  const { role } = useAuth();
+function formatJoinDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
 
-  if (role === 'admin') return <AdminProfile />;
-  if (role === 'manager') return <ManagerProfile />;
-  if (role === 'it-head') return <ITHeadProfile />;
-  if (role === 'guardian') return <GuardianProfile />;
+// ponytail: booksRead comes from real ReadingProgress (status=completed); pagesRead
+// and hoursRead have no tracking source at all (no page counts, no time tracking)
+// so they show honest zeros instead of fabricated numbers. Achievements and borrow
+// history have no backend yet (gamification/Loan out of scope for now) — honest
+// empty states rather than the old mock badges/table rows.
+function MemberProfile() {
+  const { t } = useTranslation();
+  const { fullName, email, getMembership, getMyReadingProgress } = useAuth();
+  const [membership, setMembership] = useState<Membership | null>(null);
+  const [progress, setProgress] = useState<ReadingProgressEntry[]>([]);
+
+  useEffect(() => {
+    getMembership().then(setMembership).catch(() => setMembership(null));
+    getMyReadingProgress().then(setProgress).catch(() => setProgress([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const currentlyReading = progress.filter((entry) => entry.status === 'reading');
+  const booksRead = progress.filter((entry) => entry.status === 'completed').length;
 
   return (
     <div className="flex flex-col gap-6">
       <ProfileHeader
-        name={profileOverview.name}
-        email={profileOverview.email}
-        joinDate={profileOverview.joinDate}
-        membershipPlanKey={profileOverview.membershipPlanKey}
+        name={fullName ?? ''}
+        email={email ?? undefined}
+        joinDate={membership ? formatJoinDate(membership.purchased_at) : undefined}
+        planLabel={membership?.is_active ? membership.plan_label : undefined}
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatisticCard
-          icon={BookOpen}
-          label={t('profile.stats.booksRead')}
-          value={String(readingStats.booksRead)}
-        />
-        <StatisticCard
-          icon={FileText}
-          label={t('profile.stats.pagesRead')}
-          value={readingStats.pagesRead.toLocaleString()}
-        />
-        <StatisticCard
-          icon={Clock}
-          label={t('profile.stats.hoursRead')}
-          value={String(readingStats.hoursRead)}
-        />
+        <StatisticCard icon={BookOpen} label={t('profile.stats.booksRead')} value={String(booksRead)} />
+        <StatisticCard icon={FileText} label={t('profile.stats.pagesRead')} value="0" />
+        <StatisticCard icon={Clock} label={t('profile.stats.hoursRead')} value="0" />
       </div>
 
       <Card>
@@ -226,20 +210,11 @@ export function ProfilePage() {
           <CardTitle>{t('profile.achievements.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="flex flex-wrap gap-2">
-            {profileAchievements.map((achievement) => (
-              <li key={achievement.id}>
-                <Badge
-                  variant="success"
-                  className="gap-1.5 px-3 py-1.5 text-sm"
-                  title={t(achievement.descriptionKey)}
-                >
-                  <Award className="size-3.5" />
-                  {t(achievement.labelKey)}
-                </Badge>
-              </li>
-            ))}
-          </ul>
+          <EmptyState
+            icon={Award}
+            title={t('profile.achievements.empty.title')}
+            description={t('profile.achievements.empty.description')}
+          />
         </CardContent>
       </Card>
 
@@ -247,18 +222,23 @@ export function ProfilePage() {
         <CardHeader>
           <CardTitle>{t('profile.currentReading.title')}</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {currentReading.map((book) => (
-            <div key={book.title}>
-              <p className="text-sm font-medium text-foreground">
-                {book.title}{' '}
-                <span className="font-normal text-muted-foreground">
-                  {t('profile.currentReading.by', { author: book.author })}
-                </span>
-              </p>
-              <ProgressBar percent={book.percentComplete} className="mt-1.5" />
+        <CardContent>
+          {currentlyReading.length === 0 ? (
+            <EmptyState
+              icon={BookOpen}
+              title={t('readingProgress.emptyState.title')}
+              description={t('readingProgress.lists.currentlyReading.emptyDescription')}
+            />
+          ) : (
+            <div className="flex flex-col gap-4">
+              {currentlyReading.map((entry) => (
+                <div key={entry.id}>
+                  <p className="text-sm font-medium text-foreground">{entry.book_title}</p>
+                  <ProgressBar percent={entry.percent_complete} className="mt-1.5" />
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </CardContent>
       </Card>
 
@@ -267,26 +247,24 @@ export function ProfilePage() {
           <CardTitle>{t('profile.borrowHistory.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('profile.borrowHistory.columns.title')}</TableHead>
-                <TableHead>{t('profile.borrowHistory.columns.borrowedOn')}</TableHead>
-                <TableHead>{t('profile.borrowHistory.columns.returnedOn')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {borrowHistory.map((entry) => (
-                <TableRow key={entry.title}>
-                  <TableCell>{entry.title}</TableCell>
-                  <TableCell>{entry.borrowedOn}</TableCell>
-                  <TableCell>{entry.returnedOn}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <EmptyState
+            icon={ClipboardList}
+            title={t('profile.borrowHistory.empty.title')}
+            description={t('profile.borrowHistory.empty.description')}
+          />
         </CardContent>
       </Card>
     </div>
   );
+}
+
+export function ProfilePage() {
+  const { role } = useAuth();
+
+  if (role === 'admin') return <AdminProfile />;
+  if (role === 'manager') return <ManagerProfile />;
+  if (role === 'it-head') return <ITHeadProfile />;
+  if (role === 'guardian') return <GuardianProfile />;
+
+  return <MemberProfile />;
 }

@@ -18,7 +18,6 @@ import { ROUTES } from '@/constants/routes';
 import { LANGUAGES } from '@/i18n/languages';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 import { isValidEmail } from '@/lib/email';
-import { profileOverview } from '@/mocks/profile';
 import { useAuth, type Role } from '@/providers/AuthProvider';
 import { useLanguage } from '@/providers/LanguageProvider';
 import { useTheme, type Theme } from '@/providers/ThemeProvider';
@@ -140,7 +139,7 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { role, logout } = useAuth();
+  const { role, fullName, email, logout } = useAuth();
   const hasStaffAccount = role === 'admin' || role === 'manager' || role === 'it-head';
   const [togglePrefs, setTogglePrefs] = useState(
     () => (role && preferencesByRole[role]) ?? initialNotificationPrefs,
@@ -288,8 +287,8 @@ export function SettingsPage() {
             <p className="text-sm font-medium text-foreground">{t(`auth.login.roles.${role}`)}</p>
           ) : (
             <div>
-              <p className="text-sm font-medium text-foreground">{profileOverview.name}</p>
-              <p className="text-sm text-muted-foreground">{profileOverview.email}</p>
+              <p className="text-sm font-medium text-foreground">{fullName}</p>
+              <p className="text-sm text-muted-foreground">{email}</p>
             </div>
           )}
 

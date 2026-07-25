@@ -29,10 +29,13 @@ export function BookProgressList({ title, books, emptyDescription }: BookProgres
             {books.map((book) => (
               <div key={book.id}>
                 <p className="text-sm font-medium text-foreground">
-                  {book.title}{' '}
-                  <span className="font-normal text-muted-foreground">
-                    {t('readingProgress.byAuthor', { author: book.author })}
-                  </span>
+                  {book.title}
+                  {book.author && (
+                    <span className="font-normal text-muted-foreground">
+                      {' '}
+                      {t('readingProgress.byAuthor', { author: book.author })}
+                    </span>
+                  )}
                 </p>
                 {book.percentComplete > 0 && book.percentComplete < 100 && (
                   <ProgressBar percent={book.percentComplete} className="mt-1.5" />

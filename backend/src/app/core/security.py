@@ -5,6 +5,9 @@ import jwt
 
 from app.core.config import get_settings
 
+# ponytail: fixed 7-day expiry, add refresh tokens if session length needs to vary
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
+
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")

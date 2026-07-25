@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { Drawer, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import type { Book } from '@/mocks/books';
+
+import type { Book } from '../hooks/useBooks';
 
 export interface WishlistDrawerProps {
   open: boolean;

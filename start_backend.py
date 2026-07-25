@@ -12,6 +12,9 @@ try:
     # Move to the backend directory
     os.chdir("backend")
 
+    # Apply pending database migrations
+    subprocess.run(["uv", "run", "prisma", "migrate", "deploy"], check=True)
+
     # Start the FastAPI server
     subprocess.run(
         [

@@ -33,6 +33,12 @@ def _unique_isbn() -> str:
     return f"979{uuid.uuid4().int % 10**10:010d}"
 
 
+def _book_payload(**overrides) -> dict:
+    payload = {"title": _unique_title(), "author": "Test Author", "category": "Fiction"}
+    payload.update(overrides)
+    return payload
+
+
 async def _make_user(role_name: str):
     role = await member_repository.upsert_role(role_name)
     return await member_repository.create_member(
@@ -105,14 +111,14 @@ async def test_get_book_rejects_malformed_id():
 
 async def test_create_book_requires_authentication():
     async with _anon_client() as client:
-        response = await client.post("/api/v1/books", json={"title": _unique_title()})
+        response = await client.post("/api/v1/books", json=_book_payload())
 
     assert response.status_code == 401
 
 
 async def test_create_book_forbidden_for_member_role(member_user):
     async with _client_as(member_user) as client:
-        response = await client.post("/api/v1/books", json={"title": _unique_title()})
+        response = await client.post("/api/v1/books", json=_book_payload())
 
     assert response.status_code == 403
 
@@ -123,13 +129,13 @@ async def test_create_book_success_as_librarian(librarian_user):
     async with _client_as(librarian_user) as client:
         response = await client.post(
             "/api/v1/books",
-            json={
-                "title": title,
-                "isbn": isbn,
-                "description": "A test book",
-                "published_year": 2020,
-                "language": "English",
-            },
+            json=_book_payload(
+                title=title,
+                isbn=isbn,
+                description="A test book",
+                published_year=2020,
+                language="English",
+            ),
         )
 
     assert response.status_code == 201
@@ -137,13 +143,16 @@ async def test_create_book_success_as_librarian(librarian_user):
     assert body["title"] == title
     assert body["isbn"] == isbn
     assert body["published_year"] == 2020
+    assert body["author"] == "Test Author"
+    assert body["category"] == "Fiction"
+    assert body["available"] is False
 
 
 async def test_create_book_duplicate_isbn_conflicts(librarian_user):
     isbn = _unique_isbn()
     async with _client_as(librarian_user) as client:
-        first = await client.post("/api/v1/books", json={"title": _unique_title(), "isbn": isbn})
-        second = await client.post("/api/v1/books", json={"title": _unique_title(), "isbn": isbn})
+        first = await client.post("/api/v1/books", json=_book_payload(isbn=isbn))
+        second = await client.post("/api/v1/books", json=_book_payload(isbn=isbn))
 
     assert first.status_code == 201
     assert second.status_code == 409
@@ -151,20 +160,33 @@ async def test_create_book_duplicate_isbn_conflicts(librarian_user):
 
 async def test_create_book_rejects_invalid_isbn(librarian_user):
     async with _client_as(librarian_user) as client:
-        response = await client.post(
-            "/api/v1/books", json={"title": _unique_title(), "isbn": "not-an-isbn"}
-        )
+        response = await client.post("/api/v1/books", json=_book_payload(isbn="not-an-isbn"))
 
     assert response.status_code == 422
 
 
 async def test_create_book_rejects_future_published_year(librarian_user):
     async with _client_as(librarian_user) as client:
-        response = await client.post(
-            "/api/v1/books", json={"title": _unique_title(), "published_year": 3000}
-        )
+        response = await client.post("/api/v1/books", json=_book_payload(published_year=3000))
 
     assert response.status_code == 422
+
+
+async def test_create_book_requires_author_and_category(librarian_user):
+    async with _client_as(librarian_user) as client:
+        response = await client.post("/api/v1/books", json={"title": _unique_title()})
+
+    assert response.status_code == 422
+
+
+async def test_create_book_available_when_copies_positive(librarian_user):
+    async with _client_as(librarian_user) as client:
+        response = await client.post("/api/v1/books", json=_book_payload(total_copies=3))
+
+    assert response.status_code == 201
+    body = response.json()
+    assert body["total_copies"] == 3
+    assert body["available"] is True
 
 
 async def test_list_books_search_and_pagination(librarian_user):
@@ -173,7 +195,7 @@ async def test_list_books_search_and_pagination(librarian_user):
         for i in range(3):
             await client.post(
                 "/api/v1/books",
-                json={"title": f"{TEST_TITLE_MARKER}Searchable-{unique_marker}-{i}"},
+                json=_book_payload(title=f"{TEST_TITLE_MARKER}Searchable-{unique_marker}-{i}"),
             )
 
         response = await client.get(
@@ -187,9 +209,27 @@ async def test_list_books_search_and_pagination(librarian_user):
     assert all(unique_marker in item["title"] for item in body["items"])
 
 
+async def test_list_books_filters_by_category(librarian_user):
+    unique_marker = uuid.uuid4().hex[:8]
+    title = f"{TEST_TITLE_MARKER}CategoryFilter-{unique_marker}"
+    async with _client_as(librarian_user) as client:
+        await client.post("/api/v1/books", json=_book_payload(title=title, category="Science"))
+
+        response = await client.get(
+            "/api/v1/books", params={"search": unique_marker, "category": "Science"}
+        )
+        miss = await client.get(
+            "/api/v1/books", params={"search": unique_marker, "category": "History"}
+        )
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 1
+    assert miss.json()["total"] == 0
+
+
 async def test_update_book_changes_fields(librarian_user):
     async with _client_as(librarian_user) as client:
-        created = await client.post("/api/v1/books", json={"title": _unique_title()})
+        created = await client.post("/api/v1/books", json=_book_payload())
         book_id = created.json()["id"]
 
         updated_title = f"{TEST_TITLE_MARKER}Updated-{uuid.uuid4().hex[:8]}"
@@ -208,7 +248,7 @@ async def test_update_book_can_clear_nullable_fields(librarian_user):
     async with _client_as(librarian_user) as client:
         created = await client.post(
             "/api/v1/books",
-            json={"title": _unique_title(), "description": "Has a description"},
+            json=_book_payload(description="Has a description"),
         )
         book_id = created.json()["id"]
         assert created.json()["description"] == "Has a description"
@@ -221,7 +261,7 @@ async def test_update_book_can_clear_nullable_fields(librarian_user):
 
 async def test_delete_book_forbidden_for_librarian(librarian_user):
     async with _client_as(librarian_user) as client:
-        created = await client.post("/api/v1/books", json={"title": _unique_title()})
+        created = await client.post("/api/v1/books", json=_book_payload())
         book_id = created.json()["id"]
 
         response = await client.delete(f"/api/v1/books/{book_id}")
@@ -231,7 +271,7 @@ async def test_delete_book_forbidden_for_librarian(librarian_user):
 
 async def test_delete_book_success_as_admin(admin_user, librarian_user):
     async with _client_as(librarian_user) as client:
-        created = await client.post("/api/v1/books", json={"title": _unique_title()})
+        created = await client.post("/api/v1/books", json=_book_payload())
         book_id = created.json()["id"]
 
     async with _client_as(admin_user) as client:

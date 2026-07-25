@@ -17,6 +17,7 @@ class Settings(BaseSettings):
         default="dev-secret-change-me-32-bytes-minimum", validation_alias="JWT_SECRET"
     )
     jwt_algorithm: str = "HS256"
+    google_client_id: str = Field(default="", validation_alias="GOOGLE_CLIENT_ID")
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
 

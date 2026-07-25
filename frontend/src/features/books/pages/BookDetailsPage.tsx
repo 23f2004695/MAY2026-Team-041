@@ -1,21 +1,34 @@
-import { ArrowLeft, BookOpen, Heart, Star } from 'lucide-react';
+import { ArrowLeft, BookOpen, Heart } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { apiGet } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import { books } from '@/mocks/books';
 
+import type { Book } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
 
 export function BookDetailsPage() {
   const { t } = useTranslation();
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
-  const book = books.find((entry) => entry.id === bookId);
+  const [book, setBook] = useState<Book | null>(null);
+  const [loadedFor, setLoadedFor] = useState<string | undefined>(undefined);
   const { isWishlisted, toggleWishlist } = useWishlist();
+
+  useEffect(() => {
+    if (!bookId) return;
+    apiGet<Book>(`/books/${bookId}`)
+      .then((data) => setBook(data))
+      .catch(() => setBook(null))
+      .finally(() => setLoadedFor(bookId));
+  }, [bookId]);
+
+  if (bookId !== loadedFor) return null;
 
   if (!book) {
     return (
@@ -57,19 +70,12 @@ export function BookDetailsPage() {
               <Badge variant={book.available ? 'success' : 'danger'}>
                 {book.available ? t('books.status.available') : t('books.status.checkedOut')}
               </Badge>
-              <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Star className="size-4 fill-warning text-warning" />
-                {book.rating.toFixed(1)}
-              </span>
             </div>
 
             <p className="text-sm text-muted-foreground">{book.description}</p>
 
             <p className="text-sm text-muted-foreground">
-              {t('books.details.copiesAvailable', {
-                available: book.availableCopies,
-                total: book.totalCopies,
-              })}
+              {t('books.details.copiesAvailable', { total: book.total_copies })}
             </p>
 
             <div className="flex gap-2">

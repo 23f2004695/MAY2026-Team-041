@@ -961,7 +961,7 @@
         "description": "ਇਹ ਕਿਤਾਬ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਹਟਾਈ ਜਾ ਚੁੱਕੀ ਹੋ ਸਕਦੀ ਹੈ।"
       },
       "backToBooks": "ਕਿਤਾਬਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ",
-      "copiesAvailable": "{{total}} ਵਿੱਚੋਂ {{available}} ਕਾਪੀਆਂ ਉਪਲਬਧ",
+      "copiesAvailable": "ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ {{total}} ਕਾਪੀਆਂ",
       "reserveButton": "ਇਹ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
       "reservingToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
     },
@@ -1247,6 +1247,10 @@
     },
     "achievements": {
       "title": "ਪ੍ਰਾਪਤੀਆਂ",
+      "empty": {
+        "title": "ਹਾਲੇ ਕੋਈ ਪ੍ਰਾਪਤੀ ਨਹੀਂ",
+        "description": "ਪ੍ਰਾਪਤੀਆਂ ਜਲਦੀ ਆ ਰਹੀਆਂ ਹਨ।"
+      },
       "items": {
         "firstBook": {
           "label": "ਪਹਿਲੀ ਕਿਤਾਬ",
@@ -1268,6 +1272,10 @@
     },
     "borrowHistory": {
       "title": "ਉਧਾਰ ਇਤਿਹਾਸ",
+      "empty": {
+        "title": "ਹਾਲੇ ਕੋਈ ਉਧਾਰ ਇਤਿਹਾਸ ਨਹੀਂ",
+        "description": "ਤੁਹਾਡੀਆਂ ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।"
+      },
       "columns": {
         "title": "ਸਿਰਲੇਖ",
         "borrowedOn": "ਉਧਾਰ ਲਿਆ ਗਿਆ",

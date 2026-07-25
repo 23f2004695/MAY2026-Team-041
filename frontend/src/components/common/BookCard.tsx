@@ -10,7 +10,8 @@ export interface BookCardProps {
   author: string;
   category: string;
   available: boolean;
-  rating: number;
+  /** Omitted until book reviews are wired to a real backend. */
+  rating?: number;
   href: string;
   onReserve?: () => void;
   isWishlisted?: boolean;
@@ -79,10 +80,14 @@ export function BookCard({
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Star className="size-4 fill-warning text-warning" />
-          {rating.toFixed(1)}
-        </span>
+        {rating !== undefined ? (
+          <span className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Star className="size-4 fill-warning text-warning" />
+            {rating.toFixed(1)}
+          </span>
+        ) : (
+          <span />
+        )}
         <Button
           size="sm"
           variant={available ? 'primary' : 'outline'}

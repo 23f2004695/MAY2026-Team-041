@@ -1,5 +1,5 @@
 import { Heart, SearchX } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BookCard, PageHeader } from '@/components/common';
@@ -7,13 +7,11 @@ import { NoResults } from '@/components/feedback';
 import { Badge, Button, Pagination } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import { books } from '@/mocks/books';
 
 import { BookFilters } from '../components/BookFilters';
 import { WishlistDrawer } from '../components/WishlistDrawer';
+import { useBooks, useBooksByIds } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
-
-const PAGE_SIZE = 6;
 
 export function BooksListPage() {
   const { t } = useTranslation();
@@ -22,22 +20,8 @@ export function BooksListPage() {
   const [page, setPage] = useState(1);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
-  const wishlistedBooks = books.filter((book) => wishlistIds.includes(book.id));
-
-  const filteredBooks = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return books.filter((book) => {
-      const matchesQuery =
-        !query ||
-        book.title.toLowerCase().includes(query) ||
-        book.author.toLowerCase().includes(query);
-      const matchesCategory = category === 'All' || book.category === category;
-      return matchesQuery && matchesCategory;
-    });
-  }, [search, category]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / PAGE_SIZE));
-  const pageBooks = filteredBooks.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const { items: pageBooks, totalPages } = useBooks(search, category, page);
+  const wishlistedBooks = useBooksByIds(wishlistIds);
 
   function updateSearch(value: string) {
     setSearch(value);
@@ -99,7 +83,6 @@ export function BooksListPage() {
               author={book.author}
               category={book.category}
               available={book.available}
-              rating={book.rating}
               href={ROUTES.BOOK_DETAILS.replace(':bookId', book.id)}
               onReserve={() =>
                 comingSoonToast(t('books.details.reservingToast', { title: book.title }))

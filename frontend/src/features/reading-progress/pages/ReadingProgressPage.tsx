@@ -1,22 +1,37 @@
 import { Flame, Target } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PageTitle, ProgressBar } from '@/components/common';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { children, childrenReadingProgress } from '@/mocks/guardian';
+import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import {
-  completedBooks,
-  currentlyReadingBooks,
-  readingGoal,
-  readingStreak,
-  wantToReadBooks,
-} from '@/mocks/reading-progress';
-import { useAuth } from '@/providers/AuthProvider';
+  useAuth,
+  type GuardianChild,
+  type ReadingGoal,
+  type ReadingProgressEntry,
+  type ReadingStreak,
+} from '@/providers/AuthProvider';
 
 import { BookProgressList } from '../components/BookProgressList';
+import { SetReadingGoalModal } from '../components/SetReadingGoalModal';
+
+function toProgressBooks(entries: ReadingProgressEntry[]) {
+  return entries.map((entry) => ({
+    id: entry.id,
+    title: entry.book_title,
+    percentComplete: entry.percent_complete,
+  }));
+}
 
 function GuardianReadingProgress() {
   const { t } = useTranslation();
+  const { getGuardianChildren } = useAuth();
+  const [children, setChildren] = useState<GuardianChild[]>([]);
+
+  useEffect(() => {
+    getGuardianChildren().then(setChildren).catch(() => setChildren([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -25,35 +40,58 @@ function GuardianReadingProgress() {
         description={t('readingProgress.guardianPageDescription')}
       />
 
-      {children.map((child) => {
-        const progress = childrenReadingProgress.find((entry) => entry.childId === child.id);
-        return (
+      {children.length === 0 ? (
+        <EmptyState
+          title={t('readingProgress.emptyState.title')}
+          description={t('readingProgress.guardianPageDescription')}
+        />
+      ) : (
+        children.map((child) => (
           <div key={child.id} className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-foreground">{child.name}</h2>
+            <h2 className="text-lg font-semibold text-foreground">{child.full_name}</h2>
             <div className="grid gap-4 lg:grid-cols-2">
               <BookProgressList
                 title={t('readingProgress.lists.currentlyReading.title')}
-                books={progress?.currentlyReading ?? []}
+                books={toProgressBooks(child.currently_reading)}
                 emptyDescription={t('readingProgress.lists.currentlyReading.emptyDescription')}
               />
               <BookProgressList
                 title={t('readingProgress.lists.completed.title')}
-                books={progress?.completed ?? []}
+                books={toProgressBooks(child.completed)}
                 emptyDescription={t('readingProgress.lists.completed.emptyDescription')}
               />
             </div>
           </div>
-        );
-      })}
+        ))
+      )}
     </div>
   );
 }
 
-export function ReadingProgressPage() {
+// ponytail: "Want to Read" has no backend status yet (ReadingProgress is
+// reading|completed only) — shows its real empty state rather than mock titles.
+function MemberReadingProgress() {
   const { t } = useTranslation();
-  const { role } = useAuth();
+  const { getMyReadingProgress, getReadingGoal, getReadingStreak } = useAuth();
+  const [progress, setProgress] = useState<ReadingProgressEntry[]>([]);
+  const [goal, setGoal] = useState<ReadingGoal | null>(null);
+  const [goalModalOpen, setGoalModalOpen] = useState(false);
+  const [streak, setStreak] = useState<ReadingStreak>({
+    current_streak_days: 0,
+    longest_streak_days: 0,
+  });
 
-  if (role === 'guardian') return <GuardianReadingProgress />;
+  useEffect(() => {
+    getMyReadingProgress().then(setProgress).catch(() => setProgress([]));
+    getReadingGoal().then(setGoal).catch(() => setGoal(null));
+    getReadingStreak()
+      .then(setStreak)
+      .catch(() => setStreak({ current_streak_days: 0, longest_streak_days: 0 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const currentlyReading = progress.filter((entry) => entry.status === 'reading');
+  const completed = progress.filter((entry) => entry.status === 'completed');
 
   return (
     <div className="flex flex-col gap-6">
@@ -64,20 +102,42 @@ export function ReadingProgressPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
-          <CardHeader className="flex-row items-center gap-2 space-y-0">
-            <Target className="size-5 text-primary" />
-            <CardTitle>
-              {t('readingProgress.readingGoal.title', { year: readingGoal.year })}
-            </CardTitle>
+          <CardHeader className="flex-row items-center justify-between gap-2 space-y-0">
+            <div className="flex items-center gap-2">
+              <Target className="size-5 text-primary" />
+              <CardTitle>
+                {t('readingProgress.readingGoal.title', { year: new Date().getFullYear() })}
+              </CardTitle>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => setGoalModalOpen(true)}>
+              {goal ? 'Edit' : 'Set Goal'}
+            </Button>
           </CardHeader>
           <CardContent>
-            <ProgressBar percent={(readingGoal.current / readingGoal.target) * 100} />
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              {t('readingProgress.readingGoal.booksOf', {
-                current: readingGoal.current,
-                target: readingGoal.target,
-              })}
-            </p>
+            {goal ? (
+              <div className="flex flex-col gap-3">
+                <div>
+                  <ProgressBar
+                    percent={(goal.books_completed_this_year / goal.yearly_goal) * 100}
+                  />
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    {goal.books_completed_this_year} of {goal.yearly_goal} books this year
+                  </p>
+                </div>
+                <div>
+                  <ProgressBar
+                    percent={(goal.books_completed_this_month / goal.monthly_goal) * 100}
+                  />
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    {goal.books_completed_this_month} of {goal.monthly_goal} books this month
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                You haven't set a reading goal yet.
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -89,35 +149,48 @@ export function ReadingProgressPage() {
           <CardContent>
             <p className="text-2xl font-semibold text-foreground">
               {t('readingProgress.readingStreak.currentDays', {
-                count: readingStreak.currentStreakDays,
+                count: streak.current_streak_days,
               })}
             </p>
             <p className="text-sm text-muted-foreground">
-              {t('readingProgress.readingStreak.longest', {
-                count: readingStreak.longestStreakDays,
-              })}
+              {t('readingProgress.readingStreak.longest', { count: streak.longest_streak_days })}
             </p>
           </CardContent>
         </Card>
       </div>
 
+      <SetReadingGoalModal
+        open={goalModalOpen}
+        onClose={() => setGoalModalOpen(false)}
+        currentGoal={goal}
+        onSaved={setGoal}
+      />
+
       <div className="grid gap-4 lg:grid-cols-3">
         <BookProgressList
           title={t('readingProgress.lists.currentlyReading.title')}
-          books={currentlyReadingBooks}
+          books={toProgressBooks(currentlyReading)}
           emptyDescription={t('readingProgress.lists.currentlyReading.emptyDescription')}
         />
         <BookProgressList
           title={t('readingProgress.lists.completed.title')}
-          books={completedBooks}
+          books={toProgressBooks(completed)}
           emptyDescription={t('readingProgress.lists.completed.emptyDescription')}
         />
         <BookProgressList
           title={t('readingProgress.lists.wantToRead.title')}
-          books={wantToReadBooks}
+          books={[]}
           emptyDescription={t('readingProgress.lists.wantToRead.emptyDescription')}
         />
       </div>
     </div>
   );
+}
+
+export function ReadingProgressPage() {
+  const { role } = useAuth();
+
+  if (role === 'guardian') return <GuardianReadingProgress />;
+
+  return <MemberReadingProgress />;
 }
