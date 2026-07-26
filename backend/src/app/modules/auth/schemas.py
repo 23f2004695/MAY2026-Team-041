@@ -26,8 +26,13 @@ class UpdateProfileRequest(BaseModel):
     avatar_url: str | None = None
 
 
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
 class TokenResponse(BaseModel):
     access_token: str
+    refresh_token: str
     token_type: str = "bearer"
     user: MemberOut
     is_new_user: bool = False

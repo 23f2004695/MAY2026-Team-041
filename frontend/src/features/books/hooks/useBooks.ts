@@ -24,6 +24,7 @@ const SEARCH_DEBOUNCE_MS = 300;
 export function useBooks(search: string, category: string, page: number) {
   const [items, setItems] = useState<Book[]>([]);
   const [total, setTotal] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,9 +50,14 @@ export function useBooks(search: string, category: string, page: number) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [search, category, page]);
+  }, [search, category, page, reloadKey]);
 
-  return { items, total, totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)) };
+  return {
+    items,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+    refresh: () => setReloadKey((key) => key + 1),
+  };
 }
 
 /** Resolves full book details for a set of ids (e.g. the wishlist), independent of any list/pagination. */

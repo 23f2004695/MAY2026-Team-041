@@ -2,12 +2,13 @@ import { ArrowLeft, BookOpen, Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { apiGet } from '@/lib/api';
+import { apiGet, ApiError } from '@/lib/api';
 import { cn } from '@/lib/cn';
-import { comingSoonToast } from '@/lib/comingSoonToast';
+import { useAuth } from '@/providers/AuthProvider';
 
 import type { Book } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
@@ -16,6 +17,7 @@ export function BookDetailsPage() {
   const { t } = useTranslation();
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
+  const { reserveBook } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
   const [loadedFor, setLoadedFor] = useState<string | undefined>(undefined);
   const { isWishlisted, toggleWishlist } = useWishlist();
@@ -27,6 +29,17 @@ export function BookDetailsPage() {
       .catch(() => setBook(null))
       .finally(() => setLoadedFor(bookId));
   }, [bookId]);
+
+  async function handleReserve() {
+    if (!book) return;
+    try {
+      await reserveBook(book.id);
+      toast.success(t('books.details.reserveSuccessToast', { title: book.title }));
+      setBook({ ...book, available: false, total_copies: book.total_copies - 1 });
+    } catch (error) {
+      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+    }
+  }
 
   if (bookId !== loadedFor) return null;
 
@@ -79,10 +92,7 @@ export function BookDetailsPage() {
             </p>
 
             <div className="flex gap-2">
-              <Button
-                disabled={!book.available}
-                onClick={() => comingSoonToast(t('books.details.reservingToast', { title: book.title }))}
-              >
+              <Button disabled={!book.available} onClick={handleReserve}>
                 {t('books.details.reserveButton')}
               </Button>
               <Button

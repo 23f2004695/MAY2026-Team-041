@@ -1,12 +1,14 @@
 import { Heart, SearchX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { BookCard, PageHeader } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import { Badge, Button, Pagination } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { comingSoonToast } from '@/lib/comingSoonToast';
+import { ApiError } from '@/lib/api';
+import { useAuth } from '@/providers/AuthProvider';
 
 import { BookFilters } from '../components/BookFilters';
 import { WishlistDrawer } from '../components/WishlistDrawer';
@@ -15,13 +17,24 @@ import { useWishlist } from '../hooks/useWishlist';
 
 export function BooksListPage() {
   const { t } = useTranslation();
+  const { reserveBook } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [page, setPage] = useState(1);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
-  const { items: pageBooks, totalPages } = useBooks(search, category, page);
+  const { items: pageBooks, totalPages, refresh } = useBooks(search, category, page);
   const wishlistedBooks = useBooksByIds(wishlistIds);
+
+  async function handleReserve(bookId: string, title: string) {
+    try {
+      await reserveBook(bookId);
+      toast.success(t('books.details.reserveSuccessToast', { title }));
+      refresh();
+    } catch (error) {
+      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+    }
+  }
 
   function updateSearch(value: string) {
     setSearch(value);
@@ -84,9 +97,7 @@ export function BooksListPage() {
               category={book.category}
               available={book.available}
               href={ROUTES.BOOK_DETAILS.replace(':bookId', book.id)}
-              onReserve={() =>
-                comingSoonToast(t('books.details.reservingToast', { title: book.title }))
-              }
+              onReserve={() => handleReserve(book.id, book.title)}
               isWishlisted={isWishlisted(book.id)}
               onToggleWishlist={() => toggleWishlist(book.id)}
             />

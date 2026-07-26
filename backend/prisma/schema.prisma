@@ -41,6 +41,7 @@ model User {
   loginActivity   LoginActivity[]   @relation("MemberLoginActivity")
   guardianOf      GuardianLink[]    @relation("GuardianLinkGuardian")
   guardianLink    GuardianLink?     @relation("GuardianLinkMember")
+  reservations    Reservation[]     @relation("MemberReservations")
 
   @@map("users")
 }
@@ -93,8 +94,24 @@ model Book {
   deletedAt      DateTime? @map("deleted_at")
 
   readingProgress ReadingProgress[]
+  reservations    Reservation[]
 
   @@map("books")
+}
+
+// ponytail: a reservation just holds one copy (decrements Book.totalCopies) — no
+// waitlist/queue-position tracking. Add one if members should be able to reserve
+// books that are already fully checked out.
+model Reservation {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String    @map("member_id") @db.Uuid
+  member    User      @relation("MemberReservations", fields: [memberId], references: [id])
+  bookId    String    @map("book_id") @db.Uuid
+  book      Book      @relation(fields: [bookId], references: [id])
+  status    String    @default("active") @db.VarChar(20) // active | cancelled
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("reservations")
 }
 
 // ponytail: one active goal per member (upsert), not a history of past years' goals —

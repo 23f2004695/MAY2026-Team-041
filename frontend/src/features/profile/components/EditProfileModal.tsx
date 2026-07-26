@@ -20,7 +20,7 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
   const { t } = useTranslation();
   const { fullName, phone, avatarUrl, updateProfile } = useAuth();
   const [selectedAvatar, setSelectedAvatar] = useState<string | undefined>(avatarUrl ?? undefined);
-  const presets = getAvatarPresets(fullName ?? '');
+  const presets = getAvatarPresets();
 
   const {
     register,

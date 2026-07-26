@@ -15,7 +15,6 @@ import {
   Users,
 } from 'lucide-react';
 
-import { Icons } from './icons';
 import { ROUTES } from './routes';
 
 export interface NavItem {
@@ -35,7 +34,6 @@ export const userNavigation: NavItem[] = [
   { label: 'nav.readingProgress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
-  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -51,7 +49,6 @@ export const adminNavigation: NavItem[] = [
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
-  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -61,7 +58,6 @@ export const managerNavigation: NavItem[] = [
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
-  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -77,7 +73,6 @@ export const itHeadNavigation: NavItem[] = [
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
-  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -90,6 +85,5 @@ export const guardianOverviewNavItem: NavItem = {
 export const guardianNavigation: NavItem[] = [
   guardianOverviewNavItem,
   { label: 'nav.readingProgress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
-  { label: 'nav.notifications', path: ROUTES.NOTIFICATIONS, icon: Icons.bell },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];

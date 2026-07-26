@@ -2,7 +2,7 @@ import { BellOff } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NotificationCard, PageTitle } from '@/components/common';
+import { NotificationCard } from '@/components/common';
 import { Badge, Button, EmptyState } from '@/components/ui';
 import {
   adminNotifications,
@@ -94,7 +94,7 @@ const notificationsByRole: Partial<Record<Role, AppNotification[]>> = {
   'it-head': itHeadNotifications,
 };
 
-export function NotificationsPage() {
+export function NotificationsPanel() {
   const { t } = useTranslation();
   const { role } = useAuth();
   const [notifications, setNotifications] = useState(
@@ -120,33 +120,27 @@ export function NotificationsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <PageTitle
-        title={t('notifications.pageTitle')}
-        titleAdornment={
-          unreadCount > 0 && (
-            <Badge variant="success">
-              {t('notifications.unreadBadge', { count: unreadCount })}
-            </Badge>
-          )
-        }
-      />
-
-      <div className="flex gap-2" role="group" aria-label={t('notifications.filterAriaLabel')}>
-        <Button
-          variant={filter === 'all' ? 'primary' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('all')}
-        >
-          {t('notifications.filters.all')}
-        </Button>
-        <Button
-          variant={filter === 'unread' ? 'primary' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('unread')}
-        >
-          {t('notifications.filters.unread')}
-        </Button>
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex gap-2" role="group" aria-label={t('notifications.filterAriaLabel')}>
+          <Button
+            variant={filter === 'all' ? 'primary' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('all')}
+          >
+            {t('notifications.filters.all')}
+          </Button>
+          <Button
+            variant={filter === 'unread' ? 'primary' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('unread')}
+          >
+            {t('notifications.filters.unread')}
+          </Button>
+        </div>
+        {unreadCount > 0 && (
+          <Badge variant="success">{t('notifications.unreadBadge', { count: unreadCount })}</Badge>
+        )}
       </div>
 
       {visibleNotifications.length === 0 ? (

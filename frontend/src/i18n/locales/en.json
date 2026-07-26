@@ -22,6 +22,9 @@
       "manage": "Manage",
       "viewReport": "View report"
     },
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    },
     "cards": {
       "event": {
         "registered": "Registered",
@@ -1067,7 +1070,7 @@
       "backToBooks": "Back to Books",
       "copiesAvailable": "{{total}} copies in the library",
       "reserveButton": "Reserve this book",
-      "reservingToast": "Reserving \"{{title}}\""
+      "reserveSuccessToast": "Reserved \"{{title}}\" — pick it up at the front desk"
     },
     "wishlist": {
       "button": "Wishlist",
@@ -1115,7 +1118,7 @@
   },
   "reservations": {
     "pageTitle": "Reservations",
-    "pageDescription": "Track your book reservations and queue position",
+    "pageDescription": "Track your book reservations",
     "search": {
       "placeholder": "Search by book title…",
       "ariaLabel": "Search reservations",
@@ -1129,17 +1132,8 @@
       "emptyDescription": "Reserve a book from the catalog to see it here.",
       "browseBooks": "Browse Books"
     },
-    "queue": {
-      "heading": "Reservation Queue",
-      "emptyTitle": "You're not waiting on anything",
-      "emptyDescription": "You’ll appear here once you join a queue.",
-      "entry": "— position {{position}} of {{total}}, estimated wait {{wait}}"
-    },
     "status": {
-      "ready": "Ready for pickup",
-      "waiting": "Waiting in queue",
-      "waitingWithPosition": "Waiting in queue · #{{position}}",
-      "expired": "Expired"
+      "ready": "Ready for pickup"
     },
     "actions": {
       "cancel": "Cancel"
@@ -1149,7 +1143,7 @@
       "description": "This will cancel your reservation for \"{{book}}\".",
       "confirmLabel": "Cancel reservation"
     },
-    "cancelToast": "Cancelling \"{{book}}\""
+    "cancelSuccessToast": "Cancelled your reservation for \"{{book}}\""
   },
   "seatBooking": {
     "pageTitle": "Seat Booking",

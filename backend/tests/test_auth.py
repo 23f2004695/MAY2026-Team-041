@@ -7,11 +7,8 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
 from app.core.config import get_settings
-from app.core.constants import Role
-from app.core.security import create_access_token, create_refresh_token, hash_password
 from app.db.prisma import prisma
 from app.main import create_app
-from app.modules.members import repository as member_repository
 from app.modules.auth import service
 
 os.environ.setdefault("DATABASE_URL", get_settings().database_url)
@@ -260,3 +257,83 @@ async def test_update_profile_can_set_avatar_url(client):
 
     assert response.status_code == 200
     assert response.json()["user"]["avatar_url"] == "data:image/svg+xml,%3Csvg%3E%3C/svg%3E"
+
+
+async def test_register_returns_a_refresh_token_too(client):
+    email = _unique_email()
+    response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Refresh Test"},
+    )
+
+    assert response.status_code == 201
+    assert response.json()["refresh_token"]
+
+
+async def test_refresh_issues_a_new_access_token(client):
+    email = _unique_email()
+    register_response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Refresh Test"},
+    )
+    refresh_token = register_response.json()["refresh_token"]
+
+    response = await client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_token})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["access_token"]
+    assert body["refresh_token"]
+
+    # the new access token actually works against a protected endpoint
+    whoami = await client.patch(
+        "/api/v1/auth/me",
+        json={},
+        headers={"Authorization": f"Bearer {body['access_token']}"},
+    )
+    assert whoami.status_code == 200
+
+
+async def test_refresh_rejects_garbage_token(client):
+    response = await client.post("/api/v1/auth/refresh", json={"refresh_token": "not-a-jwt"})
+
+    assert response.status_code == 401
+
+
+async def test_refresh_rejects_an_access_token(client):
+    email = _unique_email()
+    register_response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Refresh Test"},
+    )
+    access_token = register_response.json()["access_token"]
+
+    response = await client.post("/api/v1/auth/refresh", json={"refresh_token": access_token})
+
+    assert response.status_code == 401
+
+
+async def test_logout_requires_authentication(client):
+    response = await client.post("/api/v1/auth/logout")
+
+    assert response.status_code == 401
+
+
+async def test_logout_revokes_outstanding_refresh_tokens(client):
+    email = _unique_email()
+    register_response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Logout Test"},
+    )
+    access_token = register_response.json()["access_token"]
+    refresh_token = register_response.json()["refresh_token"]
+
+    logout_response = await client.post(
+        "/api/v1/auth/logout", headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert logout_response.status_code == 204
+
+    reuse_response = await client.post(
+        "/api/v1/auth/refresh", json={"refresh_token": refresh_token}
+    )
+    assert reuse_response.status_code == 401
