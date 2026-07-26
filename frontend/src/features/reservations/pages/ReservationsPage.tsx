@@ -54,6 +54,7 @@ export function ReservationsPage() {
         value={search}
         onChange={setSearch}
         placeholder={t('reservations.search.placeholder')}
+        label={t('reservations.search.ariaLabel')}
         aria-label={t('reservations.search.ariaLabel')}
         className="sm:max-w-sm"
       />

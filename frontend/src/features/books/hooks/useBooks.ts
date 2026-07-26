@@ -18,7 +18,7 @@ interface BookListResponse {
   total: number;
 }
 
-export const PAGE_SIZE = 6;
+export const PAGE_SIZE = 15;
 const SEARCH_DEBOUNCE_MS = 300;
 
 export function useBooks(search: string, category: string, page: number) {

@@ -35,6 +35,7 @@ export function BookFilters({
         value={search}
         onChange={onSearchChange}
         placeholder={t('books.filters.searchPlaceholder')}
+        label={t('books.filters.searchAriaLabel')}
         aria-label={t('books.filters.searchAriaLabel')}
         className="sm:max-w-sm"
       />
