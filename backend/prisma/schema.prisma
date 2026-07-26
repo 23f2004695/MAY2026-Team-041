@@ -43,6 +43,12 @@ model User {
   guardianLink    GuardianLink?     @relation("GuardianLinkMember")
   reservations    Reservation[]     @relation("MemberReservations")
 
+  communityPosts     CommunityPost[]     @relation("CommunityPostAuthor")
+  communityComments  CommunityComment[]  @relation("CommunityCommentAuthor")
+  communityPostLikes CommunityPostLike[] @relation("CommunityPostLikeUser")
+  communityPostSaves CommunityPostSave[] @relation("CommunityPostSaveUser")
+  communityBan       CommunityBan?       @relation("CommunityBanUser")
+
   @@map("users")
 }
 
@@ -151,4 +157,79 @@ model ReadingProgress {
 
   @@unique([memberId, bookId])
   @@map("reading_progress")
+}
+
+// ponytail: images are stored as data: URLs in a text array, not files in an object
+// store — no upload/CDN infra exists yet (see avatarPresets.ts). Fine at this scale;
+// swap for real object storage + URL column if posts start carrying many/large images.
+model CommunityPost {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId  String    @map("author_id") @db.Uuid
+  author    User      @relation("CommunityPostAuthor", fields: [authorId], references: [id])
+  bookTitle String?   @map("book_title") @db.VarChar(255)
+  content   String
+  images    String[]
+  reported  Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  comments CommunityComment[]
+  likes    CommunityPostLike[]
+  saves    CommunityPostSave[]
+
+  @@map("community_posts")
+}
+
+// ponytail: replies are just comments with a parentId (one self-relation) — no
+// separate "reply" model. UI only ever renders one level of nesting today.
+model CommunityComment {
+  id        String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId    String             @map("post_id") @db.Uuid
+  post      CommunityPost      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String             @map("author_id") @db.Uuid
+  author    User               @relation("CommunityCommentAuthor", fields: [authorId], references: [id])
+  parentId  String?            @map("parent_id") @db.Uuid
+  parent    CommunityComment?  @relation("CommunityCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   CommunityComment[] @relation("CommunityCommentReplies")
+  content   String
+  reported  Boolean            @default(false)
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  @@map("community_comments")
+}
+
+model CommunityPostLike {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId    String        @map("post_id") @db.Uuid
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String        @map("user_id") @db.Uuid
+  user      User          @relation("CommunityPostLikeUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@unique([postId, userId])
+  @@map("community_post_likes")
+}
+
+model CommunityPostSave {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  postId    String        @map("post_id") @db.Uuid
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String        @map("user_id") @db.Uuid
+  user      User          @relation("CommunityPostSaveUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@unique([postId, userId])
+  @@map("community_post_saves")
+}
+
+// Presence of a row = banned from Community. IT-head/admin-only action, scoped to
+// this feature (not a full account suspension).
+model CommunityBan {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  user      User     @relation("CommunityBanUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("community_bans")
 }

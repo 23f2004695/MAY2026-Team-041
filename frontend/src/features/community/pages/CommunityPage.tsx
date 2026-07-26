@@ -1,41 +1,33 @@
 import { Bookmark, Flag, MessageCircle, Plus, UserX, Users } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { StatisticCard, PageTitle } from '@/components/common';
 import { Button, Dialog, EmptyState } from '@/components/ui';
-import { communityPosts, type CommunityPost, type PostComment } from '@/mocks/community';
-import { useAuth } from '@/providers/AuthProvider';
+import { ApiError } from '@/lib/api';
+import {
+  useAuth,
+  type BannedAuthor,
+  type CommunityPost,
+  type PostComment,
+} from '@/providers/AuthProvider';
 
 import { CreatePostModal, type PostDraft } from '../components/CreatePostModal';
 import { PostCard } from '../components/PostCard';
 
 type Filter = 'all' | 'saved' | 'reported';
 
-function addReplyToComments(
-  comments: PostComment[],
-  commentId: string,
-  reply: PostComment,
-): PostComment[] {
-  return comments.map((comment) => {
-    if (comment.id === commentId) {
-      return { ...comment, replies: [...(comment.replies ?? []), reply] };
-    }
-    if (comment.replies) {
-      return { ...comment, replies: addReplyToComments(comment.replies, commentId, reply) };
-    }
-    return comment;
-  });
+const COMMUNITY_POLL_INTERVAL_MS = 30_000;
+
+function replacePost(posts: CommunityPost[], updated: CommunityPost): CommunityPost[] {
+  return posts.map((post) => (post.id === updated.id ? updated : post));
 }
 
 function removeCommentById(comments: PostComment[], commentId: string): PostComment[] {
   return comments
     .filter((comment) => comment.id !== commentId)
-    .map((comment) =>
-      comment.replies
-        ? { ...comment, replies: removeCommentById(comment.replies, commentId) }
-        : comment,
-    );
+    .map((comment) => ({ ...comment, replies: removeCommentById(comment.replies, commentId) }));
 }
 
 function reportCommentById(comments: PostComment[], commentId: string): PostComment[] {
@@ -43,44 +35,89 @@ function reportCommentById(comments: PostComment[], commentId: string): PostComm
     if (comment.id === commentId) {
       return { ...comment, reported: true };
     }
-    if (comment.replies) {
-      return { ...comment, replies: reportCommentById(comment.replies, commentId) };
-    }
-    return comment;
+    return { ...comment, replies: reportCommentById(comment.replies, commentId) };
   });
 }
 
 function countComments(comments: PostComment[]): number {
-  return comments.reduce((count, comment) => count + 1 + countComments(comment.replies ?? []), 0);
+  return comments.reduce((count, comment) => count + 1 + countComments(comment.replies), 0);
 }
 
 function hasReportedComment(comments: PostComment[]): boolean {
-  return comments.some((comment) => comment.reported || hasReportedComment(comment.replies ?? []));
+  return comments.some((comment) => comment.reported || hasReportedComment(comment.replies));
 }
 
 function countReported(comments: PostComment[]): number {
   return comments.reduce(
-    (count, comment) => count + (comment.reported ? 1 : 0) + countReported(comment.replies ?? []),
+    (count, comment) => count + (comment.reported ? 1 : 0) + countReported(comment.replies),
     0,
   );
 }
 
 export function CommunityPage() {
   const { t } = useTranslation();
-  const { role } = useAuth();
+  const {
+    role,
+    getCommunityPosts,
+    createCommunityPost,
+    updateCommunityPost,
+    deleteCommunityPost,
+    toggleCommunityLike,
+    toggleCommunitySave,
+    reportCommunityPost,
+    addCommunityComment,
+    deleteCommunityComment,
+    reportCommunityComment,
+    getBannedAuthors,
+    banCommunityAuthor,
+    unbanCommunityAuthor,
+  } = useAuth();
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
   const canReport = role === 'member' || role === 'manager';
-  const [posts, setPosts] = useState<CommunityPost[]>(communityPosts);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>('all');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
   const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
-  const [bannedAuthors, setBannedAuthors] = useState<string[]>([]);
-  const [banningAuthor, setBanningAuthor] = useState<string | null>(null);
+  const [bannedAuthors, setBannedAuthors] = useState<BannedAuthor[]>([]);
+  const [banningAuthor, setBanningAuthor] = useState<{ id: string; name: string } | null>(null);
+
+  // Polls rather than fetching once, so a post/comment reported (or added) by someone
+  // else shows up here without staff needing to manually reload the tab.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refresh() {
+      const [postsData, bansData] = await Promise.all([
+        getCommunityPosts(),
+        canModerate ? getBannedAuthors() : Promise.resolve(null),
+      ]);
+      if (cancelled) return;
+      setPosts(postsData);
+      if (bansData) setBannedAuthors(bansData);
+    }
+
+    refresh()
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    const interval = setInterval(() => {
+      refresh().catch(() => {});
+    }, COMMUNITY_POLL_INTERVAL_MS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canModerate]);
 
   const visiblePosts = useMemo(() => {
-    if (filter === 'saved') return posts.filter((post) => post.isSaved);
+    if (filter === 'saved') return posts.filter((post) => post.is_saved);
     if (filter === 'reported')
       return posts.filter((post) => post.reported || hasReportedComment(post.comments));
     return posts;
@@ -96,39 +133,25 @@ export function CommunityPage() {
     [posts],
   );
 
-  function handleSubmitPost(draft: PostDraft) {
-    if (editingPost) {
-      setPosts((prev) =>
-        prev.map((post) =>
-          post.id === editingPost.id
-            ? {
-                ...post,
-                bookTitle: draft.bookTitle || undefined,
-                content: draft.content,
-                images: draft.images,
-              }
-            : post,
-        ),
-      );
-      setEditingPost(null);
-      return;
-    }
+  function reportError(error: unknown) {
+    toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+  }
 
-    const newPost: CommunityPost = {
-      id: `post-${Date.now()}`,
-      author: t('community.you'),
-      bookTitle: draft.bookTitle || undefined,
-      content: draft.content,
-      images: draft.images,
-      createdAt: t('community.justNow'),
-      likeCount: 0,
-      isLiked: false,
-      isSaved: false,
-      isOwn: true,
-      comments: [],
-    };
-    setPosts((prev) => [newPost, ...prev]);
-    setIsCreateOpen(false);
+  async function handleSubmitPost(draft: PostDraft) {
+    const payload = { book_title: draft.bookTitle || null, content: draft.content, images: draft.images };
+    try {
+      if (editingPost) {
+        const updated = await updateCommunityPost(editingPost.id, payload);
+        setPosts((prev) => replacePost(prev, updated));
+        setEditingPost(null);
+        return;
+      }
+      const created = await createCommunityPost(payload);
+      setPosts((prev) => [created, ...prev]);
+      setIsCreateOpen(false);
+    } catch (error) {
+      reportError(error);
+    }
   }
 
   function closePostModal() {
@@ -136,101 +159,116 @@ export function CommunityPage() {
     setEditingPost(null);
   }
 
-  function confirmDeletePost() {
+  async function confirmDeletePost() {
     if (!deletingPost) return;
-    setPosts((prev) => prev.filter((post) => post.id !== deletingPost.id));
-    setDeletingPostId(null);
+    try {
+      await deleteCommunityPost(deletingPost.id);
+      setPosts((prev) => prev.filter((post) => post.id !== deletingPost.id));
+    } catch (error) {
+      reportError(error);
+    } finally {
+      setDeletingPostId(null);
+    }
   }
 
-  function confirmBanAuthor() {
+  async function confirmBanAuthor() {
     if (!banningAuthor) return;
-    setBannedAuthors((prev) => (prev.includes(banningAuthor) ? prev : [...prev, banningAuthor]));
-    setBanningAuthor(null);
+    try {
+      await banCommunityAuthor(banningAuthor.id);
+      setBannedAuthors((prev) =>
+        prev.some((author) => author.user_id === banningAuthor.id)
+          ? prev
+          : [...prev, { user_id: banningAuthor.id, full_name: banningAuthor.name }],
+      );
+    } catch (error) {
+      reportError(error);
+    } finally {
+      setBanningAuthor(null);
+    }
   }
 
-  function unbanAuthor(author: string) {
-    setBannedAuthors((prev) => prev.filter((name) => name !== author));
+  async function unbanAuthor(userId: string) {
+    try {
+      await unbanCommunityAuthor(userId);
+      setBannedAuthors((prev) => prev.filter((author) => author.user_id !== userId));
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function toggleLike(postId: string) {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? { ...post, isLiked: !post.isLiked, likeCount: post.likeCount + (post.isLiked ? -1 : 1) }
-          : post,
-      ),
-    );
+  async function toggleLike(postId: string) {
+    try {
+      const updated = await toggleCommunityLike(postId);
+      setPosts((prev) => replacePost(prev, updated));
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function toggleSave(postId: string) {
-    setPosts((prev) =>
-      prev.map((post) => (post.id === postId ? { ...post, isSaved: !post.isSaved } : post)),
-    );
+  async function toggleSave(postId: string) {
+    try {
+      const updated = await toggleCommunitySave(postId);
+      setPosts((prev) => replacePost(prev, updated));
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function addComment(postId: string, content: string) {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              comments: [
-                ...post.comments,
-                {
-                  id: `comment-${Date.now()}`,
-                  author: t('community.you'),
-                  content,
-                  createdAt: t('community.justNow'),
-                },
-              ],
-            }
-          : post,
-      ),
-    );
+  async function addComment(postId: string, content: string) {
+    try {
+      const updated = await addCommunityComment(postId, { content });
+      setPosts((prev) => replacePost(prev, updated));
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function addReply(postId: string, commentId: string, content: string) {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? {
-              ...post,
-              comments: addReplyToComments(post.comments, commentId, {
-                id: `reply-${Date.now()}`,
-                author: t('community.you'),
-                content,
-                createdAt: t('community.justNow'),
-              }),
-            }
-          : post,
-      ),
-    );
+  async function addReply(postId: string, commentId: string, content: string) {
+    try {
+      const updated = await addCommunityComment(postId, { content, parent_id: commentId });
+      setPosts((prev) => replacePost(prev, updated));
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function deleteComment(postId: string, commentId: string) {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? { ...post, comments: removeCommentById(post.comments, commentId) }
-          : post,
-      ),
-    );
+  async function deleteComment(postId: string, commentId: string) {
+    try {
+      await deleteCommunityComment(commentId);
+      setPosts((prev) =>
+        prev.map((post) =>
+          post.id === postId
+            ? { ...post, comments: removeCommentById(post.comments, commentId) }
+            : post,
+        ),
+      );
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function reportPost(postId: string) {
-    setPosts((prev) =>
-      prev.map((post) => (post.id === postId ? { ...post, reported: true } : post)),
-    );
+  async function reportPost(postId: string) {
+    try {
+      const updated = await reportCommunityPost(postId);
+      setPosts((prev) => replacePost(prev, updated));
+    } catch (error) {
+      reportError(error);
+    }
   }
 
-  function reportComment(postId: string, commentId: string) {
-    setPosts((prev) =>
-      prev.map((post) =>
-        post.id === postId
-          ? { ...post, comments: reportCommentById(post.comments, commentId) }
-          : post,
-      ),
-    );
+  async function reportComment(postId: string, commentId: string) {
+    try {
+      await reportCommunityComment(commentId);
+      setPosts((prev) =>
+        prev.map((post) =>
+          post.id === postId
+            ? { ...post, comments: reportCommentById(post.comments, commentId) }
+            : post,
+        ),
+      );
+    } catch (error) {
+      reportError(error);
+    }
   }
 
   return (
@@ -274,14 +312,14 @@ export function CommunityPage() {
           </p>
           <ul className="mt-2 flex flex-col gap-2">
             {bannedAuthors.map((author) => (
-              <li key={author} className="flex items-center justify-between text-sm">
+              <li key={author.user_id} className="flex items-center justify-between text-sm">
                 <span className="text-foreground">
-                  {author}{' '}
+                  {author.full_name}{' '}
                   <span className="text-muted-foreground">
                     — {t('community.bannedUsers.status')}
                   </span>
                 </span>
-                <Button size="sm" variant="ghost" onClick={() => unbanAuthor(author)}>
+                <Button size="sm" variant="ghost" onClick={() => unbanAuthor(author.user_id)}>
                   {t('community.bannedUsers.unban')}
                 </Button>
               </li>
@@ -320,7 +358,7 @@ export function CommunityPage() {
         )}
       </div>
 
-      {visiblePosts.length === 0 ? (
+      {!isLoading && visiblePosts.length === 0 ? (
         <EmptyState
           icon={filter === 'reported' ? Flag : Users}
           title={t(
@@ -358,13 +396,15 @@ export function CommunityPage() {
               onDeleteComment={
                 isStaff ? (commentId) => deleteComment(post.id, commentId) : undefined
               }
-              onEdit={post.isOwn ? () => setEditingPost(post) : undefined}
-              onDelete={post.isOwn || canModerate ? () => setDeletingPostId(post.id) : undefined}
-              onBan={canModerate && !post.isOwn ? () => setBanningAuthor(post.author) : undefined}
-              isBanned={bannedAuthors.includes(post.author)}
-              onReportPost={
-                canReport && !post.isOwn ? () => reportPost(post.id) : undefined
+              onEdit={post.is_own ? () => setEditingPost(post) : undefined}
+              onDelete={post.is_own || canModerate ? () => setDeletingPostId(post.id) : undefined}
+              onBan={
+                canModerate && !post.is_own
+                  ? () => setBanningAuthor({ id: post.author_id, name: post.author_name })
+                  : undefined
               }
+              isBanned={bannedAuthors.some((author) => author.user_id === post.author_id)}
+              onReportPost={canReport && !post.is_own ? () => reportPost(post.id) : undefined}
               onReportComment={
                 canReport ? (commentId) => reportComment(post.id, commentId) : undefined
               }
@@ -380,9 +420,9 @@ export function CommunityPage() {
         initialValues={
           editingPost
             ? {
-                bookTitle: editingPost.bookTitle ?? '',
+                bookTitle: editingPost.book_title ?? '',
                 content: editingPost.content,
-                images: editingPost.images ?? [],
+                images: editingPost.images,
               }
             : undefined
         }
@@ -401,8 +441,8 @@ export function CommunityPage() {
       <Dialog
         open={banningAuthor !== null}
         onClose={() => setBanningAuthor(null)}
-        title={t('community.banDialog.title', { author: banningAuthor })}
-        description={t('community.banDialog.description', { author: banningAuthor })}
+        title={t('community.banDialog.title', { author: banningAuthor?.name })}
+        description={t('community.banDialog.description', { author: banningAuthor?.name })}
         confirmLabel={t('community.banDialog.confirmLabel')}
         confirmVariant="danger"
         onConfirm={confirmBanAuthor}
