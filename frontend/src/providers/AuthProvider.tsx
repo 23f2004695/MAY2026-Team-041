@@ -1,8 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, type ReactNode } from 'react';
 
-import { apiGet, apiPatch, apiPost, apiPut, type TokenResponse } from '@/lib/api';
+import {
+  apiDelete,
+  apiGet,
+  apiPatch,
+  apiPost,
+  apiPut,
+  registerRefreshHandler,
+  type TokenResponse,
+} from '@/lib/api';
 import { useLocalStorageState } from '@/lib/useLocalStorageState';
 
 export type Role = 'admin' | 'member' | 'manager' | 'it-head' | 'guardian' | 'librarian';
@@ -75,10 +83,19 @@ export interface ReadingStreak {
   longest_streak_days: number;
 }
 
+export interface Reservation {
+  id: string;
+  book_id: string;
+  book_title: string;
+  status: string;
+  created_at: string;
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   role: Role | null;
   token: string | null;
+  refreshToken: string | null;
   fullName: string | null;
   email: string | null;
   phone: string | null;
@@ -107,6 +124,9 @@ interface AuthContextValue extends AuthState {
   getReadingGoal: () => Promise<ReadingGoal | null>;
   setReadingGoal: (payload: ReadingGoalPayload) => Promise<ReadingGoal>;
   getReadingStreak: () => Promise<ReadingStreak>;
+  getMyReservations: () => Promise<Reservation[]>;
+  reserveBook: (bookId: string) => Promise<Reservation>;
+  cancelReservation: (reservationId: string) => Promise<void>;
   clearPostAuthRedirect: () => void;
   logout: () => void;
 }
@@ -117,6 +137,7 @@ const SIGNED_OUT: AuthState = {
   isAuthenticated: false,
   role: null,
   token: null,
+  refreshToken: null,
   fullName: null,
   email: null,
   phone: null,
@@ -141,6 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: true,
       role: data.user.role.name as Role,
       token: data.access_token,
+      refreshToken: data.refresh_token,
       fullName: data.user.full_name,
       email: data.user.email,
       phone: data.user.phone,
@@ -215,7 +237,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiGet<ReadingStreak>('/members/me/reading-streak', state.token);
   }
 
+  async function getMyReservations(): Promise<Reservation[]> {
+    if (!state.token) return [];
+    return apiGet<Reservation[]>('/reservations/me', state.token);
+  }
+
+  async function reserveBook(bookId: string): Promise<Reservation> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<Reservation>('/reservations', { book_id: bookId }, state.token);
+  }
+
+  async function cancelReservation(reservationId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete(`/reservations/${reservationId}`, state.token);
+  }
+
+  async function refreshAccessToken(): Promise<string | null> {
+    if (!state.refreshToken) return null;
+    try {
+      const data = await apiPost<TokenResponse>('/auth/refresh', {
+        refresh_token: state.refreshToken,
+      });
+      applySession(data, state.needsProfileCompletion, state.postAuthRedirect);
+      return data.access_token;
+    } catch {
+      setState(SIGNED_OUT);
+      return null;
+    }
+  }
+
+  // Re-registers whenever the tokens change so the handler api.ts calls always closes
+  // over the current refreshToken, not a stale one from an earlier render.
+  useEffect(() => {
+    registerRefreshHandler(refreshAccessToken);
+    return () => registerRefreshHandler(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.token, state.refreshToken]);
+
   function logout() {
+    if (state.token) {
+      apiPost('/auth/logout', undefined, state.token).catch(() => {});
+    }
     setState(SIGNED_OUT);
   }
 
@@ -236,6 +298,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getReadingGoal,
         setReadingGoal,
         getReadingStreak,
+        getMyReservations,
+        reserveBook,
+        cancelReservation,
         clearPostAuthRedirect,
         logout,
       }}

@@ -32,6 +32,11 @@ const PricingPage = lazy(() =>
 const ContactUsPage = lazy(() =>
   import('@/features/contact/pages/ContactUsPage').then((m) => ({ default: m.ContactUsPage })),
 );
+const TranslateDemoPage = lazy(() =>
+  import('@/features/translate/pages/TranslateDemoPage').then((m) => ({
+    default: m.TranslateDemoPage,
+  })),
+);
 const Login = lazy(() => import('@/pages/Login').then((m) => ({ default: m.Login })));
 const Register = lazy(() => import('@/pages/Register').then((m) => ({ default: m.Register })));
 
@@ -66,11 +71,6 @@ const CommunityPage = lazy(() =>
 );
 const SettingsPage = lazy(() =>
   import('@/features/settings/pages/SettingsPage').then((m) => ({ default: m.SettingsPage })),
-);
-const NotificationsPage = lazy(() =>
-  import('@/features/notifications/pages/NotificationsPage').then((m) => ({
-    default: m.NotificationsPage,
-  })),
 );
 const ProfilePage = lazy(() =>
   import('@/features/profile/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
@@ -113,6 +113,7 @@ const router = createBrowserRouter([
       { index: true, element: withSuspense(<LandingPage />) },
       { path: relative(ROUTES.PRICING), element: withSuspense(<PricingPage />) },
       { path: relative(ROUTES.CONTACT_US), element: withSuspense(<ContactUsPage />) },
+      { path: relative(ROUTES.TRANSLATE_DEMO), element: withSuspense(<TranslateDemoPage />) },
       {
         element: (
           <PublicRoute>
@@ -152,7 +153,6 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.PAYMENT), element: withSuspense(<PaymentPage />) },
       { path: relative(ROUTES.COMMUNITY), element: withSuspense(<CommunityPage />) },
       { path: relative(ROUTES.EVENTS), element: withSuspense(<EventsPage />) },
-      { path: relative(ROUTES.NOTIFICATIONS), element: withSuspense(<NotificationsPage />) },
       { path: relative(ROUTES.PROFILE), element: withSuspense(<ProfilePage />) },
       { path: relative(ROUTES.READING_PROGRESS), element: withSuspense(<ReadingProgressPage />) },
       { path: relative(ROUTES.LEADERBOARD), element: withSuspense(<LeaderboardPage />) },

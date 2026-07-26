@@ -1,3 +1,4 @@
+import jwt
 from fastapi import HTTPException, status
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
@@ -6,10 +7,17 @@ from prisma.models import User
 
 from app.core.config import get_settings
 from app.core.constants import Role
-from app.core.security import create_access_token, hash_password, verify_password
+from app.core.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    hash_password,
+    verify_password,
+)
 from app.modules.auth.schemas import (
     GoogleLoginRequest,
     LoginRequest,
+    RefreshRequest,
     RegisterRequest,
     TokenResponse,
     UpdateProfileRequest,
@@ -19,6 +27,9 @@ from app.modules.members.schemas import MemberOut
 
 InvalidCredentials = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password"
+)
+InvalidRefreshToken = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token"
 )
 
 
@@ -123,9 +134,36 @@ async def update_profile(user: User, payload: UpdateProfileRequest) -> TokenResp
     return _issue_token(updated)
 
 
+async def refresh(payload: RefreshRequest) -> TokenResponse:
+    try:
+        claims = decode_token(payload.refresh_token)
+    except jwt.InvalidTokenError as exc:
+        raise InvalidRefreshToken from exc
+
+    if claims.get("type") != "refresh":
+        raise InvalidRefreshToken
+
+    user_id = claims.get("sub")
+    user = await repository.find_by_id(user_id) if user_id else None
+    if user is None or not user.isActive or user.deletedAt is not None:
+        raise InvalidRefreshToken
+
+    # ver must match the user's current tokenVersion — logout() bumps it, which
+    # invalidates every refresh token issued before that point in one step.
+    if claims.get("ver") != user.tokenVersion:
+        raise InvalidRefreshToken
+
+    return _issue_token(user)
+
+
+async def logout(user: User) -> None:
+    await repository.bump_token_version(user.id)
+
+
 def _issue_token(user: User, *, is_new_user: bool = False) -> TokenResponse:
     return TokenResponse(
         access_token=create_access_token(user.id),
+        refresh_token=create_refresh_token(user.id, user.tokenVersion),
         user=MemberOut.from_prisma(user),
         is_new_user=is_new_user,
     )

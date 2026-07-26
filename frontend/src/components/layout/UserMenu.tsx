@@ -9,7 +9,7 @@ import { useAuth } from '@/providers/AuthProvider';
 export function UserMenu() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const { role, logout } = useAuth();
+  const { role, fullName, avatarUrl, logout } = useAuth();
   const navigate = useNavigate();
 
   function goTo(path: string) {
@@ -25,7 +25,7 @@ export function UserMenu() {
         aria-label={t('userMenu.openAccountMenu')}
         className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
-        <Avatar name={role ?? undefined} size="sm" />
+        <Avatar src={avatarUrl ?? undefined} name={fullName ?? undefined} size="sm" />
       </button>
 
       <Drawer open={open} onClose={() => setOpen(false)} title={t('userMenu.account')}>

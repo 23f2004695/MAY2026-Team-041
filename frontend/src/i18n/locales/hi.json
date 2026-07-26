@@ -21,6 +21,9 @@
       "manage": "प्रबंधित करें",
       "viewReport": "रिपोर्ट देखें"
     },
+    "errors": {
+      "generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+    },
     "cards": {
       "event": {
         "registered": "पंजीकृत",
@@ -963,7 +966,7 @@
       "backToBooks": "पुस्तकों पर वापस जाएँ",
       "copiesAvailable": "लाइब्रेरी में {{total}} प्रतियाँ",
       "reserveButton": "यह पुस्तक आरक्षित करें",
-      "reservingToast": "\"{{title}}\" आरक्षित की जा रही है"
+      "reserveSuccessToast": "\"{{title}}\" आरक्षित हो गई — फ्रंट डेस्क से लें"
     },
     "wishlist": {
       "button": "विशलिस्ट",
@@ -1008,7 +1011,7 @@
   },
   "reservations": {
     "pageTitle": "आरक्षण",
-    "pageDescription": "अपने पुस्तक आरक्षण और कतार में स्थिति ट्रैक करें",
+    "pageDescription": "अपने पुस्तक आरक्षण ट्रैक करें",
     "search": {
       "placeholder": "किताब के नाम से खोजें…",
       "ariaLabel": "आरक्षण खोजें",
@@ -1022,17 +1025,8 @@
       "emptyDescription": "यहाँ देखने के लिए सूची से एक पुस्तक आरक्षित करें।",
       "browseBooks": "पुस्तकें ब्राउज़ करें"
     },
-    "queue": {
-      "heading": "आरक्षण कतार",
-      "emptyTitle": "आप किसी भी चीज़ की प्रतीक्षा नहीं कर रहे हैं",
-      "emptyDescription": "जैसे ही आप किसी कतार में शामिल होंगे, आप यहाँ दिखाई देंगे।",
-      "entry": "— स्थिति {{total}} में से {{position}}, अनुमानित प्रतीक्षा {{wait}}"
-    },
     "status": {
-      "ready": "पिकअप के लिए तैयार",
-      "waiting": "कतार में प्रतीक्षारत",
-      "waitingWithPosition": "कतार में प्रतीक्षारत · #{{position}}",
-      "expired": "समाप्त"
+      "ready": "पिकअप के लिए तैयार"
     },
     "actions": {
       "cancel": "रद्द करें"
@@ -1042,7 +1036,7 @@
       "description": "इससे \"{{book}}\" के लिए आपका आरक्षण रद्द हो जाएगा।",
       "confirmLabel": "आरक्षण रद्द करें"
     },
-    "cancelToast": "\"{{book}}\" रद्द किया जा रहा है"
+    "cancelSuccessToast": "\"{{book}}\" के लिए आपका आरक्षण रद्द कर दिया गया"
   },
   "seatBooking": {
     "pageTitle": "सीट बुकिंग",

@@ -1,20 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { Badge, Button, Card, CardContent } from '@/components/ui';
-import type { Reservation, ReservationStatus } from '@/mocks/reservations';
-
-// waiting = still in queue (informational, not urgent) -> info; expired = neutral; ready = success.
-const statusVariant: Record<ReservationStatus, 'success' | 'info' | 'default'> = {
-  ready: 'success',
-  waiting: 'info',
-  expired: 'default',
-};
-
-const statusLabelKey: Record<ReservationStatus, string> = {
-  ready: 'reservations.status.ready',
-  waiting: 'reservations.status.waiting',
-  expired: 'reservations.status.expired',
-};
+import type { Reservation } from '@/providers/AuthProvider';
 
 export interface ReservationCardProps {
   reservation: Reservation;
@@ -24,27 +11,26 @@ export interface ReservationCardProps {
 export function ReservationCard({ reservation, onCancel }: ReservationCardProps) {
   const { t } = useTranslation();
 
-  const statusText =
-    reservation.status === 'waiting' && reservation.queuePosition
-      ? t('reservations.status.waitingWithPosition', { position: reservation.queuePosition })
-      : t(statusLabelKey[reservation.status]);
-
   return (
     <Card>
       <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-medium text-foreground">{reservation.bookTitle}</p>
+          <p className="font-medium text-foreground">{reservation.book_title}</p>
           <p className="text-sm text-muted-foreground">
-            {t('common.time.since', { date: reservation.reservedOn })}
+            {t('common.time.since', {
+              date: new Date(reservation.created_at).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }),
+            })}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant={statusVariant[reservation.status]}>{statusText}</Badge>
-          {reservation.status !== 'expired' && (
-            <Button size="sm" variant="outline" onClick={onCancel}>
-              {t('reservations.actions.cancel')}
-            </Button>
-          )}
+          <Badge variant="success">{t('reservations.status.ready')}</Badge>
+          <Button size="sm" variant="outline" onClick={onCancel}>
+            {t('reservations.actions.cancel')}
+          </Button>
         </div>
       </CardContent>
     </Card>

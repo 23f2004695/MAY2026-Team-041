@@ -21,6 +21,9 @@
       "manage": "ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
       "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ"
     },
+    "errors": {
+      "generic": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    },
     "cards": {
       "event": {
         "registered": "ਰਜਿਸਟਰ ਕੀਤਾ",
@@ -963,7 +966,7 @@
       "backToBooks": "ਕਿਤਾਬਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ",
       "copiesAvailable": "ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ {{total}} ਕਾਪੀਆਂ",
       "reserveButton": "ਇਹ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
-      "reservingToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+      "reserveSuccessToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਹੋ ਗਈ — ਫਰੰਟ ਡੈਸਕ ਤੋਂ ਲਵੋ"
     },
     "wishlist": {
       "button": "ਵਿਸ਼ਲਿਸਟ",
@@ -1008,7 +1011,7 @@
   },
   "reservations": {
     "pageTitle": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ",
-    "pageDescription": "ਆਪਣੀਆਂ ਕਿਤਾਬ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ ਅਤੇ ਕਤਾਰ ਸਥਿਤੀ ਟਰੈਕ ਕਰੋ",
+    "pageDescription": "ਆਪਣੀਆਂ ਕਿਤਾਬ ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ ਟਰੈਕ ਕਰੋ",
     "search": {
       "placeholder": "ਕਿਤਾਬ ਦੇ ਸਿਰਲੇਖ ਦੁਆਰਾ ਖੋਜੋ…",
       "ariaLabel": "ਰਿਜ਼ਰਵੇਸ਼ਨਾਂ ਖੋਜੋ",
@@ -1022,17 +1025,8 @@
       "emptyDescription": "ਇੱਥੇ ਵੇਖਣ ਲਈ ਕੈਟਾਲਾਗ ਵਿੱਚੋਂ ਇੱਕ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ।",
       "browseBooks": "ਕਿਤਾਬਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ"
     },
-    "queue": {
-      "heading": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਕਤਾਰ",
-      "emptyTitle": "ਤੁਸੀਂ ਕਿਸੇ ਚੀਜ਼ ਦੀ ਉਡੀਕ ਨਹੀਂ ਕਰ ਰਹੇ",
-      "emptyDescription": "ਜਦੋਂ ਤੁਸੀਂ ਕਿਸੇ ਕਤਾਰ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋਗੇ ਤਾਂ ਤੁਸੀਂ ਇੱਥੇ ਦਿਖਾਈ ਦਿਓਗੇ।",
-      "entry": "— ਸਥਿਤੀ {{total}} ਵਿੱਚੋਂ {{position}}, ਅਨੁਮਾਨਿਤ ਉਡੀਕ {{wait}}"
-    },
     "status": {
-      "ready": "ਲੈਣ ਲਈ ਤਿਆਰ",
-      "waiting": "ਕਤਾਰ ਵਿੱਚ ਉਡੀਕ ਕਰ ਰਹੇ ਹੋ",
-      "waitingWithPosition": "ਕਤਾਰ ਵਿੱਚ ਉਡੀਕ ਕਰ ਰਹੇ ਹੋ · #{{position}}",
-      "expired": "ਮਿਆਦ ਖਤਮ"
+      "ready": "ਲੈਣ ਲਈ ਤਿਆਰ"
     },
     "actions": {
       "cancel": "ਰੱਦ ਕਰੋ"
@@ -1042,7 +1036,7 @@
       "description": "ਇਸ ਨਾਲ \"{{book}}\" ਲਈ ਤੁਹਾਡੀ ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਹੋ ਜਾਵੇਗੀ।",
       "confirmLabel": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਕਰੋ"
     },
-    "cancelToast": "\"{{book}}\" ਰੱਦ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
+    "cancelSuccessToast": "\"{{book}}\" ਲਈ ਤੁਹਾਡੀ ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਕਰ ਦਿੱਤੀ ਗਈ"
   },
   "seatBooking": {
     "pageTitle": "ਸੀਟ ਬੁਕਿੰਗ",

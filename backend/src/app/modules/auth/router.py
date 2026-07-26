@@ -8,6 +8,7 @@ from app.modules.auth import service
 from app.modules.auth.schemas import (
     GoogleLoginRequest,
     LoginRequest,
+    RefreshRequest,
     RegisterRequest,
     TokenResponse,
     UpdateProfileRequest,
@@ -37,3 +38,13 @@ async def update_profile(
     user: Annotated[User, Depends(get_current_user)],
 ) -> TokenResponse:
     return await service.update_profile(user, payload)
+
+
+@router.post("/refresh", response_model=TokenResponse)
+async def refresh(payload: RefreshRequest) -> TokenResponse:
+    return await service.refresh(payload)
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(user: Annotated[User, Depends(get_current_user)]) -> None:
+    await service.logout(user)

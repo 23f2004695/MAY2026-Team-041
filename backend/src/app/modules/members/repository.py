@@ -82,6 +82,14 @@ async def update_member(member_id: str, data: dict) -> User:
     return await prisma.user.update(where={"id": member_id}, data=data, include=MEMBER_INCLUDE)
 
 
+async def bump_token_version(user_id: str) -> User:
+    return await prisma.user.update(
+        where={"id": user_id},
+        data={"tokenVersion": {"increment": 1}},
+        include=MEMBER_INCLUDE,
+    )
+
+
 async def list_reading_progress(member_id: str) -> list[ReadingProgress]:
     return await prisma.readingprogress.find_many(
         where={"memberId": member_id},
