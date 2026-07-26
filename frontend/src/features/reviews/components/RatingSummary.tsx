@@ -4,12 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { ProgressBar } from '@/components/common';
 import { Card, CardContent } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import { ratingBreakdown } from '@/mocks/reviews';
 
 export interface RatingSummaryProps {
   averageRating: number;
   totalReviews: number;
-  breakdown: typeof ratingBreakdown;
+  breakdown: { stars: number; percent: number }[];
 }
 
 export function RatingSummary({ averageRating, totalReviews, breakdown }: RatingSummaryProps) {

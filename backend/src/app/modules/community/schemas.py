@@ -18,6 +18,7 @@ class CommentOut(BaseModel):
     id: str
     author_id: str
     author_name: str
+    author_avatar_url: str | None
     content: str
     created_at: datetime
     reported: bool
@@ -29,6 +30,7 @@ class CommentOut(BaseModel):
             id=comment.id,
             author_id=comment.authorId,
             author_name=comment.author.fullName,
+            author_avatar_url=comment.author.avatarUrl,
             content=comment.content,
             created_at=comment.createdAt,
             reported=comment.reported,
@@ -40,6 +42,7 @@ class PostOut(BaseModel):
     id: str
     author_id: str
     author_name: str
+    author_avatar_url: str | None
     book_title: str | None
     content: str
     images: list[str]
@@ -57,6 +60,7 @@ class PostOut(BaseModel):
             id=post.id,
             author_id=post.authorId,
             author_name=post.author.fullName,
+            author_avatar_url=post.author.avatarUrl,
             book_title=post.bookTitle,
             content=post.content,
             images=post.images,

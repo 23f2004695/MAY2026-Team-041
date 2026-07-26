@@ -6,8 +6,10 @@ import {
   ClipboardList,
   Flag,
   Gift,
+  Heart,
   IndianRupee,
   KeyRound,
+  MessageCircle,
   PackageX,
   Trophy,
   type LucideIcon,
@@ -35,7 +37,12 @@ export type NotificationType =
   | 'access-request'
   | 'issue-ticket'
   | 'fee-overdue'
-  | 'book-record';
+  | 'book-record'
+  | 'seat-available'
+  | 'seat-booked'
+  | 'post-comment'
+  | 'post-like'
+  | 'payment-received';
 
 export interface NotificationCardProps {
   type: NotificationType;
@@ -63,6 +70,11 @@ const typeIcon: Record<NotificationType, LucideIcon> = {
   'issue-ticket': AlertCircle,
   'fee-overdue': IndianRupee,
   'book-record': UploadCloud,
+  'seat-available': Armchair,
+  'seat-booked': Armchair,
+  'post-comment': MessageCircle,
+  'post-like': Heart,
+  'payment-received': IndianRupee,
 };
 
 export function NotificationCard({

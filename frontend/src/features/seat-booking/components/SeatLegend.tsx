@@ -11,9 +11,6 @@ export function SeatLegend() {
       <span className="flex items-center gap-2">
         <span className="size-3 rounded-sm bg-warning" /> {t('landing.seatAvailability.reserved')}
       </span>
-      <span className="flex items-center gap-2">
-        <span className="size-3 rounded-sm bg-danger" /> {t('landing.seatAvailability.occupied')}
-      </span>
     </div>
   );
 }

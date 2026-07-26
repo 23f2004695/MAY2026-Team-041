@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 
+from app.modules.notifications import service as notifications_service
 from app.modules.reservations import repository
 from app.modules.reservations.schemas import ReservationCreate, ReservationOut
 
@@ -19,6 +20,11 @@ async def create_reservation(member_id: str, payload: ReservationCreate) -> Rese
             status_code=status.HTTP_409_CONFLICT, detail="Book is not available"
         ) from exc
 
+    await notifications_service.create_notification(
+        member_id,
+        "reservation-ready",
+        f'Your reservation for "{reservation.book.title}" is ready for pickup.',
+    )
     return ReservationOut.from_prisma(reservation)
 
 

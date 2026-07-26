@@ -58,7 +58,7 @@ function CommentRow({
   return (
     <div className={cn('flex flex-col gap-2', depth > 0 && 'ml-8')}>
       <div className="flex gap-2">
-        <Avatar name={comment.author_name} size="sm" />
+        <Avatar src={comment.author_avatar_url ?? undefined} name={comment.author_name} size="sm" />
         <div className="flex-1">
           <div className="rounded-lg bg-secondary/40 px-3 py-2">
             <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export function PostCard({
   return (
     <Card>
       <CardHeader className="flex-row items-center gap-3 space-y-0">
-        <Avatar name={post.author_name} size="md" />
+        <Avatar src={post.author_avatar_url ?? undefined} name={post.author_name} size="md" />
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-foreground">{post.author_name}</p>

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
-import type { RevenueSource } from '@/mocks/admin';
+import type { RevenueSource } from '@/providers/AuthProvider';
 
 export function CashFlowBreakdown({ sources }: { sources: RevenueSource[] }) {
   const { t } = useTranslation();
@@ -15,8 +15,8 @@ export function CashFlowBreakdown({ sources }: { sources: RevenueSource[] }) {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {sources.map((source) => (
-          <div key={source.labelKey} className="flex items-center justify-between text-sm">
-            <span className="text-foreground">{t(source.labelKey)}</span>
+          <div key={source.source} className="flex items-center justify-between text-sm">
+            <span className="text-foreground">{t(`admin.cashFlow.sources.${source.source}`)}</span>
             <span className="font-medium text-foreground">{formatCurrency(source.amount)}</span>
           </div>
         ))}

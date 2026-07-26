@@ -95,6 +95,7 @@ async def test_reserve_available_book_holds_a_copy(member_user, librarian_user):
     async with _client_as(member_user) as client:
         response = await client.post("/api/v1/reservations", json={"book_id": book_id})
         book_after = await client.get(f"/api/v1/books/{book_id}")
+        notifications = await client.get("/api/v1/notifications/me")
 
     assert response.status_code == 201
     body = response.json()
@@ -102,6 +103,7 @@ async def test_reserve_available_book_holds_a_copy(member_user, librarian_user):
     assert body["status"] == "active"
     assert book_after.json()["total_copies"] == 0
     assert book_after.json()["available"] is False
+    assert any(n["type"] == "reservation-ready" for n in notifications.json())
 
 
 async def test_reserve_unavailable_book_conflicts(member_user, librarian_user):

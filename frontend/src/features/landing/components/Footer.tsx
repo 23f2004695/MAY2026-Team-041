@@ -62,7 +62,17 @@ function NavList({ title, links }: { title: string; links: FooterNavLink[] }) {
   );
 }
 
-export function Footer() {
+export interface FooterProps {
+  /**
+   * The clip-path/sticky-reveal trick below only resolves correctly when there's a full
+   * page's worth of scroll content above it (true landing page usage). Pages that mount
+   * this footer directly under a short page (Pricing, Login, Register, Contact Us) need
+   * it to just lay out normally instead, or the reveal math leaves a large blank gap.
+   */
+  sticky?: boolean;
+}
+
+export function Footer({ sticky = true }: FooterProps) {
   const { t } = useTranslation();
 
   const location = useLocation();
@@ -93,6 +103,51 @@ export function Footer() {
     { label: t('landing.footer.contact'), to: `${ROUTES.CONTACT_US}#contact-us`, onClick: contactClickHandler },
   ];
 
+  const content = (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={containerVariants}
+      className="relative flex h-full w-full flex-col justify-between overflow-hidden bg-surface px-4 py-6 md:px-12 md:py-12"
+    >
+      <h2 id="footer-heading" className="sr-only">
+        {t('landing.footer.heading')}
+      </h2>
+
+      <div className="relative z-20 grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-12 lg:gap-20">
+        <motion.div variants={itemVariants}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">{t('landing.footer.brand')}</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t('landing.footer.description')}
+              </p>
+            </div>
+            <div className="ml-4 hidden md:block">
+              {/* LanguageSwitcher for landing footer */}
+              <LanguageSwitcher />
+            </div>
+          </div>
+        </motion.div>
+        <NavList title={t('landing.footer.navigation')} links={navLinks} />
+        <NavList title={t('landing.footer.quickLinks')} links={quickLinks} />
+      </div>
+
+      <motion.p
+        variants={itemVariants}
+        className="relative z-20 mt-6 text-xs text-muted-foreground md:text-sm"
+      >
+        © {new Date().getFullYear()} {t('landing.footer.brand')}.{' '}
+        {t('landing.footer.description') && ''}
+      </motion.p>
+    </motion.div>
+  );
+
+  if (!sticky) {
+    return <div className="h-[70vh]">{content}</div>;
+  }
+
   return (
     // ponytail: clip-path sticky-reveal trick, swap for scroll-driven animation API when browser support allows
     <div
@@ -100,47 +155,7 @@ export function Footer() {
       style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)' }}
     >
       <div className="relative top-[-100vh] h-[170vh]">
-        <div className="sticky top-[30vh] h-[70vh]">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={containerVariants}
-            className="relative flex h-full w-full flex-col justify-between overflow-hidden bg-surface px-4 py-6 md:px-12 md:py-12"
-          >
-            <h2 id="footer-heading" className="sr-only">
-              {t('landing.footer.heading')}
-            </h2>
-
-
-            <div className="relative z-20 grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-12 lg:gap-20">
-              <motion.div variants={itemVariants}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{t('landing.footer.brand')}</p>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {t('landing.footer.description')}
-                    </p>
-                  </div>
-                  <div className="ml-4 hidden md:block">
-                    {/* LanguageSwitcher for landing footer */}
-                    <LanguageSwitcher />
-                  </div>
-                </div>
-              </motion.div>
-              <NavList title={t('landing.footer.navigation')} links={navLinks} />
-              <NavList title={t('landing.footer.quickLinks')} links={quickLinks} />
-            </div>
- 
-            <motion.p
-              variants={itemVariants}
-              className="relative z-20 mt-6 text-xs text-muted-foreground md:text-sm"
-            >
-              © {new Date().getFullYear()} {t('landing.footer.brand')}.{' '}
-              {t('landing.footer.description') && ''}
-            </motion.p>
-          </motion.div>
-        </div>
+        <div className="sticky top-[30vh] h-[70vh]">{content}</div>
       </div>
     </div>
   );

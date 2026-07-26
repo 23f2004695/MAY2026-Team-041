@@ -1,4 +1,5 @@
 import { Pencil, Star, Trash2 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar, Card, CardContent, CardHeader } from '@/components/ui';
@@ -6,7 +7,8 @@ import { cn } from '@/lib/cn';
 
 export interface ReviewCardProps {
   name: string;
-  role: string;
+  avatarUrl?: string | null;
+  role: ReactNode;
   quote: string;
   rating?: number;
   images?: string[];
@@ -19,6 +21,7 @@ export interface ReviewCardProps {
 
 export function ReviewCard({
   name,
+  avatarUrl,
   role,
   quote,
   rating,
@@ -33,7 +36,7 @@ export function ReviewCard({
     <Card className={cn('h-full', className)}>
       <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
         <div className="flex items-center gap-3">
-          <Avatar name={name} size="md" />
+          <Avatar src={avatarUrl ?? undefined} name={name} size="md" />
           <div>
             <p className="text-sm font-semibold text-foreground">{name}</p>
             <p className="text-xs text-muted-foreground">{role}</p>

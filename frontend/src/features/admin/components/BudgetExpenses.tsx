@@ -2,11 +2,15 @@ import { useTranslation } from 'react-i18next';
 
 import { ProgressBar } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
 import { formatCurrency } from '@/lib/format';
-import type { ExpenseCategory } from '@/mocks/admin';
+import type { BudgetCategory, ExpenseCategory } from '@/providers/AuthProvider';
 
-export function BudgetExpenses({ categories }: { categories: ExpenseCategory[] }) {
+export interface BudgetExpensesProps {
+  categories: BudgetCategory[];
+  onLogExpense: (category: ExpenseCategory) => void;
+}
+
+export function BudgetExpenses({ categories, onLogExpense }: BudgetExpensesProps) {
   const { t } = useTranslation();
 
   return (
@@ -16,10 +20,10 @@ export function BudgetExpenses({ categories }: { categories: ExpenseCategory[] }
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {categories.map((category) => (
-          <div key={category.labelKey} className="flex flex-col gap-1.5">
+          <div key={category.category} className="flex flex-col gap-1.5">
             <ProgressBar
               percent={Math.round((category.spent / category.budgeted) * 100)}
-              label={t(category.labelKey)}
+              label={t(`admin.budget.categories.${category.category}`)}
             />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>
@@ -28,11 +32,7 @@ export function BudgetExpenses({ categories }: { categories: ExpenseCategory[] }
                   budgeted: formatCurrency(category.budgeted),
                 })}
               </span>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => comingSoonToast(t('admin.budget.logExpenseToast', { category: t(category.labelKey) }))}
-              >
+              <Button size="sm" variant="ghost" onClick={() => onLogExpense(category.category)}>
                 {t('admin.budget.logExpense')}
               </Button>
             </div>

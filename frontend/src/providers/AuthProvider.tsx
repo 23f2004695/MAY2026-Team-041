@@ -95,6 +95,7 @@ export interface PostComment {
   id: string;
   author_id: string;
   author_name: string;
+  author_avatar_url: string | null;
   content: string;
   created_at: string;
   reported: boolean;
@@ -105,6 +106,7 @@ export interface CommunityPost {
   id: string;
   author_id: string;
   author_name: string;
+  author_avatar_url: string | null;
   book_title: string | null;
   content: string;
   images: string[];
@@ -131,6 +133,128 @@ export interface AddCommentPayload {
 export interface BannedAuthor {
   user_id: string;
   full_name: string;
+}
+
+export type SeatSlotStatus = 'available' | 'reserved' | 'booked_by_me';
+
+export interface SeatSlot {
+  seat_label: string;
+  status: SeatSlotStatus;
+  booking_id: string | null;
+}
+
+export interface SeatSchedule {
+  date: string;
+  hour: number;
+  seats: SeatSlot[];
+}
+
+export interface SeatSlotPayload {
+  seat_label: string;
+  date: string;
+  hour: number;
+}
+
+export interface SeatBookingRecord {
+  id: string;
+  seat_label: string;
+  date: string;
+  hour: number;
+  created_at: string;
+}
+
+export interface AppNotificationRecord {
+  id: string;
+  type: string;
+  message: string;
+  read: boolean;
+  created_at: string;
+}
+
+export interface ReviewPayload {
+  rating: number;
+  comment: string;
+  images: string[];
+}
+
+export interface Review {
+  id: string;
+  book_id: string;
+  book_title: string;
+  book_author: string;
+  reviewer_id: string;
+  reviewer_name: string;
+  reviewer_avatar_url: string | null;
+  rating: number;
+  comment: string;
+  images: string[];
+  created_at: string;
+  is_own: boolean;
+}
+
+export interface RatingBreakdownEntry {
+  stars: number;
+  percent: number;
+}
+
+export interface BookReviews {
+  items: Review[];
+  average_rating: number;
+  total_reviews: number;
+  breakdown: RatingBreakdownEntry[];
+}
+
+export type ExpenseCategory = 'staffSalaries' | 'bookProcurement' | 'utilities' | 'marketing';
+
+export interface AdminTrend {
+  direction: 'up' | 'down';
+  percent: number;
+}
+
+export interface AdminStats {
+  revenue_mtd: number;
+  revenue_trend: AdminTrend;
+  expenses_mtd: number;
+  expenses_trend: AdminTrend;
+  net_profit_mtd: number;
+  net_profit_trend: AdminTrend;
+  total_members: number;
+  total_members_trend: AdminTrend;
+}
+
+export interface RevenueSource {
+  source: 'membershipFees' | 'eventTickets' | 'finesCollected' | 'donationsValue';
+  amount: number;
+}
+
+export interface BudgetCategory {
+  category: ExpenseCategory;
+  budgeted: number;
+  spent: number;
+}
+
+export interface AdminSeatStatus {
+  available: number;
+  booked: number;
+  total: number;
+}
+
+export interface AdminSeatOccupancySlot {
+  hour: number;
+  percent_filled: number;
+}
+
+export interface AdminDashboard {
+  stats: AdminStats;
+  cash_flow: RevenueSource[];
+  budget: BudgetCategory[];
+  seat_status: AdminSeatStatus;
+  seat_occupancy: AdminSeatOccupancySlot[];
+}
+
+export interface ExpensePayload {
+  category: ExpenseCategory;
+  amount: number;
 }
 
 interface AuthState {
@@ -183,6 +307,20 @@ interface AuthContextValue extends AuthState {
   getBannedAuthors: () => Promise<BannedAuthor[]>;
   banCommunityAuthor: (userId: string) => Promise<void>;
   unbanCommunityAuthor: (userId: string) => Promise<void>;
+  getSeatSchedule: (date: string, hour: number) => Promise<SeatSchedule>;
+  bookSeat: (payload: SeatSlotPayload) => Promise<SeatBookingRecord>;
+  getMySeatBookings: () => Promise<SeatBookingRecord[]>;
+  cancelSeatBooking: (bookingId: string) => Promise<void>;
+  requestSeatNotify: (payload: SeatSlotPayload) => Promise<void>;
+  getMyNotifications: () => Promise<AppNotificationRecord[]>;
+  markNotificationRead: (notificationId: string) => Promise<AppNotificationRecord>;
+  getBookReviews: (bookId: string) => Promise<BookReviews>;
+  createReview: (bookId: string, payload: ReviewPayload) => Promise<Review>;
+  updateReview: (reviewId: string, payload: ReviewPayload) => Promise<Review>;
+  deleteReview: (reviewId: string) => Promise<void>;
+  getAllReviews: () => Promise<Review[]>;
+  getAdminDashboard: () => Promise<AdminDashboard>;
+  logExpense: (payload: ExpensePayload) => Promise<void>;
   clearPostAuthRedirect: () => void;
   logout: () => void;
 }
@@ -401,6 +539,79 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiDelete(`/community/banned-authors/${userId}`, state.token);
   }
 
+  async function getSeatSchedule(date: string, hour: number): Promise<SeatSchedule> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<SeatSchedule>(
+      `/seat-booking/schedule?date=${date}&hour=${hour}`,
+      state.token,
+    );
+  }
+
+  async function bookSeat(payload: SeatSlotPayload): Promise<SeatBookingRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SeatBookingRecord>('/seat-booking', payload, state.token);
+  }
+
+  async function getMySeatBookings(): Promise<SeatBookingRecord[]> {
+    if (!state.token) return [];
+    return apiGet<SeatBookingRecord[]>('/seat-booking/me', state.token);
+  }
+
+  async function cancelSeatBooking(bookingId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete(`/seat-booking/${bookingId}`, state.token);
+  }
+
+  async function requestSeatNotify(payload: SeatSlotPayload): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost('/seat-booking/notify', payload, state.token);
+  }
+
+  async function getMyNotifications(): Promise<AppNotificationRecord[]> {
+    if (!state.token) return [];
+    return apiGet<AppNotificationRecord[]>('/notifications/me', state.token);
+  }
+
+  async function markNotificationRead(notificationId: string): Promise<AppNotificationRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<AppNotificationRecord>(`/notifications/${notificationId}/read`, undefined, state.token);
+  }
+
+  async function getBookReviews(bookId: string): Promise<BookReviews> {
+    if (!state.token) return { items: [], average_rating: 0, total_reviews: 0, breakdown: [] };
+    return apiGet<BookReviews>(`/books/${bookId}/reviews`, state.token);
+  }
+
+  async function createReview(bookId: string, payload: ReviewPayload): Promise<Review> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<Review>(`/books/${bookId}/reviews`, payload, state.token);
+  }
+
+  async function updateReview(reviewId: string, payload: ReviewPayload): Promise<Review> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPut<Review>(`/reviews/${reviewId}`, payload, state.token);
+  }
+
+  async function deleteReview(reviewId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete(`/reviews/${reviewId}`, state.token);
+  }
+
+  async function getAllReviews(): Promise<Review[]> {
+    if (!state.token) return [];
+    return apiGet<Review[]>('/reviews', state.token);
+  }
+
+  async function getAdminDashboard(): Promise<AdminDashboard> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<AdminDashboard>('/admin/dashboard', state.token);
+  }
+
+  async function logExpense(payload: ExpensePayload): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost('/admin/expenses', payload, state.token);
+  }
+
   async function refreshAccessToken(): Promise<string | null> {
     if (!state.refreshToken) return null;
     try {
@@ -463,6 +674,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getBannedAuthors,
         banCommunityAuthor,
         unbanCommunityAuthor,
+        getSeatSchedule,
+        bookSeat,
+        getMySeatBookings,
+        cancelSeatBooking,
+        requestSeatNotify,
+        getMyNotifications,
+        markNotificationRead,
+        getBookReviews,
+        createReview,
+        updateReview,
+        deleteReview,
+        getAllReviews,
+        getAdminDashboard,
+        logExpense,
         clearPostAuthRedirect,
         logout,
       }}
