@@ -91,11 +91,54 @@ export interface Reservation {
   created_at: string;
 }
 
+export interface PostComment {
+  id: string;
+  author_id: string;
+  author_name: string;
+  content: string;
+  created_at: string;
+  reported: boolean;
+  replies: PostComment[];
+}
+
+export interface CommunityPost {
+  id: string;
+  author_id: string;
+  author_name: string;
+  book_title: string | null;
+  content: string;
+  images: string[];
+  created_at: string;
+  like_count: number;
+  is_liked: boolean;
+  is_saved: boolean;
+  is_own: boolean;
+  reported: boolean;
+  comments: PostComment[];
+}
+
+export interface CommunityPostPayload {
+  book_title?: string | null;
+  content: string;
+  images: string[];
+}
+
+export interface AddCommentPayload {
+  content: string;
+  parent_id?: string | null;
+}
+
+export interface BannedAuthor {
+  user_id: string;
+  full_name: string;
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   role: Role | null;
   token: string | null;
   refreshToken: string | null;
+  userId: string | null;
   fullName: string | null;
   email: string | null;
   phone: string | null;
@@ -110,8 +153,8 @@ interface AuthState {
 }
 
 interface AuthContextValue extends AuthState {
-  /** ponytail: dev-only role preview, bypasses real auth — drop the buttons using this before production. */
-  login: (role: Role) => void;
+  /** ponytail: dev-only role preview — logs into a seeded per-role dev account (see seed_dev_accounts.py), drop the buttons using this before production. */
+  login: (role: Role) => Promise<void>;
   loginWithCredentials: (email: string, password: string) => Promise<void>;
   loginWithGoogleToken: (idToken: string) => Promise<void>;
   registerAccount: (payload: RegisterPayload, postAuthRedirect: string) => Promise<void>;
@@ -127,6 +170,19 @@ interface AuthContextValue extends AuthState {
   getMyReservations: () => Promise<Reservation[]>;
   reserveBook: (bookId: string) => Promise<Reservation>;
   cancelReservation: (reservationId: string) => Promise<void>;
+  getCommunityPosts: () => Promise<CommunityPost[]>;
+  createCommunityPost: (payload: CommunityPostPayload) => Promise<CommunityPost>;
+  updateCommunityPost: (postId: string, payload: CommunityPostPayload) => Promise<CommunityPost>;
+  deleteCommunityPost: (postId: string) => Promise<void>;
+  toggleCommunityLike: (postId: string) => Promise<CommunityPost>;
+  toggleCommunitySave: (postId: string) => Promise<CommunityPost>;
+  reportCommunityPost: (postId: string) => Promise<CommunityPost>;
+  addCommunityComment: (postId: string, payload: AddCommentPayload) => Promise<CommunityPost>;
+  deleteCommunityComment: (commentId: string) => Promise<void>;
+  reportCommunityComment: (commentId: string) => Promise<void>;
+  getBannedAuthors: () => Promise<BannedAuthor[]>;
+  banCommunityAuthor: (userId: string) => Promise<void>;
+  unbanCommunityAuthor: (userId: string) => Promise<void>;
   clearPostAuthRedirect: () => void;
   logout: () => void;
 }
@@ -138,6 +194,7 @@ const SIGNED_OUT: AuthState = {
   role: null,
   token: null,
   refreshToken: null,
+  userId: null,
   fullName: null,
   email: null,
   phone: null,
@@ -146,11 +203,31 @@ const SIGNED_OUT: AuthState = {
   postAuthRedirect: null,
 };
 
+// Matches backend/scripts/seed_dev_accounts.py — one real, loggable-in account per
+// role so the Login page's "Continue as <role>" preview buttons get a real token
+// (and therefore real data) instead of faking local auth state.
+const DEV_PREVIEW_EMAIL_DOMAIN = 'devpreview.internal';
+const DEV_PREVIEW_PASSWORD = 'DevPreview123!';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useLocalStorageState<AuthState>('mock-auth', SIGNED_OUT);
 
-  function login(role: Role) {
-    setState({ ...SIGNED_OUT, isAuthenticated: true, role });
+  // A real session always sets isAuthenticated and token together (see applySession) — the
+  // only way to see one without the other is a session cached by the old role-preview login,
+  // which faked isAuthenticated/role locally with no real token. Clear it so ProtectedRoute
+  // sends the tab back to Login instead of silently showing empty data everywhere.
+  useEffect(() => {
+    if (state.isAuthenticated && !state.token) setState(SIGNED_OUT);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function login(role: Role): Promise<void> {
+    applySession(
+      await apiPost<TokenResponse>('/auth/login', {
+        email: `${role}@${DEV_PREVIEW_EMAIL_DOMAIN}`,
+        password: DEV_PREVIEW_PASSWORD,
+      }),
+    );
   }
 
   function applySession(
@@ -163,6 +240,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       role: data.user.role.name as Role,
       token: data.access_token,
       refreshToken: data.refresh_token,
+      userId: data.user.id,
       fullName: data.user.full_name,
       email: data.user.email,
       phone: data.user.phone,
@@ -252,6 +330,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiDelete(`/reservations/${reservationId}`, state.token);
   }
 
+  async function getCommunityPosts(): Promise<CommunityPost[]> {
+    if (!state.token) return [];
+    return apiGet<CommunityPost[]>('/community/posts', state.token);
+  }
+
+  async function createCommunityPost(payload: CommunityPostPayload): Promise<CommunityPost> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>('/community/posts', payload, state.token);
+  }
+
+  async function updateCommunityPost(
+    postId: string,
+    payload: CommunityPostPayload,
+  ): Promise<CommunityPost> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPut<CommunityPost>(`/community/posts/${postId}`, payload, state.token);
+  }
+
+  async function deleteCommunityPost(postId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete(`/community/posts/${postId}`, state.token);
+  }
+
+  async function toggleCommunityLike(postId: string): Promise<CommunityPost> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/like`, undefined, state.token);
+  }
+
+  async function toggleCommunitySave(postId: string): Promise<CommunityPost> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/save`, undefined, state.token);
+  }
+
+  async function reportCommunityPost(postId: string): Promise<CommunityPost> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/report`, undefined, state.token);
+  }
+
+  async function addCommunityComment(
+    postId: string,
+    payload: AddCommentPayload,
+  ): Promise<CommunityPost> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/comments`, payload, state.token);
+  }
+
+  async function deleteCommunityComment(commentId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete(`/community/comments/${commentId}`, state.token);
+  }
+
+  async function reportCommunityComment(commentId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost(`/community/comments/${commentId}/report`, undefined, state.token);
+  }
+
+  async function getBannedAuthors(): Promise<BannedAuthor[]> {
+    if (!state.token) return [];
+    return apiGet<BannedAuthor[]>('/community/banned-authors', state.token);
+  }
+
+  async function banCommunityAuthor(userId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost(`/community/banned-authors/${userId}`, undefined, state.token);
+  }
+
+  async function unbanCommunityAuthor(userId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete(`/community/banned-authors/${userId}`, state.token);
+  }
+
   async function refreshAccessToken(): Promise<string | null> {
     if (!state.refreshToken) return null;
     try {
@@ -301,6 +450,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getMyReservations,
         reserveBook,
         cancelReservation,
+        getCommunityPosts,
+        createCommunityPost,
+        updateCommunityPost,
+        deleteCommunityPost,
+        toggleCommunityLike,
+        toggleCommunitySave,
+        reportCommunityPost,
+        addCommunityComment,
+        deleteCommunityComment,
+        reportCommunityComment,
+        getBannedAuthors,
+        banCommunityAuthor,
+        unbanCommunityAuthor,
         clearPostAuthRedirect,
         logout,
       }}

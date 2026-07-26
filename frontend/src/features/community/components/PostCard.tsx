@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { Avatar, Badge, Card, CardContent, CardHeader } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import type { CommunityPost, PostComment } from '@/mocks/community';
+import { formatRelativeTime } from '@/lib/formatRelativeTime';
+import type { CommunityPost, PostComment } from '@/providers/AuthProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 export interface PostCardProps {
   post: CommunityPost;
@@ -28,12 +30,14 @@ export interface PostCardProps {
 function CommentRow({
   comment,
   depth = 0,
+  currentUserId,
   onReply,
   onDeleteComment,
   onReportComment,
 }: {
   comment: PostComment;
   depth?: number;
+  currentUserId: string | null;
   onReply: (commentId: string, content: string) => void;
   onDeleteComment?: (commentId: string) => void;
   onReportComment?: (commentId: string) => void;
@@ -54,11 +58,11 @@ function CommentRow({
   return (
     <div className={cn('flex flex-col gap-2', depth > 0 && 'ml-8')}>
       <div className="flex gap-2">
-        <Avatar name={comment.author} size="sm" />
+        <Avatar name={comment.author_name} size="sm" />
         <div className="flex-1">
           <div className="rounded-lg bg-secondary/40 px-3 py-2">
             <div className="flex items-center gap-2">
-              <p className="text-xs font-semibold text-foreground">{comment.author}</p>
+              <p className="text-xs font-semibold text-foreground">{comment.author_name}</p>
               {comment.reported && (
                 <Badge variant="danger">{t('community.post.reportedBadge')}</Badge>
               )}
@@ -73,7 +77,7 @@ function CommentRow({
             >
               {t('community.post.reply')}
             </button>
-            {!comment.reported && comment.author !== t('community.you') && onReportComment && (
+            {!comment.reported && comment.author_id !== currentUserId && onReportComment && (
               <button
                 type="button"
                 onClick={() => onReportComment(comment.id)}
@@ -116,11 +120,12 @@ function CommentRow({
         </form>
       )}
 
-      {comment.replies?.map((reply) => (
+      {comment.replies.map((reply) => (
         <CommentRow
           key={reply.id}
           comment={reply}
           depth={depth + 1}
+          currentUserId={currentUserId}
           onReply={onReply}
           onDeleteComment={onDeleteComment}
           onReportComment={onReportComment}
@@ -145,6 +150,7 @@ export function PostCard({
   onReportComment,
 }: PostCardProps) {
   const { t } = useTranslation();
+  const { userId } = useAuth();
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [commentDraft, setCommentDraft] = useState('');
 
@@ -159,21 +165,21 @@ export function PostCard({
   return (
     <Card>
       <CardHeader className="flex-row items-center gap-3 space-y-0">
-        <Avatar name={post.author} size="md" />
+        <Avatar name={post.author_name} size="md" />
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-foreground">{post.author}</p>
+            <p className="text-sm font-semibold text-foreground">{post.author_name}</p>
             {isBanned && <Badge variant="danger">{t('community.post.bannedBadge')}</Badge>}
             {post.reported && <Badge variant="danger">{t('community.post.reportedBadge')}</Badge>}
           </div>
-          <p className="text-xs text-muted-foreground">{post.createdAt}</p>
+          <p className="text-xs text-muted-foreground">{formatRelativeTime(post.created_at)}</p>
         </div>
-        {post.bookTitle && <Badge variant="outline">{post.bookTitle}</Badge>}
+        {post.book_title && <Badge variant="outline">{post.book_title}</Badge>}
         {onReportPost && !post.reported && (
           <button
             type="button"
             onClick={onReportPost}
-            aria-label={t('community.post.reportAria', { author: post.author })}
+            aria-label={t('community.post.reportAria', { author: post.author_name })}
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
           >
             <Flag className="size-4" />
@@ -183,7 +189,7 @@ export function PostCard({
           <button
             type="button"
             onClick={onBan}
-            aria-label={t('community.post.banAria', { author: post.author })}
+            aria-label={t('community.post.banAria', { author: post.author_name })}
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
           >
             <UserX className="size-4" />
@@ -213,7 +219,7 @@ export function PostCard({
       <CardContent className="flex flex-col gap-3">
         <p className="whitespace-pre-wrap text-sm text-foreground">{post.content}</p>
 
-        {post.images && post.images.length > 0 && (
+        {post.images.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {post.images.map((src, index) => (
               <img
@@ -230,15 +236,15 @@ export function PostCard({
           <button
             type="button"
             onClick={onToggleLike}
-            aria-pressed={post.isLiked}
-            aria-label={t(post.isLiked ? 'community.post.unlikeAria' : 'community.post.likeAria')}
+            aria-pressed={post.is_liked}
+            aria-label={t(post.is_liked ? 'community.post.unlikeAria' : 'community.post.likeAria')}
             className={cn(
               'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-secondary',
-              post.isLiked ? 'text-danger' : 'text-muted-foreground',
+              post.is_liked ? 'text-danger' : 'text-muted-foreground',
             )}
           >
-            <Heart className={cn('size-4', post.isLiked && 'fill-danger')} />
-            {post.likeCount}
+            <Heart className={cn('size-4', post.is_liked && 'fill-danger')} />
+            {post.like_count}
           </button>
 
           <button
@@ -256,14 +262,14 @@ export function PostCard({
             <button
               type="button"
               onClick={onToggleSave}
-              aria-pressed={post.isSaved}
-              aria-label={t(post.isSaved ? 'community.post.unsaveAria' : 'community.post.saveAria')}
+              aria-pressed={post.is_saved}
+              aria-label={t(post.is_saved ? 'community.post.unsaveAria' : 'community.post.saveAria')}
               className={cn(
                 'ml-auto flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-secondary',
-                post.isSaved ? 'text-primary' : 'text-muted-foreground',
+                post.is_saved ? 'text-primary' : 'text-muted-foreground',
               )}
             >
-              <Bookmark className={cn('size-4', post.isSaved && 'fill-primary')} />
+              <Bookmark className={cn('size-4', post.is_saved && 'fill-primary')} />
             </button>
           )}
         </div>
@@ -274,6 +280,7 @@ export function PostCard({
               <CommentRow
                 key={comment.id}
                 comment={comment}
+                currentUserId={userId}
                 onReply={onAddReply}
                 onDeleteComment={onDeleteComment}
                 onReportComment={onReportComment}

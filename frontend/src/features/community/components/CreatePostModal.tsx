@@ -40,12 +40,24 @@ export function CreatePostModal({ open, onClose, onSubmit, initialValues }: Crea
     }
   }
 
-  function handleImageSelect(event: React.ChangeEvent<HTMLInputElement>) {
+  function readAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleImageSelect(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
     const remainingSlots = MAX_IMAGES - images.length;
-    const nextUrls = files.slice(0, remainingSlots).map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...prev, ...nextUrls]);
     event.target.value = '';
+    // Data URLs (not blob: URLs) because there's no upload/object storage yet
+    // (see the ponytail note on CommunityPost.images) — this way the image
+    // actually persists in the DB and is visible to other users/after reload.
+    const nextUrls = await Promise.all(files.slice(0, remainingSlots).map(readAsDataUrl));
+    setImages((prev) => [...prev, ...nextUrls]);
   }
 
   function removeImage(index: number) {

@@ -41,8 +41,12 @@ export function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function signInAs(role: Role) {
-    login(role);
+  async function signInAs(role: Role) {
+    try {
+      await login(role);
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : 'Could not preview this role');
+    }
   }
 
   async function onSubmit(values: LoginFormValues) {
