@@ -165,30 +165,6 @@ model LoginActivity {
   @@map("login_activity")
 }
 
-model Seat {
-  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  label     String      @unique @db.VarChar(10)
-  createdAt DateTime    @default(now()) @map("created_at")
-
-  bookings SeatBooking[]
-
-  @@map("seats")
-}
-
-model SeatBooking {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  seatId    String   @map("seat_id") @db.Uuid
-  seat      Seat     @relation(fields: [seatId], references: [id])
-  memberId  String   @map("member_id") @db.Uuid
-  member    User     @relation("MemberSeatBookings", fields: [memberId], references: [id])
-  date      DateTime @db.Date
-  status    String   @default("confirmed") @db.VarChar(20)
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@unique([seatId, date, status])
-  @@map("seat_bookings")
-}
-
 model ReadingProgress {
   id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   memberId        String   @map("member_id") @db.Uuid
@@ -206,6 +182,34 @@ model ReadingProgress {
 // ponytail: images are stored as data: URLs in a text array, not files in an object
 // store — no upload/CDN infra exists yet (see avatarPresets.ts). Fine at this scale;
 // swap for real object storage + URL column if posts start carrying many/large images.
+model Review {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookId    String   @map("book_id") @db.Uuid
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  memberId  String   @map("member_id") @db.Uuid
+  member    User     @relation("MemberReview", fields: [memberId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String
+  images    String[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([memberId, bookId])
+  @@map("reviews")
+}
+
+model Reservation {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String    @map("member_id") @db.Uuid
+  member    User      @relation("MemberReservations", fields: [memberId], references: [id])
+  bookId    String    @map("book_id") @db.Uuid
+  book      Book      @relation(fields: [bookId], references: [id])
+  status    String    @default("active") @db.VarChar(20)
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("reservations")
+}
+
 model CommunityPost {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   authorId  String    @map("author_id") @db.Uuid
