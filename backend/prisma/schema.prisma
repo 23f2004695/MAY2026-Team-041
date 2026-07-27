@@ -51,6 +51,8 @@ model User {
 
   seatBookings       SeatBooking[]       @relation("SeatBookingMember")
   seatNotifyRequests SeatNotifyRequest[] @relation("SeatNotifyRequestMember")
+  seatSubscriptions  SeatSubscription[]  @relation("SeatSubscriptionMember")
+  seatAttendance     SeatAttendance[]    @relation("SeatAttendanceMember")
   notifications      Notification[]      @relation("NotificationUser")
   reviews            Review[]            @relation("MemberReview")
   loggedExpenses     Expense[]           @relation("ExpenseLoggedBy")
@@ -313,6 +315,54 @@ model SeatNotifyRequest {
 
   @@unique([seatLabel, date, hour, memberId])
   @@map("seat_notify_requests")
+}
+
+// A physical desk, allocated on a subscription basis (monthly seat rental) rather
+// than the hourly ad-hoc slots in SeatBooking. Fixed set managed by admin.
+model Desk {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  label     String   @unique @db.VarChar(10)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  subscriptions SeatSubscription[]
+  attendance    SeatAttendance[]
+
+  @@map("desks")
+}
+
+// A member's paid claim on a Desk for a date range, priced per admin-configured
+// seat/desk plans. Manager allocates these; SeatAttendance records daily use of one.
+model SeatSubscription {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId   String   @map("member_id") @db.Uuid
+  member     User     @relation("SeatSubscriptionMember", fields: [memberId], references: [id])
+  deskId     String   @map("desk_id") @db.Uuid
+  desk       Desk     @relation(fields: [deskId], references: [id])
+  startDate  DateTime @map("start_date") @db.Date
+  endDate    DateTime @map("end_date") @db.Date
+  amountPaid Int      @map("amount_paid")
+  status     String   @default("active") @db.VarChar(20) // active | expired | cancelled
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  attendance SeatAttendance[]
+
+  @@map("seat_subscriptions")
+}
+
+// Manager-recorded check-in/check-out for a subscribed desk, one row per visit.
+model SeatAttendance {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  subscriptionId String    @map("subscription_id") @db.Uuid
+  subscription   SeatSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  memberId       String    @map("member_id") @db.Uuid
+  member         User      @relation("SeatAttendanceMember", fields: [memberId], references: [id])
+  deskId         String    @map("desk_id") @db.Uuid
+  desk           Desk      @relation(fields: [deskId], references: [id])
+  checkInAt      DateTime  @default(now()) @map("check_in_at")
+  checkOutAt     DateTime? @map("check_out_at")
+
+  @@map("seat_attendance")
 }
 
 // ponytail: a generic in-app notification (type + a pre-rendered message string),
