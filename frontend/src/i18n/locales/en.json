@@ -57,13 +57,15 @@
   "chatbot": {
     "title": "Shelfie",
     "demoBadge": "Demo",
-    "greeting": "Hi, I'm Shelfie 📚 — your friendly library assistant! Ask me about books, events, seats, or your account, and I'll help you find your way.",
+    "greeting": "Hi, I'm Shelfie — your friendly library assistant! Ask me about books, events, seats, or your account, and I'll help you find your way.",
     "placeholder": "Type a message...",
     "send": "Send",
     "openChat": "Talk to Shelfie",
     "closeChat": "Close chat",
     "demoReply": "Thanks for chatting with me! I'm still in demo mode, so my answers are a preview for now — full AI-powered replies are coming soon.",
-    "tooltip": "Talk to Shelfie here"
+    "tooltip": "Talk to Shelfie here",
+    "fallback": "I'm not sure about that one yet! Try asking about borrowing books, seat reservations, membership, fines, reading clubs, donations, or events. You can also visit our Contact Us page for more help.",
+    "suggestedTitle": "Suggested questions"
   },
   "topUtilityBar": {
     "website": "Website",
@@ -136,7 +138,7 @@
       "fullName": "Full name",
       "email": "Email",
       "phoneNumber": "Phone number",
-      "phoneNumberPlaceholder": "+91 98765 43210",
+      "phoneNumberPlaceholder": "9876543210",
       "password": "Password",
       "confirmPassword": "Confirm password",
       "membershipPlan": "Membership plan",
@@ -145,10 +147,10 @@
       "alreadyHaveAccount": "Already have an account?",
       "logIn": "Log in",
       "errors": {
-        "name": "Name is required.",
-        "email": "Enter a valid email address.",
-        "phoneNumber": "Enter a valid phone number.",
-        "password": "Password must be at least 8 characters and include a letter and a number.",
+        "name": "Name must be 2–100 characters and contain only letters.",
+        "email": "Enter a valid email address (e.g. name@example.com).",
+        "phoneNumber": "Enter a valid 10-digit Indian mobile number (e.g. 9876543210).",
+        "password": "Password must be 8+ characters with uppercase, lowercase, a number, and a special character.",
         "confirmPassword": "Passwords do not match.",
         "terms": "You must accept the terms to continue."
       }

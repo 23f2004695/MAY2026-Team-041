@@ -22,6 +22,7 @@ export function CompleteProfileModal() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CompleteProfileFormValues>({
     resolver: zodResolver(completeProfileSchema),
@@ -72,9 +73,16 @@ export function CompleteProfileModal() {
             label="Phone number"
             type="tel"
             autoComplete="tel"
-            placeholder="+91 98765 43210"
+            placeholder="9876543210"
+            maxLength={10}
             error={errors.phoneNumber?.message ? t(errors.phoneNumber.message) : undefined}
-            {...register('phoneNumber')}
+            {...register('phoneNumber', {
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                e.target.value = digits;
+                setValue('phoneNumber', digits, { shouldValidate: true });
+              },
+            })}
           />
           <Input
             label="Password"

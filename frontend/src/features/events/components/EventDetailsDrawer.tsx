@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Badge, Button, Drawer } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import type { Event } from '@/mocks/events';
+import type { Event } from '../pages/EventsPage';
 import { useAuth } from '@/providers/AuthProvider';
 
 export interface EventDetailsDrawerProps {
@@ -37,7 +37,8 @@ export function EventDetailsDrawer({
 
           <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
-              <Calendar className="size-4" /> {event.date}
+              <Calendar className="size-4" />
+              {new Date(event.date).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
             </span>
             <span className="flex items-center gap-2">
               <MapPin className="size-4" /> {event.location}
@@ -62,13 +63,13 @@ export function EventDetailsDrawer({
                 </p>
               ) : (
                 <ul className="mt-2 flex max-h-56 flex-col gap-1.5 overflow-y-auto">
-                  {event.registrants.map((name) => (
-                    <li key={name} className="flex items-center justify-between text-sm">
-                      <span className="text-foreground">{name}</span>
+                  {event.registrants.map((r) => (
+                    <li key={r.id} className="flex items-center justify-between text-sm">
+                      <span className="text-foreground">{r.full_name}</span>
                       {canModerate && onRemoveRegistrant && (
                         <button
                           type="button"
-                          onClick={() => onRemoveRegistrant(event.id, name)}
+                          onClick={() => onRemoveRegistrant(event.id, r.full_name)}
                           className="text-xs font-medium text-danger hover:underline"
                         >
                           {t('events.details.removeRegistrant')}
@@ -114,20 +115,9 @@ export function EventDetailsDrawer({
             <p className="text-sm font-semibold text-foreground">
               {t('events.details.managerAssignmentsTitle')}
             </p>
-            {event.managers.length === 0 ? (
-              <p className="mt-2 text-sm text-muted-foreground">
-                {t('events.details.noManagersAssigned')}
-              </p>
-            ) : (
-              <ul className="mt-2 flex flex-col gap-1.5">
-                {event.managers.map((manager) => (
-                  <li key={manager.name} className="flex items-center justify-between text-sm">
-                    <span className="text-foreground">{manager.name}</span>
-                    <span className="text-muted-foreground">{manager.role}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t('events.details.noManagersAssigned')}
+            </p>
           </div>
         </div>
       )}
