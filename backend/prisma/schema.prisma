@@ -49,6 +49,12 @@ model User {
   communityPostSaves CommunityPostSave[] @relation("CommunityPostSaveUser")
   communityBan       CommunityBan?       @relation("CommunityBanUser")
 
+  seatBookings       SeatBooking[]       @relation("SeatBookingMember")
+  seatNotifyRequests SeatNotifyRequest[] @relation("SeatNotifyRequestMember")
+  notifications      Notification[]      @relation("NotificationUser")
+  reviews            Review[]            @relation("MemberReview")
+  loggedExpenses     Expense[]           @relation("ExpenseLoggedBy")
+
   @@map("users")
 }
 
@@ -101,8 +107,28 @@ model Book {
 
   readingProgress ReadingProgress[]
   reservations    Reservation[]
+  reviews         Review[]
 
   @@map("books")
+}
+
+// ponytail: one review per member per book (upsert-shaped via the unique constraint,
+// enforced as create-then-edit at the API level — POST 409s if one already exists,
+// PUT edits it). Images follow the same data-URL convention as CommunityPost.images.
+model Review {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookId    String   @map("book_id") @db.Uuid
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  memberId  String   @map("member_id") @db.Uuid
+  member    User     @relation("MemberReview", fields: [memberId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String
+  images    String[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([memberId, bookId])
+  @@map("reviews")
 }
 
 // ponytail: a reservation just holds one copy (decrements Book.totalCopies) — no
@@ -232,4 +258,66 @@ model CommunityBan {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("community_bans")
+}
+
+// ponytail: seats are a fixed 32-seat layout (rows A-D x seats 1-8, same as the
+// frontend's hardcoded grid) — no separate Seat table, just a label string per
+// booking. Cancelling a booking deletes the row (no history yet), which is also
+// what makes the unique constraint below double as the double-booking guard —
+// a slot is free exactly when no row exists for it.
+model SeatBooking {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String   @map("member_id") @db.Uuid
+  member    User     @relation("SeatBookingMember", fields: [memberId], references: [id])
+  seatLabel String   @map("seat_label") @db.VarChar(4)
+  date      DateTime @db.Date
+  hour      Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([seatLabel, date, hour])
+  @@map("seat_bookings")
+}
+
+// A one-shot "tell me when this slot frees up" request — consumed (deleted) the
+// moment the matching SeatBooking is cancelled, after firing a Notification.
+model SeatNotifyRequest {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String   @map("member_id") @db.Uuid
+  member    User     @relation("SeatNotifyRequestMember", fields: [memberId], references: [id])
+  seatLabel String   @map("seat_label") @db.VarChar(4)
+  date      DateTime @db.Date
+  hour      Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([seatLabel, date, hour, memberId])
+  @@map("seat_notify_requests")
+}
+
+// ponytail: a generic in-app notification (type + a pre-rendered message string),
+// not yet wired to most of the app's events — today only seat-availability alerts
+// create real rows here. The Notifications bell/panel elsewhere still shows mock
+// sample data for other notification kinds until those event sources go real too.
+model Notification {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation("NotificationUser", fields: [userId], references: [id], onDelete: Cascade)
+  type      String   @db.VarChar(40)
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+// ponytail: logs actual spend only — the budgeted amount per category is a static
+// constant (see admin/constants.py), not stored here, since no "set budget" UI exists yet.
+model Expense {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category   String   @db.VarChar(40)
+  amount     Int
+  loggedById String   @map("logged_by_id") @db.Uuid
+  loggedBy   User     @relation("ExpenseLoggedBy", fields: [loggedById], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("expenses")
 }

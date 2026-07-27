@@ -1,11 +1,15 @@
 import { ImagePlus, Star, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Modal } from '@/components/ui';
+import { Button, Input, Modal } from '@/components/ui';
+import { apiGet } from '@/lib/api';
 import { cn } from '@/lib/cn';
 
+import type { Book } from '../../books/hooks/useBooks';
+
 export interface ReviewDraft {
+  bookId: string;
   rating: number;
   comment: string;
   images: string[];
@@ -15,12 +19,13 @@ export interface WriteReviewModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (draft: ReviewDraft) => void;
-  /** When set, the modal opens pre-filled for editing an existing review. */
-  initialValues?: ReviewDraft;
+  /** When set, the modal opens pre-filled for editing an existing review — the book can't be changed. */
+  initialValues?: ReviewDraft & { bookTitle: string; bookAuthor: string };
 }
 
 const MAX_IMAGES = 4;
 const MAX_COMMENT_LENGTH = 500;
+const SEARCH_DEBOUNCE_MS = 300;
 
 export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: WriteReviewModalProps) {
   const { t } = useTranslation();
@@ -29,6 +34,18 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
   const [hoveredRating, setHoveredRating] = useState(0);
   const [comment, setComment] = useState(initialValues?.comment ?? '');
   const [images, setImages] = useState<string[]>(initialValues?.images ?? []);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(
+    initialValues
+      ? ({
+          id: initialValues.bookId,
+          title: initialValues.bookTitle,
+          author: initialValues.bookAuthor,
+        } as Book)
+      : null,
+  );
+  const [bookQuery, setBookQuery] = useState('');
+  const [bookResults, setBookResults] = useState<Book[]>([]);
+  const [bookSearchFailed, setBookSearchFailed] = useState(false);
 
   // Re-sync the draft whenever the modal transitions to open, so a fresh
   // "write" starts blank and "edit" starts pre-filled with that review.
@@ -39,16 +56,67 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
       setRating(initialValues?.rating ?? 0);
       setComment(initialValues?.comment ?? '');
       setImages(initialValues?.images ?? []);
+      setSelectedBook(
+        initialValues
+          ? ({
+              id: initialValues.bookId,
+              title: initialValues.bookTitle,
+              author: initialValues.bookAuthor,
+            } as Book)
+          : null,
+      );
+      setBookQuery('');
+      setBookResults([]);
+      setBookSearchFailed(false);
     }
   }
 
-  function handleImageSelect(event: React.ChangeEvent<HTMLInputElement>) {
+  useEffect(() => {
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      if (isEditing || bookQuery.trim().length === 0) {
+        if (!cancelled) {
+          setBookResults([]);
+          setBookSearchFailed(false);
+        }
+        return;
+      }
+      apiGet<{ items: Book[] }>(`/books?search=${encodeURIComponent(bookQuery.trim())}&page_size=6`)
+        .then((data) => {
+          if (cancelled) return;
+          setBookResults(data.items);
+          setBookSearchFailed(false);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setBookResults([]);
+          setBookSearchFailed(true);
+        });
+    }, SEARCH_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [bookQuery, isEditing]);
+
+  function readAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleImageSelect(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
     const remainingSlots = MAX_IMAGES - images.length;
-    const nextFiles = files.slice(0, remainingSlots);
-    const nextUrls = nextFiles.map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...prev, ...nextUrls]);
     event.target.value = '';
+    // Data URLs (not blob: URLs) because there's no upload/object storage yet (see the
+    // ponytail note on CommunityPost.images/Review.images) — this way the image
+    // actually persists in the DB and is visible after reload.
+    const nextUrls = await Promise.all(files.slice(0, remainingSlots).map(readAsDataUrl));
+    setImages((prev) => [...prev, ...nextUrls]);
   }
 
   function removeImage(index: number) {
@@ -57,11 +125,11 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (rating === 0 || comment.trim().length === 0) return;
-    onSubmit({ rating, comment: comment.trim(), images });
+    if (!selectedBook || rating === 0 || comment.trim().length === 0) return;
+    onSubmit({ bookId: selectedBook.id, rating, comment: comment.trim(), images });
   }
 
-  const canSubmit = rating > 0 && comment.trim().length > 0;
+  const canSubmit = selectedBook !== null && rating > 0 && comment.trim().length > 0;
 
   return (
     <Modal
@@ -70,6 +138,70 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
       title={isEditing ? t('reviews.writeReviewModal.editTitle') : t('reviews.writeReviewModal.title')}
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <p className="text-sm font-medium text-foreground">{t('reviews.writeReviewModal.bookLabel')}</p>
+          {selectedBook ? (
+            <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2">
+              <div>
+                <p className="text-sm font-medium text-foreground">{selectedBook.title}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t('reviews.byAuthor', { author: selectedBook.author })}
+                </p>
+              </div>
+              {!isEditing && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedBook(null)}
+                  aria-label={t('reviews.writeReviewModal.changeBook')}
+                  className="rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="relative flex flex-col gap-1.5">
+              <Input
+                value={bookQuery}
+                onChange={(event) => setBookQuery(event.target.value)}
+                placeholder={t('reviews.writeReviewModal.bookSearchPlaceholder')}
+                autoFocus
+              />
+              {bookResults.length > 0 && (
+                <ul className="flex flex-col gap-1 rounded-md border border-border bg-surface p-1 shadow-panel">
+                  {bookResults.map((book) => (
+                    <li key={book.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedBook(book);
+                          setBookQuery('');
+                          setBookResults([]);
+                        }}
+                        className="flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left hover:bg-secondary"
+                      >
+                        <span className="text-sm font-medium text-foreground">{book.title}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {t('reviews.byAuthor', { author: book.author })}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {bookQuery.trim().length > 0 && bookResults.length === 0 && (
+                <p className={cn('px-1 text-xs', bookSearchFailed ? 'text-danger' : 'text-muted-foreground')}>
+                  {t(
+                    bookSearchFailed
+                      ? 'reviews.writeReviewModal.bookSearchFailed'
+                      : 'reviews.writeReviewModal.noBooksFound',
+                  )}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
         <div>
           <p className="mb-1.5 text-sm font-medium text-foreground">
             {t('reviews.writeReviewModal.ratingLabel')}

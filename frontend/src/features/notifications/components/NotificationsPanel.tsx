@@ -1,122 +1,75 @@
 import { BellOff } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NotificationCard } from '@/components/common';
+import { NotificationCard, type NotificationType } from '@/components/common';
 import { Badge, Button, EmptyState } from '@/components/ui';
-import {
-  adminNotifications,
-  itHeadNotifications,
-  managerNotifications,
-  notifications as memberNotifications,
-  type AppNotification,
-} from '@/mocks/notifications';
-import { useAuth, type Role } from '@/providers/AuthProvider';
+import { formatRelativeTime } from '@/lib/formatRelativeTime';
+import { useAuth, type AppNotificationRecord } from '@/providers/AuthProvider';
 
 type Filter = 'all' | 'unread';
 
-function useNotificationTitle(notification: AppNotification) {
-  const { t } = useTranslation();
-  return t(`notifications.titles.${notification.titleKey}`);
-}
-
-function useNotificationMessage(notification: AppNotification): string {
-  const { t } = useTranslation();
-  const { key, params } = notification.message;
-
-  switch (key) {
-    case 'dueInDays':
-      return t('notifications.messages.dueInDays', params);
-    case 'reservationReady':
-      return t('notifications.messages.reservationReady', params);
-    case 'newBookAdded':
-      return t('notifications.messages.newBookAdded', params);
-    case 'achievementEarned':
-      return t('notifications.messages.achievementEarned', params);
-    case 'membershipRenewsInDays':
-      return t('notifications.messages.membershipRenewsInDays', {
-        count: params.count,
-        plan: t(`notifications.plans.${params.plan}`),
-      });
-    case 'pendingRequestSubmitted':
-      return t('notifications.messages.pendingRequestSubmitted', params);
-    case 'commentReported':
-      return t('notifications.messages.commentReported', params);
-    case 'lowStockAlert':
-      return t('notifications.messages.lowStockAlert', params);
-    case 'walkInRequestSubmitted':
-      return t('notifications.messages.walkInRequestSubmitted', params);
-    case 'registrationRequestSubmitted':
-      return t('notifications.messages.registrationRequestSubmitted', params);
-    case 'paymentPendingAtCounter':
-      return t('notifications.messages.paymentPendingAtCounter', params);
-    case 'accessRequestSubmitted':
-      return t('notifications.messages.accessRequestSubmitted', params);
-    case 'issueTicketSubmitted':
-      return t('notifications.messages.issueTicketSubmitted', params);
-    case 'feeOverdue':
-      return t('notifications.messages.feeOverdue', params);
-  }
-}
-
-function useTimeAgoText(timeAgo: { hours: number } | { days: number }) {
-  const { t } = useTranslation();
-  if ('hours' in timeAgo) return t('common.time.hoursAgo', { count: timeAgo.hours });
-  return t('common.time.daysAgo', { count: timeAgo.days });
-}
+const NOTIFICATION_TITLE_KEYS: Partial<Record<string, string>> = {
+  'seat-available': 'seatAvailable',
+  'seat-booked': 'seatBooked',
+  'reservation-ready': 'reservationReady',
+  'reported-comment': 'commentReported',
+  'post-comment': 'postComment',
+  'post-like': 'postLike',
+  'payment-received': 'paymentReceived',
+};
 
 function NotificationRow({
   notification,
   onMarkAsRead,
 }: {
-  notification: AppNotification;
+  notification: AppNotificationRecord;
   onMarkAsRead: () => void;
 }) {
-  const title = useNotificationTitle(notification);
-  const message = useNotificationMessage(notification);
-  const timestamp = useTimeAgoText(notification.timeAgo);
+  const { t } = useTranslation();
+  const titleKey = NOTIFICATION_TITLE_KEYS[notification.type];
+  const title = titleKey ? t(`notifications.titles.${titleKey}`) : notification.type;
 
   return (
     <NotificationCard
-      type={notification.type}
+      type={(notification.type as NotificationType) ?? 'seat-available'}
       title={title}
-      message={message}
-      timestamp={timestamp}
+      message={notification.message}
+      timestamp={formatRelativeTime(notification.created_at)}
       read={notification.read}
       onMarkAsRead={onMarkAsRead}
     />
   );
 }
 
-const notificationsByRole: Partial<Record<Role, AppNotification[]>> = {
-  admin: adminNotifications,
-  manager: managerNotifications,
-  'it-head': itHeadNotifications,
-};
-
 export function NotificationsPanel() {
   const { t } = useTranslation();
-  const { role } = useAuth();
-  const [notifications, setNotifications] = useState(
-    () => (role && notificationsByRole[role]) ?? memberNotifications,
-  );
+  const { getMyNotifications, markNotificationRead } = useAuth();
+  const [notifications, setNotifications] = useState<AppNotificationRecord[]>([]);
   const [filter, setFilter] = useState<Filter>('all');
+
+  useEffect(() => {
+    getMyNotifications().then(setNotifications);
+  }, [getMyNotifications]);
 
   const unreadCount = notifications.filter((notification) => !notification.read).length;
   const visibleNotifications = useMemo(
-    () =>
-      filter === 'unread'
-        ? notifications.filter((notification) => !notification.read)
-        : notifications,
+    () => (filter === 'unread' ? notifications.filter((n) => !n.read) : notifications),
     [notifications, filter],
   );
 
   function markAsRead(id: string) {
     setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === id ? { ...notification, read: true } : notification,
-      ),
+      prev.map((notification) => (notification.id === id ? { ...notification, read: true } : notification)),
     );
+    markNotificationRead(id).catch(() => {
+      // Revert on failure so the UI doesn't claim a read state the backend never saved.
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification.id === id ? { ...notification, read: false } : notification,
+        ),
+      );
+    });
   }
 
   return (

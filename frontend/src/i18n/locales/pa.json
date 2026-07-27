@@ -19,7 +19,8 @@
       "reject": "ਰੱਦ ਕਰੋ",
       "approve": "ਮਨਜ਼ੂਰ ਕਰੋ",
       "manage": "ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
-      "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ"
+      "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ",
+      "cancel": "ਰੱਦ ਕਰੋ"
     },
     "errors": {
       "generic": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
@@ -799,25 +800,22 @@
     "durations": {
       "1m": {
         "label": "1 ਮਹੀਨਾ",
-        "suitableFor": "ਵਿਦਿਆਰਥੀਆਂ ਅਤੇ ਥੋੜ੍ਹੇ ਸਮੇਂ ਦੀ ਵਰਤੋਂ ਲਈ",
-        "cta": "ਹੁਣੇ ਸ਼ੁਰੂ ਕਰੋ"
+        "suitableFor": "ਵਿਦਿਆਰਥੀਆਂ ਅਤੇ ਥੋੜ੍ਹੇ ਸਮੇਂ ਦੀ ਵਰਤੋਂ ਲਈ"
       },
       "3m": {
         "label": "3 ਮਹੀਨੇ",
-        "suitableFor": "ਬਿਨਾਂ ਰੁਕਾਵਟ ਲਾਇਬ੍ਰੇਰੀ ਪਹੁੰਚ ਨਾਲ ਇੱਕ ਪੂਰਾ ਸਮੈਸਟਰ",
-        "cta": "ਯੋਜਨਾ ਚੁਣੋ"
+        "suitableFor": "ਬਿਨਾਂ ਰੁਕਾਵਟ ਲਾਇਬ੍ਰੇਰੀ ਪਹੁੰਚ ਨਾਲ ਇੱਕ ਪੂਰਾ ਸਮੈਸਟਰ"
       },
       "6m": {
         "label": "6 ਮਹੀਨੇ",
-        "suitableFor": "ਇੱਕ ਪੂਰਾ ਅਕਾਦਮਿਕ ਸੈਸ਼ਨ",
-        "cta": "ਸ਼ੁਰੂ ਕਰੋ"
+        "suitableFor": "ਇੱਕ ਪੂਰਾ ਅਕਾਦਮਿਕ ਸੈਸ਼ਨ"
       },
       "12m": {
         "label": "12 ਮਹੀਨੇ",
-        "suitableFor": "ਸੰਸਥਾਵਾਂ ਅਤੇ ਪਾਵਰ ਯੂਜ਼ਰਾਂ ਲਈ ਸਾਲ ਭਰ ਦੀ ਪਹੁੰਚ",
-        "cta": "ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ"
+        "suitableFor": "ਸੰਸਥਾਵਾਂ ਅਤੇ ਪਾਵਰ ਯੂਜ਼ਰਾਂ ਲਈ ਸਾਲ ਭਰ ਦੀ ਪਹੁੰਚ"
       }
     },
+    "chooseCta": "{{plan}} ਚੁਣੋ",
     "perMonth": "ਪ੍ਰਤੀ ਮਹੀਨਾ",
     "billedEvery": "ਹਰ {{months}} ਮਹੀਨਿਆਂ ਬਾਅਦ ਬਿੱਲ ਕੀਤਾ ਜਾਂਦਾ ਹੈ",
     "badges": {
@@ -1209,26 +1207,13 @@
       "description": "ਤੁਸੀਂ ਸੂਚਨਾਵਾਂ 'ਤੇ ਪੂਰੀ ਤਰ੍ਹਾਂ ਅੱਪ ਟੂ ਡੇਟ ਹੋ।"
     },
     "titles": {
-      "bookDue": "ਕਿਤਾਬ ਜਲਦੀ ਵਾਪਸ ਕਰਨੀ ਹੈ",
       "reservationReady": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਤਿਆਰ",
-      "newArrival": "ਨਵੀਂ ਆਮਦ",
-      "achievementUnlocked": "ਪ੍ਰਾਪਤੀ ਅਨਲੌਕ ਹੋਈ",
-      "membershipRenewal": "ਮੈਂਬਰਸ਼ਿਪ ਨਵੀਨੀਕਰਨ"
-    },
-    "plans": {
-      "premium": "ਪ੍ਰੀਮੀਅਮ",
-      "standard": "ਸਟੈਂਡਰਡ",
-      "basic": "ਬੇਸਿਕ"
-    },
-    "messages": {
-      "dueInDays_one": "\"{{book}}\" {{count}} ਦਿਨ ਵਿੱਚ ਵਾਪਸ ਕਰਨੀ ਹੈ",
-      "dueInDays_other": "\"{{book}}\" {{count}} ਦਿਨਾਂ ਵਿੱਚ ਵਾਪਸ ਕਰਨੀ ਹੈ",
-      "reservationReady": "\"{{book}}\" ਲੈਣ ਲਈ ਤਿਆਰ ਹੈ",
-      "newBookAdded": "\"{{book}}\" ਨੂੰ {{category}} ਸੰਗ੍ਰਹਿ ਵਿੱਚ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ ਹੈ",
-      "achievementEarned_one": "ਇਸ ਸਾਲ {{count}} ਕਿਤਾਬ ਪੜ੍ਹਨ ਲਈ ਤੁਸੀਂ \"{{achievement}}\" ਬੈਜ ਹਾਸਲ ਕੀਤਾ",
-      "achievementEarned_other": "ਇਸ ਸਾਲ {{count}} ਕਿਤਾਬਾਂ ਪੜ੍ਹਨ ਲਈ ਤੁਸੀਂ \"{{achievement}}\" ਬੈਜ ਹਾਸਲ ਕੀਤਾ",
-      "membershipRenewsInDays_one": "ਤੁਹਾਡੀ {{plan}} ਮੈਂਬਰਸ਼ਿਪ {{count}} ਦਿਨ ਵਿੱਚ ਨਵਿਆਈ ਜਾਵੇਗੀ",
-      "membershipRenewsInDays_other": "ਤੁਹਾਡੀ {{plan}} ਮੈਂਬਰਸ਼ਿਪ {{count}} ਦਿਨਾਂ ਵਿੱਚ ਨਵਿਆਈ ਜਾਵੇਗੀ"
+      "commentReported": "ਟਿੱਪਣੀ ਦੀ ਸ਼ਿਕਾਇਤ ਹੋਈ",
+      "seatAvailable": "ਸੀਟ ਉਪਲਬਧ ਹੈ",
+      "seatBooked": "ਸੀਟ ਬੁੱਕ ਹੋਈ",
+      "postComment": "ਨਵੀਂ ਟਿੱਪਣੀ",
+      "postLike": "ਨਵੀਂ ਲਾਈਕ",
+      "paymentReceived": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਹੋਇਆ"
     }
   },
   "profile": {

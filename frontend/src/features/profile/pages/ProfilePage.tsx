@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ProgressBar, StatisticCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
+import { comingSoonToast } from '@/lib/comingSoonToast';
 import { auditLog } from '@/mocks/admin';
 import { children, childBorrowedBooks, guardianStats } from '@/mocks/guardian';
 import { accessEntries, issueTickets } from '@/mocks/itHead';
@@ -118,7 +119,10 @@ function ManagerProfile() {
       </div>
 
       <WalkInAssistance requests={walkInRequests} />
-      <NewRegistrations requests={registrationRequests} />
+      <NewRegistrations
+        requests={registrationRequests}
+        onRegister={(request) => comingSoonToast(request.name)}
+      />
     </div>
   );
 }

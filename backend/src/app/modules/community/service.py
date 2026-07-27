@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from prisma.models import User
 
 from app.core.constants import Role
+from app.db.prisma import prisma
 from app.modules.community import repository
 from app.modules.community.schemas import (
     BannedAuthorOut,
@@ -9,6 +10,7 @@ from app.modules.community.schemas import (
     PostCreate,
     PostOut,
 )
+from app.modules.notifications import service as notifications_service
 
 _STAFF_ROLES = {Role.ADMIN, Role.MANAGER, Role.IT_HEAD}
 _MODERATOR_ROLES = {Role.ADMIN, Role.IT_HEAD}
@@ -17,6 +19,14 @@ _REPORTER_ROLES = {Role.MEMBER, Role.MANAGER}
 
 def _role(user: User) -> str:
     return user.role.name
+
+
+async def _notify_moderators(message: str) -> None:
+    moderators = await prisma.user.find_many(
+        where={"role": {"name": {"in": list(_MODERATOR_ROLES)}}, "deletedAt": None}
+    )
+    for moderator in moderators:
+        await notifications_service.create_notification(moderator.id, "reported-comment", message)
 
 
 async def _ensure_not_banned(user: User) -> None:
@@ -64,8 +74,13 @@ async def delete_post(user: User, post_id: str) -> None:
 
 
 async def toggle_like(user: User, post_id: str) -> PostOut:
-    await _get_post_or_404(post_id)
+    existing = await _get_post_or_404(post_id)
+    was_liked = any(like.userId == user.id for like in existing.likes)
     post = await repository.toggle_like(post_id, user.id)
+    if not was_liked and post.authorId != user.id:
+        await notifications_service.create_notification(
+            post.authorId, "post-like", f"{user.fullName} liked your post."
+        )
     return PostOut.from_prisma(post, current_user_id=user.id)
 
 
@@ -82,17 +97,28 @@ async def report_post(user: User, post_id: str) -> PostOut:
     if post.authorId == user.id:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "You cannot report your own post")
     updated = await repository.set_post_reported(post_id, True)
+    await _notify_moderators(f"{user.fullName} reported a post by {post.author.fullName}.")
     return PostOut.from_prisma(updated, current_user_id=user.id)
 
 
 async def add_comment(user: User, post_id: str, payload: CommentCreate) -> PostOut:
     await _get_post_or_404(post_id)
     await _ensure_not_banned(user)
+    parent = None
     if payload.parent_id:
         parent = await repository.find_comment(payload.parent_id)
         if parent is None or parent.postId != post_id:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "Comment not found")
     post = await repository.add_comment(post_id, user.id, payload.content, payload.parent_id)
+    if parent is not None:
+        if parent.authorId != user.id:
+            await notifications_service.create_notification(
+                parent.authorId, "post-comment", f"{user.fullName} replied to your comment."
+            )
+    elif post.authorId != user.id:
+        await notifications_service.create_notification(
+            post.authorId, "post-comment", f"{user.fullName} commented on your post."
+        )
     return PostOut.from_prisma(post, current_user_id=user.id)
 
 
@@ -114,6 +140,7 @@ async def report_comment(user: User, comment_id: str) -> None:
     if comment.authorId == user.id:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "You cannot report your own comment")
     await repository.set_comment_reported(comment_id, True)
+    await _notify_moderators(f"{user.fullName} reported a comment.")
 
 
 async def list_banned_authors(user: User) -> list[BannedAuthorOut]:

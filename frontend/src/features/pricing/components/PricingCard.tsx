@@ -23,8 +23,8 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const isHighlighted = duration.badge === 'mostPopular';
-  const ctaLabel = t(`pricing.durations.${duration.id}.cta`);
   const planLabel = t(`pricing.durations.${duration.id}.label`);
+  const ctaLabel = t('pricing.chooseCta', { plan: planLabel });
 
   function handleChoosePlan() {
     if (!isAuthenticated) {
@@ -128,7 +128,7 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
 
           <Button
             onClick={handleChoosePlan}
-            variant={isHighlighted ? 'primary' : 'outline'}
+            variant={isActive ? 'primary' : 'outline'}
             className="mt-8 w-full"
           >
             {ctaLabel}

@@ -20,7 +20,8 @@
       "reject": "Reject",
       "approve": "Approve",
       "manage": "Manage",
-      "viewReport": "View report"
+      "viewReport": "View report",
+      "cancel": "Cancel"
     },
     "errors": {
       "generic": "Something went wrong. Please try again."
@@ -903,25 +904,22 @@
     "durations": {
       "1m": {
         "label": "1 Month",
-        "suitableFor": "Students and short-term usage",
-        "cta": "Start Now"
+        "suitableFor": "Students and short-term usage"
       },
       "3m": {
         "label": "3 Months",
-        "suitableFor": "A full semester of uninterrupted library access",
-        "cta": "Choose Plan"
+        "suitableFor": "A full semester of uninterrupted library access"
       },
       "6m": {
         "label": "6 Months",
-        "suitableFor": "A complete academic term",
-        "cta": "Get Started"
+        "suitableFor": "A complete academic term"
       },
       "12m": {
         "label": "12 Months",
-        "suitableFor": "Year-round access for institutions and power users",
-        "cta": "Subscribe"
+        "suitableFor": "Year-round access for institutions and power users"
       }
     },
+    "chooseCta": "Choose {{plan}}",
     "perMonth": "per month",
     "billedEvery": "Billed every {{months}} months",
     "badges": {
@@ -1148,17 +1146,18 @@
   "seatBooking": {
     "pageTitle": "Seat Booking",
     "pageDescription": "Reserve a quiet study seat",
+    "today": "Today",
     "confirmToast": "Booking seat {{seatId}}",
     "bookingSummary": {
       "title": "Booking Summary",
-      "selected": "Seat {{seatId}} selected for today",
+      "slotLabel": "Seat {{seatId}} · {{date}} · {{hour}}",
       "selectPrompt": "Select an available seat to continue.",
       "confirmButton": "Confirm Booking",
-      "statusUntil": {
-        "occupied": "Seat {{seatId}} is occupied until {{time}}",
-        "reserved": "Seat {{seatId}} is reserved until {{time}}"
-      },
-      "availableIn": "Available again in {{count}} minutes",
+      "cancelButton": "Cancel Booking",
+      "yourBookings": "Your upcoming bookings",
+      "reservedByOther": "Seat {{seatId}} is reserved for this time slot",
+      "bookedByYou": "You've booked seat {{seatId}} for this time slot",
+      "alreadyBookedThisSlot": "You already have a different seat booked for this time slot — cancel it first to switch.",
       "notifyButton": "Notify Me When Available",
       "notifySet": "We'll notify you when this seat frees up",
       "notifyToast": "We'll notify you when seat {{seatId}} is available"
@@ -1386,6 +1385,11 @@
     "writeReviewModal": {
       "title": "Write a Review",
       "you": "You",
+      "bookLabel": "Book",
+      "bookSearchPlaceholder": "Search for a book to review",
+      "changeBook": "Change book",
+      "noBooksFound": "No books found",
+      "bookSearchFailed": "Couldn't search books — check your connection and try again",
       "ratingLabel": "Your rating",
       "commentLabel": "Your review",
       "commentPlaceholder": "What did you think of this book?",
@@ -1412,44 +1416,13 @@
       "description": "You're all caught up on notifications."
     },
     "titles": {
-      "bookDue": "Book due soon",
       "reservationReady": "Reservation ready",
-      "newArrival": "New arrival",
-      "achievementUnlocked": "Achievement unlocked",
-      "membershipRenewal": "Membership renewal",
-      "pendingRequest": "Pending request",
       "commentReported": "Comment reported",
-      "lowStock": "Low stock alert",
-      "walkInRequest": "Walk-in request",
-      "registrationRequest": "New registration",
-      "paymentPending": "Payment pending at counter",
-      "accessRequest": "Access request",
-      "issueTicket": "New issue ticket",
-      "feeOverdue": "Fee overdue"
-    },
-    "plans": {
-      "premium": "premium",
-      "standard": "standard",
-      "basic": "basic"
-    },
-    "messages": {
-      "dueInDays_one": "\"{{book}}\" is due in {{count}} day",
-      "dueInDays_other": "\"{{book}}\" is due in {{count}} days",
-      "reservationReady": "\"{{book}}\" is ready for pickup",
-      "newBookAdded": "\"{{book}}\" has been added to the {{category}} collection",
-      "achievementEarned_one": "You earned the \"{{achievement}}\" badge for reading {{count}} book this year",
-      "achievementEarned_other": "You earned the \"{{achievement}}\" badge for reading {{count}} books this year",
-      "membershipRenewsInDays_one": "Your {{plan}} membership renews in {{count}} day",
-      "membershipRenewsInDays_other": "Your {{plan}} membership renews in {{count}} days",
-      "pendingRequestSubmitted": "{{requester}} submitted a {{type}}",
-      "commentReported": "A comment by {{author}} was flagged for review",
-      "lowStockAlert": "{{category}} stock is at {{percent}}% — consider reordering",
-      "walkInRequestSubmitted": "{{name}} walked in and {{detail}}",
-      "registrationRequestSubmitted": "{{name}} wants to register as a new member",
-      "paymentPendingAtCounter": "{{name}} has a {{amount}} payment pending at the counter",
-      "accessRequestSubmitted": "{{requester}} requested {{permission}} access",
-      "issueTicketSubmitted": "{{reporter}} reported: {{summary}}",
-      "feeOverdue": "{{name}} has a {{amount}} fee overdue"
+      "seatAvailable": "Seat available",
+      "seatBooked": "Seat booked",
+      "postComment": "New comment",
+      "postLike": "New like",
+      "paymentReceived": "Payment received"
     }
   },
   "profile": {

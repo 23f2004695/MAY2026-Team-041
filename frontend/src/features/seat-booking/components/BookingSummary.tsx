@@ -1,27 +1,45 @@
 import { Bell, BellRing } from 'lucide-react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
-import type { Seat } from '@/mocks/seats';
+import type { SeatBookingRecord, SeatSlot } from '@/providers/AuthProvider';
 
 export interface BookingSummaryProps {
-  selectedSeat: Seat | null;
+  selectedSeat: SeatSlot | null;
+  dateLabel: string;
+  hourLabel: string;
+  isNotified: boolean;
+  /** True when you already hold a different seat in this exact date/hour slot. */
+  hasOtherBookingThisSlot: boolean;
+  isBusy: boolean;
+  myBookings: SeatBookingRecord[];
   onConfirm: () => void;
+  onCancelBooking: (bookingId: string) => void;
+  onRequestNotify: () => void;
 }
 
-export function BookingSummary({ selectedSeat, onConfirm }: BookingSummaryProps) {
+function formatBookingHour(hour: number): string {
+  const period = hour < 12 ? 'AM' : 'PM';
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${displayHour} ${period}`;
+}
+
+export function BookingSummary({
+  selectedSeat,
+  dateLabel,
+  hourLabel,
+  isNotified,
+  hasOtherBookingThisSlot,
+  isBusy,
+  myBookings,
+  onConfirm,
+  onCancelBooking,
+  onRequestNotify,
+}: BookingSummaryProps) {
   const { t } = useTranslation();
   const isAvailable = selectedSeat?.status === 'available';
-  const [notifiedSeatIds, setNotifiedSeatIds] = useState<Set<string>>(new Set());
-  const isNotified = selectedSeat ? notifiedSeatIds.has(selectedSeat.id) : false;
-
-  function requestNotify() {
-    if (!selectedSeat) return;
-    setNotifiedSeatIds((prev) => new Set(prev).add(selectedSeat.id));
-    comingSoonToast(t('seatBooking.bookingSummary.notifyToast', { seatId: selectedSeat.id }));
-  }
+  const isMine = selectedSeat?.status === 'booked_by_me';
+  const isTaken = selectedSeat?.status === 'reserved';
 
   return (
     <Card>
@@ -35,46 +53,93 @@ export function BookingSummary({ selectedSeat, onConfirm }: BookingSummaryProps)
           </p>
         )}
 
-        {selectedSeat && isAvailable && (
+        {selectedSeat && (
           <p className="text-sm text-foreground">
-            {t('seatBooking.bookingSummary.selected', { seatId: selectedSeat.id })}
+            {t('seatBooking.bookingSummary.slotLabel', {
+              seatId: selectedSeat.seat_label,
+              date: dateLabel,
+              hour: hourLabel,
+            })}
           </p>
         )}
 
-        {selectedSeat && !isAvailable && (
-          <div className="flex flex-col gap-1 rounded-md bg-warning/10 p-3 text-warning">
-            <p className="text-sm font-medium">
-              {t(`seatBooking.bookingSummary.statusUntil.${selectedSeat.status}`, {
-                seatId: selectedSeat.id,
-                time: selectedSeat.availableAt,
-              })}
-            </p>
-            {typeof selectedSeat.availableInMinutes === 'number' && (
-              <p className="text-xs">
-                {t('seatBooking.bookingSummary.availableIn', {
-                  count: selectedSeat.availableInMinutes,
-                })}
-              </p>
-            )}
+        {isTaken && selectedSeat && (
+          <div className="rounded-md bg-warning/10 p-3 text-sm font-medium text-warning">
+            {t('seatBooking.bookingSummary.reservedByOther', { seatId: selectedSeat.seat_label })}
           </div>
         )}
 
-        {selectedSeat &&
-          !isAvailable &&
+        {isMine && selectedSeat && (
+          <div className="rounded-md bg-primary/10 p-3 text-sm font-medium text-primary">
+            {t('seatBooking.bookingSummary.bookedByYou', { seatId: selectedSeat.seat_label })}
+          </div>
+        )}
+
+        {isAvailable && hasOtherBookingThisSlot && (
+          <div className="rounded-md bg-warning/10 p-3 text-sm font-medium text-warning">
+            {t('seatBooking.bookingSummary.alreadyBookedThisSlot')}
+          </div>
+        )}
+
+        {isTaken &&
           (isNotified ? (
             <p className="flex items-center gap-1.5 text-sm text-success">
               <BellRing className="size-4" />
               {t('seatBooking.bookingSummary.notifySet')}
             </p>
           ) : (
-            <Button variant="outline" leadingIcon={<Bell className="size-4" />} onClick={requestNotify}>
+            <Button
+              variant="outline"
+              leadingIcon={<Bell className="size-4" />}
+              disabled={isBusy}
+              onClick={onRequestNotify}
+            >
               {t('seatBooking.bookingSummary.notifyButton')}
             </Button>
           ))}
 
-        <Button disabled={!isAvailable} onClick={onConfirm}>
-          {t('seatBooking.bookingSummary.confirmButton')}
-        </Button>
+        {isMine ? (
+          <Button
+            variant="outline"
+            disabled={isBusy}
+            onClick={() => selectedSeat?.booking_id && onCancelBooking(selectedSeat.booking_id)}
+          >
+            {t('seatBooking.bookingSummary.cancelButton')}
+          </Button>
+        ) : (
+          <Button
+            disabled={!isAvailable || isBusy || hasOtherBookingThisSlot}
+            onClick={onConfirm}
+          >
+            {t('seatBooking.bookingSummary.confirmButton')}
+          </Button>
+        )}
+
+        {myBookings.length > 0 && (
+          <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {t('seatBooking.bookingSummary.yourBookings')}
+            </p>
+            {myBookings.map((booking) => (
+              <div
+                key={booking.id}
+                className="flex items-center justify-between gap-2 rounded-md bg-secondary/40 px-3 py-2 text-sm"
+              >
+                <span className="text-foreground">
+                  {booking.seat_label} · {booking.date} · {formatBookingHour(booking.hour)}
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  disabled={isBusy}
+                  onClick={() => onCancelBooking(booking.id)}
+                >
+                  {t('seatBooking.bookingSummary.cancelButton')}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

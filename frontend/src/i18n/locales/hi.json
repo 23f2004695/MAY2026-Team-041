@@ -19,7 +19,8 @@
       "reject": "अस्वीकार करें",
       "approve": "स्वीकृत करें",
       "manage": "प्रबंधित करें",
-      "viewReport": "रिपोर्ट देखें"
+      "viewReport": "रिपोर्ट देखें",
+      "cancel": "रद्द करें"
     },
     "errors": {
       "generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
@@ -799,25 +800,22 @@
     "durations": {
       "1m": {
         "label": "1 महीना",
-        "suitableFor": "छात्रों और अल्पकालिक उपयोग के लिए",
-        "cta": "अभी शुरू करें"
+        "suitableFor": "छात्रों और अल्पकालिक उपयोग के लिए"
       },
       "3m": {
         "label": "3 महीने",
-        "suitableFor": "बिना किसी रुकावट के एक पूरे सेमेस्टर की लाइब्रेरी पहुंच",
-        "cta": "योजना चुनें"
+        "suitableFor": "बिना किसी रुकावट के एक पूरे सेमेस्टर की लाइब्रेरी पहुंच"
       },
       "6m": {
         "label": "6 महीने",
-        "suitableFor": "एक पूरा शैक्षणिक सत्र",
-        "cta": "शुरू करें"
+        "suitableFor": "एक पूरा शैक्षणिक सत्र"
       },
       "12m": {
         "label": "12 महीने",
-        "suitableFor": "संस्थानों और पावर यूज़र्स के लिए साल भर की पहुंच",
-        "cta": "सब्सक्राइब करें"
+        "suitableFor": "संस्थानों और पावर यूज़र्स के लिए साल भर की पहुंच"
       }
     },
+    "chooseCta": "{{plan}} चुनें",
     "perMonth": "प्रति माह",
     "billedEvery": "हर {{months}} महीने में बिल किया जाता है",
     "badges": {
@@ -1209,26 +1207,13 @@
       "description": "आप सभी सूचनाओं पर अद्यतित हैं।"
     },
     "titles": {
-      "bookDue": "पुस्तक जल्द देय",
       "reservationReady": "आरक्षण तैयार",
-      "newArrival": "नई आवक",
-      "achievementUnlocked": "उपलब्धि अनलॉक हुई",
-      "membershipRenewal": "सदस्यता नवीनीकरण"
-    },
-    "plans": {
-      "premium": "प्रीमियम",
-      "standard": "स्टैंडर्ड",
-      "basic": "बेसिक"
-    },
-    "messages": {
-      "dueInDays_one": "\"{{book}}\" {{count}} दिन में देय है",
-      "dueInDays_other": "\"{{book}}\" {{count}} दिनों में देय है",
-      "reservationReady": "\"{{book}}\" पिकअप के लिए तैयार है",
-      "newBookAdded": "\"{{book}}\" को {{category}} संग्रह में जोड़ा गया है",
-      "achievementEarned_one": "आपने इस साल {{count}} पुस्तक पढ़ने के लिए \"{{achievement}}\" बैज अर्जित किया",
-      "achievementEarned_other": "आपने इस साल {{count}} पुस्तकें पढ़ने के लिए \"{{achievement}}\" बैज अर्जित किया",
-      "membershipRenewsInDays_one": "आपकी {{plan}} सदस्यता {{count}} दिन में नवीनीकृत होगी",
-      "membershipRenewsInDays_other": "आपकी {{plan}} सदस्यता {{count}} दिनों में नवीनीकृत होगी"
+      "commentReported": "टिप्पणी की शिकायत हुई",
+      "seatAvailable": "सीट उपलब्ध है",
+      "seatBooked": "सीट बुक हुई",
+      "postComment": "नई टिप्पणी",
+      "postLike": "नई लाइक",
+      "paymentReceived": "भुगतान प्राप्त हुआ"
     }
   },
   "profile": {

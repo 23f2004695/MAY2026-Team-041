@@ -1,15 +1,12 @@
-import { Armchair, CircleCheck, Clock } from 'lucide-react';
+import { Armchair, CircleCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { StatisticCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import type { Seat } from '@/mocks/seats';
+import type { AdminSeatStatus } from '@/providers/AuthProvider';
 
-export function LiveSeatStatus({ seats }: { seats: Seat[] }) {
+export function LiveSeatStatus({ status }: { status: AdminSeatStatus }) {
   const { t } = useTranslation();
-  const available = seats.filter((s) => s.status === 'available').length;
-  const reserved = seats.filter((s) => s.status === 'reserved').length;
-  const occupied = seats.filter((s) => s.status === 'occupied').length;
 
   return (
     <Card>
@@ -20,10 +17,17 @@ export function LiveSeatStatus({ seats }: { seats: Seat[] }) {
           {t('landing.seatAvailability.live')}
         </span>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatisticCard icon={CircleCheck} label={t('landing.seatAvailability.available')} value={String(available)} />
-        <StatisticCard icon={Clock} label={t('landing.seatAvailability.reserved')} value={String(reserved)} />
-        <StatisticCard icon={Armchair} label={t('landing.seatAvailability.occupied')} value={String(occupied)} />
+      <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <StatisticCard
+          icon={CircleCheck}
+          label={t('landing.seatAvailability.available')}
+          value={String(status.available)}
+        />
+        <StatisticCard
+          icon={Armchair}
+          label={t('landing.seatAvailability.occupied')}
+          value={String(status.booked)}
+        />
       </CardContent>
     </Card>
   );
