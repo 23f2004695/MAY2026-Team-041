@@ -3,12 +3,15 @@ import {
   Armchair,
   BellRing,
   BookMarked,
+  CheckCircle2,
   ClipboardList,
   Flag,
   Gift,
   Heart,
   IndianRupee,
   KeyRound,
+  LifeBuoy,
+  Megaphone,
   MessageCircle,
   PackageX,
   Trophy,
@@ -42,7 +45,11 @@ export type NotificationType =
   | 'seat-booked'
   | 'post-comment'
   | 'post-like'
-  | 'payment-received';
+  | 'payment-received'
+  | 'announcement'
+  | 'support-ticket'
+  | 'support-ticket-resolved'
+  | 'support-ticket-reopened';
 
 export interface NotificationCardProps {
   type: NotificationType;
@@ -75,6 +82,10 @@ const typeIcon: Record<NotificationType, LucideIcon> = {
   'post-comment': MessageCircle,
   'post-like': Heart,
   'payment-received': IndianRupee,
+  announcement: Megaphone,
+  'support-ticket': LifeBuoy,
+  'support-ticket-resolved': CheckCircle2,
+  'support-ticket-reopened': AlertCircle,
 };
 
 export function NotificationCard({
@@ -86,7 +97,11 @@ export function NotificationCard({
   onMarkAsRead,
   className,
 }: NotificationCardProps) {
-  const Icon = typeIcon[type];
+  // `type` ultimately comes from the backend's free-text Notification.type column
+  // (see NotificationsPanel's `as NotificationType` cast) — not something TS can
+  // actually guarantee matches this union, so fall back rather than crash on an
+  // unrecognized value.
+  const Icon = typeIcon[type] ?? BellRing;
   const { t } = useTranslation();
 
   return (

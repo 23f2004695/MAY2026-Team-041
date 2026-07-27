@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { Button, Input, Loader, Modal } from '@/components/ui';
 import { ApiError } from '@/lib/api';
-import { useAuth, type PricingPlan } from '@/providers/AuthProvider';
+import { useAuth, type Coupon, type PricingPlan } from '@/providers/AuthProvider';
 
 export interface AdjustPricingModalProps {
   open: boolean;
@@ -72,19 +72,113 @@ function PlanRow({ plan, onUpdated }: { plan: PricingPlan; onUpdated: (plan: Pri
   );
 }
 
+function CouponGenerator({
+  coupons,
+  onGenerated,
+}: {
+  coupons: Coupon[] | null;
+  onGenerated: (coupon: Coupon) => void;
+}) {
+  const { t } = useTranslation();
+  const { generateCoupon } = useAuth();
+  const [discountPercent, setDiscountPercent] = useState('');
+  const [maxUses, setMaxUses] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const isValid =
+    Number(discountPercent) > 0 && Number(discountPercent) <= 100 && Number(maxUses) > 0;
+
+  async function handleGenerate() {
+    setIsGenerating(true);
+    try {
+      const coupon = await generateCoupon({
+        discount_percent: Number(discountPercent),
+        max_uses: Number(maxUses),
+      });
+      onGenerated(coupon);
+      setDiscountPercent('');
+      setMaxUses('');
+      toast.success(t('admin.adjustPricing.couponGenerator.generatedToast', { code: coupon.code }));
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-3 border-t border-border pt-4">
+      <div>
+        <p className="text-sm font-semibold text-foreground">
+          {t('admin.adjustPricing.couponGenerator.title')}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {t('admin.adjustPricing.couponGenerator.description')}
+        </p>
+      </div>
+
+      <div className="flex items-end gap-2">
+        <Input
+          label={t('admin.adjustPricing.couponGenerator.discountLabel')}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          className="w-24"
+          value={discountPercent}
+          onChange={(event) => setDiscountPercent(event.target.value)}
+        />
+        <Input
+          label={t('admin.adjustPricing.couponGenerator.maxUsesLabel')}
+          inputMode="numeric"
+          pattern="[0-9]*"
+          className="w-28"
+          value={maxUses}
+          onChange={(event) => setMaxUses(event.target.value)}
+        />
+        <Button size="sm" onClick={handleGenerate} isLoading={isGenerating} disabled={!isValid}>
+          {t('admin.adjustPricing.couponGenerator.generate')}
+        </Button>
+      </div>
+
+      {coupons && coupons.length > 0 && (
+        <ul className="flex flex-col gap-1.5">
+          {coupons.map((coupon) => (
+            <li
+              key={coupon.id}
+              className="flex items-center justify-between rounded-md bg-secondary/50 px-3 py-2 text-sm"
+            >
+              <span className="font-mono font-medium text-foreground">{coupon.code}</span>
+              <span className="text-muted-foreground">
+                {t('admin.adjustPricing.couponGenerator.summary', {
+                  percent: coupon.discount_percent,
+                  used: coupon.uses_count,
+                  max: coupon.max_uses,
+                })}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function AdjustPricingModal({ open, onClose }: AdjustPricingModalProps) {
   const { t } = useTranslation();
-  const { getPricingPlans } = useAuth();
+  const { getPricingPlans, getCoupons } = useAuth();
   const [plans, setPlans] = useState<PricingPlan[] | null>(null);
+  const [coupons, setCoupons] = useState<Coupon[] | null>(null);
 
   useEffect(() => {
-    // Deliberately doesn't reset `plans` to null on every reopen — keeps the last-loaded
+    // Deliberately doesn't reset state to null on every reopen — keeps the last-loaded
     // rows visible while this silently refreshes, instead of flashing a loader each time.
     if (!open) return;
     let cancelled = false;
     getPricingPlans()
       .then((data) => !cancelled && setPlans(data))
       .catch(() => !cancelled && setPlans((current) => current ?? []));
+    getCoupons()
+      .then((data) => !cancelled && setCoupons(data))
+      .catch(() => !cancelled && setCoupons((current) => current ?? []));
     return () => {
       cancelled = true;
     };
@@ -110,6 +204,11 @@ export function AdjustPricingModal({ open, onClose }: AdjustPricingModalProps) {
               }
             />
           ))}
+
+          <CouponGenerator
+            coupons={coupons}
+            onGenerated={(coupon) => setCoupons((current) => [coupon, ...(current ?? [])])}
+          />
         </div>
       )}
     </Modal>

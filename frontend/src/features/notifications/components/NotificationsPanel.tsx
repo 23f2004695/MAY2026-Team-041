@@ -1,4 +1,4 @@
-import { BellOff } from 'lucide-react';
+import { BellOff, CheckCheck } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +18,10 @@ const NOTIFICATION_TITLE_KEYS: Partial<Record<string, string>> = {
   'post-like': 'postLike',
   'payment-received': 'paymentReceived',
   'pending-request': 'pendingRequest',
+  announcement: 'announcement',
+  'support-ticket': 'supportTicket',
+  'support-ticket-resolved': 'supportTicketResolved',
+  'support-ticket-reopened': 'supportTicketReopened',
 };
 
 function NotificationRow({
@@ -45,7 +49,7 @@ function NotificationRow({
 
 export function NotificationsPanel() {
   const { t } = useTranslation();
-  const { getMyNotifications, markNotificationRead } = useAuth();
+  const { getMyNotifications, markNotificationRead, markAllNotificationsRead } = useAuth();
   const [notifications, setNotifications] = useState<AppNotificationRecord[]>([]);
   const [filter, setFilter] = useState<Filter>('all');
 
@@ -73,6 +77,15 @@ export function NotificationsPanel() {
     });
   }
 
+  function markAllAsRead() {
+    const previous = notifications;
+    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })));
+    markAllNotificationsRead().catch(() => {
+      // Revert on failure so the UI doesn't claim a read state the backend never saved.
+      setNotifications(previous);
+    });
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-2">
@@ -93,7 +106,17 @@ export function NotificationsPanel() {
           </Button>
         </div>
         {unreadCount > 0 && (
-          <Badge variant="success">{t('notifications.unreadBadge', { count: unreadCount })}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="success">{t('notifications.unreadBadge', { count: unreadCount })}</Badge>
+            <Button
+              size="sm"
+              variant="ghost"
+              leadingIcon={<CheckCheck className="size-4" />}
+              onClick={markAllAsRead}
+            >
+              {t('notifications.markAllAsRead')}
+            </Button>
+          </div>
         )}
       </div>
 

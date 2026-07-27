@@ -21,6 +21,11 @@ async def mark_as_read(user: User, notification_id: str) -> NotificationOut:
     return NotificationOut.from_prisma(updated)
 
 
+async def mark_all_as_read(user: User) -> list[NotificationOut]:
+    await repository.mark_all_read(user.id)
+    return await list_my_notifications(user)
+
+
 async def create_notification(user_id: str, type_: str, message: str) -> NotificationOut:
     created = await repository.create(user_id, type_, message)
     return NotificationOut.from_prisma(created)

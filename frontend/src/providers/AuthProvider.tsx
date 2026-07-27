@@ -39,6 +39,7 @@ export interface PaymentPayload {
   amount: number;
   label: string;
   plan_months?: number;
+  coupon_code?: string;
 }
 
 export interface Membership {
@@ -291,6 +292,42 @@ export interface AdminMemberQuery {
   page_size?: number;
 }
 
+export type SupportTicketCategory =
+  | 'book_reservation'
+  | 'payment'
+  | 'seat_booking'
+  | 'harassment'
+  | 'offline_library'
+  | 'attendance'
+  | 'other';
+
+export type SupportTicketStatus = 'open' | 'resolved' | 'closed';
+
+export interface SupportTicketRecord {
+  id: string;
+  category: SupportTicketCategory;
+  description: string;
+  status: SupportTicketStatus;
+  raised_by_id: string;
+  raised_by_name: string;
+  raised_by_role: Role;
+  resolution_note: string | null;
+  resolved_by_name: string | null;
+  resolved_at: string | null;
+  closed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SupportTicketPayload {
+  category: SupportTicketCategory;
+  description: string;
+}
+
+export interface ResolveTicketPayload {
+  resolution_note: string;
+}
+
 export interface ExpensePayload {
   category: ExpenseCategory;
   amount: number;
@@ -309,6 +346,25 @@ export interface PricingPlan {
 export interface PricingPlanUpdatePayload {
   price: number;
   save_percent: number;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_percent: number;
+  max_uses: number;
+  uses_count: number;
+  created_at: string;
+}
+
+export interface CouponPayload {
+  discount_percent: number;
+  max_uses: number;
+}
+
+export interface CouponValidation {
+  code: string;
+  discount_percent: number;
 }
 
 export interface CreateMemberPayload {
@@ -469,6 +525,7 @@ interface AuthContextValue extends AuthState {
   requestSeatNotify: (payload: SeatSlotPayload) => Promise<void>;
   getMyNotifications: () => Promise<AppNotificationRecord[]>;
   markNotificationRead: (notificationId: string) => Promise<AppNotificationRecord>;
+  markAllNotificationsRead: () => Promise<AppNotificationRecord[]>;
   getBookReviews: (bookId: string) => Promise<BookReviews>;
   createReview: (bookId: string, payload: ReviewPayload) => Promise<Review>;
   updateReview: (reviewId: string, payload: ReviewPayload) => Promise<Review>;
@@ -482,6 +539,15 @@ interface AuthContextValue extends AuthState {
   getExpenseBreakdownReport: () => Promise<ExpenseBreakdownReport>;
   getMembershipGrowthReport: () => Promise<MembershipGrowthReport>;
   getAdminMembers: (query?: AdminMemberQuery) => Promise<AdminMemberListResponse>;
+  createSupportTicket: (payload: SupportTicketPayload) => Promise<SupportTicketRecord>;
+  getMySupportTickets: () => Promise<SupportTicketRecord[]>;
+  getStaffSupportTickets: (status?: SupportTicketStatus) => Promise<SupportTicketRecord[]>;
+  resolveSupportTicket: (
+    ticketId: string,
+    payload: ResolveTicketPayload,
+  ) => Promise<SupportTicketRecord>;
+  confirmSupportTicket: (ticketId: string) => Promise<SupportTicketRecord>;
+  reopenSupportTicket: (ticketId: string) => Promise<SupportTicketRecord>;
   searchMembers: (query: string) => Promise<MemberSummary[]>;
   getBillingRequests: () => Promise<BillingRequestRecord[]>;
   createBillingRequest: (payload: BillingRequestPayload) => Promise<BillingRequestRecord>;
@@ -492,6 +558,9 @@ interface AuthContextValue extends AuthState {
   updatePricingPlan: (id: string, payload: PricingPlanUpdatePayload) => Promise<PricingPlan>;
   createMember: (payload: CreateMemberPayload) => Promise<CreatedMember>;
   sendAnnouncement: (payload: AnnouncementPayload) => Promise<AnnouncementResult>;
+  getCoupons: () => Promise<Coupon[]>;
+  generateCoupon: (payload: CouponPayload) => Promise<Coupon>;
+  validateCoupon: (code: string) => Promise<CouponValidation>;
   clearPostAuthRedirect: () => void;
   logout: () => void;
 }
@@ -748,6 +817,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiPost<AppNotificationRecord>(`/notifications/${notificationId}/read`, undefined, state.token);
   }
 
+  async function markAllNotificationsRead(): Promise<AppNotificationRecord[]> {
+    if (!state.token) return [];
+    return apiPost<AppNotificationRecord[]>('/notifications/read-all', undefined, state.token);
+  }
+
   async function getBookReviews(bookId: string): Promise<BookReviews> {
     if (!state.token) return { items: [], average_rating: 0, total_reviews: 0, breakdown: [] };
     return apiGet<BookReviews>(`/books/${bookId}/reviews`, state.token);
@@ -818,6 +892,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, state.token);
   }
 
+  async function createSupportTicket(payload: SupportTicketPayload): Promise<SupportTicketRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SupportTicketRecord>('/support-tickets', payload, state.token);
+  }
+
+  async function getMySupportTickets(): Promise<SupportTicketRecord[]> {
+    if (!state.token) return [];
+    return apiGet<SupportTicketRecord[]>('/support-tickets/me', state.token);
+  }
+
+  async function getStaffSupportTickets(
+    ticketStatus?: SupportTicketStatus,
+  ): Promise<SupportTicketRecord[]> {
+    if (!state.token) return [];
+    const query = ticketStatus ? `?status=${ticketStatus}` : '';
+    return apiGet<SupportTicketRecord[]>(`/support-tickets${query}`, state.token);
+  }
+
+  async function resolveSupportTicket(
+    ticketId: string,
+    payload: ResolveTicketPayload,
+  ): Promise<SupportTicketRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SupportTicketRecord>(`/support-tickets/${ticketId}/resolve`, payload, state.token);
+  }
+
+  async function confirmSupportTicket(ticketId: string): Promise<SupportTicketRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SupportTicketRecord>(
+      `/support-tickets/${ticketId}/confirm`,
+      undefined,
+      state.token,
+    );
+  }
+
+  async function reopenSupportTicket(ticketId: string): Promise<SupportTicketRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SupportTicketRecord>(
+      `/support-tickets/${ticketId}/reopen`,
+      undefined,
+      state.token,
+    );
+  }
+
   async function searchMembers(query: string): Promise<MemberSummary[]> {
     if (!state.token || query.trim().length === 0) return [];
     const data = await apiGet<{ items: MemberSummary[] }>(
@@ -883,6 +1001,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function sendAnnouncement(payload: AnnouncementPayload): Promise<AnnouncementResult> {
     if (!state.token) throw new Error('Not authenticated');
     return apiPost<AnnouncementResult>('/admin/announcements', payload, state.token);
+  }
+
+  async function getCoupons(): Promise<Coupon[]> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<Coupon[]>('/coupons', state.token);
+  }
+
+  async function generateCoupon(payload: CouponPayload): Promise<Coupon> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<Coupon>('/coupons', payload, state.token);
+  }
+
+  async function validateCoupon(code: string): Promise<CouponValidation> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<CouponValidation>(`/coupons/${encodeURIComponent(code)}/validate`, state.token);
   }
 
   async function refreshAccessToken(): Promise<string | null> {
@@ -954,6 +1087,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         requestSeatNotify,
         getMyNotifications,
         markNotificationRead,
+        markAllNotificationsRead,
         getBookReviews,
         createReview,
         updateReview,
@@ -967,6 +1101,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getExpenseBreakdownReport,
         getMembershipGrowthReport,
         getAdminMembers,
+        createSupportTicket,
+        getMySupportTickets,
+        getStaffSupportTickets,
+        resolveSupportTicket,
+        confirmSupportTicket,
+        reopenSupportTicket,
         searchMembers,
         getBillingRequests,
         createBillingRequest,
@@ -977,6 +1117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updatePricingPlan,
         createMember,
         sendAnnouncement,
+        getCoupons,
+        generateCoupon,
+        validateCoupon,
         clearPostAuthRedirect,
         logout,
       }}

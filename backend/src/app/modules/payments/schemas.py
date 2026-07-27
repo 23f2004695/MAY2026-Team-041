@@ -7,6 +7,7 @@ class PaymentCreate(BaseModel):
     amount: int = Field(gt=0)
     label: str = Field(min_length=1, max_length=255)
     plan_months: int | None = Field(default=None, gt=0)
+    coupon_code: str | None = Field(default=None, min_length=1, max_length=20)
 
 
 class PaymentOut(BaseModel):

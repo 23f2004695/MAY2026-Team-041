@@ -82,6 +82,7 @@
     "leaderboard": "Leaderboard",
     "reviews": "Reviews",
     "notifications": "Notifications",
+    "support": "Support",
     "settings": "Settings",
     "adminOverview": "Admin Overview",
     "members": "Members",
@@ -171,7 +172,13 @@
     "payAtLibraryToast": "The manager has been notified — pay in cash at the counter",
     "renewingCurrentPlan": "Renewing your current plan.",
     "changePlan": "Change plan",
-    "secureNotice": "Payments are processed securely"
+    "secureNotice": "Payments are processed securely",
+    "coupon": {
+      "placeholder": "Have a coupon code?",
+      "apply": "Apply",
+      "applied": "Coupon {{code}} applied — {{percent}}% off",
+      "remove": "Remove"
+    }
   },
   "feedback": {
     "error": {
@@ -292,7 +299,8 @@
         "feeWaiverRejected": "Rejected a {{amount}} fee waiver request from {{name}}",
         "pricingPlanUpdated": "Updated the {{plan}} plan price to {{amount}}",
         "announcementSent_one": "Sent an announcement to {{count}} member",
-        "announcementSent_other": "Sent an announcement to {{count}} members"
+        "announcementSent_other": "Sent an announcement to {{count}} members",
+        "couponGenerated": "Generated coupon {{code}} ({{percent}}% off, {{maxUses}} uses)"
       }
     },
     "reports": {
@@ -360,7 +368,16 @@
       "priceLabel": "Price (₹)",
       "discountLabel": "Discount (%)",
       "save": "Save",
-      "savedToast": "Updated the {{plan}} plan"
+      "savedToast": "Updated the {{plan}} plan",
+      "couponGenerator": {
+        "title": "Discount Coupon Generator",
+        "description": "Generate a code that gives a discount to a set number of people.",
+        "discountLabel": "Discount (%)",
+        "maxUsesLabel": "No. of persons",
+        "generate": "Generate",
+        "generatedToast": "Generated coupon {{code}}",
+        "summary": "{{percent}}% off · used {{used}}/{{max}}"
+      }
     }
   },
   "itHead": {
@@ -1513,8 +1530,10 @@
   },
   "notifications": {
     "pageTitle": "Notifications",
+    "pageTitleWithUnread": "Notifications ({{count}} unread)",
     "unreadBadge_one": "{{count}} unread",
     "unreadBadge_other": "{{count}} unread",
+    "markAllAsRead": "Mark all as read",
     "filterAriaLabel": "Filter notifications",
     "filters": {
       "all": "All",
@@ -1532,7 +1551,82 @@
       "postComment": "New comment",
       "postLike": "New like",
       "paymentReceived": "Payment received",
-      "pendingRequest": "Billing request needs approval"
+      "pendingRequest": "Billing request needs approval",
+      "announcement": "Announcement",
+      "supportTicket": "New support ticket",
+      "supportTicketResolved": "Your ticket was resolved",
+      "supportTicketReopened": "A ticket was reopened"
+    }
+  },
+  "support": {
+    "pageTitle": "Support",
+    "pageDescription": "Raise an issue and track it until it's resolved.",
+    "raiseButton": "Raise a Ticket",
+    "categories": {
+      "book_reservation": "Book Reservation",
+      "payment": "Payment",
+      "seat_booking": "Seat Booking",
+      "harassment": "Harassment / Safety Concern",
+      "offline_library": "Offline Library Visit",
+      "attendance": "Attendance",
+      "other": "Other"
+    },
+    "status": {
+      "open": "Open",
+      "resolved": "Awaiting your confirmation",
+      "closed": "Closed"
+    },
+    "wizard": {
+      "title": "Raise a Ticket",
+      "step1Title": "What's this about?",
+      "step2Title": "Describe the issue",
+      "step2Placeholder": "Tell us what happened...",
+      "step2Hint": "Between 10 and 500 characters.",
+      "step3Title": "Review & confirm",
+      "acknowledge": "I confirm the details above are accurate.",
+      "next": "Next",
+      "back": "Back",
+      "submit": "Submit Ticket",
+      "submitError": "Couldn't submit your ticket. Please try again.",
+      "step4Title": "Ticket submitted",
+      "step4Description": "Our team will review it and get back to you. You can track its status below.",
+      "done": "Done"
+    },
+    "actions": {
+      "confirmResolved": "Confirm Resolved",
+      "reopen": "Not Fixed — Reopen"
+    },
+    "history": {
+      "title": "Your Tickets",
+      "emptyTitle": "No tickets yet",
+      "emptyDescription": "Anything you raise will show up here.",
+      "raisedOn": "Raised {{date}}",
+      "staffResponse": "Staff response"
+    },
+    "toasts": {
+      "created": "Your ticket has been submitted.",
+      "confirmed": "Thanks — ticket closed.",
+      "reopened": "Ticket reopened for staff to take another look."
+    },
+    "staff": {
+      "title": "Support Tickets",
+      "description": "Issues raised by members and guardians.",
+      "filterAriaLabel": "Filter tickets",
+      "filters": {
+        "all": "All",
+        "open": "Open",
+        "resolved": "Resolved",
+        "closed": "Closed"
+      },
+      "raisedBy": "Raised by {{name}} ({{role}})",
+      "resolveButton": "Resolve",
+      "resolvedToast": "Ticket marked resolved.",
+      "resolveModalTitle": "Resolve Ticket",
+      "resolutionPlaceholder": "What did you do to fix this?",
+      "resolutionHint": "This will be shown to the person who raised the ticket.",
+      "submitResolution": "Mark Resolved",
+      "emptyTitle": "No tickets here",
+      "emptyDescription": "Nothing matches this filter right now."
     }
   },
   "profile": {

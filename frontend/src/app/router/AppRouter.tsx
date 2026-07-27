@@ -88,6 +88,9 @@ const LeaderboardPage = lazy(() =>
 const ReviewsPage = lazy(() =>
   import('@/features/reviews/pages/ReviewsPage').then((m) => ({ default: m.ReviewsPage })),
 );
+const SupportPage = lazy(() =>
+  import('@/features/support/pages/SupportPage').then((m) => ({ default: m.SupportPage })),
+);
 
 const AdminDashboardPage = lazy(() =>
   import('@/features/admin/pages/AdminDashboardPage').then((m) => ({
@@ -162,6 +165,7 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.READING_PROGRESS), element: withSuspense(<ReadingProgressPage />) },
       { path: relative(ROUTES.LEADERBOARD), element: withSuspense(<LeaderboardPage />) },
       { path: relative(ROUTES.REVIEWS), element: withSuspense(<ReviewsPage />) },
+      { path: relative(ROUTES.SUPPORT), element: withSuspense(<SupportPage />) },
       { path: relative(ROUTES.SETTINGS), element: withSuspense(<SettingsPage />) },
     ],
   },

@@ -5,6 +5,7 @@ import {
   CalendarCheck,
   Cpu,
   LayoutDashboard,
+  LifeBuoy,
   type LucideIcon,
   MessageCircle,
   Settings,
@@ -34,6 +35,7 @@ export const userNavigation: NavItem[] = [
   { label: 'nav.readingProgress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.support', path: ROUTES.SUPPORT, icon: LifeBuoy },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -50,6 +52,7 @@ export const adminNavigation: NavItem[] = [
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.support', path: ROUTES.SUPPORT, icon: LifeBuoy },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -59,6 +62,7 @@ export const managerNavigation: NavItem[] = [
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.support', path: ROUTES.SUPPORT, icon: LifeBuoy },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -74,6 +78,7 @@ export const itHeadNavigation: NavItem[] = [
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },
   { label: 'nav.reviews', path: ROUTES.REVIEWS, icon: Star },
+  { label: 'nav.support', path: ROUTES.SUPPORT, icon: LifeBuoy },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
 
@@ -86,5 +91,6 @@ export const guardianOverviewNavItem: NavItem = {
 export const guardianNavigation: NavItem[] = [
   guardianOverviewNavItem,
   { label: 'nav.readingProgress', path: ROUTES.READING_PROGRESS, icon: BookMarked },
+  { label: 'nav.support', path: ROUTES.SUPPORT, icon: LifeBuoy },
   { label: 'nav.settings', path: ROUTES.SETTINGS, icon: Settings },
 ];
