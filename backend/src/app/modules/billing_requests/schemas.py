@@ -19,7 +19,7 @@ class WaiveFineRequest(BaseModel):
 
 class BillingRequestOut(BaseModel):
     id: str
-    type: str
+    type: Literal["refund", "fee_waiver"]
     amount: int
     reason: str
     status: str

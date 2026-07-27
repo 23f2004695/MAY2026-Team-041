@@ -21,3 +21,9 @@ async def create(user_id: str, type_: str, message: str) -> Notification:
 
 async def mark_read(notification_id: str) -> Notification:
     return await prisma.notification.update(where={"id": notification_id}, data={"read": True})
+
+
+async def mark_all_read(user_id: str) -> None:
+    await prisma.notification.update_many(
+        where={"userId": user_id, "read": False}, data={"read": True}
+    )

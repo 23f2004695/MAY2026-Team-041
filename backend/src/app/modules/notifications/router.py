@@ -22,3 +22,10 @@ async def mark_as_read(
     notification_id: str, user: Annotated[User, Depends(get_current_user)]
 ) -> NotificationOut:
     return await service.mark_as_read(user, notification_id)
+
+
+@router.post("/read-all", response_model=list[NotificationOut])
+async def mark_all_as_read(
+    user: Annotated[User, Depends(get_current_user)],
+) -> list[NotificationOut]:
+    return await service.mark_all_as_read(user)

@@ -31,6 +31,12 @@ function useActionText(entry: AuditLogEntry) {
       });
     case 'announcementSent':
       return t('admin.auditLog.actions.announcementSent', { count: Number(params.recipientCount) });
+    case 'couponGenerated':
+      return t('admin.auditLog.actions.couponGenerated', {
+        code: params.code,
+        percent: params.discountPercent,
+        maxUses: params.maxUses,
+      });
     default:
       return null;
   }

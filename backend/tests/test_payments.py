@@ -26,8 +26,11 @@ def _unique_email() -> str:
 async def _db_connection():
     await prisma.connect()
     yield
-    await prisma.payment.delete_many(where={"user": {"email": {"endswith": TEST_EMAIL_DOMAIN}}})
-    await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
+    domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
+    await prisma.payment.delete_many(where={"user": domain_filter})
+    await prisma.auditlogentry.delete_many(where={"actor": domain_filter})
+    await prisma.coupon.delete_many(where={"createdBy": domain_filter})
+    await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
 
 
@@ -38,6 +41,19 @@ async def member_user():
         email=_unique_email(),
         password_hash=hash_password("Password123!"),
         full_name="Payer",
+        phone=None,
+        avatar_url=None,
+        role_id=role.id,
+    )
+
+
+@pytest_asyncio.fixture
+async def admin_user():
+    role = await repository.upsert_role(Role.ADMIN)
+    return await repository.create_member(
+        email=_unique_email(),
+        password_hash=hash_password("Password123!"),
+        full_name="Coupon Admin",
         phone=None,
         avatar_url=None,
         role_id=role.id,
@@ -147,3 +163,70 @@ async def test_membership_reflects_latest_plan_payment(client, member_user):
     body = response.json()
     assert body["plan_label"] == "1 Month — ₹499"
     assert body["is_active"] is True
+
+
+async def _login(client, user) -> dict:
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": user.email, "password": "Password123!"}
+    )
+    return {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+
+async def _generate_coupon(client, headers, discount_percent=20, max_uses=1) -> dict:
+    response = await client.post(
+        "/api/v1/coupons",
+        json={"discount_percent": discount_percent, "max_uses": max_uses},
+        headers=headers,
+    )
+    return response.json()
+
+
+async def test_payment_with_a_valid_coupon_applies_the_discount(client, member_user, admin_user):
+    admin_headers = await _login(client, admin_user)
+    coupon = await _generate_coupon(client, admin_headers, discount_percent=20, max_uses=1)
+    member_headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments",
+        json={"amount": 500, "label": "Test", "coupon_code": coupon["code"]},
+        headers=member_headers,
+    )
+
+    assert response.status_code == 201
+    assert response.json()["amount"] == 400
+
+    listed = await client.get("/api/v1/coupons", headers=admin_headers)
+    updated = next(c for c in listed.json() if c["code"] == coupon["code"])
+    assert updated["uses_count"] == 1
+
+
+async def test_payment_with_an_unknown_coupon_code_fails(client, member_user):
+    member_headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments",
+        json={"amount": 500, "label": "Test", "coupon_code": "NOSUCHCODE"},
+        headers=member_headers,
+    )
+
+    assert response.status_code == 404
+
+
+async def test_payment_with_an_exhausted_coupon_fails(client, member_user, admin_user):
+    admin_headers = await _login(client, admin_user)
+    coupon = await _generate_coupon(client, admin_headers, discount_percent=10, max_uses=1)
+    member_headers = await _login(client, member_user)
+
+    first = await client.post(
+        "/api/v1/payments",
+        json={"amount": 100, "label": "Test", "coupon_code": coupon["code"]},
+        headers=member_headers,
+    )
+    assert first.status_code == 201
+
+    second = await client.post(
+        "/api/v1/payments",
+        json={"amount": 100, "label": "Test", "coupon_code": coupon["code"]},
+        headers=member_headers,
+    )
+    assert second.status_code == 409

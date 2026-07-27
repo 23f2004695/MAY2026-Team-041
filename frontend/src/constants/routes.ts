@@ -19,6 +19,7 @@ export const ROUTES = {
   LEADERBOARD: '/leaderboard',
   REVIEWS: '/reviews',
   SETTINGS: '/settings',
+  SUPPORT: '/support',
   ADMIN: '/admin',
   ADMIN_MEMBERS: '/admin/members',
   IT_HEAD: '/it-head',

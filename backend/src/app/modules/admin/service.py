@@ -279,6 +279,7 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> Admi
     latest_plan_payments = await repository.list_latest_membership_payments(member_ids)
     progress_counts = await repository.count_reading_progress_by_status(member_ids)
     reported_ids = await repository.find_reported_member_ids(member_ids)
+    event_registration_counts = await repository.count_event_registrations(member_ids)
 
     now = datetime.now(UTC)
     items = []
@@ -303,6 +304,8 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> Admi
                 id=user.id,
                 full_name=user.fullName,
                 email=user.email,
+                role=user.role.name,
+                is_active=user.isActive,
                 joined_at=user.createdAt,
                 last_payment_amount=last_payment.amount if last_payment else None,
                 last_payment_label=last_payment.label if last_payment else None,
@@ -313,6 +316,7 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> Admi
                 books_reading=counts.get("reading", 0),
                 books_completed=counts.get("completed", 0),
                 reported=user.id in reported_ids,
+                event_registrations=event_registration_counts.get(user.id, 0),
             )
         )
 

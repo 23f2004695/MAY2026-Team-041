@@ -1,4 +1,4 @@
-import { Armchair, BookPlus, ReceiptText, UserPlus } from 'lucide-react';
+import { Armchair, BookPlus, CalendarPlus, ReceiptText, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -133,6 +133,12 @@ export function ManagerDashboard() {
       <FileBillingRequestModal
         open={isBillingRequestOpen}
         onClose={() => setIsBillingRequestOpen(false)}
+      />
+
+      <CreateEventModal
+        open={createEventOpen}
+        onClose={() => setCreateEventOpen(false)}
+        onCreated={() => setCreateEventOpen(false)}
       />
     </div>
   );

@@ -79,6 +79,7 @@
     "leaderboard": "लीडरबोर्ड",
     "reviews": "समीक्षाएँ",
     "notifications": "सूचनाएँ",
+    "support": "सहायता",
     "settings": "सेटिंग्स",
     "adminOverview": "एडमिन अवलोकन",
     "members": "सदस्य",
@@ -115,7 +116,8 @@
         "member": "सदस्य",
         "manager": "मैनेजर",
         "it-head": "आईटी हेड",
-        "guardian": "अभिभावक"
+        "guardian": "अभिभावक",
+        "librarian": "लाइब्रेरियन"
       },
       "or": "या",
       "email": "ईमेल",
@@ -162,7 +164,13 @@
     "payAtLibraryDescription": "ऑनलाइन भुगतान छोड़ें — काउंटर पर जाएँ और मैनेजर को नकद भुगतान करें।",
     "contactManager": "मैनेजर को सूचित करें",
     "payAtLibraryToast": "मैनेजर को सूचित कर दिया गया है — काउंटर पर नकद भुगतान करें",
-    "secureNotice": "भुगतान सुरक्षित रूप से प्रोसेस किए जाते हैं"
+    "secureNotice": "भुगतान सुरक्षित रूप से प्रोसेस किए जाते हैं",
+    "coupon": {
+      "placeholder": "कूपन कोड है?",
+      "apply": "लागू करें",
+      "applied": "कूपन {{code}} लागू किया गया — {{percent}}% छूट",
+      "remove": "हटाएं"
+    }
   },
   "feedback": {
     "error": {
@@ -176,16 +184,18 @@
     "pageDescription": "व्यवसाय प्रदर्शन, नकदी प्रवाह और प्लेटफ़ॉर्म प्रबंधन",
     "members": {
       "pageTitle": "सदस्य",
-      "pageDescription": "सभी पंजीकृत सदस्य, उनकी योजनाएँ, गतिविधि और स्थिति।",
+      "pageDescription": "सभी पंजीकृत खाते, उनकी योजनाएँ, गतिविधि और स्थिति।",
       "searchPlaceholder": "नाम या ईमेल से खोजें",
       "table": {
         "member": "सदस्य",
+        "role": "भूमिका",
         "lastPayment": "अंतिम भुगतान",
         "plan": "योजना",
         "progress": "पठन प्रगति",
         "reported": "शिकायत",
         "joined": "शामिल हुए",
-        "events": "इवेंट भागीदारी"
+        "events": "इवेंट भागीदारी",
+        "status": "स्थिति"
       },
       "noPayment": "अभी तक कोई भुगतान नहीं",
       "noPlan": "कोई सक्रिय योजना नहीं",
@@ -195,7 +205,16 @@
       "booksCompleted": "{{count}} पूर्ण",
       "reportedYes": "शिकायत मिली",
       "reportedNo": "साफ़",
-      "eventsNotTracked": "अभी ट्रैक नहीं किया गया",
+      "eventsCount": "{{count}} इवेंट",
+      "actions": {
+        "activate": "सक्रिय करें",
+        "deactivate": "निष्क्रिय करें"
+      },
+      "toasts": {
+        "roleUpdated": "{{name}} अब {{role}} है",
+        "activated": "{{name}} सक्रिय किया गया",
+        "deactivated": "{{name}} निष्क्रिय किया गया"
+      },
       "empty": {
         "title": "कोई सदस्य नहीं मिला",
         "description": "एक अलग खोज शब्द आज़माएँ।"
@@ -274,7 +293,8 @@
         "feeWaiverRejected": "{{name}} के {{amount}} फीस माफी अनुरोध को अस्वीकार किया गया",
         "pricingPlanUpdated": "{{plan}} योजना की कीमत {{amount}} कर दी गई",
         "announcementSent_one": "{{count}} सदस्य को घोषणा भेजी गई",
-        "announcementSent_other": "{{count}} सदस्यों को घोषणा भेजी गई"
+        "announcementSent_other": "{{count}} सदस्यों को घोषणा भेजी गई",
+        "couponGenerated": "कूपन {{code}} बनाया गया ({{percent}}% छूट, {{maxUses}} उपयोग)"
       }
     },
     "reports": {
@@ -342,7 +362,16 @@
       "priceLabel": "कीमत (₹)",
       "discountLabel": "छूट (%)",
       "save": "सहेजें",
-      "savedToast": "{{plan}} योजना अपडेट की गई"
+      "savedToast": "{{plan}} योजना अपडेट की गई",
+      "couponGenerator": {
+        "title": "छूट कूपन जनरेटर",
+        "description": "एक निश्चित संख्या में लोगों को छूट देने वाला कोड बनाएं।",
+        "discountLabel": "छूट (%)",
+        "maxUsesLabel": "व्यक्तियों की संख्या",
+        "generate": "बनाएं",
+        "generatedToast": "कूपन {{code}} बनाया गया",
+        "summary": "{{percent}}% छूट · {{used}}/{{max}} उपयोग हुआ"
+      }
     }
   },
   "itHead": {
@@ -1291,6 +1320,8 @@
   },
   "notifications": {
     "pageTitle": "सूचनाएँ",
+    "pageTitleWithUnread": "सूचनाएँ ({{count}} अपठित)",
+    "markAllAsRead": "सभी को पढ़ा हुआ चिह्नित करें",
     "unreadBadge_one": "{{count}} अपठित",
     "unreadBadge_other": "{{count}} अपठित",
     "filterAriaLabel": "सूचनाएँ फ़िल्टर करें",
@@ -1310,7 +1341,82 @@
       "postComment": "नई टिप्पणी",
       "postLike": "नई लाइक",
       "paymentReceived": "भुगतान प्राप्त हुआ",
-      "pendingRequest": "बिलिंग अनुरोध को मंज़ूरी चाहिए"
+      "pendingRequest": "बिलिंग अनुरोध को मंज़ूरी चाहिए",
+      "announcement": "घोषणा",
+      "supportTicket": "नई सहायता टिकट",
+      "supportTicketResolved": "आपकी टिकट हल हो गई",
+      "supportTicketReopened": "एक टिकट फिर से खोली गई"
+    }
+  },
+  "support": {
+    "pageTitle": "सहायता",
+    "pageDescription": "एक समस्या दर्ज करें और उसके हल होने तक ट्रैक करें।",
+    "raiseButton": "टिकट दर्ज करें",
+    "categories": {
+      "book_reservation": "पुस्तक आरक्षण",
+      "payment": "भुगतान",
+      "seat_booking": "सीट बुकिंग",
+      "harassment": "उत्पीड़न / सुरक्षा चिंता",
+      "offline_library": "ऑफ़लाइन लाइब्रेरी विज़िट",
+      "attendance": "उपस्थिति",
+      "other": "अन्य"
+    },
+    "status": {
+      "open": "खुला",
+      "resolved": "आपकी पुष्टि की प्रतीक्षा में",
+      "closed": "बंद"
+    },
+    "wizard": {
+      "title": "टिकट दर्ज करें",
+      "step1Title": "यह किस बारे में है?",
+      "step2Title": "समस्या का वर्णन करें",
+      "step2Placeholder": "हमें बताएं कि क्या हुआ...",
+      "step2Hint": "10 से 500 अक्षरों के बीच।",
+      "step3Title": "समीक्षा करें और पुष्टि करें",
+      "acknowledge": "मैं पुष्टि करता/करती हूँ कि ऊपर दिया गया विवरण सही है।",
+      "next": "आगे",
+      "back": "पीछे",
+      "submit": "टिकट सबमिट करें",
+      "submitError": "आपकी टिकट सबमिट नहीं हो सकी। कृपया पुनः प्रयास करें।",
+      "step4Title": "टिकट सबमिट हो गई",
+      "step4Description": "हमारी टीम इसकी समीक्षा करेगी और आपसे संपर्क करेगी। आप इसकी स्थिति नीचे ट्रैक कर सकते हैं।",
+      "done": "हो गया"
+    },
+    "actions": {
+      "confirmResolved": "हल की पुष्टि करें",
+      "reopen": "ठीक नहीं हुआ — फिर से खोलें"
+    },
+    "history": {
+      "title": "आपकी टिकटें",
+      "emptyTitle": "अभी तक कोई टिकट नहीं",
+      "emptyDescription": "आपके द्वारा दर्ज की गई कोई भी चीज़ यहाँ दिखेगी।",
+      "raisedOn": "{{date}} को दर्ज की गई",
+      "staffResponse": "स्टाफ़ की प्रतिक्रिया"
+    },
+    "toasts": {
+      "created": "आपकी टिकट सबमिट कर दी गई है।",
+      "confirmed": "धन्यवाद — टिकट बंद कर दी गई।",
+      "reopened": "स्टाफ़ के दोबारा देखने के लिए टिकट फिर से खोली गई।"
+    },
+    "staff": {
+      "title": "सहायता टिकटें",
+      "description": "सदस्यों और अभिभावकों द्वारा दर्ज की गई समस्याएँ।",
+      "filterAriaLabel": "टिकटें फ़िल्टर करें",
+      "filters": {
+        "all": "सभी",
+        "open": "खुली",
+        "resolved": "हल हो गई",
+        "closed": "बंद"
+      },
+      "raisedBy": "{{name}} ({{role}}) द्वारा दर्ज",
+      "resolveButton": "हल करें",
+      "resolvedToast": "टिकट हल के रूप में चिह्नित की गई।",
+      "resolveModalTitle": "टिकट हल करें",
+      "resolutionPlaceholder": "आपने इसे ठीक करने के लिए क्या किया?",
+      "resolutionHint": "यह टिकट दर्ज करने वाले व्यक्ति को दिखाया जाएगा।",
+      "submitResolution": "हल के रूप में चिह्नित करें",
+      "emptyTitle": "यहाँ कोई टिकट नहीं",
+      "emptyDescription": "अभी इस फ़िल्टर से कुछ मेल नहीं खाता।"
     }
   },
   "profile": {

@@ -79,6 +79,7 @@
     "leaderboard": "ਲੀਡਰਬੋਰਡ",
     "reviews": "ਸਮੀਖਿਆਵਾਂ",
     "notifications": "ਸੂਚਨਾਵਾਂ",
+    "support": "ਸਹਾਇਤਾ",
     "settings": "ਸੈਟਿੰਗਾਂ",
     "adminOverview": "ਐਡਮਿਨ ਸੰਖੇਪ",
     "members": "ਮੈਂਬਰ",
@@ -115,7 +116,8 @@
         "member": "ਮੈਂਬਰ",
         "manager": "ਮੈਨੇਜਰ",
         "it-head": "ਆਈਟੀ ਹੈੱਡ",
-        "guardian": "ਸਰਪ੍ਰਸਤ"
+        "guardian": "ਸਰਪ੍ਰਸਤ",
+        "librarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ"
       },
       "or": "ਜਾਂ",
       "email": "ਈਮੇਲ",
@@ -162,7 +164,13 @@
     "payAtLibraryDescription": "ਆਨਲਾਈਨ ਭੁਗਤਾਨ ਛੱਡੋ — ਕਾਊਂਟਰ 'ਤੇ ਜਾਓ ਅਤੇ ਮੈਨੇਜਰ ਨੂੰ ਨਕਦ ਭੁਗਤਾਨ ਕਰੋ।",
     "contactManager": "ਮੈਨੇਜਰ ਨੂੰ ਸੂਚਿਤ ਕਰੋ",
     "payAtLibraryToast": "ਮੈਨੇਜਰ ਨੂੰ ਸੂਚਿਤ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ — ਕਾਊਂਟਰ 'ਤੇ ਨਕਦ ਭੁਗਤਾਨ ਕਰੋ",
-    "secureNotice": "ਭੁਗਤਾਨ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਪ੍ਰੋਸੈਸ ਕੀਤੇ ਜਾਂਦੇ ਹਨ"
+    "secureNotice": "ਭੁਗਤਾਨ ਸੁਰੱਖਿਅਤ ਢੰਗ ਨਾਲ ਪ੍ਰੋਸੈਸ ਕੀਤੇ ਜਾਂਦੇ ਹਨ",
+    "coupon": {
+      "placeholder": "ਕੂਪਨ ਕੋਡ ਹੈ?",
+      "apply": "ਲਾਗੂ ਕਰੋ",
+      "applied": "ਕੂਪਨ {{code}} ਲਾਗੂ ਕੀਤਾ ਗਿਆ — {{percent}}% ਛੋਟ",
+      "remove": "ਹਟਾਓ"
+    }
   },
   "feedback": {
     "error": {
@@ -176,16 +184,18 @@
     "pageDescription": "ਕਾਰੋਬਾਰੀ ਪ੍ਰਦਰਸ਼ਨ, ਨਕਦੀ ਪ੍ਰਵਾਹ ਅਤੇ ਪਲੇਟਫਾਰਮ ਪ੍ਰਬੰਧਨ",
     "members": {
       "pageTitle": "ਮੈਂਬਰ",
-      "pageDescription": "ਸਾਰੇ ਰਜਿਸਟਰਡ ਮੈਂਬਰ, ਉਹਨਾਂ ਦੀਆਂ ਯੋਜਨਾਵਾਂ, ਗਤੀਵਿਧੀ ਅਤੇ ਸਥਿਤੀ।",
+      "pageDescription": "ਸਾਰੇ ਰਜਿਸਟਰਡ ਖਾਤੇ, ਉਹਨਾਂ ਦੀਆਂ ਯੋਜਨਾਵਾਂ, ਗਤੀਵਿਧੀ ਅਤੇ ਸਥਿਤੀ।",
       "searchPlaceholder": "ਨਾਮ ਜਾਂ ਈਮੇਲ ਦੁਆਰਾ ਖੋਜੋ",
       "table": {
         "member": "ਮੈਂਬਰ",
+        "role": "ਭੂਮਿਕਾ",
         "lastPayment": "ਆਖਰੀ ਭੁਗਤਾਨ",
         "plan": "ਯੋਜਨਾ",
         "progress": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",
         "reported": "ਸ਼ਿਕਾਇਤ",
         "joined": "ਸ਼ਾਮਲ ਹੋਏ",
-        "events": "ਸਮਾਗਮ ਭਾਗੀਦਾਰੀ"
+        "events": "ਸਮਾਗਮ ਭਾਗੀਦਾਰੀ",
+        "status": "ਸਥਿਤੀ"
       },
       "noPayment": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ",
       "noPlan": "ਕੋਈ ਸਰਗਰਮ ਯੋਜਨਾ ਨਹੀਂ",
@@ -195,7 +205,16 @@
       "booksCompleted": "{{count}} ਪੂਰੀਆਂ",
       "reportedYes": "ਸ਼ਿਕਾਇਤ ਮਿਲੀ",
       "reportedNo": "ਸਾਫ਼",
-      "eventsNotTracked": "ਹਾਲੇ ਟਰੈਕ ਨਹੀਂ ਕੀਤਾ ਗਿਆ",
+      "eventsCount": "{{count}} ਸਮਾਗਮ",
+      "actions": {
+        "activate": "ਸਰਗਰਮ ਕਰੋ",
+        "deactivate": "ਨਿਸ਼ਕਿਰਿਆ ਕਰੋ"
+      },
+      "toasts": {
+        "roleUpdated": "{{name}} ਹੁਣ {{role}} ਹੈ",
+        "activated": "{{name}} ਸਰਗਰਮ ਕੀਤਾ ਗਿਆ",
+        "deactivated": "{{name}} ਨਿਸ਼ਕਿਰਿਆ ਕੀਤਾ ਗਿਆ"
+      },
       "empty": {
         "title": "ਕੋਈ ਮੈਂਬਰ ਨਹੀਂ ਮਿਲਿਆ",
         "description": "ਇੱਕ ਵੱਖਰਾ ਖੋਜ ਸ਼ਬਦ ਅਜ਼ਮਾਓ।"
@@ -274,7 +293,8 @@
         "feeWaiverRejected": "{{name}} ਦੀ {{amount}} ਫੀਸ ਮੁਆਫ਼ੀ ਬੇਨਤੀ ਰੱਦ ਕੀਤੀ ਗਈ",
         "pricingPlanUpdated": "{{plan}} ਯੋਜਨਾ ਦੀ ਕੀਮਤ {{amount}} ਕੀਤੀ ਗਈ",
         "announcementSent_one": "{{count}} ਮੈਂਬਰ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ",
-        "announcementSent_other": "{{count}} ਮੈਂਬਰਾਂ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ"
+        "announcementSent_other": "{{count}} ਮੈਂਬਰਾਂ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ",
+        "couponGenerated": "ਕੂਪਨ {{code}} ਬਣਾਇਆ ਗਿਆ ({{percent}}% ਛੋਟ, {{maxUses}} ਵਰਤੋਂ)"
       }
     },
     "reports": {
@@ -342,7 +362,16 @@
       "priceLabel": "ਕੀਮਤ (₹)",
       "discountLabel": "ਛੋਟ (%)",
       "save": "ਸੰਭਾਲੋ",
-      "savedToast": "{{plan}} ਯੋਜਨਾ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ"
+      "savedToast": "{{plan}} ਯੋਜਨਾ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ",
+      "couponGenerator": {
+        "title": "ਛੋਟ ਕੂਪਨ ਜਨਰੇਟਰ",
+        "description": "ਇੱਕ ਨਿਸ਼ਚਿਤ ਗਿਣਤੀ ਦੇ ਲੋਕਾਂ ਨੂੰ ਛੋਟ ਦੇਣ ਵਾਲਾ ਕੋਡ ਬਣਾਓ।",
+        "discountLabel": "ਛੋਟ (%)",
+        "maxUsesLabel": "ਵਿਅਕਤੀਆਂ ਦੀ ਗਿਣਤੀ",
+        "generate": "ਬਣਾਓ",
+        "generatedToast": "ਕੂਪਨ {{code}} ਬਣਾਇਆ ਗਿਆ",
+        "summary": "{{percent}}% ਛੋਟ · {{used}}/{{max}} ਵਰਤੋਂ ਹੋਈ"
+      }
     }
   },
   "itHead": {
@@ -1291,6 +1320,8 @@
   },
   "notifications": {
     "pageTitle": "ਸੂਚਨਾਵਾਂ",
+    "pageTitleWithUnread": "ਸੂਚਨਾਵਾਂ ({{count}} ਨਾ ਪੜ੍ਹੀਆਂ)",
+    "markAllAsRead": "ਸਭ ਨੂੰ ਪੜ੍ਹਿਆ ਹੋਇਆ ਚਿੰਨ੍ਹਿਤ ਕਰੋ",
     "unreadBadge_one": "{{count}} ਨਾ ਪੜ੍ਹੀ ਹੋਈ",
     "unreadBadge_other": "{{count}} ਨਾ ਪੜ੍ਹੀਆਂ ਹੋਈਆਂ",
     "filterAriaLabel": "ਸੂਚਨਾਵਾਂ ਫਿਲਟਰ ਕਰੋ",
@@ -1310,7 +1341,82 @@
       "postComment": "ਨਵੀਂ ਟਿੱਪਣੀ",
       "postLike": "ਨਵੀਂ ਲਾਈਕ",
       "paymentReceived": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਹੋਇਆ",
-      "pendingRequest": "ਬਿਲਿੰਗ ਬੇਨਤੀ ਨੂੰ ਮਨਜ਼ੂਰੀ ਦੀ ਲੋੜ ਹੈ"
+      "pendingRequest": "ਬਿਲਿੰਗ ਬੇਨਤੀ ਨੂੰ ਮਨਜ਼ੂਰੀ ਦੀ ਲੋੜ ਹੈ",
+      "announcement": "ਐਲਾਨ",
+      "supportTicket": "ਨਵੀਂ ਸਹਾਇਤਾ ਟਿਕਟ",
+      "supportTicketResolved": "ਤੁਹਾਡੀ ਟਿਕਟ ਹੱਲ ਹੋ ਗਈ",
+      "supportTicketReopened": "ਇੱਕ ਟਿਕਟ ਦੁਬਾਰਾ ਖੋਲ੍ਹੀ ਗਈ"
+    }
+  },
+  "support": {
+    "pageTitle": "ਸਹਾਇਤਾ",
+    "pageDescription": "ਇੱਕ ਸਮੱਸਿਆ ਦਰਜ ਕਰੋ ਅਤੇ ਇਸਦੇ ਹੱਲ ਹੋਣ ਤੱਕ ਟਰੈਕ ਕਰੋ।",
+    "raiseButton": "ਟਿਕਟ ਦਰਜ ਕਰੋ",
+    "categories": {
+      "book_reservation": "ਕਿਤਾਬ ਰਿਜ਼ਰਵੇਸ਼ਨ",
+      "payment": "ਭੁਗਤਾਨ",
+      "seat_booking": "ਸੀਟ ਬੁਕਿੰਗ",
+      "harassment": "ਪਰੇਸ਼ਾਨੀ / ਸੁਰੱਖਿਆ ਚਿੰਤਾ",
+      "offline_library": "ਆਫ਼ਲਾਈਨ ਲਾਇਬ੍ਰੇਰੀ ਵਿਜ਼ਿਟ",
+      "attendance": "ਹਾਜ਼ਰੀ",
+      "other": "ਹੋਰ"
+    },
+    "status": {
+      "open": "ਖੁੱਲ੍ਹੀ",
+      "resolved": "ਤੁਹਾਡੀ ਪੁਸ਼ਟੀ ਦੀ ਉਡੀਕ ਵਿੱਚ",
+      "closed": "ਬੰਦ"
+    },
+    "wizard": {
+      "title": "ਟਿਕਟ ਦਰਜ ਕਰੋ",
+      "step1Title": "ਇਹ ਕਿਸ ਬਾਰੇ ਹੈ?",
+      "step2Title": "ਸਮੱਸਿਆ ਦਾ ਵੇਰਵਾ ਦਿਓ",
+      "step2Placeholder": "ਸਾਨੂੰ ਦੱਸੋ ਕੀ ਹੋਇਆ...",
+      "step2Hint": "10 ਤੋਂ 500 ਅੱਖਰਾਂ ਦੇ ਵਿਚਕਾਰ।",
+      "step3Title": "ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "acknowledge": "ਮੈਂ ਪੁਸ਼ਟੀ ਕਰਦਾ/ਕਰਦੀ ਹਾਂ ਕਿ ਉੱਪਰ ਦਿੱਤਾ ਵੇਰਵਾ ਸਹੀ ਹੈ।",
+      "next": "ਅੱਗੇ",
+      "back": "ਪਿੱਛੇ",
+      "submit": "ਟਿਕਟ ਜਮ੍ਹਾਂ ਕਰੋ",
+      "submitError": "ਤੁਹਾਡੀ ਟਿਕਟ ਜਮ੍ਹਾਂ ਨਹੀਂ ਹੋ ਸਕੀ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+      "step4Title": "ਟਿਕਟ ਜਮ੍ਹਾਂ ਹੋ ਗਈ",
+      "step4Description": "ਸਾਡੀ ਟੀਮ ਇਸਦੀ ਸਮੀਖਿਆ ਕਰੇਗੀ ਅਤੇ ਤੁਹਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੇਗੀ। ਤੁਸੀਂ ਇਸਦੀ ਸਥਿਤੀ ਹੇਠਾਂ ਟਰੈਕ ਕਰ ਸਕਦੇ ਹੋ।",
+      "done": "ਹੋ ਗਿਆ"
+    },
+    "actions": {
+      "confirmResolved": "ਹੱਲ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "reopen": "ਠੀਕ ਨਹੀਂ ਹੋਇਆ — ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ"
+    },
+    "history": {
+      "title": "ਤੁਹਾਡੀਆਂ ਟਿਕਟਾਂ",
+      "emptyTitle": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਟਿਕਟ ਨਹੀਂ",
+      "emptyDescription": "ਤੁਹਾਡੇ ਦੁਆਰਾ ਦਰਜ ਕੀਤੀ ਕੋਈ ਵੀ ਚੀਜ਼ ਇੱਥੇ ਦਿਖੇਗੀ।",
+      "raisedOn": "{{date}} ਨੂੰ ਦਰਜ ਕੀਤੀ ਗਈ",
+      "staffResponse": "ਸਟਾਫ਼ ਦਾ ਜਵਾਬ"
+    },
+    "toasts": {
+      "created": "ਤੁਹਾਡੀ ਟਿਕਟ ਜਮ੍ਹਾਂ ਕਰ ਦਿੱਤੀ ਗਈ ਹੈ।",
+      "confirmed": "ਧੰਨਵਾਦ — ਟਿਕਟ ਬੰਦ ਕਰ ਦਿੱਤੀ ਗਈ।",
+      "reopened": "ਸਟਾਫ਼ ਦੁਆਰਾ ਦੁਬਾਰਾ ਵੇਖਣ ਲਈ ਟਿਕਟ ਦੁਬਾਰਾ ਖੋਲ੍ਹੀ ਗਈ।"
+    },
+    "staff": {
+      "title": "ਸਹਾਇਤਾ ਟਿਕਟਾਂ",
+      "description": "ਮੈਂਬਰਾਂ ਅਤੇ ਸਰਪ੍ਰਸਤਾਂ ਦੁਆਰਾ ਦਰਜ ਕੀਤੀਆਂ ਸਮੱਸਿਆਵਾਂ।",
+      "filterAriaLabel": "ਟਿਕਟਾਂ ਫਿਲਟਰ ਕਰੋ",
+      "filters": {
+        "all": "ਸਭ",
+        "open": "ਖੁੱਲ੍ਹੀਆਂ",
+        "resolved": "ਹੱਲ ਹੋਈਆਂ",
+        "closed": "ਬੰਦ"
+      },
+      "raisedBy": "{{name}} ({{role}}) ਦੁਆਰਾ ਦਰਜ",
+      "resolveButton": "ਹੱਲ ਕਰੋ",
+      "resolvedToast": "ਟਿਕਟ ਹੱਲ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤੀ ਗਈ।",
+      "resolveModalTitle": "ਟਿਕਟ ਹੱਲ ਕਰੋ",
+      "resolutionPlaceholder": "ਤੁਸੀਂ ਇਸਨੂੰ ਠੀਕ ਕਰਨ ਲਈ ਕੀ ਕੀਤਾ?",
+      "resolutionHint": "ਇਹ ਟਿਕਟ ਦਰਜ ਕਰਨ ਵਾਲੇ ਵਿਅਕਤੀ ਨੂੰ ਦਿਖਾਇਆ ਜਾਵੇਗਾ।",
+      "submitResolution": "ਹੱਲ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ",
+      "emptyTitle": "ਇੱਥੇ ਕੋਈ ਟਿਕਟ ਨਹੀਂ",
+      "emptyDescription": "ਹੁਣੇ ਇਸ ਫਿਲਟਰ ਨਾਲ ਕੁਝ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।"
     }
   },
   "profile": {

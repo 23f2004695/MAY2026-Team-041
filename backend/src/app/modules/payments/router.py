@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
+from app.modules.coupons import service as coupons_service
 from app.modules.notifications import service as notifications_service
 from app.modules.payments import repository
 from app.modules.payments.schemas import MembershipOut, PaymentCreate, PaymentOut
@@ -17,14 +18,18 @@ async def create_payment(
     payload: PaymentCreate,
     user: Annotated[User, Depends(get_current_user)],
 ) -> PaymentOut:
+    amount = payload.amount
+    if payload.coupon_code:
+        amount = await coupons_service.redeem_coupon(payload.coupon_code, payload.amount)
+
     payment = await repository.create_payment(
         user_id=user.id,
-        amount=payload.amount,
+        amount=amount,
         label=payload.label,
         plan_months=payload.plan_months,
     )
     await notifications_service.create_notification(
-        user.id, "payment-received", f"Payment of ₹{payload.amount} received for {payload.label}."
+        user.id, "payment-received", f"Payment of ₹{amount} received for {payload.label}."
     )
     return PaymentOut.from_prisma(payment)
 

@@ -1,12 +1,14 @@
-import { SearchX } from 'lucide-react';
+import { SearchX, ShieldCheck, ShieldOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { PageHeader } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import {
   Avatar,
   Badge,
+  Button,
   Pagination,
   SearchBar,
   Table,
@@ -16,11 +18,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
+import { ApiError } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
-import { useAuth, type AdminMemberRecord } from '@/providers/AuthProvider';
+import { useAuth, type AdminMemberRecord, type Role } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 300;
+const ROLES: Role[] = ['member', 'librarian', 'manager', 'it-head', 'guardian', 'admin'];
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -80,13 +84,34 @@ function ProgressCell({ member }: { member: AdminMemberRecord }) {
   );
 }
 
+function EventsCell({ member }: { member: AdminMemberRecord }) {
+  const { t } = useTranslation();
+  if (member.event_registrations === 0) {
+    return <span className="text-muted-foreground">—</span>;
+  }
+  return <span>{t('admin.members.eventsCount', { count: member.event_registrations })}</span>;
+}
+
 export function AdminMembersPage() {
   const { t } = useTranslation();
-  const { getAdminMembers } = useAuth();
+  const { getAdminMembers, updateAdminMember } = useAuth();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [items, setItems] = useState<AdminMemberRecord[]>([]);
   const [total, setTotal] = useState(0);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  function refresh() {
+    getAdminMembers({ search, page, page_size: PAGE_SIZE })
+      .then((data) => {
+        setItems(data.items);
+        setTotal(data.total);
+      })
+      .catch(() => {
+        setItems([]);
+        setTotal(0);
+      });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -113,6 +138,36 @@ export function AdminMembersPage() {
   function updateSearch(value: string) {
     setSearch(value);
     setPage(1);
+  }
+
+  async function changeRole(member: AdminMemberRecord, roleName: string) {
+    setUpdatingId(member.id);
+    try {
+      await updateAdminMember(member.id, { role_name: roleName });
+      toast.success(t('admin.members.toasts.roleUpdated', { name: member.full_name, role: roleName }));
+      refresh();
+    } catch (error) {
+      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+    } finally {
+      setUpdatingId(null);
+    }
+  }
+
+  async function toggleActive(member: AdminMemberRecord) {
+    setUpdatingId(member.id);
+    try {
+      await updateAdminMember(member.id, { is_active: !member.is_active });
+      toast.success(
+        t(member.is_active ? 'admin.members.toasts.deactivated' : 'admin.members.toasts.activated', {
+          name: member.full_name,
+        }),
+      );
+      refresh();
+    } catch (error) {
+      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+    } finally {
+      setUpdatingId(null);
+    }
   }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -143,12 +198,14 @@ export function AdminMembersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>{t('admin.members.table.member')}</TableHead>
+                <TableHead>{t('admin.members.table.role')}</TableHead>
                 <TableHead>{t('admin.members.table.lastPayment')}</TableHead>
                 <TableHead>{t('admin.members.table.plan')}</TableHead>
                 <TableHead>{t('admin.members.table.progress')}</TableHead>
                 <TableHead>{t('admin.members.table.reported')}</TableHead>
                 <TableHead>{t('admin.members.table.joined')}</TableHead>
                 <TableHead>{t('admin.members.table.events')}</TableHead>
+                <TableHead>{t('admin.members.table.status')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -162,6 +219,20 @@ export function AdminMembersPage() {
                         <p className="text-xs text-muted-foreground">{member.email}</p>
                       </div>
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <select
+                      value={member.role}
+                      disabled={updatingId === member.id}
+                      onChange={(event) => changeRole(member, event.target.value)}
+                      className="rounded border border-border bg-surface px-2 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50"
+                    >
+                      {ROLES.map((role) => (
+                        <option key={role} value={role}>
+                          {t(`auth.login.roles.${role}`)}
+                        </option>
+                      ))}
+                    </select>
                   </TableCell>
                   <TableCell>
                     <LastPaymentCell member={member} />
@@ -178,8 +249,25 @@ export function AdminMembersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>{formatDate(member.joined_at)}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {t('admin.members.eventsNotTracked')}
+                  <TableCell>
+                    <EventsCell member={member} />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      variant={member.is_active ? 'danger' : 'success'}
+                      isLoading={updatingId === member.id}
+                      leadingIcon={
+                        member.is_active ? (
+                          <ShieldOff className="size-3.5" />
+                        ) : (
+                          <ShieldCheck className="size-3.5" />
+                        )
+                      }
+                      onClick={() => toggleActive(member)}
+                    >
+                      {t(member.is_active ? 'admin.members.actions.deactivate' : 'admin.members.actions.activate')}
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

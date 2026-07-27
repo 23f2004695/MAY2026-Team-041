@@ -9,3 +9,4 @@ class AuditAction(StrEnum):
     FEE_WAIVER_REJECTED = "feeWaiverRejected"
     PRICING_PLAN_UPDATED = "pricingPlanUpdated"
     ANNOUNCEMENT_SENT = "announcementSent"
+    COUPON_GENERATED = "couponGenerated"

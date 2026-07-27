@@ -59,7 +59,12 @@ model User {
   billingRequestsFiled    BillingRequest[] @relation("BillingRequestCreatedBy")
   billingRequestsDecided  BillingRequest[] @relation("BillingRequestDecidedBy")
 
-  auditLogEntries    AuditLogEntry[]     @relation("AuditLogActor")
+  auditLogEntries AuditLogEntry[] @relation("AuditLogActor")
+  couponsCreated  Coupon[]        @relation("CouponCreatedBy")
+
+  supportTicketsRaised   SupportTicket[] @relation("SupportTicketRaisedBy")
+  supportTicketsResolved SupportTicket[] @relation("SupportTicketResolvedBy")
+
   createdEvents      Event[]             @relation("EventCreator")
   eventRegistrations EventRegistration[] @relation("MemberEventRegistrations")
 
@@ -112,9 +117,6 @@ model Book {
   @@map("books")
 }
 
-// ponytail: one active goal per member (upsert), not a history of past years' goals —
-// add a `year` + unique(memberId, year) if tracking goals across years matters later.
-
 model Event {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String    @db.VarChar(255)
@@ -144,6 +146,9 @@ model EventRegistration {
   @@unique([eventId, memberId])
   @@map("event_registrations")
 }
+
+// ponytail: one active goal per member (upsert), not a history of past years' goals —
+// add a `year` + unique(memberId, year) if tracking goals across years matters later.
 model ReadingGoal {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   memberId    String   @unique @map("member_id") @db.Uuid
@@ -396,4 +401,44 @@ model PricingPlan {
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("pricing_plans")
+}
+
+// One code shared by up to maxUses people — not a batch of individual codes. usesCount
+// increments each time a successful payment redeems it (see payments module); once it
+// reaches maxUses the code stops validating. No expiry/deactivation yet — ponytail.
+model Coupon {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code            String   @unique @db.VarChar(20)
+  discountPercent Int      @map("discount_percent")
+  maxUses         Int      @map("max_uses")
+  usesCount       Int      @default(0) @map("uses_count")
+  createdById     String   @map("created_by_id") @db.Uuid
+  createdBy       User     @relation("CouponCreatedBy", fields: [createdById], references: [id])
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("coupons")
+}
+
+// Raised by a member or guardian, category-gated per raiser role at the API level (not
+// enforced here, since one string column has to serve both role's category sets). Only
+// 3 statuses — open -> resolved (staff wrote a resolutionNote) -> closed (raiser confirmed
+// it's actually fixed); rejecting a resolution just puts it back to "open" rather than
+// tracking a separate "reopened" state, since the resolutionNote already shows staff's
+// last attempt.
+model SupportTicket {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  raisedById     String    @map("raised_by_id") @db.Uuid
+  raisedBy       User      @relation("SupportTicketRaisedBy", fields: [raisedById], references: [id])
+  category       String    @db.VarChar(30)
+  description    String
+  status         String    @default("open") @db.VarChar(20) // open | resolved | closed
+  resolutionNote String?   @map("resolution_note")
+  resolvedById   String?   @map("resolved_by_id") @db.Uuid
+  resolvedBy     User?     @relation("SupportTicketResolvedBy", fields: [resolvedById], references: [id])
+  resolvedAt     DateTime? @map("resolved_at")
+  closedAt       DateTime? @map("closed_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("support_tickets")
 }

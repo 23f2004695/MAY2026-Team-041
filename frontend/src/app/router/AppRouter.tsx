@@ -88,14 +88,17 @@ const LeaderboardPage = lazy(() =>
 const ReviewsPage = lazy(() =>
   import('@/features/reviews/pages/ReviewsPage').then((m) => ({ default: m.ReviewsPage })),
 );
+const SupportPage = lazy(() =>
+  import('@/features/support/pages/SupportPage').then((m) => ({ default: m.SupportPage })),
+);
 
 const AdminDashboardPage = lazy(() =>
   import('@/features/admin/pages/AdminDashboardPage').then((m) => ({
     default: m.AdminDashboardPage,
   })),
 );
-const MembersPage = lazy(() =>
-  import('@/features/admin/pages/MembersPage').then((m) => ({ default: m.MembersPage })),
+const AdminMembersPage = lazy(() =>
+  import('@/features/admin/pages/AdminMembersPage').then((m) => ({ default: m.AdminMembersPage })),
 );
 const ITHeadDashboardPage = lazy(() =>
   import('@/features/it-head/pages/ITHeadDashboardPage').then((m) => ({
@@ -160,6 +163,7 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.READING_PROGRESS), element: withSuspense(<ReadingProgressPage />) },
       { path: relative(ROUTES.LEADERBOARD), element: withSuspense(<LeaderboardPage />) },
       { path: relative(ROUTES.REVIEWS), element: withSuspense(<ReviewsPage />) },
+      { path: relative(ROUTES.SUPPORT), element: withSuspense(<SupportPage />) },
       { path: relative(ROUTES.SETTINGS), element: withSuspense(<SettingsPage />) },
     ],
   },
@@ -172,7 +176,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
     children: [
       { path: relative(ROUTES.ADMIN), element: withSuspense(<AdminDashboardPage />) },
-      { path: relative(ROUTES.ADMIN_MEMBERS), element: withSuspense(<MembersPage />) },
+      { path: relative(ROUTES.ADMIN_MEMBERS), element: withSuspense(<AdminMembersPage />) },
     ],
   },
   {

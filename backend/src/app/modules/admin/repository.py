@@ -85,7 +85,10 @@ async def list_member_ids() -> list[str]:
 async def list_members(
     *, search: str | None, page: int, page_size: int
 ) -> tuple[list[User], int]:
-    where: dict = {"role": {"name": Role.MEMBER}, "deletedAt": None}
+    # Unlike count_members/list_member_ids (which are strictly about the "member" role
+    # for stats/announcements), this powers the admin's account-management table, so it
+    # covers every role — an admin needs to find and manage staff accounts here too.
+    where: dict = {"deletedAt": None}
     if search:
         where["OR"] = [
             {"fullName": {"contains": search, "mode": "insensitive"}},
@@ -95,6 +98,7 @@ async def list_members(
     total = await prisma.user.count(where=where)
     items = await prisma.user.find_many(
         where=where,
+        include={"role": True},
         order={"createdAt": "desc"},
         skip=(page - 1) * page_size,
         take=page_size,
@@ -155,3 +159,15 @@ async def find_reported_member_ids(member_ids: list[str]) -> set[str]:
         where={"authorId": {"in": member_ids}, "reported": True}
     )
     return {post.authorId for post in posts} | {comment.authorId for comment in comments}
+
+
+async def count_event_registrations(member_ids: list[str]) -> dict[str, int]:
+    if not member_ids:
+        return {}
+    registrations = await prisma.eventregistration.find_many(
+        where={"memberId": {"in": member_ids}}
+    )
+    counts: dict[str, int] = {}
+    for registration in registrations:
+        counts[registration.memberId] = counts.get(registration.memberId, 0) + 1
+    return counts

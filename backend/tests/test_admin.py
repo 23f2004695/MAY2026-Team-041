@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import UTC, datetime
 
 os.environ["APP_ENV"] = "test"
 
@@ -45,6 +46,8 @@ async def _db_connection():
     await prisma.readingprogress.delete_many(where={"member": domain_filter})
     await prisma.communitypost.delete_many(where={"author": domain_filter})
     await prisma.book.delete_many(where={"title": {"startswith": "Admin Members Test Book"}})
+    await prisma.eventregistration.delete_many(where={"member": domain_filter})
+    await prisma.event.delete_many(where={"title": {"startswith": "Admin Members Test Event"}})
     await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
 
@@ -52,6 +55,11 @@ async def _db_connection():
 @pytest_asyncio.fixture
 async def admin_user():
     return await _make_user(Role.ADMIN)
+
+
+@pytest_asyncio.fixture
+async def manager_user():
+    return await _make_user(Role.MANAGER)
 
 
 @pytest_asyncio.fixture
@@ -419,3 +427,34 @@ async def test_list_members_search_filters_by_email(admin_user, member_user):
     body = response.json()
     assert all(member_user.email in item["email"] for item in body["items"])
     assert any(item["id"] == member_user.id for item in body["items"])
+
+
+async def test_list_members_includes_role_status_and_event_registrations(
+    admin_user, manager_user, member_user
+):
+    event = await prisma.event.create(
+        data={
+            "title": "Admin Members Test Event",
+            "location": "Main Hall",
+            "date": datetime.now(UTC),
+            "capacity": 10,
+            "createdBy": admin_user.id,
+        }
+    )
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{event.id}/register")
+
+    async with _client_as(admin_user) as client:
+        response = await client.get("/api/v1/admin/members")
+
+    body = response.json()
+    member_row = _find_member(body, member_user.id)
+    assert member_row["role"] == "member"
+    assert member_row["is_active"] is True
+    assert member_row["event_registrations"] == 1
+
+    # Staff accounts (not just role=member) show up too, since this table is for
+    # account management, not just a member roster.
+    manager_row = _find_member(body, manager_user.id)
+    assert manager_row["role"] == "manager"
+    assert manager_row["event_registrations"] == 0

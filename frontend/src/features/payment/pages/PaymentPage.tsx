@@ -5,11 +5,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { AnimatedNumber, PageHeader } from '@/components/common';
-import { Badge, Button, Card, CardContent, Loader } from '@/components/ui';
+import { Badge, Button, Card, CardContent, Input, Loader } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { ApiError } from '@/lib/api';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import { useAuth, type PricingPlan } from '@/providers/AuthProvider';
+import { useAuth, type CouponValidation, type PricingPlan } from '@/providers/AuthProvider';
 
 // Auth is already enforced by the ProtectedRoute this page is nested under
 // (see AppRouter.tsx) — no need to re-check isAuthenticated here.
@@ -17,7 +17,8 @@ export function PaymentPage() {
   const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { createPayment, getPricingPlans, postAuthRedirect, clearPostAuthRedirect } = useAuth();
+  const { createPayment, getPricingPlans, validateCoupon, postAuthRedirect, clearPostAuthRedirect } =
+    useAuth();
 
   // Set for membership-plan payments (Register, first-time Google signup, renewal) —
   // the real price/months come from the backend-seeded plan, not the URL, so the
@@ -45,8 +46,38 @@ export function PaymentPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [planId]);
 
-  const amount = planId ? (plan?.price ?? 0) : rawAmount;
+  const baseAmount = planId ? (plan?.price ?? 0) : rawAmount;
   const months = planId ? plan?.months : undefined;
+
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponValidation | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+
+  const amount = appliedCoupon
+    ? Math.round((baseAmount * (100 - appliedCoupon.discount_percent)) / 100)
+    : baseAmount;
+
+  async function handleApplyCoupon() {
+    if (!couponCode.trim()) return;
+    setIsApplyingCoupon(true);
+    setCouponError(null);
+    try {
+      const result = await validateCoupon(couponCode.trim());
+      setAppliedCoupon(result);
+    } catch (err) {
+      setAppliedCoupon(null);
+      setCouponError(err instanceof ApiError ? err.message : t('common.errors.generic'));
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  }
+
+  function handleRemoveCoupon() {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError(null);
+  }
 
   useEffect(() => {
     if (params.get('failed') === '1') {
@@ -69,7 +100,14 @@ export function PaymentPage() {
   // can be built and tested now. Swap the bodies for a real Checkout.js call later.
   async function handleSimulateSuccess() {
     try {
-      await createPayment({ amount, label, plan_months: months });
+      // The base (pre-discount) amount is sent — the backend re-validates the coupon
+      // and applies the discount itself, so the discounted total is never client-trusted.
+      await createPayment({
+        amount: baseAmount,
+        label,
+        plan_months: months,
+        coupon_code: appliedCoupon?.code,
+      });
       toast.success('Payment successful');
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
@@ -78,7 +116,7 @@ export function PaymentPage() {
   }
 
   function handleSimulateFailure() {
-    const planOrAmountParam = planId ? `plan=${planId}` : `amount=${amount}`;
+    const planOrAmountParam = planId ? `plan=${planId}` : `amount=${baseAmount}`;
     navigate(
       `${ROUTES.PAYMENT}?${planOrAmountParam}&label=${encodeURIComponent(label)}&failed=1`,
       { replace: true },
@@ -99,7 +137,10 @@ export function PaymentPage() {
           {isLoadingPlan ? (
             <Loader />
           ) : (
-            <div className="flex items-baseline gap-1">
+            <div className="flex items-baseline gap-2">
+              {appliedCoupon && (
+                <span className="text-lg text-muted-foreground line-through">₹{baseAmount}</span>
+              )}
               <span className="text-2xl font-semibold text-foreground">₹</span>
               <AnimatedNumber value={amount} className="text-4xl font-extrabold text-foreground" />
             </div>
@@ -107,6 +148,45 @@ export function PaymentPage() {
           <Badge variant="outline">{label}</Badge>
         </CardContent>
       </Card>
+
+      <div className="flex flex-col gap-1.5">
+        {appliedCoupon ? (
+          <div className="flex items-center justify-between rounded-md border border-success/50 bg-success/10 px-3 py-2 text-sm">
+            <span className="font-medium text-foreground">
+              {t('payment.coupon.applied', {
+                code: appliedCoupon.code,
+                percent: appliedCoupon.discount_percent,
+              })}
+            </span>
+            <button
+              type="button"
+              onClick={handleRemoveCoupon}
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              {t('payment.coupon.remove')}
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Input
+              placeholder={t('payment.coupon.placeholder')}
+              value={couponCode}
+              onChange={(event) => setCouponCode(event.target.value)}
+              disabled={isLoadingPlan}
+              className="flex-1"
+            />
+            <Button
+              variant="outline"
+              onClick={handleApplyCoupon}
+              isLoading={isApplyingCoupon}
+              disabled={isLoadingPlan || !couponCode.trim()}
+            >
+              {t('payment.coupon.apply')}
+            </Button>
+          </div>
+        )}
+        {couponError && <p className="text-sm text-danger">{couponError}</p>}
+      </div>
 
       {isRenewal && (
         <p className="text-center text-sm text-muted-foreground">
