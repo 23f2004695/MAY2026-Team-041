@@ -1,48 +1,57 @@
 import { useTranslation } from 'react-i18next';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import type { AuditLogEntry } from '@/mocks/admin';
+import { formatCurrency } from '@/lib/format';
+import { formatRelativeTime } from '@/lib/formatRelativeTime';
+import { useAuth, type AuditLogEntry } from '@/providers/AuthProvider';
 
 function useActionText(entry: AuditLogEntry) {
   const { t } = useTranslation();
-  const { key, params } = entry.action;
+  const { action, params } = entry;
+  const amount = formatCurrency(Number(params.amount));
 
-  switch (key) {
-    case 'fineWaived':
-      return t('admin.auditLog.actions.fineWaived', params);
-    case 'finePolicyUpdated':
-      return t('admin.auditLog.actions.finePolicyUpdated', params);
+  switch (action) {
     case 'expenseApproved':
-      return t('admin.auditLog.actions.expenseApproved', params);
-    case 'budgetAdjusted':
-      return t('admin.auditLog.actions.budgetAdjusted', params);
+      return t('admin.auditLog.actions.expenseApproved', {
+        amount,
+        category: t(`admin.budget.categories.${params.category}`),
+      });
     case 'refundIssued':
-      return t('admin.auditLog.actions.refundIssued', params);
+      return t('admin.auditLog.actions.refundIssued', { amount, name: params.memberName });
+    case 'refundRejected':
+      return t('admin.auditLog.actions.refundRejected', { amount, name: params.memberName });
+    case 'feeWaived':
+      return t('admin.auditLog.actions.feeWaived', { amount, name: params.memberName });
+    case 'feeWaiverRejected':
+      return t('admin.auditLog.actions.feeWaiverRejected', { amount, name: params.memberName });
+    case 'pricingPlanUpdated':
+      return t('admin.auditLog.actions.pricingPlanUpdated', {
+        plan: t(`pricing.durations.${params.planId}.label`),
+        amount,
+      });
+    case 'announcementSent':
+      return t('admin.auditLog.actions.announcementSent', { count: Number(params.recipientCount) });
+    default:
+      return null;
   }
 }
 
 function useActorText(entry: AuditLogEntry) {
   const { t } = useTranslation();
-  if (entry.actor.self) return t('common.you');
-  return `${entry.actor.name} (${t(`auth.login.roles.${entry.actor.role}`)})`;
-}
-
-function useTimeAgoText(entry: AuditLogEntry) {
-  const { t } = useTranslation();
-  if ('hours' in entry.timeAgo) return t('common.time.hoursAgo', { count: entry.timeAgo.hours });
-  return t('common.time.daysAgo', { count: entry.timeAgo.days });
+  const { userId } = useAuth();
+  if (userId === entry.actor_id) return t('common.you');
+  return `${entry.actor_name} (${t(`auth.login.roles.${entry.actor_role}`)})`;
 }
 
 function AuditLogItem({ entry }: { entry: AuditLogEntry }) {
   const actionText = useActionText(entry);
   const actorText = useActorText(entry);
-  const timeAgoText = useTimeAgoText(entry);
 
   return (
     <li className="rounded-lg border border-border p-3 text-sm">
       <p className="text-foreground">{actionText}</p>
       <p className="text-muted-foreground">
-        {actorText} · {timeAgoText}
+        {actorText} · {formatRelativeTime(entry.created_at)}
       </p>
     </li>
   );
@@ -57,11 +66,15 @@ export function AuditLog({ entries }: { entries: AuditLogEntry[] }) {
         <CardTitle>{t('admin.auditLog.title')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="flex flex-col gap-3">
-          {entries.map((entry) => (
-            <AuditLogItem key={entry.id} entry={entry} />
-          ))}
-        </ul>
+        {entries.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t('admin.auditLog.empty')}</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {entries.map((entry) => (
+              <AuditLogItem key={entry.id} entry={entry} />
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

@@ -81,6 +81,7 @@
     "notifications": "सूचनाएँ",
     "settings": "सेटिंग्स",
     "adminOverview": "एडमिन अवलोकन",
+    "members": "सदस्य",
     "itHeadOverview": "आईटी अवलोकन",
     "guardianOverview": "अभिभावक अवलोकन",
     "backToApp": "ऐप पर वापस जाएँ",
@@ -173,6 +174,33 @@
   "admin": {
     "pageTitle": "एडमिन डैशबोर्ड",
     "pageDescription": "व्यवसाय प्रदर्शन, नकदी प्रवाह और प्लेटफ़ॉर्म प्रबंधन",
+    "members": {
+      "pageTitle": "सदस्य",
+      "pageDescription": "सभी पंजीकृत सदस्य, उनकी योजनाएँ, गतिविधि और स्थिति।",
+      "searchPlaceholder": "नाम या ईमेल से खोजें",
+      "table": {
+        "member": "सदस्य",
+        "lastPayment": "अंतिम भुगतान",
+        "plan": "योजना",
+        "progress": "पठन प्रगति",
+        "reported": "शिकायत",
+        "joined": "शामिल हुए",
+        "events": "इवेंट भागीदारी"
+      },
+      "noPayment": "अभी तक कोई भुगतान नहीं",
+      "noPlan": "कोई सक्रिय योजना नहीं",
+      "planExpired": "{{date}} को समाप्त",
+      "planActiveUntil": "{{date}} तक सक्रिय",
+      "booksReading": "{{count}} पढ़ रहे हैं",
+      "booksCompleted": "{{count}} पूर्ण",
+      "reportedYes": "शिकायत मिली",
+      "reportedNo": "साफ़",
+      "eventsNotTracked": "अभी ट्रैक नहीं किया गया",
+      "empty": {
+        "title": "कोई सदस्य नहीं मिला",
+        "description": "एक अलग खोज शब्द आज़माएँ।"
+      }
+    },
     "stats": {
       "revenueMtd": "राजस्व (माह-दर-तारीख)",
       "expensesMtd": "व्यय (माह-दर-तारीख)",
@@ -191,9 +219,18 @@
     },
     "budget": {
       "title": "बजट और व्यय",
+      "overallLabel": "कुल खर्च",
       "spentOfBudgeted": "{{budgeted}} में से {{spent}} खर्च किया गया",
+      "remaining": "{{amount}} शेष",
+      "overBudgetBy": "बजट से {{amount}} अधिक",
       "logExpense": "व्यय दर्ज करें",
       "logExpenseToast": "{{category}} के लिए व्यय दर्ज किया जा रहा है",
+      "categoryLabel": "श्रेणी",
+      "amountLabel": "राशि",
+      "status": {
+        "nearLimit": "सीमा के करीब",
+        "overBudget": "बजट से अधिक"
+      },
       "categories": {
         "staffSalaries": "स्टाफ वेतन",
         "bookProcurement": "पुस्तक खरीद",
@@ -215,14 +252,29 @@
       "confirmRejectTitle": "क्या इस अनुरोध को अस्वीकार करें?",
       "confirmDescription": "{{name}} का {{amount}} का अनुरोध। यह क्रिया वापस नहीं ली जा सकती।"
     },
+    "waiveFine": {
+      "title": "जुर्माना माफ करें",
+      "memberLabel": "सदस्य",
+      "memberSearchPlaceholder": "नाम या ईमेल से सदस्य खोजें",
+      "changeMember": "बदलें",
+      "noMembersFound": "कोई सदस्य नहीं मिला",
+      "amountLabel": "राशि",
+      "reasonLabel": "कारण",
+      "submit": "जुर्माना माफ करें",
+      "successToast": "{{name}} का जुर्माना माफ किया गया"
+    },
     "auditLog": {
       "title": "वित्तीय गतिविधि लॉग",
+      "empty": "अभी तक कोई वित्तीय गतिविधि नहीं।",
       "actions": {
-        "fineWaived": "{{name}} के \"{{book}}\" लोन पर {{amount}} का जुर्माना माफ किया गया",
-        "finePolicyUpdated": "जुर्माना नीति अपडेट की गई: छूट अवधि {{from}} → {{to}} दिन",
         "expenseApproved": "{{category}} के लिए {{amount}} का व्यय स्वीकृत किया गया",
-        "budgetAdjusted": "{{category}} बजट समायोजित किया गया: {{from}} → {{to}}",
-        "refundIssued": "{{name}} को {{amount}} की धनवापसी जारी की गई"
+        "refundIssued": "{{name}} को {{amount}} की धनवापसी जारी की गई",
+        "refundRejected": "{{name}} के {{amount}} धनवापसी अनुरोध को अस्वीकार किया गया",
+        "feeWaived": "{{name}} के लिए {{amount}} की फीस माफ की गई",
+        "feeWaiverRejected": "{{name}} के {{amount}} फीस माफी अनुरोध को अस्वीकार किया गया",
+        "pricingPlanUpdated": "{{plan}} योजना की कीमत {{amount}} कर दी गई",
+        "announcementSent_one": "{{count}} सदस्य को घोषणा भेजी गई",
+        "announcementSent_other": "{{count}} सदस्यों को घोषणा भेजी गई"
       }
     },
     "reports": {
@@ -232,6 +284,23 @@
         "profitAndLoss": "लाभ और हानि सारांश",
         "expenseBreakdown": "व्यय विवरण",
         "membershipGrowth": "सदस्यता वृद्धि"
+      },
+      "empty": "अभी तक कोई डेटा नहीं।",
+      "paymentsCount_one": "{{count}} भुगतान",
+      "paymentsCount_other": "{{count}} भुगतान",
+      "profitAndLossLabels": {
+        "revenue": "राजस्व",
+        "expenses": "व्यय",
+        "netProfit": "शुद्ध लाभ",
+        "totalRevenue": "कुल राजस्व (6 माह)",
+        "totalExpenses": "कुल व्यय (6 माह)",
+        "totalNetProfit": "कुल शुद्ध लाभ (6 माह)"
+      },
+      "membershipGrowthLabels": {
+        "newMembers_one": "{{count}} नया सदस्य",
+        "newMembers_other": "{{count}} नए सदस्य",
+        "totalMembers_one": "{{count}} कुल सदस्य",
+        "totalMembers_other": "{{count}} कुल सदस्य"
       }
     },
     "quickActions": {
@@ -240,13 +309,40 @@
       "inviteMember": "सदस्य आमंत्रित करें",
       "announcement": "घोषणा",
       "viewGrowthReport": "वृद्धि रिपोर्ट देखें",
-      "toasts": {
-        "loggingExpense": "व्यय दर्ज किया जा रहा है",
-        "adjustingPricing": "सदस्यता मूल्य निर्धारण योजनाएँ समायोजित की जा रही हैं",
-        "invitingMember": "सदस्य को आमंत्रित किया जा रहा है",
-        "sendingAnnouncement": "घोषणा भेजी जा रही है",
-        "viewingGrowthReport": "वृद्धि रिपोर्ट देखी जा रही है"
+      "waiveFine": "जुर्माना माफ करें"
+    },
+    "inviteMember": {
+      "title": "सदस्य आमंत्रित करें",
+      "fullNameLabel": "पूरा नाम",
+      "emailLabel": "ईमेल",
+      "phoneLabel": "फोन नंबर",
+      "passwordLabel": "प्रारंभिक पासवर्ड",
+      "passwordHint": "यह पासवर्ड नए सदस्य के साथ साझा करें — अभी ईमेल आमंत्रण नहीं है, इसी से वे लॉग इन करेंगे।",
+      "submit": "खाता बनाएं",
+      "successToast": "{{name}} के लिए खाता बनाया गया",
+      "errors": {
+        "name": "पूरा नाम दर्ज करें",
+        "email": "मान्य ईमेल पता दर्ज करें",
+        "phone": "मान्य फोन नंबर दर्ज करें",
+        "password": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए और इसमें एक अक्षर और एक अंक होना चाहिए"
       }
+    },
+    "announcement": {
+      "title": "घोषणा भेजें",
+      "description": "यह संदेश हर सदस्य को सूचना के रूप में भेजा जाता है।",
+      "messageLabel": "संदेश",
+      "submit": "घोषणा भेजें",
+      "successToast_one": "{{count}} सदस्य को घोषणा भेजी गई",
+      "successToast_other": "{{count}} सदस्यों को घोषणा भेजी गई"
+    },
+    "adjustPricing": {
+      "title": "मूल्य निर्धारण योजनाएँ समायोजित करें",
+      "monthsLabel_one": "{{count}} महीना",
+      "monthsLabel_other": "{{count}} महीने",
+      "priceLabel": "कीमत (₹)",
+      "discountLabel": "छूट (%)",
+      "save": "सहेजें",
+      "savedToast": "{{plan}} योजना अपडेट की गई"
     }
   },
   "itHead": {
@@ -1213,7 +1309,8 @@
       "seatBooked": "सीट बुक हुई",
       "postComment": "नई टिप्पणी",
       "postLike": "नई लाइक",
-      "paymentReceived": "भुगतान प्राप्त हुआ"
+      "paymentReceived": "भुगतान प्राप्त हुआ",
+      "pendingRequest": "बिलिंग अनुरोध को मंज़ूरी चाहिए"
     }
   },
   "profile": {

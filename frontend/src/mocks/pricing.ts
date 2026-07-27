@@ -19,48 +19,19 @@ import {
 } from 'lucide-react';
 
 // Display copy lives in i18n locale files (src/i18n/locales/*.json) under "pricing",
-// keyed by `id`. These mocks hold only structural/numeric data — the actual
-// billing prices and discount percentages a real backend would supply.
+// keyed by plan id. Price/discount/badge now come from the backend-seeded PricingPlan
+// table (see providers/AuthProvider's getPricingPlans) — these mocks hold only
+// structural data that isn't part of "adjust pricing": which bonus features a plan
+// unlocks, and icon/id references for purely decorative sections.
 
-export type DurationId = '1m' | '3m' | '6m' | '12m';
 export type ExtraFeatureId = 'prioritySupport' | 'earlyAccess' | 'freeOnboarding';
 
-export interface PricingDuration {
-  id: DurationId;
-  months: number;
-  /** Total price charged for the whole billing cycle, in INR. */
-  price: number;
-  savePercent: number;
-  badge?: 'mostPopular' | 'bestValue';
-  extraFeatureIds: ExtraFeatureId[];
-}
-
-export const pricingDurations: PricingDuration[] = [
-  { id: '1m', months: 1, price: 499, savePercent: 0, extraFeatureIds: [] },
-  {
-    id: '3m',
-    months: 3,
-    price: 1349,
-    savePercent: 10,
-    badge: 'mostPopular',
-    extraFeatureIds: [],
-  },
-  {
-    id: '6m',
-    months: 6,
-    price: 2449,
-    savePercent: 18,
-    extraFeatureIds: ['prioritySupport'],
-  },
-  {
-    id: '12m',
-    months: 12,
-    price: 4499,
-    savePercent: 25,
-    badge: 'bestValue',
-    extraFeatureIds: ['prioritySupport', 'earlyAccess', 'freeOnboarding'],
-  },
-];
+export const EXTRA_FEATURES_BY_PLAN: Record<string, ExtraFeatureId[]> = {
+  '1m': [],
+  '3m': [],
+  '6m': ['prioritySupport'],
+  '12m': ['prioritySupport', 'earlyAccess', 'freeOnboarding'],
+};
 
 // Every plan includes this same core feature set (see pricing.coreFeatures.* in i18n).
 export const coreFeatureIds = [
@@ -96,7 +67,7 @@ export const includedFeatures: IncludedFeature[] = [
 ];
 
 export interface WhyLongerPlanCard {
-  id: DurationId;
+  id: string;
   icon: LucideIcon;
 }
 

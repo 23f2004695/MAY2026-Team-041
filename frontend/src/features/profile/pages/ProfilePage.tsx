@@ -18,11 +18,15 @@ import { useTranslation } from 'react-i18next';
 import { ProgressBar, StatisticCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import { auditLog } from '@/mocks/admin';
 import { children, childBorrowedBooks, guardianStats } from '@/mocks/guardian';
 import { accessEntries, issueTickets } from '@/mocks/itHead';
 import { pendingPayments, registrationRequests, walkInRequests } from '@/mocks/manager';
-import { useAuth, type Membership, type ReadingProgressEntry } from '@/providers/AuthProvider';
+import {
+  useAuth,
+  type AuditLogEntry,
+  type Membership,
+  type ReadingProgressEntry,
+} from '@/providers/AuthProvider';
 
 import { AuditLog } from '@/features/admin/components/AuditLog';
 import { NewRegistrations } from '@/features/dashboard/components/NewRegistrations';
@@ -36,11 +40,20 @@ import { ProfileHeader } from '../components/ProfileHeader';
 
 function AdminProfile() {
   const { t } = useTranslation();
-  const myActivity = useMemo(() => auditLog.filter((entry) => entry.actor.self), []);
-  const expensesApproved = myActivity.filter(
-    (entry) => entry.action.key === 'expenseApproved',
-  ).length;
-  const finesWaived = myActivity.filter((entry) => entry.action.key === 'fineWaived').length;
+  const { userId, getAuditLog } = useAuth();
+  const [entries, setEntries] = useState<AuditLogEntry[]>([]);
+
+  useEffect(() => {
+    getAuditLog().then(setEntries).catch(() => setEntries([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const myActivity = useMemo(
+    () => entries.filter((entry) => entry.actor_id === userId),
+    [entries, userId],
+  );
+  const expensesApproved = myActivity.filter((entry) => entry.action === 'expenseApproved').length;
+  const feesWaived = myActivity.filter((entry) => entry.action === 'feeWaived').length;
 
   return (
     <div className="flex flex-col gap-6">
@@ -60,7 +73,7 @@ function AdminProfile() {
         <StatisticCard
           icon={Wallet}
           label={t('profile.adminStats.finesWaived')}
-          value={String(finesWaived)}
+          value={String(feesWaived)}
         />
       </div>
 

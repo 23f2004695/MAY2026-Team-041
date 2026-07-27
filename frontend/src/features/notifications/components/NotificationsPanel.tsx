@@ -17,6 +17,7 @@ const NOTIFICATION_TITLE_KEYS: Partial<Record<string, string>> = {
   'post-comment': 'postComment',
   'post-like': 'postLike',
   'payment-received': 'paymentReceived',
+  'pending-request': 'pendingRequest',
 };
 
 function NotificationRow({

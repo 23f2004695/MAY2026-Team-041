@@ -252,9 +252,164 @@ export interface AdminDashboard {
   seat_occupancy: AdminSeatOccupancySlot[];
 }
 
+export interface AuditLogEntry {
+  id: string;
+  actor_id: string;
+  actor_name: string;
+  actor_role: Role;
+  action: string;
+  params: Record<string, string | number>;
+  created_at: string;
+}
+
+export interface AdminMemberRecord {
+  id: string;
+  full_name: string;
+  email: string;
+  joined_at: string;
+  last_payment_amount: number | null;
+  last_payment_label: string | null;
+  last_payment_at: string | null;
+  plan_label: string | null;
+  plan_expires_at: string | null;
+  plan_is_active: boolean;
+  books_reading: number;
+  books_completed: number;
+  reported: boolean;
+}
+
+export interface AdminMemberListResponse {
+  items: AdminMemberRecord[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface AdminMemberQuery {
+  search?: string;
+  page?: number;
+  page_size?: number;
+}
+
 export interface ExpensePayload {
   category: ExpenseCategory;
   amount: number;
+}
+
+export interface PricingPlan {
+  id: string;
+  plan_id: string;
+  months: number;
+  price: number;
+  save_percent: number;
+  badge: 'mostPopular' | 'bestValue' | null;
+  updated_at: string;
+}
+
+export interface PricingPlanUpdatePayload {
+  price: number;
+  save_percent: number;
+}
+
+export interface CreateMemberPayload {
+  full_name: string;
+  email: string;
+  phone?: string;
+  password: string;
+}
+
+export interface CreatedMember {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
+export interface AnnouncementPayload {
+  message: string;
+}
+
+export interface AnnouncementResult {
+  recipient_count: number;
+}
+
+export interface RevenueByPlanItem {
+  label: string;
+  amount: number;
+  count: number;
+}
+
+export interface RevenueByPlanReport {
+  items: RevenueByPlanItem[];
+  total: number;
+}
+
+export interface MonthlyFigure {
+  month: string;
+  revenue: number;
+  expenses: number;
+  net_profit: number;
+}
+
+export interface ProfitAndLossReport {
+  months: MonthlyFigure[];
+  total_revenue: number;
+  total_expenses: number;
+  total_net_profit: number;
+}
+
+export interface ExpenseBreakdownItem {
+  category: ExpenseCategory;
+  amount: number;
+  percent: number;
+}
+
+export interface ExpenseBreakdownReport {
+  items: ExpenseBreakdownItem[];
+  total: number;
+}
+
+export interface MembershipGrowthMonth {
+  month: string;
+  new_members: number;
+  total_members: number;
+}
+
+export interface MembershipGrowthReport {
+  months: MembershipGrowthMonth[];
+}
+
+export type BillingRequestType = 'refund' | 'fee_waiver';
+
+export interface BillingRequestPayload {
+  member_id: string;
+  type: BillingRequestType;
+  amount: number;
+  reason: string;
+}
+
+export interface WaiveFinePayload {
+  member_id: string;
+  amount: number;
+  reason: string;
+}
+
+export interface BillingRequestRecord {
+  id: string;
+  type: BillingRequestType;
+  amount: number;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  member_id: string;
+  member_name: string;
+  created_by_name: string;
+  created_at: string;
+  decided_at: string | null;
+}
+
+export interface MemberSummary {
+  id: string;
+  full_name: string;
+  email: string;
 }
 
 interface AuthState {
@@ -321,6 +476,22 @@ interface AuthContextValue extends AuthState {
   getAllReviews: () => Promise<Review[]>;
   getAdminDashboard: () => Promise<AdminDashboard>;
   logExpense: (payload: ExpensePayload) => Promise<void>;
+  getAuditLog: () => Promise<AuditLogEntry[]>;
+  getRevenueByPlanReport: () => Promise<RevenueByPlanReport>;
+  getProfitAndLossReport: () => Promise<ProfitAndLossReport>;
+  getExpenseBreakdownReport: () => Promise<ExpenseBreakdownReport>;
+  getMembershipGrowthReport: () => Promise<MembershipGrowthReport>;
+  getAdminMembers: (query?: AdminMemberQuery) => Promise<AdminMemberListResponse>;
+  searchMembers: (query: string) => Promise<MemberSummary[]>;
+  getBillingRequests: () => Promise<BillingRequestRecord[]>;
+  createBillingRequest: (payload: BillingRequestPayload) => Promise<BillingRequestRecord>;
+  approveBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
+  rejectBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
+  waiveFine: (payload: WaiveFinePayload) => Promise<BillingRequestRecord>;
+  getPricingPlans: () => Promise<PricingPlan[]>;
+  updatePricingPlan: (id: string, payload: PricingPlanUpdatePayload) => Promise<PricingPlan>;
+  createMember: (payload: CreateMemberPayload) => Promise<CreatedMember>;
+  sendAnnouncement: (payload: AnnouncementPayload) => Promise<AnnouncementResult>;
   clearPostAuthRedirect: () => void;
   logout: () => void;
 }
@@ -612,6 +783,108 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiPost('/admin/expenses', payload, state.token);
   }
 
+  async function getAuditLog(): Promise<AuditLogEntry[]> {
+    if (!state.token) return [];
+    return apiGet<AuditLogEntry[]>('/admin/audit-log', state.token);
+  }
+
+  async function getRevenueByPlanReport(): Promise<RevenueByPlanReport> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<RevenueByPlanReport>('/admin/reports/revenue-by-plan', state.token);
+  }
+
+  async function getProfitAndLossReport(): Promise<ProfitAndLossReport> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<ProfitAndLossReport>('/admin/reports/profit-and-loss', state.token);
+  }
+
+  async function getExpenseBreakdownReport(): Promise<ExpenseBreakdownReport> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<ExpenseBreakdownReport>('/admin/reports/expense-breakdown', state.token);
+  }
+
+  async function getMembershipGrowthReport(): Promise<MembershipGrowthReport> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<MembershipGrowthReport>('/admin/reports/membership-growth', state.token);
+  }
+
+  async function getAdminMembers(query: AdminMemberQuery = {}): Promise<AdminMemberListResponse> {
+    if (!state.token) return { items: [], total: 0, page: 1, page_size: 20 };
+    const params = new URLSearchParams({
+      page: String(query.page ?? 1),
+      page_size: String(query.page_size ?? 20),
+    });
+    if (query.search?.trim()) params.set('search', query.search.trim());
+    return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, state.token);
+  }
+
+  async function searchMembers(query: string): Promise<MemberSummary[]> {
+    if (!state.token || query.trim().length === 0) return [];
+    const data = await apiGet<{ items: MemberSummary[] }>(
+      `/members?search=${encodeURIComponent(query.trim())}&page_size=6`,
+      state.token,
+    );
+    return data.items;
+  }
+
+  async function getBillingRequests(): Promise<BillingRequestRecord[]> {
+    if (!state.token) return [];
+    return apiGet<BillingRequestRecord[]>('/billing-requests', state.token);
+  }
+
+  async function createBillingRequest(
+    payload: BillingRequestPayload,
+  ): Promise<BillingRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<BillingRequestRecord>('/billing-requests', payload, state.token);
+  }
+
+  async function approveBillingRequest(requestId: string): Promise<BillingRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<BillingRequestRecord>(
+      `/billing-requests/${requestId}/approve`,
+      undefined,
+      state.token,
+    );
+  }
+
+  async function rejectBillingRequest(requestId: string): Promise<BillingRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<BillingRequestRecord>(
+      `/billing-requests/${requestId}/reject`,
+      undefined,
+      state.token,
+    );
+  }
+
+  async function waiveFine(payload: WaiveFinePayload): Promise<BillingRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<BillingRequestRecord>('/billing-requests/waive-fine', payload, state.token);
+  }
+
+  // Public — the Pricing page and Payment page read prices here without needing a session.
+  async function getPricingPlans(): Promise<PricingPlan[]> {
+    return apiGet<PricingPlan[]>('/pricing-plans', state.token ?? undefined);
+  }
+
+  async function updatePricingPlan(
+    id: string,
+    payload: PricingPlanUpdatePayload,
+  ): Promise<PricingPlan> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPatch<PricingPlan>(`/pricing-plans/${id}`, payload, state.token);
+  }
+
+  async function createMember(payload: CreateMemberPayload): Promise<CreatedMember> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<CreatedMember>('/members', payload, state.token);
+  }
+
+  async function sendAnnouncement(payload: AnnouncementPayload): Promise<AnnouncementResult> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<AnnouncementResult>('/admin/announcements', payload, state.token);
+  }
+
   async function refreshAccessToken(): Promise<string | null> {
     if (!state.refreshToken) return null;
     try {
@@ -688,6 +961,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getAllReviews,
         getAdminDashboard,
         logExpense,
+        getAuditLog,
+        getRevenueByPlanReport,
+        getProfitAndLossReport,
+        getExpenseBreakdownReport,
+        getMembershipGrowthReport,
+        getAdminMembers,
+        searchMembers,
+        getBillingRequests,
+        createBillingRequest,
+        approveBillingRequest,
+        rejectBillingRequest,
+        waiveFine,
+        getPricingPlans,
+        updatePricingPlan,
+        createMember,
+        sendAnnouncement,
         clearPostAuthRedirect,
         logout,
       }}

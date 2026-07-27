@@ -45,6 +45,7 @@ export const adminOverviewNavItem: NavItem = {
 
 export const adminNavigation: NavItem[] = [
   adminOverviewNavItem,
+  { label: 'nav.members', path: ROUTES.ADMIN_MEMBERS, icon: Users },
   { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },

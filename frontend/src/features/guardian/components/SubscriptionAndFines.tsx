@@ -6,9 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, CardHeader, CardTitle, Modal } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import type { Child } from '@/mocks/guardian';
-import { pricingDurations } from '@/mocks/pricing';
-
-const RENEWAL_PRICE = pricingDurations.find((duration) => duration.id === '1m')?.price ?? 0;
 
 export function SubscriptionAndFines({ children }: { children: Child[] }) {
   const { t } = useTranslation();
@@ -28,7 +25,9 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
   // different one, same as the member's own subscription card.
   function renewChild(child: Child) {
     const label = t('guardian.subscription.renewToast', { name: child.name });
-    navigate(`${ROUTES.PAYMENT}?amount=${RENEWAL_PRICE}&label=${encodeURIComponent(label)}&renewal=1`);
+    // Renewal always renews at the 1-month plan/price, matching the member's own
+    // subscription card — see MemberSubscription.tsx's renewOrViewPlans.
+    navigate(`${ROUTES.PAYMENT}?plan=1m&label=${encodeURIComponent(label)}&renewal=1`);
   }
 
   return (

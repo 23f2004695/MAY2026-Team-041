@@ -1,15 +1,15 @@
 import { Banknote, CheckCircle2, ShieldCheck, XCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { AnimatedNumber, PageHeader } from '@/components/common';
-import { Badge, Button, Card, CardContent } from '@/components/ui';
+import { Badge, Button, Card, CardContent, Loader } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { ApiError } from '@/lib/api';
 import { comingSoonToast } from '@/lib/comingSoonToast';
-import { useAuth } from '@/providers/AuthProvider';
+import { useAuth, type PricingPlan } from '@/providers/AuthProvider';
 
 // Auth is already enforced by the ProtectedRoute this page is nested under
 // (see AppRouter.tsx) — no need to re-check isAuthenticated here.
@@ -17,16 +17,36 @@ export function PaymentPage() {
   const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { createPayment, postAuthRedirect, clearPostAuthRedirect } = useAuth();
+  const { createPayment, getPricingPlans, postAuthRedirect, clearPostAuthRedirect } = useAuth();
 
-  const amount = Number(params.get('amount')) || 0;
+  // Set for membership-plan payments (Register, first-time Google signup, renewal) —
+  // the real price/months come from the backend-seeded plan, not the URL, so the
+  // amount can't be tampered with via the query string. Fine payments omit it and
+  // fall back to a raw `amount` param instead, since fines have no plan behind them.
+  const planId = params.get('plan');
+  const rawAmount = Number(params.get('amount')) || 0;
   const label = params.get('label') ?? t('payment.defaultLabel');
-  // Set only when this payment is for a membership plan (Register, first-time Google
-  // signup, or renewal) — fine payments omit it so they don't get counted as membership.
-  const months = Number(params.get('months')) || undefined;
-  // Set only by the "Renew" buttons on the member/guardian subscription cards —
-  // fine payments and other charges don't offer a plan switch.
   const isRenewal = params.get('renewal') === '1';
+
+  const [plan, setPlan] = useState<PricingPlan | null>(null);
+  const [isLoadingPlan, setIsLoadingPlan] = useState(Boolean(planId));
+
+  useEffect(() => {
+    if (!planId) return;
+    let cancelled = false;
+    getPricingPlans()
+      .then((plans) => {
+        if (!cancelled) setPlan(plans.find((item) => item.plan_id === planId) ?? null);
+      })
+      .finally(() => !cancelled && setIsLoadingPlan(false));
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planId]);
+
+  const amount = planId ? (plan?.price ?? 0) : rawAmount;
+  const months = planId ? plan?.months : undefined;
 
   useEffect(() => {
     if (params.get('failed') === '1') {
@@ -58,9 +78,9 @@ export function PaymentPage() {
   }
 
   function handleSimulateFailure() {
-    const monthsParam = months ? `&months=${months}` : '';
+    const planOrAmountParam = planId ? `plan=${planId}` : `amount=${amount}`;
     navigate(
-      `${ROUTES.PAYMENT}?amount=${amount}&label=${encodeURIComponent(label)}${monthsParam}&failed=1`,
+      `${ROUTES.PAYMENT}?${planOrAmountParam}&label=${encodeURIComponent(label)}&failed=1`,
       { replace: true },
     );
   }
@@ -76,10 +96,14 @@ export function PaymentPage() {
       <Card>
         <CardContent className="flex flex-col items-center gap-2 py-8">
           <p className="text-sm text-muted-foreground">{t('payment.amountDue')}</p>
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-semibold text-foreground">₹</span>
-            <AnimatedNumber value={amount} className="text-4xl font-extrabold text-foreground" />
-          </div>
+          {isLoadingPlan ? (
+            <Loader />
+          ) : (
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-semibold text-foreground">₹</span>
+              <AnimatedNumber value={amount} className="text-4xl font-extrabold text-foreground" />
+            </div>
+          )}
           <Badge variant="outline">{label}</Badge>
         </CardContent>
       </Card>
@@ -98,7 +122,12 @@ export function PaymentPage() {
           Temporary testing controls — real Razorpay checkout isn't wired up yet.
         </p>
         <div className="flex gap-2">
-          <Button size="lg" className="flex-1 gap-2" onClick={handleSimulateSuccess}>
+          <Button
+            size="lg"
+            className="flex-1 gap-2"
+            onClick={handleSimulateSuccess}
+            disabled={isLoadingPlan}
+          >
             <CheckCircle2 className="size-4" />
             Simulate Success
           </Button>

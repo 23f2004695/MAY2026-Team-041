@@ -20,6 +20,7 @@ export const ROUTES = {
   REVIEWS: '/reviews',
   SETTINGS: '/settings',
   ADMIN: '/admin',
+  ADMIN_MEMBERS: '/admin/members',
   IT_HEAD: '/it-head',
   GUARDIAN: '/guardian',
 } as const;
