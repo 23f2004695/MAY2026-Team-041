@@ -81,6 +81,7 @@
     "notifications": "ਸੂਚਨਾਵਾਂ",
     "settings": "ਸੈਟਿੰਗਾਂ",
     "adminOverview": "ਐਡਮਿਨ ਸੰਖੇਪ",
+    "members": "ਮੈਂਬਰ",
     "itHeadOverview": "ਆਈਟੀ ਸੰਖੇਪ",
     "guardianOverview": "ਸਰਪ੍ਰਸਤ ਸੰਖੇਪ ਜਾਣਕਾਰੀ",
     "backToApp": "ਐਪ 'ਤੇ ਵਾਪਸ ਜਾਓ",
@@ -173,6 +174,33 @@
   "admin": {
     "pageTitle": "ਐਡਮਿਨ ਡੈਸ਼ਬੋਰਡ",
     "pageDescription": "ਕਾਰੋਬਾਰੀ ਪ੍ਰਦਰਸ਼ਨ, ਨਕਦੀ ਪ੍ਰਵਾਹ ਅਤੇ ਪਲੇਟਫਾਰਮ ਪ੍ਰਬੰਧਨ",
+    "members": {
+      "pageTitle": "ਮੈਂਬਰ",
+      "pageDescription": "ਸਾਰੇ ਰਜਿਸਟਰਡ ਮੈਂਬਰ, ਉਹਨਾਂ ਦੀਆਂ ਯੋਜਨਾਵਾਂ, ਗਤੀਵਿਧੀ ਅਤੇ ਸਥਿਤੀ।",
+      "searchPlaceholder": "ਨਾਮ ਜਾਂ ਈਮੇਲ ਦੁਆਰਾ ਖੋਜੋ",
+      "table": {
+        "member": "ਮੈਂਬਰ",
+        "lastPayment": "ਆਖਰੀ ਭੁਗਤਾਨ",
+        "plan": "ਯੋਜਨਾ",
+        "progress": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",
+        "reported": "ਸ਼ਿਕਾਇਤ",
+        "joined": "ਸ਼ਾਮਲ ਹੋਏ",
+        "events": "ਸਮਾਗਮ ਭਾਗੀਦਾਰੀ"
+      },
+      "noPayment": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ",
+      "noPlan": "ਕੋਈ ਸਰਗਰਮ ਯੋਜਨਾ ਨਹੀਂ",
+      "planExpired": "{{date}} ਨੂੰ ਸਮਾਪਤ",
+      "planActiveUntil": "{{date}} ਤੱਕ ਸਰਗਰਮ",
+      "booksReading": "{{count}} ਪੜ੍ਹ ਰਹੇ ਹਨ",
+      "booksCompleted": "{{count}} ਪੂਰੀਆਂ",
+      "reportedYes": "ਸ਼ਿਕਾਇਤ ਮਿਲੀ",
+      "reportedNo": "ਸਾਫ਼",
+      "eventsNotTracked": "ਹਾਲੇ ਟਰੈਕ ਨਹੀਂ ਕੀਤਾ ਗਿਆ",
+      "empty": {
+        "title": "ਕੋਈ ਮੈਂਬਰ ਨਹੀਂ ਮਿਲਿਆ",
+        "description": "ਇੱਕ ਵੱਖਰਾ ਖੋਜ ਸ਼ਬਦ ਅਜ਼ਮਾਓ।"
+      }
+    },
     "stats": {
       "revenueMtd": "ਆਮਦਨ (MTD)",
       "expensesMtd": "ਖਰਚੇ (MTD)",
@@ -191,9 +219,18 @@
     },
     "budget": {
       "title": "ਬਜਟ ਅਤੇ ਖਰਚੇ",
+      "overallLabel": "ਕੁੱਲ ਖਰਚ",
       "spentOfBudgeted": "{{budgeted}} ਵਿੱਚੋਂ {{spent}} ਖਰਚ ਹੋਇਆ",
+      "remaining": "{{amount}} ਬਾਕੀ",
+      "overBudgetBy": "ਬਜਟ ਤੋਂ {{amount}} ਵੱਧ",
       "logExpense": "ਖਰਚਾ ਦਰਜ ਕਰੋ",
       "logExpenseToast": "{{category}} ਲਈ ਖਰਚਾ ਦਰਜ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+      "categoryLabel": "ਸ਼੍ਰੇਣੀ",
+      "amountLabel": "ਰਕਮ",
+      "status": {
+        "nearLimit": "ਸੀਮਾ ਦੇ ਨੇੜੇ",
+        "overBudget": "ਬਜਟ ਤੋਂ ਵੱਧ"
+      },
       "categories": {
         "staffSalaries": "ਸਟਾਫ ਤਨਖਾਹਾਂ",
         "bookProcurement": "ਕਿਤਾਬ ਖਰੀਦ",
@@ -215,14 +252,29 @@
       "confirmRejectTitle": "ਕੀ ਇਸ ਬੇਨਤੀ ਨੂੰ ਰੱਦ ਕਰਨਾ ਹੈ?",
       "confirmDescription": "{{name}} ਦੀ {{amount}} ਦੀ ਬੇਨਤੀ। ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।"
     },
+    "waiveFine": {
+      "title": "ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕਰੋ",
+      "memberLabel": "ਮੈਂਬਰ",
+      "memberSearchPlaceholder": "ਨਾਮ ਜਾਂ ਈਮੇਲ ਨਾਲ ਮੈਂਬਰ ਖੋਜੋ",
+      "changeMember": "ਬਦਲੋ",
+      "noMembersFound": "ਕੋਈ ਮੈਂਬਰ ਨਹੀਂ ਮਿਲਿਆ",
+      "amountLabel": "ਰਕਮ",
+      "reasonLabel": "ਕਾਰਨ",
+      "submit": "ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕਰੋ",
+      "successToast": "{{name}} ਦਾ ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕੀਤਾ ਗਿਆ"
+    },
     "auditLog": {
       "title": "ਵਿੱਤੀ ਗਤੀਵਿਧੀ ਲੌਗ",
+      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਵਿੱਤੀ ਗਤੀਵਿਧੀ ਨਹੀਂ।",
       "actions": {
-        "fineWaived": "{{name}} ਦੇ \"{{book}}\" ਲੋਨ ਦਾ {{amount}} ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕੀਤਾ",
-        "finePolicyUpdated": "ਜੁਰਮਾਨਾ ਨੀਤੀ ਅੱਪਡੇਟ ਕੀਤੀ: ਗ੍ਰੇਸ ਪੀਰੀਅਡ {{from}} → {{to}} ਦਿਨ",
         "expenseApproved": "{{category}} ਲਈ {{amount}} ਖਰਚਾ ਮਨਜ਼ੂਰ ਕੀਤਾ",
-        "budgetAdjusted": "{{category}} ਬਜਟ ਵਿਵਸਥਿਤ ਕੀਤਾ: {{from}} → {{to}}",
-        "refundIssued": "{{name}} ਨੂੰ {{amount}} ਵਾਪਸ ਕੀਤਾ ਗਿਆ"
+        "refundIssued": "{{name}} ਨੂੰ {{amount}} ਵਾਪਸ ਕੀਤਾ ਗਿਆ",
+        "refundRejected": "{{name}} ਦੀ {{amount}} ਵਾਪਸੀ ਬੇਨਤੀ ਰੱਦ ਕੀਤੀ ਗਈ",
+        "feeWaived": "{{name}} ਲਈ {{amount}} ਫੀਸ ਮੁਆਫ਼ ਕੀਤੀ",
+        "feeWaiverRejected": "{{name}} ਦੀ {{amount}} ਫੀਸ ਮੁਆਫ਼ੀ ਬੇਨਤੀ ਰੱਦ ਕੀਤੀ ਗਈ",
+        "pricingPlanUpdated": "{{plan}} ਯੋਜਨਾ ਦੀ ਕੀਮਤ {{amount}} ਕੀਤੀ ਗਈ",
+        "announcementSent_one": "{{count}} ਮੈਂਬਰ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ",
+        "announcementSent_other": "{{count}} ਮੈਂਬਰਾਂ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ"
       }
     },
     "reports": {
@@ -232,6 +284,23 @@
         "profitAndLoss": "ਲਾਭ ਅਤੇ ਨੁਕਸਾਨ ਸੰਖੇਪ",
         "expenseBreakdown": "ਖਰਚੇ ਦਾ ਵੇਰਵਾ",
         "membershipGrowth": "ਮੈਂਬਰਸ਼ਿਪ ਵਾਧਾ"
+      },
+      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਡਾਟਾ ਨਹੀਂ।",
+      "paymentsCount_one": "{{count}} ਭੁਗਤਾਨ",
+      "paymentsCount_other": "{{count}} ਭੁਗਤਾਨ",
+      "profitAndLossLabels": {
+        "revenue": "ਆਮਦਨ",
+        "expenses": "ਖਰਚੇ",
+        "netProfit": "ਸ਼ੁੱਧ ਲਾਭ",
+        "totalRevenue": "ਕੁੱਲ ਆਮਦਨ (6 ਮਹੀਨੇ)",
+        "totalExpenses": "ਕੁੱਲ ਖਰਚੇ (6 ਮਹੀਨੇ)",
+        "totalNetProfit": "ਕੁੱਲ ਸ਼ੁੱਧ ਲਾਭ (6 ਮਹੀਨੇ)"
+      },
+      "membershipGrowthLabels": {
+        "newMembers_one": "{{count}} ਨਵਾਂ ਮੈਂਬਰ",
+        "newMembers_other": "{{count}} ਨਵੇਂ ਮੈਂਬਰ",
+        "totalMembers_one": "{{count}} ਕੁੱਲ ਮੈਂਬਰ",
+        "totalMembers_other": "{{count}} ਕੁੱਲ ਮੈਂਬਰ"
       }
     },
     "quickActions": {
@@ -240,13 +309,40 @@
       "inviteMember": "ਮੈਂਬਰ ਸੱਦੋ",
       "announcement": "ਐਲਾਨ",
       "viewGrowthReport": "ਵਾਧਾ ਰਿਪੋਰਟ ਵੇਖੋ",
-      "toasts": {
-        "loggingExpense": "ਖਰਚਾ ਦਰਜ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
-        "adjustingPricing": "ਮੈਂਬਰਸ਼ਿਪ ਕੀਮਤ ਯੋਜਨਾਵਾਂ ਵਿਵਸਥਿਤ ਕੀਤੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ",
-        "invitingMember": "ਮੈਂਬਰ ਸੱਦਿਆ ਜਾ ਰਿਹਾ ਹੈ",
-        "sendingAnnouncement": "ਐਲਾਨ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ",
-        "viewingGrowthReport": "ਵਾਧਾ ਰਿਪੋਰਟ ਵੇਖੀ ਜਾ ਰਹੀ ਹੈ"
+      "waiveFine": "ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕਰੋ"
+    },
+    "inviteMember": {
+      "title": "ਮੈਂਬਰ ਸੱਦੋ",
+      "fullNameLabel": "ਪੂਰਾ ਨਾਮ",
+      "emailLabel": "ਈਮੇਲ",
+      "phoneLabel": "ਫ਼ੋਨ ਨੰਬਰ",
+      "passwordLabel": "ਸ਼ੁਰੂਆਤੀ ਪਾਸਵਰਡ",
+      "passwordHint": "ਇਹ ਪਾਸਵਰਡ ਨਵੇਂ ਮੈਂਬਰ ਨਾਲ ਸਾਂਝਾ ਕਰੋ — ਹਾਲੇ ਈਮੇਲ ਸੱਦਾ ਨਹੀਂ ਹੈ, ਇਸੇ ਨਾਲ ਉਹ ਲੌਗ ਇਨ ਕਰਨਗੇ।",
+      "submit": "ਖਾਤਾ ਬਣਾਓ",
+      "successToast": "{{name}} ਲਈ ਖਾਤਾ ਬਣਾਇਆ ਗਿਆ",
+      "errors": {
+        "name": "ਪੂਰਾ ਨਾਮ ਦਰਜ ਕਰੋ",
+        "email": "ਮਾਨ੍ਯ ਈਮੇਲ ਪਤਾ ਦਰਜ ਕਰੋ",
+        "phone": "ਮਾਨ੍ਯ ਫ਼ੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ",
+        "password": "ਪਾਸਵਰਡ ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰਾਂ ਦਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ ਅਤੇ ਇਸ ਵਿੱਚ ਇੱਕ ਅੱਖਰ ਅਤੇ ਇੱਕ ਅੰਕ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ"
       }
+    },
+    "announcement": {
+      "title": "ਐਲਾਨ ਭੇਜੋ",
+      "description": "ਇਹ ਸੁਨੇਹਾ ਹਰ ਮੈਂਬਰ ਨੂੰ ਸੂਚਨਾ ਵਜੋਂ ਭੇਜਿਆ ਜਾਂਦਾ ਹੈ।",
+      "messageLabel": "ਸੁਨੇਹਾ",
+      "submit": "ਐਲਾਨ ਭੇਜੋ",
+      "successToast_one": "{{count}} ਮੈਂਬਰ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ",
+      "successToast_other": "{{count}} ਮੈਂਬਰਾਂ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ"
+    },
+    "adjustPricing": {
+      "title": "ਕੀਮਤ ਯੋਜਨਾਵਾਂ ਵਿਵਸਥਿਤ ਕਰੋ",
+      "monthsLabel_one": "{{count}} ਮਹੀਨਾ",
+      "monthsLabel_other": "{{count}} ਮਹੀਨੇ",
+      "priceLabel": "ਕੀਮਤ (₹)",
+      "discountLabel": "ਛੋਟ (%)",
+      "save": "ਸੰਭਾਲੋ",
+      "savedToast": "{{plan}} ਯੋਜਨਾ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ"
     }
   },
   "itHead": {
@@ -1213,7 +1309,8 @@
       "seatBooked": "ਸੀਟ ਬੁੱਕ ਹੋਈ",
       "postComment": "ਨਵੀਂ ਟਿੱਪਣੀ",
       "postLike": "ਨਵੀਂ ਲਾਈਕ",
-      "paymentReceived": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਹੋਇਆ"
+      "paymentReceived": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਹੋਇਆ",
+      "pendingRequest": "ਬਿਲਿੰਗ ਬੇਨਤੀ ਨੂੰ ਮਨਜ਼ੂਰੀ ਦੀ ਲੋੜ ਹੈ"
     }
   },
   "profile": {

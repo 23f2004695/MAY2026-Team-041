@@ -8,7 +8,7 @@ import { Button, Checkbox, Input, Select } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { ApiError } from '@/lib/api';
 import { registerSchema, type RegisterFormValues } from '@/lib/authSchema';
-import { PLAN_OPTIONS } from '@/lib/planOptions';
+import { usePlanOptions } from '@/lib/planOptions';
 import { useAuth } from '@/providers/AuthProvider';
 
 // ponytail: membershipPlan is collected but not sent to /auth/register — no plan/pricing
@@ -21,6 +21,7 @@ import { useAuth } from '@/providers/AuthProvider';
 export function Register() {
   const { t } = useTranslation();
   const { registerAccount } = useAuth();
+  const { options: planOptions, isLoading: isLoadingPlans } = usePlanOptions();
 
   const {
     register,
@@ -34,15 +35,15 @@ export function Register() {
       phoneNumber: '',
       password: '',
       confirmPassword: '',
-      membershipPlan: PLAN_OPTIONS[0].value,
+      membershipPlan: '1m',
       acceptTerms: false,
     },
   });
 
   async function onSubmit(values: RegisterFormValues) {
     try {
-      const plan = PLAN_OPTIONS.find((option) => option.value === values.membershipPlan);
-      const paymentRedirect = `${ROUTES.PAYMENT}?amount=${plan?.price ?? 0}&label=${encodeURIComponent(plan?.label ?? '')}&months=${plan?.months ?? ''}`;
+      const plan = planOptions.find((option) => option.value === values.membershipPlan);
+      const paymentRedirect = `${ROUTES.PAYMENT}?plan=${values.membershipPlan}&label=${encodeURIComponent(plan?.label ?? '')}`;
       await registerAccount(
         {
           email: values.email,
@@ -101,8 +102,9 @@ export function Register() {
         />
         <Select
           label={t('auth.register.membershipPlan')}
+          disabled={isLoadingPlans}
           error={errors.membershipPlan?.message ? t(errors.membershipPlan.message) : undefined}
-          options={PLAN_OPTIONS.map(({ value, label }) => ({ value, label }))}
+          options={planOptions.map(({ value, label }) => ({ value, label }))}
           {...register('membershipPlan')}
         />
         <Checkbox
@@ -110,7 +112,7 @@ export function Register() {
           error={errors.acceptTerms?.message ? t(errors.acceptTerms.message) : undefined}
           {...register('acceptTerms')}
         />
-        <Button type="submit" isLoading={isSubmitting}>
+        <Button type="submit" isLoading={isSubmitting} disabled={isLoadingPlans}>
           {t('auth.register.createAccount')}
         </Button>
       </form>

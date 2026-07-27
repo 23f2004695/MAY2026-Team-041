@@ -84,6 +84,7 @@
     "notifications": "Notifications",
     "settings": "Settings",
     "adminOverview": "Admin Overview",
+    "members": "Members",
     "itHeadOverview": "IT Overview",
     "guardianOverview": "Guardian Overview",
     "backToApp": "Back to App",
@@ -182,6 +183,33 @@
   "admin": {
     "pageTitle": "Admin Dashboard",
     "pageDescription": "Business performance, cash flow, and platform management",
+    "members": {
+      "pageTitle": "Members",
+      "pageDescription": "All registered members, their plans, activity, and standing.",
+      "searchPlaceholder": "Search by name or email",
+      "table": {
+        "member": "Member",
+        "lastPayment": "Last Payment",
+        "plan": "Plan",
+        "progress": "Reading Progress",
+        "reported": "Reported",
+        "joined": "Joined",
+        "events": "Event Participation"
+      },
+      "noPayment": "No payments yet",
+      "noPlan": "No active plan",
+      "planExpired": "Expired {{date}}",
+      "planActiveUntil": "Active until {{date}}",
+      "booksReading": "{{count}} reading",
+      "booksCompleted": "{{count}} completed",
+      "reportedYes": "Reported",
+      "reportedNo": "Clear",
+      "eventsNotTracked": "Not tracked yet",
+      "empty": {
+        "title": "No members found",
+        "description": "Try a different search term."
+      }
+    },
     "stats": {
       "revenueMtd": "Revenue (MTD)",
       "expensesMtd": "Expenses (MTD)",
@@ -209,9 +237,18 @@
     },
     "budget": {
       "title": "Budget & Expenses",
+      "overallLabel": "Overall Spend",
       "spentOfBudgeted": "{{spent}} of {{budgeted}} spent",
+      "remaining": "{{amount}} remaining",
+      "overBudgetBy": "{{amount}} over budget",
       "logExpense": "Log Expense",
       "logExpenseToast": "Logging an expense for {{category}}",
+      "categoryLabel": "Category",
+      "amountLabel": "Amount",
+      "status": {
+        "nearLimit": "Near limit",
+        "overBudget": "Over budget"
+      },
       "categories": {
         "staffSalaries": "Staff Salaries",
         "bookProcurement": "Book Procurement",
@@ -233,14 +270,29 @@
       "confirmRejectTitle": "Reject this request?",
       "confirmDescription": "{{name}}'s request for {{amount}}. This action cannot be undone."
     },
+    "waiveFine": {
+      "title": "Waive Fine",
+      "memberLabel": "Member",
+      "memberSearchPlaceholder": "Search members by name or email",
+      "changeMember": "Change",
+      "noMembersFound": "No members found",
+      "amountLabel": "Amount",
+      "reasonLabel": "Reason",
+      "submit": "Waive Fine",
+      "successToast": "Waived a fine for {{name}}"
+    },
     "auditLog": {
       "title": "Financial Activity Log",
+      "empty": "No financial activity yet.",
       "actions": {
-        "fineWaived": "Waived {{amount}} fine for {{name}}'s \"{{book}}\" loan",
-        "finePolicyUpdated": "Updated fine policy: grace period {{from}} → {{to}} days",
         "expenseApproved": "Approved {{amount}} expense for {{category}}",
-        "budgetAdjusted": "Adjusted {{category}} budget: {{from}} → {{to}}",
-        "refundIssued": "Issued a {{amount}} refund to {{name}}"
+        "refundIssued": "Issued a {{amount}} refund to {{name}}",
+        "refundRejected": "Rejected a {{amount}} refund request from {{name}}",
+        "feeWaived": "Waived a {{amount}} fee for {{name}}",
+        "feeWaiverRejected": "Rejected a {{amount}} fee waiver request from {{name}}",
+        "pricingPlanUpdated": "Updated the {{plan}} plan price to {{amount}}",
+        "announcementSent_one": "Sent an announcement to {{count}} member",
+        "announcementSent_other": "Sent an announcement to {{count}} members"
       }
     },
     "reports": {
@@ -250,6 +302,23 @@
         "profitAndLoss": "Profit & Loss Summary",
         "expenseBreakdown": "Expense Breakdown",
         "membershipGrowth": "Membership Growth"
+      },
+      "empty": "No data yet.",
+      "paymentsCount_one": "{{count}} payment",
+      "paymentsCount_other": "{{count}} payments",
+      "profitAndLossLabels": {
+        "revenue": "Revenue",
+        "expenses": "Expenses",
+        "netProfit": "Net Profit",
+        "totalRevenue": "Total Revenue (6 mo)",
+        "totalExpenses": "Total Expenses (6 mo)",
+        "totalNetProfit": "Total Net Profit (6 mo)"
+      },
+      "membershipGrowthLabels": {
+        "newMembers_one": "{{count}} new member",
+        "newMembers_other": "{{count}} new members",
+        "totalMembers_one": "{{count}} total member",
+        "totalMembers_other": "{{count}} total members"
       }
     },
     "quickActions": {
@@ -258,13 +327,40 @@
       "inviteMember": "Invite Member",
       "announcement": "Announcement",
       "viewGrowthReport": "View Growth Report",
-      "toasts": {
-        "loggingExpense": "Logging an expense",
-        "adjustingPricing": "Adjusting membership pricing plans",
-        "invitingMember": "Inviting a member",
-        "sendingAnnouncement": "Sending an announcement",
-        "viewingGrowthReport": "Viewing the growth report"
+      "waiveFine": "Waive Fine"
+    },
+    "inviteMember": {
+      "title": "Invite Member",
+      "fullNameLabel": "Full name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone number",
+      "passwordLabel": "Initial password",
+      "passwordHint": "Share this password with the new member — there's no email invite yet, so this is how they'll log in.",
+      "submit": "Create Account",
+      "successToast": "Created an account for {{name}}",
+      "errors": {
+        "name": "Enter a full name",
+        "email": "Enter a valid email address",
+        "phone": "Enter a valid phone number",
+        "password": "Password must be at least 8 characters and include a letter and a number"
       }
+    },
+    "announcement": {
+      "title": "Send Announcement",
+      "description": "This message is sent as a notification to every member.",
+      "messageLabel": "Message",
+      "submit": "Send Announcement",
+      "successToast_one": "Announcement sent to {{count}} member",
+      "successToast_other": "Announcement sent to {{count}} members"
+    },
+    "adjustPricing": {
+      "title": "Adjust Pricing Plans",
+      "monthsLabel_one": "{{count}} month",
+      "monthsLabel_other": "{{count}} months",
+      "priceLabel": "Price (₹)",
+      "discountLabel": "Discount (%)",
+      "save": "Save",
+      "savedToast": "Updated the {{plan}} plan"
     }
   },
   "itHead": {
@@ -533,11 +629,24 @@
       "bookSeatForMember": "Book Seat for Member",
       "issueBookForMember": "Issue Book for Member",
       "registerNewMember": "Register New Member",
+      "fileBillingRequest": "File Refund / Fee Waiver Request",
       "toasts": {
         "bookingSeat": "Booking a seat for a member",
         "issuingBook": "Issuing a book for a member",
         "registeringMember": "Registering a new member"
       }
+    },
+    "billingRequest": {
+      "title": "File a Billing Request",
+      "memberLabel": "Member",
+      "memberSearchPlaceholder": "Search for a member",
+      "changeMember": "Change",
+      "noMembersFound": "No members found",
+      "typeLabel": "Request type",
+      "amountLabel": "Amount (₹)",
+      "reasonLabel": "Reason",
+      "submit": "Submit Request",
+      "successToast": "Request filed for {{name}} — awaiting admin approval"
     },
     "registerMember": {
       "title": "Register New Member",
@@ -1422,7 +1531,8 @@
       "seatBooked": "Seat booked",
       "postComment": "New comment",
       "postLike": "New like",
-      "paymentReceived": "Payment received"
+      "paymentReceived": "Payment received",
+      "pendingRequest": "Billing request needs approval"
     }
   },
   "profile": {

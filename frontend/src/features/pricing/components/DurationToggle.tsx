@@ -3,16 +3,17 @@ import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import { pricingDurations, type DurationId } from '@/mocks/pricing';
+import type { PricingPlan } from '@/providers/AuthProvider';
 
 export interface DurationToggleProps {
-  active: DurationId;
-  onChange: (id: DurationId) => void;
+  plans: PricingPlan[];
+  active: string;
+  onChange: (id: string) => void;
 }
 
-export function DurationToggle({ active, onChange }: DurationToggleProps) {
+export function DurationToggle({ plans, active, onChange }: DurationToggleProps) {
   const { t } = useTranslation();
-  const activeDuration = pricingDurations.find((duration) => duration.id === active);
+  const activePlan = plans.find((plan) => plan.plan_id === active);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -21,15 +22,15 @@ export function DurationToggle({ active, onChange }: DurationToggleProps) {
         aria-label={t('pricing.toggle.ariaLabel')}
         className="inline-flex rounded-full border border-border bg-secondary/60 p-1"
       >
-        {pricingDurations.map((duration) => {
-          const isActive = duration.id === active;
+        {plans.map((plan) => {
+          const isActive = plan.plan_id === active;
           return (
             <button
-              key={duration.id}
+              key={plan.plan_id}
               type="button"
               role="tab"
               aria-selected={isActive}
-              onClick={() => onChange(duration.id)}
+              onClick={() => onChange(plan.plan_id)}
               className={cn(
                 'relative rounded-full px-4 py-2 text-sm font-medium transition-colors sm:px-5',
                 isActive
@@ -44,23 +45,23 @@ export function DurationToggle({ active, onChange }: DurationToggleProps) {
                   transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                 />
               )}
-              <span className="relative">{t(`pricing.durations.${duration.id}.label`)}</span>
+              <span className="relative">{t(`pricing.durations.${plan.plan_id}.label`)}</span>
             </button>
           );
         })}
       </div>
 
       <AnimatePresence mode="wait">
-        {activeDuration && activeDuration.savePercent > 0 && (
+        {activePlan && activePlan.save_percent > 0 && (
           <motion.div
-            key={activeDuration.id}
+            key={activePlan.plan_id}
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
             <Badge variant="success">
-              {t('pricing.toggle.save', { percent: activeDuration.savePercent })}
+              {t('pricing.toggle.save', { percent: activePlan.save_percent })}
             </Badge>
           </motion.div>
         )}

@@ -1,4 +1,4 @@
-import { Armchair, BookPlus, UserPlus } from 'lucide-react';
+import { Armchair, BookPlus, ReceiptText, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -14,6 +14,7 @@ import {
 } from '@/mocks/manager';
 
 import { AddGuardianCard } from '../components/AddGuardianCard';
+import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
 import { NewRegistrations } from '../components/NewRegistrations';
 import { PendingPayments } from '../components/PendingPayments';
 import { type RegisterMemberFormValues, RegisterMemberModal } from '../components/RegisterMemberModal';
@@ -29,6 +30,7 @@ export function ManagerDashboard() {
   );
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [fulfillingRequest, setFulfillingRequest] = useState<RegistrationRequest | null>(null);
+  const [isBillingRequestOpen, setIsBillingRequestOpen] = useState(false);
 
   function openRegisterForNewVisitor() {
     setFulfillingRequest(null);
@@ -106,6 +108,11 @@ export function ManagerDashboard() {
             icon: UserPlus,
             onClick: openRegisterForNewVisitor,
           },
+          {
+            label: t('managerDashboard.quickActions.fileBillingRequest'),
+            icon: ReceiptText,
+            onClick: () => setIsBillingRequestOpen(true),
+          },
         ]}
       />
 
@@ -114,6 +121,11 @@ export function ManagerDashboard() {
         onClose={closeRegisterModal}
         onSubmit={handleRegisterMember}
         initialValues={fulfillingRequest ?? undefined}
+      />
+
+      <FileBillingRequestModal
+        open={isBillingRequestOpen}
+        onClose={() => setIsBillingRequestOpen(false)}
       />
     </div>
   );

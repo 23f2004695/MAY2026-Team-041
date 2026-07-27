@@ -10,12 +10,14 @@ from app.core.config import Settings, get_settings
 from app.db.prisma import prisma
 from app.modules.admin.router import router as admin_router
 from app.modules.auth.router import router as auth_router
+from app.modules.billing_requests.router import router as billing_requests_router
 from app.modules.books.router import router as books_router
 from app.modules.community.router import router as community_router
 from app.modules.guardian.router import router as guardian_router
 from app.modules.members.router import router as members_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.payments.router import router as payments_router
+from app.modules.pricing_plans.router import router as pricing_plans_router
 from app.modules.reservations.router import router as reservations_router
 from app.modules.reviews.router import router as reviews_router
 from app.modules.seat_booking.router import router as seat_booking_router
@@ -63,6 +65,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(notifications_router, prefix=settings.api_prefix)
     app.include_router(reviews_router, prefix=settings.api_prefix)
     app.include_router(admin_router, prefix=settings.api_prefix)
+    app.include_router(billing_requests_router, prefix=settings.api_prefix)
+    app.include_router(pricing_plans_router, prefix=settings.api_prefix)
     return app
 
 

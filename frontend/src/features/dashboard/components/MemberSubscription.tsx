@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, Card, CardContent, CardHeader, CardTitle, Modal } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { pricingDurations } from '@/mocks/pricing';
-
-const RENEWAL_PRICE = pricingDurations.find((duration) => duration.id === '1m')?.price ?? 0;
 
 export interface MemberSubscriptionProps {
   planLabel: string;
@@ -53,9 +50,10 @@ export function MemberSubscription({
       return;
     }
     const label = t('dashboard.subscription.renewalPaymentLabel', { plan: planLabel });
-    navigate(
-      `${ROUTES.PAYMENT}?amount=${RENEWAL_PRICE}&label=${encodeURIComponent(label)}&months=1&renewal=1`,
-    );
+    // Renewal always renews at the 1-month plan/price, regardless of the member's
+    // original plan length — same simplification as before, now sourced from the
+    // backend plan by id instead of a hardcoded price constant.
+    navigate(`${ROUTES.PAYMENT}?plan=1m&label=${encodeURIComponent(label)}&renewal=1`);
   }
 
   return (

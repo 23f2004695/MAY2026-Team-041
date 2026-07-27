@@ -8,11 +8,11 @@ import { Badge, Button, Card } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/lib/cn';
 import { fadeUp, viewportOnce } from '@/lib/motion';
-import { coreFeatureIds, type PricingDuration } from '@/mocks/pricing';
-import { useAuth } from '@/providers/AuthProvider';
+import { coreFeatureIds, EXTRA_FEATURES_BY_PLAN } from '@/mocks/pricing';
+import { useAuth, type PricingPlan } from '@/providers/AuthProvider';
 
 export interface PricingCardProps {
-  duration: PricingDuration;
+  duration: PricingPlan;
   isActive: boolean;
   index: number;
   onSelect?: () => void;
@@ -23,15 +23,16 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const isHighlighted = duration.badge === 'mostPopular';
-  const planLabel = t(`pricing.durations.${duration.id}.label`);
+  const planLabel = t(`pricing.durations.${duration.plan_id}.label`);
   const ctaLabel = t('pricing.chooseCta', { plan: planLabel });
+  const extraFeatureIds = EXTRA_FEATURES_BY_PLAN[duration.plan_id] ?? [];
 
   function handleChoosePlan() {
     if (!isAuthenticated) {
       navigate(ROUTES.LOGIN);
       return;
     }
-    navigate(`${ROUTES.PAYMENT}?amount=${duration.price}&label=${encodeURIComponent(planLabel)}`);
+    navigate(`${ROUTES.PAYMENT}?plan=${duration.plan_id}&label=${encodeURIComponent(planLabel)}`);
   }
 
   return (
@@ -77,10 +78,10 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
           )}
         >
           <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            {t(`pricing.durations.${duration.id}.label`)}
+            {t(`pricing.durations.${duration.plan_id}.label`)}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {t(`pricing.durations.${duration.id}.suitableFor`)}
+            {t(`pricing.durations.${duration.plan_id}.suitableFor`)}
           </p>
 
           <div className="mt-6 flex items-baseline gap-1">
@@ -96,9 +97,9 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
               : t('pricing.billedEvery', { months: duration.months })}
           </p>
 
-          {duration.savePercent > 0 ? (
+          {duration.save_percent > 0 ? (
             <Badge variant="success" className="mt-3 w-fit">
-              {t('pricing.toggle.save', { percent: duration.savePercent })}
+              {t('pricing.toggle.save', { percent: duration.save_percent })}
             </Badge>
           ) : (
             <Badge variant="outline" className="mt-3 w-fit">
@@ -115,9 +116,9 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
             ))}
           </ul>
 
-          {duration.extraFeatureIds.length > 0 && (
+          {extraFeatureIds.length > 0 && (
             <Divider as="ul" className="flex flex-col gap-2.5 text-sm font-medium text-foreground">
-              {duration.extraFeatureIds.map((id) => (
+              {extraFeatureIds.map((id) => (
                 <li key={id} className="flex items-start gap-2">
                   <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
                   {t(`pricing.extraFeatures.${id}`)}

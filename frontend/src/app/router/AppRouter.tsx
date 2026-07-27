@@ -94,6 +94,11 @@ const AdminDashboardPage = lazy(() =>
     default: m.AdminDashboardPage,
   })),
 );
+const AdminMembersPage = lazy(() =>
+  import('@/features/admin/pages/AdminMembersPage').then((m) => ({
+    default: m.AdminMembersPage,
+  })),
+);
 const ITHeadDashboardPage = lazy(() =>
   import('@/features/it-head/pages/ITHeadDashboardPage').then((m) => ({
     default: m.ITHeadDashboardPage,
@@ -167,7 +172,10 @@ const router = createBrowserRouter([
       </RoleRoute>
     ),
     errorElement: <ErrorState onRetry={() => window.location.assign(ROUTES.HOME)} />,
-    children: [{ path: relative(ROUTES.ADMIN), element: withSuspense(<AdminDashboardPage />) }],
+    children: [
+      { path: relative(ROUTES.ADMIN), element: withSuspense(<AdminDashboardPage />) },
+      { path: relative(ROUTES.ADMIN_MEMBERS), element: withSuspense(<AdminMembersPage />) },
+    ],
   },
   {
     element: (

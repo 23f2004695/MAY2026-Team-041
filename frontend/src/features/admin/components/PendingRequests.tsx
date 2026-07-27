@@ -1,34 +1,58 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Dialog } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
-import type { PendingRequest, PendingRequestType } from '@/mocks/admin';
+import { ApiError } from '@/lib/api';
+import { useAuth, type BillingRequestRecord, type BillingRequestType } from '@/providers/AuthProvider';
 
-const typeLabelKey: Record<PendingRequestType, string> = {
-  'membership-renewal': 'admin.pendingRequests.types.membershipRenewal',
-  'refund-request': 'admin.pendingRequests.types.refundRequest',
-  'fee-waiver-request': 'admin.pendingRequests.types.feeWaiverRequest',
+const typeLabelKey: Record<BillingRequestType, string> = {
+  refund: 'admin.pendingRequests.types.refundRequest',
+  fee_waiver: 'admin.pendingRequests.types.feeWaiverRequest',
 };
 
-// Financial actions get a confirmation step (frontend-only placeholder — no request is
-// actually sent) since approving/rejecting money requests shouldn't be a single misclick.
-type PendingAction = { request: PendingRequest; kind: 'approve' | 'reject' };
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
 
-export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
+type PendingAction = { request: BillingRequestRecord; kind: 'approve' | 'reject' };
+
+export interface PendingRequestsProps {
+  requests: BillingRequestRecord[];
+  onDecided: () => void;
+}
+
+// Financial actions get a confirmation step since approving/rejecting money requests
+// shouldn't be a single misclick.
+export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
   const { t } = useTranslation();
+  const { approveBillingRequest, rejectBillingRequest } = useAuth();
   const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
+  const [isDeciding, setIsDeciding] = useState(false);
 
-  function confirm() {
+  async function confirm() {
     if (!pendingAction) return;
     const { request, kind } = pendingAction;
-    comingSoonToast(
-      t(
-        kind === 'approve' ? 'admin.pendingRequests.approveToast' : 'admin.pendingRequests.rejectToast',
-        { name: request.requester },
-      ),
-    );
-    setPendingAction(null);
+    setIsDeciding(true);
+    try {
+      await (kind === 'approve' ? approveBillingRequest : rejectBillingRequest)(request.id);
+      toast.success(
+        t(
+          kind === 'approve' ? 'admin.pendingRequests.approveToast' : 'admin.pendingRequests.rejectToast',
+          { name: request.member_name },
+        ),
+      );
+      setPendingAction(null);
+      onDecided();
+    } catch (err) {
+      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+    } finally {
+      setIsDeciding(false);
+    }
   }
 
   return (
@@ -45,12 +69,14 @@ export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
             <div>
               <div className="flex items-center gap-2">
                 <Badge variant="outline">{t(typeLabelKey[request.type])}</Badge>
-                <span className="font-medium text-foreground">{request.amount}</span>
-                <span className="text-xs text-muted-foreground">{request.submittedOn}</span>
+                <span className="font-medium text-foreground">
+                  ₹{request.amount.toLocaleString('en-IN')}
+                </span>
+                <span className="text-xs text-muted-foreground">{formatDate(request.created_at)}</span>
               </div>
-              <p className="mt-1 text-sm text-foreground">{request.summary}</p>
+              <p className="mt-1 text-sm text-foreground">{request.reason}</p>
               <p className="text-xs text-muted-foreground">
-                {t('admin.pendingRequests.from', { name: request.requester })}
+                {t('admin.pendingRequests.from', { name: request.member_name })}
               </p>
             </div>
             <div className="flex gap-2">
@@ -77,6 +103,7 @@ export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
         open={pendingAction !== null}
         onClose={() => setPendingAction(null)}
         onConfirm={confirm}
+        isConfirming={isDeciding}
         title={t(
           pendingAction?.kind === 'reject'
             ? 'admin.pendingRequests.confirmRejectTitle'
@@ -85,8 +112,8 @@ export function PendingRequests({ requests }: { requests: PendingRequest[] }) {
         description={
           pendingAction
             ? t('admin.pendingRequests.confirmDescription', {
-                name: pendingAction.request.requester,
-                amount: pendingAction.request.amount,
+                name: pendingAction.request.member_name,
+                amount: `₹${pendingAction.request.amount.toLocaleString('en-IN')}`,
               })
             : undefined
         }

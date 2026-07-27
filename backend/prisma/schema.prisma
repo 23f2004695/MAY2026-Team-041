@@ -55,6 +55,12 @@ model User {
   reviews            Review[]            @relation("MemberReview")
   loggedExpenses     Expense[]           @relation("ExpenseLoggedBy")
 
+  billingRequestsAsMember BillingRequest[] @relation("BillingRequestMember")
+  billingRequestsFiled    BillingRequest[] @relation("BillingRequestCreatedBy")
+  billingRequestsDecided  BillingRequest[] @relation("BillingRequestDecidedBy")
+
+  auditLogEntries AuditLogEntry[] @relation("AuditLogActor")
+
   @@map("users")
 }
 
@@ -320,4 +326,58 @@ model Expense {
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@map("expenses")
+}
+
+// ponytail: only refunds and fee waivers go through this approval queue — membership
+// renewal is payment-driven (see Payment.planMonths), not a request anyone approves.
+// Filed by a manager on a member's behalf (members can't file their own); decided by
+// an admin. No money actually moves — this records the decision, same as Payment
+// records an event without a real gateway behind it yet.
+model BillingRequest {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId    String    @map("member_id") @db.Uuid
+  member      User      @relation("BillingRequestMember", fields: [memberId], references: [id])
+  createdById String    @map("created_by_id") @db.Uuid
+  createdBy   User      @relation("BillingRequestCreatedBy", fields: [createdById], references: [id])
+  type        String    @db.VarChar(20) // refund | fee_waiver
+  amount      Int
+  reason      String
+  status      String    @default("pending") @db.VarChar(20) // pending | approved | rejected
+  decidedById String?   @map("decided_by_id") @db.Uuid
+  decidedBy   User?     @relation("BillingRequestDecidedBy", fields: [decidedById], references: [id])
+  decidedAt   DateTime? @map("decided_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("billing_requests")
+}
+
+// One row per admin-facing financial action (expense logged, billing request decided).
+// `metadata` holds the action-specific display data (amount, category, member name, ...)
+// so the frontend can render a sentence per `action` key without extra joins.
+model AuditLogEntry {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actorId   String   @map("actor_id") @db.Uuid
+  actor     User     @relation("AuditLogActor", fields: [actorId], references: [id])
+  action    String   @db.VarChar(40)
+  metadata  Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("audit_log_entries")
+}
+
+// The 4 rows here are fixed (1m/3m/6m/12m — seeded by scripts/seed_pricing_plans.py,
+// never created/deleted through the API) — admins only ever update price/savePercent.
+// planId is the stable key the frontend joins against i18n copy (pricing.durations.<planId>.*)
+// and Payment.planMonths (a payment for a plan stores months, not planId, since fine
+// payments have no plan at all).
+model PricingPlan {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  planId      String   @unique @map("plan_id") @db.VarChar(10)
+  months      Int
+  price       Int
+  savePercent Int      @default(0) @map("save_percent")
+  badge       String?  @db.VarChar(20) // "mostPopular" | "bestValue" | null
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("pricing_plans")
 }
