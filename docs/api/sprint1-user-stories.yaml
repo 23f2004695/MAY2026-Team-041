@@ -1,0 +1,291 @@
+# S1-02: Sprint 1 API -> Milestone 1 user story traceability.
+#
+# Scope: every endpoint in the Sprint 1 modules that is actually implemented
+# in backend/src/app/modules today (auth, books, members, reservations,
+# seat-booking, payments, pricing-plans, admin). Later-sprint modules
+# (community, reviews, notifications, guardian, translate, billing_requests,
+# events, chat) are out of scope for this ticket.
+#
+# user_story is a US-<MODULE>-<NN> Milestone 1 story ID, or MM-02 (member
+# sign-up sprint task). `null` means no single Milestone 1 story owns this
+# endpoint — `note` gives a short reason instead.
+
+- method: POST
+  path: /api/v1/auth/register
+  module: auth
+  sprint: 1
+  user_story: null
+  note: Account sign-up — foundational, not tied to one story.
+
+- method: POST
+  path: /api/v1/auth/login
+  module: auth
+  sprint: 1
+  user_story: null
+  note: Login — foundational, not tied to one story.
+
+- method: POST
+  path: /api/v1/auth/google
+  module: auth
+  sprint: 1
+  user_story: null
+  note: Google sign-in — alternate login, foundational.
+
+- method: PATCH
+  path: /api/v1/auth/me
+  module: auth
+  sprint: 1
+  user_story: null
+  note: Profile self-service — foundational.
+
+- method: POST
+  path: /api/v1/auth/refresh
+  module: auth
+  sprint: 1
+  user_story: null
+  note: JWT refresh — foundational.
+
+- method: POST
+  path: /api/v1/auth/logout
+  module: auth
+  sprint: 1
+  user_story: null
+  note: Logout — foundational.
+
+- method: GET
+  path: /api/v1/books
+  module: books
+  sprint: 1
+  user_story: US-MEMBER-01
+  note: Search and filter the catalogue by title, author, or category.
+
+- method: GET
+  path: /api/v1/books/{book_id}
+  module: books
+  sprint: 1
+  user_story: US-MEMBER-01
+  note: View a single book's details.
+
+- method: POST
+  path: /api/v1/books
+  module: books
+  sprint: 1
+  user_story: null
+  note: Librarian catalogue management — no dedicated story for CRUD itself.
+
+- method: PUT
+  path: /api/v1/books/{book_id}
+  module: books
+  sprint: 1
+  user_story: null
+  note: Librarian catalogue management — same as create.
+
+- method: DELETE
+  path: /api/v1/books/{book_id}
+  module: books
+  sprint: 1
+  user_story: null
+  note: Librarian catalogue management — same as create.
+
+- method: GET
+  path: /api/v1/members
+  module: members
+  sprint: 1
+  user_story: MM-02
+  note: Staff member search + pagination.
+
+- method: POST
+  path: /api/v1/members
+  module: members
+  sprint: 1
+  user_story: [US-STAFF-04, MM-02]
+  note: Manager registers a walk-in visitor as a new member.
+
+- method: PUT
+  path: /api/v1/members/{member_id}
+  module: members
+  sprint: 1
+  user_story: MM-02
+  note: Staff edits a member record.
+
+- method: GET
+  path: /api/v1/members/me/reading-progress
+  module: members
+  sprint: 2
+  user_story: null
+  note: Reading-progress tracking — built ahead of schedule, not a Sprint 1 story.
+
+- method: PUT
+  path: /api/v1/members/me/reading-progress
+  module: members
+  sprint: 2
+  user_story: null
+  note: Reading-progress tracking — built ahead of schedule, not a Sprint 1 story.
+
+- method: GET
+  path: /api/v1/members/me/reading-goal
+  module: members
+  sprint: 2
+  user_story: null
+  note: Reading-goal tracking — built ahead of schedule, not a Sprint 1 story.
+
+- method: PUT
+  path: /api/v1/members/me/reading-goal
+  module: members
+  sprint: 2
+  user_story: null
+  note: Reading-goal tracking — built ahead of schedule, not a Sprint 1 story.
+
+- method: GET
+  path: /api/v1/members/me/reading-streak
+  module: members
+  sprint: 2
+  user_story: null
+  note: Reading-streak tracking — built ahead of schedule, not a Sprint 1 story.
+
+- method: GET
+  path: /api/v1/reservations/me
+  module: reservations
+  sprint: 1
+  user_story: null
+  note: Basic book reservation — no story explicitly covers it; closest is US-MEMBER-01.
+
+- method: POST
+  path: /api/v1/reservations
+  module: reservations
+  sprint: 1
+  user_story: null
+  note: Basic book reservation — same gap as above.
+
+- method: DELETE
+  path: /api/v1/reservations/{reservation_id}
+  module: reservations
+  sprint: 1
+  user_story: null
+  note: Basic book reservation — same gap as above.
+
+- method: GET
+  path: /api/v1/seat-booking/schedule
+  module: seat_booking
+  sprint: 1
+  user_story: US-MEMBER-02
+  note: Live seat availability before travelling to the library.
+
+- method: GET
+  path: /api/v1/seat-booking/me
+  module: seat_booking
+  sprint: 1
+  user_story: US-MEMBER-03
+  note: View booking history.
+
+- method: POST
+  path: /api/v1/seat-booking
+  module: seat_booking
+  sprint: 1
+  user_story: US-MEMBER-03
+  note: Book a seat.
+
+- method: DELETE
+  path: /api/v1/seat-booking/{booking_id}
+  module: seat_booking
+  sprint: 1
+  user_story: US-MEMBER-03
+  note: Cancel a seat booking.
+
+- method: POST
+  path: /api/v1/seat-booking/notify
+  module: seat_booking
+  sprint: 2
+  user_story: null
+  note: Seat-availability ping — built ahead of the notification service, loosely an alert (US-MEMBER-05).
+
+- method: POST
+  path: /api/v1/payments
+  module: payments
+  sprint: 1
+  user_story: US-STAFF-06
+  note: Staff-recorded counter payment; member self-checkout payment shares this endpoint with no story of its own.
+
+- method: GET
+  path: /api/v1/payments/me/membership
+  module: payments
+  sprint: 1
+  user_story: US-MEMBER-04
+  note: Current dues/fee status on the member dashboard.
+
+- method: GET
+  path: /api/v1/pricing-plans
+  module: pricing_plans
+  sprint: 1
+  user_story: null
+  note: Browse plans — supports US-ADMIN-02 and member plan selection, no story of its own.
+
+- method: PATCH
+  path: /api/v1/pricing-plans/{plan_id}
+  module: pricing_plans
+  sprint: 1
+  user_story: US-ADMIN-02
+  note: Configure membership/seat-plan pricing.
+
+- method: GET
+  path: /api/v1/admin/dashboard
+  module: admin
+  sprint: 1
+  user_story: US-ADMIN-01
+  note: Summary of active seats, loaned books, and revenue.
+
+- method: POST
+  path: /api/v1/admin/expenses
+  module: admin
+  sprint: 2
+  user_story: null
+  note: Budget/expense logging — built ahead of schedule, not a Sprint 1 story.
+
+- method: GET
+  path: /api/v1/admin/audit-log
+  module: admin
+  sprint: 1
+  user_story: US-ADMIN-04
+  note: Audit log of platform-level changes.
+
+- method: GET
+  path: /api/v1/admin/reports/revenue-by-plan
+  module: admin
+  sprint: 2
+  user_story: null
+  note: Financial report — built ahead of schedule, beyond Sprint 1's basic dashboard numbers.
+
+- method: GET
+  path: /api/v1/admin/reports/profit-and-loss
+  module: admin
+  sprint: 2
+  user_story: null
+  note: Financial report — same as revenue-by-plan.
+
+- method: GET
+  path: /api/v1/admin/reports/expense-breakdown
+  module: admin
+  sprint: 2
+  user_story: null
+  note: Financial report — same as revenue-by-plan.
+
+- method: GET
+  path: /api/v1/admin/reports/membership-growth
+  module: admin
+  sprint: 2
+  user_story: null
+  note: Growth report — same as revenue-by-plan.
+
+- method: POST
+  path: /api/v1/admin/announcements
+  module: admin
+  sprint: 2
+  user_story: null
+  note: Admin side of member community-announcement alerts (US-MEMBER-05) — built ahead of schedule.
+
+- method: GET
+  path: /api/v1/admin/members
+  module: admin
+  sprint: 1
+  user_story: US-ADMIN-01
+  note: Member list feeding the admin dashboard.
