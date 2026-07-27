@@ -5,6 +5,7 @@
 
 ## Headline
 
+
 The frontend is a **fully mocked prototype, not wired to the backend**. There is no `src/api`/`src/services` layer, no `axios`, and no `useQuery`/`useMutation` usage anywhere, despite `@tanstack/react-query`'s `QueryClientProvider` being set up unused in `frontend/src/providers/AppProviders.tsx`. Auth is a `localStorage`-backed mock (comment in `AuthProvider.tsx`: *"no backend yet, auth state is a mocked localStorage flag until Milestone 3 wires real JWT auth"*). Most write actions call `comingSoonToast()` instead of a real mutation. The backend only implements `books` and `members` modules — the frontend calls neither.
 
 So "BUILT (wired to real backend)" applies to nothing below. Status is PARTIAL (UI exists, mock data / no persistence) or NOT BUILT.
