@@ -167,7 +167,11 @@ export function AdminDashboardPage() {
       <QuickActionsCard
         actions={[
           {
-            label: t('admin.quickActions.logExpense'),
+            label: 'Create Event',
+            icon: CalendarPlus,
+            onClick: () => setCreateEventOpen(true),
+          },
+          {
             icon: ReceiptText,
             onClick: () => setIsLogExpenseOpen(true),
           },

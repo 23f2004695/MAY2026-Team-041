@@ -43,6 +43,26 @@ async def get_current_user(
     return user
 
 
+async def get_optional_user(
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer_scheme)],
+) -> User | None:
+    if credentials is None:
+        return None
+    try:
+        payload = decode_token(credentials.credentials)
+    except jwt.InvalidTokenError:
+        return None
+    if payload.get("type") != "access":
+        return None
+    user_id = payload.get("sub")
+    if not user_id:
+        return None
+    user = await prisma.user.find_unique(where={"id": user_id}, include={"role": True})
+    if user is None or user.deletedAt is not None or not user.isActive:
+        return None
+    return user
+
+
 def require_role(*allowed_roles: str) -> Callable[..., Coroutine[Any, Any, User]]:
     async def dependency(
         user: Annotated[User, Depends(get_current_user)],

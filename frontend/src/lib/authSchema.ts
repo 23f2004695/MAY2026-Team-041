@@ -7,11 +7,11 @@ import { isValidEmail } from './email';
 // rendering, same convention as the rest of the app's error strings.
 const email = z.string().refine(isValidEmail, { message: 'auth.register.errors.email' });
 
-// Same shape as the manager's "register member" form: optional leading +, 7-20 digits/spaces/dashes/parens.
-export const PHONE_PATTERN = /^\+?[\d\s()-]{7,20}$/;
+// Exactly 10 digits, optional leading +91 or 0 prefix stripped mentally — we store raw 10-digit.
+export const PHONE_PATTERN = /^[6-9]\d{9}$/;
 
-// At least one letter and one number, 8+ characters.
-export const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+// At least one uppercase, one lowercase, one digit, one special char, 8+ characters.
+export const PASSWORD_PATTERN = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
 
 export const loginSchema = z.object({
   email,
@@ -24,7 +24,7 @@ const PLAN_IDS = ['1m', '3m', '6m', '12m'] as const;
 
 export const registerSchema = z
   .object({
-    name: z.string().trim().min(1, { message: 'auth.register.errors.name' }),
+    name: z.string().trim().min(2, { message: 'auth.register.errors.name' }).max(100, { message: 'auth.register.errors.name' }).regex(/^[A-Za-z\s'-]+$/, { message: 'auth.register.errors.name' }),
     email,
     phoneNumber: z.string().regex(PHONE_PATTERN, { message: 'auth.register.errors.phoneNumber' }),
     password: z.string().regex(PASSWORD_PATTERN, { message: 'auth.register.errors.password' }),
@@ -47,7 +47,7 @@ export type RegisterFormValues = z.infer<typeof registerSchema>;
 // shown once, right after a first-time Google sign-in, to collect what Google doesn't give us.
 export const completeProfileSchema = z
   .object({
-    fullName: z.string().trim().min(1, { message: 'auth.register.errors.name' }),
+    fullName: z.string().trim().min(2, { message: 'auth.register.errors.name' }).max(100, { message: 'auth.register.errors.name' }).regex(/^[A-Za-z\s'-]+$/, { message: 'auth.register.errors.name' }),
     phoneNumber: z.string().regex(PHONE_PATTERN, { message: 'auth.register.errors.phoneNumber' }),
     password: z.string().regex(PASSWORD_PATTERN, { message: 'auth.register.errors.password' }),
     confirmPassword: z.string(),
@@ -68,7 +68,7 @@ export type CompleteProfileFormValues = z.infer<typeof completeProfileSchema>;
 // Password fields are optional here — leave both blank to keep the current password.
 export const editProfileSchema = z
   .object({
-    fullName: z.string().trim().min(1, { message: 'auth.register.errors.name' }),
+    fullName: z.string().trim().min(2, { message: 'auth.register.errors.name' }).max(100, { message: 'auth.register.errors.name' }).regex(/^[A-Za-z\s'-]+$/, { message: 'auth.register.errors.name' }),
     phoneNumber: z.string().regex(PHONE_PATTERN, { message: 'auth.register.errors.phoneNumber' }),
     password: z
       .string()
