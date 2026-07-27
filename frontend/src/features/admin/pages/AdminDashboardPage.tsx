@@ -1,5 +1,6 @@
 import {
   BadgeIndianRupee,
+  CalendarPlus,
   HandCoins,
   IndianRupee,
   Megaphone,
@@ -24,6 +25,8 @@ import {
   type ExpenseCategory,
   useAuth,
 } from '@/providers/AuthProvider';
+
+import { CreateEventModal } from '@/features/events/components/CreateEventModal';
 
 import { AdjustPricingModal } from '../components/AdjustPricingModal';
 import { AnnouncementModal } from '../components/AnnouncementModal';
@@ -63,6 +66,7 @@ export function AdminDashboardPage() {
   const [isAdjustPricingOpen, setIsAdjustPricingOpen] = useState(false);
   const [isInviteMemberOpen, setIsInviteMemberOpen] = useState(false);
   const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
+  const [createEventOpen, setCreateEventOpen] = useState(false);
   const [activeReport, setActiveReport] = useState<ReportKey | null>(null);
 
   function refresh() {
@@ -167,6 +171,11 @@ export function AdminDashboardPage() {
       <QuickActionsCard
         actions={[
           {
+            label: 'Create Event',
+            icon: CalendarPlus,
+            onClick: () => setCreateEventOpen(true),
+          },
+          {
             label: t('admin.quickActions.logExpense'),
             icon: ReceiptText,
             onClick: () => setIsLogExpenseOpen(true),
@@ -236,6 +245,12 @@ export function AdminDashboardPage() {
         open={isAnnouncementOpen}
         onClose={() => setIsAnnouncementOpen(false)}
         onSent={refreshAuditLog}
+      />
+
+      <CreateEventModal
+        open={createEventOpen}
+        onClose={() => setCreateEventOpen(false)}
+        onCreated={() => setCreateEventOpen(false)}
       />
     </div>
   );

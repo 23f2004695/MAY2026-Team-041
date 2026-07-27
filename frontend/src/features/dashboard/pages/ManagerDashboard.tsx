@@ -1,10 +1,11 @@
-import { Armchair, BookPlus, ReceiptText, UserPlus } from 'lucide-react';
+import { Armchair, BookPlus, CalendarPlus, ReceiptText, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { comingSoonToast } from '@/lib/comingSoonToast';
+import { CreateEventModal } from '@/features/events/components/CreateEventModal';
 import {
   managerStats,
   pendingPayments,
@@ -29,6 +30,7 @@ export function ManagerDashboard() {
     initialRegistrationRequests,
   );
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [createEventOpen, setCreateEventOpen] = useState(false);
   const [fulfillingRequest, setFulfillingRequest] = useState<RegistrationRequest | null>(null);
   const [isBillingRequestOpen, setIsBillingRequestOpen] = useState(false);
 
@@ -94,6 +96,11 @@ export function ManagerDashboard() {
       <QuickActionsCard
         actions={[
           {
+            label: 'Create Event',
+            icon: CalendarPlus,
+            onClick: () => setCreateEventOpen(true),
+          },
+          {
             label: t('managerDashboard.quickActions.bookSeatForMember'),
             icon: Armchair,
             onClick: () => comingSoonToast(t('managerDashboard.quickActions.toasts.bookingSeat')),
@@ -126,6 +133,12 @@ export function ManagerDashboard() {
       <FileBillingRequestModal
         open={isBillingRequestOpen}
         onClose={() => setIsBillingRequestOpen(false)}
+      />
+
+      <CreateEventModal
+        open={createEventOpen}
+        onClose={() => setCreateEventOpen(false)}
+        onCreated={() => setCreateEventOpen(false)}
       />
     </div>
   );

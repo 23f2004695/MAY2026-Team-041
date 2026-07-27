@@ -98,9 +98,7 @@ const AdminDashboardPage = lazy(() =>
   })),
 );
 const AdminMembersPage = lazy(() =>
-  import('@/features/admin/pages/AdminMembersPage').then((m) => ({
-    default: m.AdminMembersPage,
-  })),
+  import('@/features/admin/pages/AdminMembersPage').then((m) => ({ default: m.AdminMembersPage })),
 );
 const ITHeadDashboardPage = lazy(() =>
   import('@/features/it-head/pages/ITHeadDashboardPage').then((m) => ({

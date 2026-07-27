@@ -116,7 +116,8 @@
         "member": "सदस्य",
         "manager": "मैनेजर",
         "it-head": "आईटी हेड",
-        "guardian": "अभिभावक"
+        "guardian": "अभिभावक",
+        "librarian": "लाइब्रेरियन"
       },
       "or": "या",
       "email": "ईमेल",
@@ -183,16 +184,18 @@
     "pageDescription": "व्यवसाय प्रदर्शन, नकदी प्रवाह और प्लेटफ़ॉर्म प्रबंधन",
     "members": {
       "pageTitle": "सदस्य",
-      "pageDescription": "सभी पंजीकृत सदस्य, उनकी योजनाएँ, गतिविधि और स्थिति।",
+      "pageDescription": "सभी पंजीकृत खाते, उनकी योजनाएँ, गतिविधि और स्थिति।",
       "searchPlaceholder": "नाम या ईमेल से खोजें",
       "table": {
         "member": "सदस्य",
+        "role": "भूमिका",
         "lastPayment": "अंतिम भुगतान",
         "plan": "योजना",
         "progress": "पठन प्रगति",
         "reported": "शिकायत",
         "joined": "शामिल हुए",
-        "events": "इवेंट भागीदारी"
+        "events": "इवेंट भागीदारी",
+        "status": "स्थिति"
       },
       "noPayment": "अभी तक कोई भुगतान नहीं",
       "noPlan": "कोई सक्रिय योजना नहीं",
@@ -202,7 +205,16 @@
       "booksCompleted": "{{count}} पूर्ण",
       "reportedYes": "शिकायत मिली",
       "reportedNo": "साफ़",
-      "eventsNotTracked": "अभी ट्रैक नहीं किया गया",
+      "eventsCount": "{{count}} इवेंट",
+      "actions": {
+        "activate": "सक्रिय करें",
+        "deactivate": "निष्क्रिय करें"
+      },
+      "toasts": {
+        "roleUpdated": "{{name}} अब {{role}} है",
+        "activated": "{{name}} सक्रिय किया गया",
+        "deactivated": "{{name}} निष्क्रिय किया गया"
+      },
       "empty": {
         "title": "कोई सदस्य नहीं मिला",
         "description": "एक अलग खोज शब्द आज़माएँ।"

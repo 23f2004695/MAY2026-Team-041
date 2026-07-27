@@ -267,6 +267,8 @@ export interface AdminMemberRecord {
   id: string;
   full_name: string;
   email: string;
+  role: Role;
+  is_active: boolean;
   joined_at: string;
   last_payment_amount: number | null;
   last_payment_label: string | null;
@@ -277,6 +279,12 @@ export interface AdminMemberRecord {
   books_reading: number;
   books_completed: number;
   reported: boolean;
+  event_registrations: number;
+}
+
+export interface AdminMemberUpdatePayload {
+  role_name?: string;
+  is_active?: boolean;
 }
 
 export interface AdminMemberListResponse {
@@ -539,6 +547,7 @@ interface AuthContextValue extends AuthState {
   getExpenseBreakdownReport: () => Promise<ExpenseBreakdownReport>;
   getMembershipGrowthReport: () => Promise<MembershipGrowthReport>;
   getAdminMembers: (query?: AdminMemberQuery) => Promise<AdminMemberListResponse>;
+  updateAdminMember: (memberId: string, payload: AdminMemberUpdatePayload) => Promise<void>;
   createSupportTicket: (payload: SupportTicketPayload) => Promise<SupportTicketRecord>;
   getMySupportTickets: () => Promise<SupportTicketRecord[]>;
   getStaffSupportTickets: (status?: SupportTicketStatus) => Promise<SupportTicketRecord[]>;
@@ -892,6 +901,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, state.token);
   }
 
+  async function updateAdminMember(
+    memberId: string,
+    payload: AdminMemberUpdatePayload,
+  ): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPut(`/members/${memberId}`, payload, state.token);
+  }
+
   async function createSupportTicket(payload: SupportTicketPayload): Promise<SupportTicketRecord> {
     if (!state.token) throw new Error('Not authenticated');
     return apiPost<SupportTicketRecord>('/support-tickets', payload, state.token);
@@ -1101,6 +1118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getExpenseBreakdownReport,
         getMembershipGrowthReport,
         getAdminMembers,
+        updateAdminMember,
         createSupportTicket,
         getMySupportTickets,
         getStaffSupportTickets,

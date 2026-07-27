@@ -116,7 +116,8 @@
         "member": "ਮੈਂਬਰ",
         "manager": "ਮੈਨੇਜਰ",
         "it-head": "ਆਈਟੀ ਹੈੱਡ",
-        "guardian": "ਸਰਪ੍ਰਸਤ"
+        "guardian": "ਸਰਪ੍ਰਸਤ",
+        "librarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ"
       },
       "or": "ਜਾਂ",
       "email": "ਈਮੇਲ",
@@ -183,16 +184,18 @@
     "pageDescription": "ਕਾਰੋਬਾਰੀ ਪ੍ਰਦਰਸ਼ਨ, ਨਕਦੀ ਪ੍ਰਵਾਹ ਅਤੇ ਪਲੇਟਫਾਰਮ ਪ੍ਰਬੰਧਨ",
     "members": {
       "pageTitle": "ਮੈਂਬਰ",
-      "pageDescription": "ਸਾਰੇ ਰਜਿਸਟਰਡ ਮੈਂਬਰ, ਉਹਨਾਂ ਦੀਆਂ ਯੋਜਨਾਵਾਂ, ਗਤੀਵਿਧੀ ਅਤੇ ਸਥਿਤੀ।",
+      "pageDescription": "ਸਾਰੇ ਰਜਿਸਟਰਡ ਖਾਤੇ, ਉਹਨਾਂ ਦੀਆਂ ਯੋਜਨਾਵਾਂ, ਗਤੀਵਿਧੀ ਅਤੇ ਸਥਿਤੀ।",
       "searchPlaceholder": "ਨਾਮ ਜਾਂ ਈਮੇਲ ਦੁਆਰਾ ਖੋਜੋ",
       "table": {
         "member": "ਮੈਂਬਰ",
+        "role": "ਭੂਮਿਕਾ",
         "lastPayment": "ਆਖਰੀ ਭੁਗਤਾਨ",
         "plan": "ਯੋਜਨਾ",
         "progress": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",
         "reported": "ਸ਼ਿਕਾਇਤ",
         "joined": "ਸ਼ਾਮਲ ਹੋਏ",
-        "events": "ਸਮਾਗਮ ਭਾਗੀਦਾਰੀ"
+        "events": "ਸਮਾਗਮ ਭਾਗੀਦਾਰੀ",
+        "status": "ਸਥਿਤੀ"
       },
       "noPayment": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ",
       "noPlan": "ਕੋਈ ਸਰਗਰਮ ਯੋਜਨਾ ਨਹੀਂ",
@@ -202,7 +205,16 @@
       "booksCompleted": "{{count}} ਪੂਰੀਆਂ",
       "reportedYes": "ਸ਼ਿਕਾਇਤ ਮਿਲੀ",
       "reportedNo": "ਸਾਫ਼",
-      "eventsNotTracked": "ਹਾਲੇ ਟਰੈਕ ਨਹੀਂ ਕੀਤਾ ਗਿਆ",
+      "eventsCount": "{{count}} ਸਮਾਗਮ",
+      "actions": {
+        "activate": "ਸਰਗਰਮ ਕਰੋ",
+        "deactivate": "ਨਿਸ਼ਕਿਰਿਆ ਕਰੋ"
+      },
+      "toasts": {
+        "roleUpdated": "{{name}} ਹੁਣ {{role}} ਹੈ",
+        "activated": "{{name}} ਸਰਗਰਮ ਕੀਤਾ ਗਿਆ",
+        "deactivated": "{{name}} ਨਿਸ਼ਕਿਰਿਆ ਕੀਤਾ ਗਿਆ"
+      },
       "empty": {
         "title": "ਕੋਈ ਮੈਂਬਰ ਨਹੀਂ ਮਿਲਿਆ",
         "description": "ਇੱਕ ਵੱਖਰਾ ਖੋਜ ਸ਼ਬਦ ਅਜ਼ਮਾਓ।"

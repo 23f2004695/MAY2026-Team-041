@@ -26,6 +26,7 @@ export function Register() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -83,8 +84,15 @@ export function Register() {
           type="tel"
           autoComplete="tel"
           placeholder={t('auth.register.phoneNumberPlaceholder')}
+          maxLength={10}
           error={errors.phoneNumber?.message ? t(errors.phoneNumber.message) : undefined}
-          {...register('phoneNumber')}
+          {...register('phoneNumber', {
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+              const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+              e.target.value = digits;
+              setValue('phoneNumber', digits, { shouldValidate: true });
+            },
+          })}
         />
         <Input
           label={t('auth.register.password')}

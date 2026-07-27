@@ -7,8 +7,8 @@ import { z } from 'zod';
 import { Button, Input, Modal, Select } from '@/components/ui';
 import { isValidEmail } from '@/lib/email';
 
-// Same shape as ContactUsPage's phone validation: optional leading +, 7-20 digits/spaces/dashes/parens.
-const PHONE_PATTERN = /^\+?[\d\s()-]{7,20}$/;
+// Exactly 10 digits, starting with 6-9 (Indian mobile).
+const PHONE_PATTERN = /^[6-9]\d{9}$/;
 
 const registerMemberSchema = z.object({
   name: z.string().trim().min(1, { message: 'managerDashboard.registerMember.errors.name' }),
@@ -40,6 +40,7 @@ export function RegisterMemberModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<RegisterMemberFormValues>({
     resolver: zodResolver(registerMemberSchema),
@@ -87,9 +88,16 @@ export function RegisterMemberModal({
         <Input
           type="tel"
           label={t('managerDashboard.registerMember.phoneLabel')}
-          placeholder={t('managerDashboard.registerMember.phonePlaceholder')}
+          placeholder="9876543210"
+          maxLength={10}
           error={errors.phoneNumber?.message ? t(errors.phoneNumber.message) : undefined}
-          {...register('phoneNumber')}
+          {...register('phoneNumber', {
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+              const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+              e.target.value = digits;
+              setValue('phoneNumber', digits, { shouldValidate: true });
+            },
+          })}
         />
         <Select
           label={t('managerDashboard.registerMember.planLabel')}

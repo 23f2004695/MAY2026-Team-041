@@ -130,6 +130,8 @@ class AdminMemberOut(BaseModel):
     id: str
     full_name: str
     email: str
+    role: str
+    is_active: bool
     joined_at: datetime
     last_payment_amount: int | None
     last_payment_label: str | None
@@ -140,6 +142,7 @@ class AdminMemberOut(BaseModel):
     books_reading: int
     books_completed: int
     reported: bool
+    event_registrations: int
 
 
 class AdminMemberListOut(BaseModel):

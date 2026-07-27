@@ -1,67 +1,144 @@
-import { useState } from 'react';
-import { CalendarCheck, CalendarX, Percent, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CalendarCheck, CalendarPlus, CalendarX, Percent, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { StatisticCard, EventCard, PageHeader } from '@/components/common';
-import { EmptyState } from '@/components/ui';
-import { attendanceSummary, events as mockEvents, type Event } from '@/mocks/events';
+import { Button, EmptyState, Loader } from '@/components/ui';
+import { apiGet, apiPost, apiDelete, ApiError } from '@/lib/api';
+import { useAuth } from '@/providers/AuthProvider';
 
+import { CreateEventModal } from '../components/CreateEventModal';
 import { EventDetailsDrawer } from '../components/EventDetailsDrawer';
+
+interface Registrant {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
+export interface Event {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  description: string;
+  attendees: number;
+  capacity: number;
+  registered: boolean;
+  registrants: Registrant[];
+}
+
+interface EventListResponse {
+  items: Event[];
+  total: number;
+}
+
+interface AttendanceSummary {
+  total_events_this_month: number;
+  total_attendees: number;
+  average_attendance_rate: number;
+}
 
 export function EventsPage() {
   const { t } = useTranslation();
-  const [events, setEvents] = useState(mockEvents);
+  const { token, role } = useAuth();
+  const canManage = role === 'admin' || role === 'manager';
+  const [events, setEvents] = useState<Event[]>([]);
+  const [summary, setSummary] = useState<AttendanceSummary>({
+    total_events_this_month: 0,
+    total_attendees: 0,
+    average_attendance_rate: 0,
+  });
+  const [loading, setLoading] = useState(true);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
 
-  const activeEvent = events.find((event) => event.id === activeEventId) ?? null;
+  const activeEvent = events.find((e) => e.id === activeEventId) ?? null;
 
-  function toggleRegistration(event: Event) {
+  useEffect(() => {
+    fetchEvents();
+  }, [token]);
+
+  function fetchEvents() {
+    setLoading(true);
+    Promise.all([
+      apiGet<EventListResponse>('/events?page_size=100', token ?? undefined),
+      apiGet<AttendanceSummary>('/events/summary'),
+    ])
+      .then(([list, s]) => {
+        setEvents(list.items);
+        setSummary(s);
+      })
+      .finally(() => setLoading(false));
+  }
+
+  async function toggleRegistration(event: Event) {
+    if (!token) return;
+    try {
+      let updated: Event;
+      if (event.registered) {
+        updated = await apiDelete<Event>(`/events/${event.id}/register`, token);
+      } else {
+        updated = await apiPost<Event>(`/events/${event.id}/register`, undefined, token);
+      }
+      setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+    } catch (err) {
+      if (err instanceof ApiError) console.error(err.message);
+    }
+  }
+
+  async function removeRegistrant(eventId: string, memberId: string) {
+    // Staff-only: not wired to a dedicated endpoint yet — optimistic UI update only
     setEvents((prev) =>
-      prev.map((entry) =>
-        entry.id === event.id
+      prev.map((e) =>
+        e.id === eventId
           ? {
-              ...entry,
-              registered: !entry.registered,
-              attendees: entry.attendees + (entry.registered ? -1 : 1),
+              ...e,
+              registrants: e.registrants.filter((r) => r.id !== memberId),
+              attendees: e.attendees - 1,
             }
-          : entry,
+          : e,
       ),
     );
   }
 
-  function removeRegistrant(eventId: string, name: string) {
-    setEvents((prev) =>
-      prev.map((entry) =>
-        entry.id === eventId
-          ? {
-              ...entry,
-              registrants: entry.registrants.filter((registrant) => registrant !== name),
-              attendees: entry.attendees - 1,
-            }
-          : entry,
-      ),
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader />
+      </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title={t('events.pageTitle')} description={t('events.pageDescription')} />
+      <PageHeader
+        title={t('events.pageTitle')}
+        description={t('events.pageDescription')}
+        actions={
+          canManage ? (
+            <Button leadingIcon={<CalendarPlus className="size-4" />} onClick={() => setCreateOpen(true)}>
+              Create Event
+            </Button>
+          ) : undefined
+        }
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatisticCard
           icon={CalendarCheck}
           label={t('events.stats.eventsThisMonth')}
-          value={String(attendanceSummary.totalEventsThisMonth)}
+          value={String(summary.total_events_this_month)}
         />
         <StatisticCard
           icon={Users}
           label={t('events.stats.totalAttendees')}
-          value={String(attendanceSummary.totalAttendees)}
+          value={String(summary.total_attendees)}
         />
         <StatisticCard
           icon={Percent}
           label={t('events.stats.avgAttendanceRate')}
-          value={`${Math.round(attendanceSummary.averageAttendanceRate * 100)}%`}
+          value={`${Math.round(summary.average_attendance_rate * 100)}%`}
         />
       </div>
 
@@ -77,7 +154,10 @@ export function EventsPage() {
             <EventCard
               key={event.id}
               title={event.title}
-              date={event.date}
+              date={new Date(event.date).toLocaleString('en-IN', {
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              })}
               location={event.location}
               attendees={event.attendees}
               capacity={event.capacity}
@@ -92,8 +172,19 @@ export function EventsPage() {
         event={activeEvent}
         onClose={() => setActiveEventId(null)}
         onToggleRegistration={toggleRegistration}
-        onRemoveRegistrant={removeRegistrant}
+        onRemoveRegistrant={(eventId, name) => {
+          const event = events.find((e) => e.id === eventId);
+          const registrant = event?.registrants.find((r) => r.full_name === name);
+          if (registrant) removeRegistrant(eventId, registrant.id);
+        }}
+      />
+
+      <CreateEventModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreated={fetchEvents}
       />
     </div>
   );
 }
+
