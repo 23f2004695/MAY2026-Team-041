@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button, Input, Modal, Select } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type ExpenseCategory } from '@/providers/AuthProvider';
 
 const AMOUNT_PATTERN = /^[1-9]\d*$/;
@@ -63,7 +63,7 @@ export function LogExpenseModal({
       onLogged();
       onClose();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 

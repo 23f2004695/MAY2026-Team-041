@@ -1,8 +1,7 @@
-import { Calendar, MapPin, Users } from 'lucide-react';
+import { Calendar, MapPin, Pencil, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Badge, Button, Drawer } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
 import type { Event } from '../pages/EventsPage';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -11,7 +10,9 @@ export interface EventDetailsDrawerProps {
   onClose: () => void;
   onToggleRegistration: (event: Event) => void;
   /** IT Head-only: removes an attendee from the event's registrant list. */
-  onRemoveRegistrant?: (eventId: string, name: string) => void;
+  onRemoveRegistrant?: (eventId: string, memberId: string) => void;
+  /** Admin/manager-only: opens the edit form for this event. */
+  onEdit?: (event: Event) => void;
 }
 
 export function EventDetailsDrawer({
@@ -19,11 +20,13 @@ export function EventDetailsDrawer({
   onClose,
   onToggleRegistration,
   onRemoveRegistrant,
+  onEdit,
 }: EventDetailsDrawerProps) {
   const { t } = useTranslation();
   const { role } = useAuth();
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
+  const canManage = role === 'admin' || role === 'manager';
 
   return (
     <Drawer
@@ -33,6 +36,18 @@ export function EventDetailsDrawer({
     >
       {event && (
         <div className="flex flex-col gap-5">
+          {canManage && onEdit && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="self-end"
+              leadingIcon={<Pencil className="size-4" />}
+              onClick={() => onEdit(event)}
+            >
+              {t('events.details.edit')}
+            </Button>
+          )}
+
           <p className="text-sm text-muted-foreground">{event.description}</p>
 
           <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
@@ -69,7 +84,7 @@ export function EventDetailsDrawer({
                       {canModerate && onRemoveRegistrant && (
                         <button
                           type="button"
-                          onClick={() => onRemoveRegistrant(event.id, r.full_name)}
+                          onClick={() => onRemoveRegistrant(event.id, r.id)}
                           className="text-xs font-medium text-danger hover:underline"
                         >
                           {t('events.details.removeRegistrant')}
@@ -94,14 +109,7 @@ export function EventDetailsDrawer({
                 <Button
                   size="sm"
                   variant={event.registered ? 'outline' : 'primary'}
-                  onClick={() => {
-                    onToggleRegistration(event);
-                    comingSoonToast(
-                      event.registered
-                        ? t('events.details.toasts.cancellingRegistration')
-                        : t('events.details.toasts.registering'),
-                    );
-                  }}
+                  onClick={() => onToggleRegistration(event)}
                 >
                   {event.registered
                     ? t('events.details.cancelRegistration')
@@ -115,9 +123,19 @@ export function EventDetailsDrawer({
             <p className="text-sm font-semibold text-foreground">
               {t('events.details.managerAssignmentsTitle')}
             </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t('events.details.noManagersAssigned')}
-            </p>
+            {event.assigned_managers.length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t('events.details.noManagersAssigned')}
+              </p>
+            ) : (
+              <ul className="mt-2 flex flex-col gap-1.5">
+                {event.assigned_managers.map((manager) => (
+                  <li key={manager.id} className="text-sm text-foreground">
+                    {manager.full_name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       )}

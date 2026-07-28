@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from prisma.models import Book
 
+from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 
@@ -26,14 +27,13 @@ async def list_books(
     if category and category.lower() != "all":
         where["category"] = category
 
-    total = await prisma.book.count(where=where)
-    items = await prisma.book.find_many(
+    return await paginate(
+        prisma.book,
         where=where,
         order={"createdAt": "desc"},
         skip=(page - 1) * page_size,
         take=page_size,
     )
-    return items, total
 
 
 async def create_book(data: dict) -> Book:

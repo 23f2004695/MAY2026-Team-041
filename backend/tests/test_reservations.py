@@ -49,11 +49,11 @@ async def _make_user(role_name: str):
 async def _db_connection():
     await prisma.connect()
     yield
-    await prisma.reservation.delete_many(
-        where={"member": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
-    )
+    domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
+    await prisma.reservation.delete_many(where={"member": domain_filter})
+    await prisma.loan.delete_many(where={"member": domain_filter})
     await prisma.book.delete_many(where={"title": {"startswith": TEST_TITLE_MARKER}})
-    await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
+    await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
 
 
@@ -89,7 +89,9 @@ async def test_reserve_book_requires_authentication():
     assert response.status_code == 401
 
 
-async def test_reserve_available_book_holds_a_copy(member_user, librarian_user):
+async def test_reserve_available_book_is_pending_and_does_not_hold_a_copy(
+    member_user, librarian_user
+):
     book_id = await _create_book(librarian_user, total_copies=1)
 
     async with _client_as(member_user) as client:
@@ -100,10 +102,12 @@ async def test_reserve_available_book_holds_a_copy(member_user, librarian_user):
     assert response.status_code == 201
     body = response.json()
     assert body["book_id"] == book_id
-    assert body["status"] == "active"
-    assert book_after.json()["total_copies"] == 0
-    assert book_after.json()["available"] is False
-    assert any(n["type"] == "reservation-ready" for n in notifications.json())
+    assert body["status"] == "pending"
+    assert body["due_date"] is None
+    # Requesting to borrow doesn't hold a physical copy — only manager approval does.
+    assert book_after.json()["total_copies"] == 1
+    assert book_after.json()["available"] is True
+    assert any(n["type"] == "reservation-requested" for n in notifications.json())
 
 
 async def test_reserve_unavailable_book_conflicts(member_user, librarian_user):
@@ -115,7 +119,23 @@ async def test_reserve_unavailable_book_conflicts(member_user, librarian_user):
     assert response.status_code == 409
 
 
-async def test_list_my_reservations_only_shows_active_ones(member_user, librarian_user):
+async def test_reserve_conflicts_once_all_copies_are_on_loan(member_user, librarian_user):
+    manager = await _make_user(Role.MANAGER)
+    book_id = await _create_book(librarian_user, total_copies=1)
+    other_member = await _make_user(Role.MEMBER)
+
+    async with _client_as(manager) as client:
+        await client.post(
+            "/api/v1/loans", json={"book_id": book_id, "member_id": other_member.id}
+        )
+
+    async with _client_as(member_user) as client:
+        response = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert response.status_code == 409
+
+
+async def test_list_my_reservations_excludes_cancelled_ones(member_user, librarian_user):
     book_id = await _create_book(librarian_user, total_copies=1)
 
     async with _client_as(member_user) as client:
@@ -130,7 +150,9 @@ async def test_list_my_reservations_only_shows_active_ones(member_user, libraria
     assert all(r["id"] != reservation_id for r in listed_after.json())
 
 
-async def test_cancel_reservation_returns_the_copy(member_user, librarian_user):
+async def test_cancel_pending_reservation_leaves_total_copies_untouched(
+    member_user, librarian_user
+):
     book_id = await _create_book(librarian_user, total_copies=1)
 
     async with _client_as(member_user) as client:

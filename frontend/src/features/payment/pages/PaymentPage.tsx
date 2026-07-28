@@ -7,8 +7,7 @@ import { toast } from 'sonner';
 import { AnimatedNumber, PageHeader } from '@/components/common';
 import { Badge, Button, Card, CardContent, Input, Loader } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { ApiError } from '@/lib/api';
-import { comingSoonToast } from '@/lib/comingSoonToast';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type CouponValidation, type PricingPlan } from '@/providers/AuthProvider';
 
 // Auth is already enforced by the ProtectedRoute this page is nested under
@@ -17,8 +16,14 @@ export function PaymentPage() {
   const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { createPayment, getPricingPlans, validateCoupon, postAuthRedirect, clearPostAuthRedirect } =
-    useAuth();
+  const {
+    createPayment,
+    payAtLibrary,
+    getPricingPlans,
+    validateCoupon,
+    postAuthRedirect,
+    clearPostAuthRedirect,
+  } = useAuth();
 
   // Set for membership-plan payments (Register, first-time Google signup, renewal) —
   // the real price/months come from the backend-seeded plan, not the URL, so the
@@ -67,7 +72,7 @@ export function PaymentPage() {
       setAppliedCoupon(result);
     } catch (err) {
       setAppliedCoupon(null);
-      setCouponError(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      setCouponError(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setIsApplyingCoupon(false);
     }
@@ -111,7 +116,7 @@ export function PaymentPage() {
       toast.success('Payment successful');
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Could not record payment');
+      toast.error(getErrorMessage(err, 'Could not record payment'));
     }
   }
 
@@ -123,8 +128,14 @@ export function PaymentPage() {
     );
   }
 
-  function handlePayAtLibrary() {
-    comingSoonToast(t('payment.payAtLibraryToast'));
+  async function handlePayAtLibrary() {
+    try {
+      await payAtLibrary({ amount: baseAmount, label });
+      toast.success(t('payment.payAtLibraryToast'));
+      navigate(ROUTES.DASHBOARD);
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
   }
 
   return (

@@ -1,16 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button, Input, Modal, Select } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type MemberSummary } from '@/providers/AuthProvider';
 
+import { MemberPicker } from './MemberPicker';
+
 const AMOUNT_PATTERN = /^[1-9]\d*$/;
-const SEARCH_DEBOUNCE_MS = 300;
 
 const billingRequestSchema = z.object({
   type: z.enum(['refund', 'fee_waiver']),
@@ -27,10 +28,8 @@ export interface FileBillingRequestModalProps {
 
 export function FileBillingRequestModal({ open, onClose }: FileBillingRequestModalProps) {
   const { t } = useTranslation();
-  const { createBillingRequest, searchMembers } = useAuth();
+  const { createBillingRequest } = useAuth();
   const [selectedMember, setSelectedMember] = useState<MemberSummary | null>(null);
-  const [memberQuery, setMemberQuery] = useState('');
-  const [memberResults, setMemberResults] = useState<MemberSummary[]>([]);
 
   const {
     register,
@@ -45,26 +44,8 @@ export function FileBillingRequestModal({ open, onClose }: FileBillingRequestMod
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
-    if (open) {
-      setSelectedMember(null);
-      setMemberQuery('');
-      setMemberResults([]);
-    }
+    if (open) setSelectedMember(null);
   }
-
-  useEffect(() => {
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      searchMembers(memberQuery)
-        .then((members) => !cancelled && setMemberResults(members))
-        .catch(() => !cancelled && setMemberResults([]));
-    }, SEARCH_DEBOUNCE_MS);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [memberQuery]);
 
   async function onSubmit(values: BillingRequestFormValues) {
     if (!selectedMember) return;
@@ -81,7 +62,7 @@ export function FileBillingRequestModal({ open, onClose }: FileBillingRequestMod
       reset();
       onClose();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 
@@ -90,60 +71,15 @@ export function FileBillingRequestModal({ open, onClose }: FileBillingRequestMod
   return (
     <Modal open={open} onClose={onClose} title={t('managerDashboard.billingRequest.title')}>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="flex flex-col gap-1.5">
-          <p className="text-sm font-medium text-foreground">
-            {t('managerDashboard.billingRequest.memberLabel')}
-          </p>
-          {selectedMember ? (
-            <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2">
-              <div>
-                <p className="text-sm font-medium text-foreground">{selectedMember.full_name}</p>
-                <p className="text-xs text-muted-foreground">{selectedMember.email}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedMember(null)}
-                className="text-xs font-medium text-primary hover:underline"
-              >
-                {t('managerDashboard.billingRequest.changeMember')}
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-1.5">
-              <Input
-                value={memberQuery}
-                onChange={(event) => setMemberQuery(event.target.value)}
-                placeholder={t('managerDashboard.billingRequest.memberSearchPlaceholder')}
-                autoFocus
-              />
-              {memberResults.length > 0 && (
-                <ul className="flex flex-col gap-1 rounded-md border border-border bg-surface p-1 shadow-panel">
-                  {memberResults.map((member) => (
-                    <li key={member.id}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedMember(member);
-                          setMemberQuery('');
-                          setMemberResults([]);
-                        }}
-                        className="flex w-full flex-col items-start rounded-md px-2 py-1.5 text-left hover:bg-secondary"
-                      >
-                        <span className="text-sm font-medium text-foreground">{member.full_name}</span>
-                        <span className="text-xs text-muted-foreground">{member.email}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {memberQuery.trim().length > 0 && memberResults.length === 0 && (
-                <p className="px-1 text-xs text-muted-foreground">
-                  {t('managerDashboard.billingRequest.noMembersFound')}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
+        <MemberPicker
+          selectedMember={selectedMember}
+          onSelect={setSelectedMember}
+          label={t('managerDashboard.billingRequest.memberLabel')}
+          searchPlaceholder={t('managerDashboard.billingRequest.memberSearchPlaceholder')}
+          changeLabel={t('managerDashboard.billingRequest.changeMember')}
+          noResultsLabel={t('managerDashboard.billingRequest.noMembersFound')}
+          autoFocus
+        />
 
         <Select
           label={t('managerDashboard.billingRequest.typeLabel')}

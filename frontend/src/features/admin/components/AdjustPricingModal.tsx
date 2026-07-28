@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button, Input, Loader, Modal } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type Coupon, type PricingPlan } from '@/providers/AuthProvider';
 
 export interface AdjustPricingModalProps {
@@ -33,7 +33,7 @@ function PlanRow({ plan, onUpdated }: { plan: PricingPlan; onUpdated: (plan: Pri
         t('admin.adjustPricing.savedToast', { plan: t(`pricing.durations.${plan.plan_id}.label`) }),
       );
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setIsSaving(false);
     }
@@ -100,7 +100,7 @@ function CouponGenerator({
       setMaxUses('');
       toast.success(t('admin.adjustPricing.couponGenerator.generatedToast', { code: coupon.code }));
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setIsGenerating(false);
     }

@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
+from app.core.constants import Role
+from app.db.prisma import prisma
 from app.modules.coupons import service as coupons_service
 from app.modules.notifications import service as notifications_service
 from app.modules.payments import repository
@@ -32,6 +34,19 @@ async def create_payment(
         user.id, "payment-received", f"Payment of ₹{amount} received for {payload.label}."
     )
     return PaymentOut.from_prisma(payment)
+
+
+@router.post("/pay-at-library", status_code=status.HTTP_204_NO_CONTENT)
+async def pay_at_library(
+    payload: PaymentCreate,
+    user: Annotated[User, Depends(get_current_user)],
+) -> None:
+    managers = await prisma.user.find_many(
+        where={"role": {"name": Role.MANAGER}, "deletedAt": None}
+    )
+    message = f"{user.fullName} wants to pay ₹{payload.amount} in cash for {payload.label}."
+    for manager in managers:
+        await notifications_service.create_notification(manager.id, "payment-pending", message)
 
 
 @router.get("/me/membership", response_model=MembershipOut | None)

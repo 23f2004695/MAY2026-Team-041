@@ -7,7 +7,7 @@ import { BookCard, PageHeader } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import { Badge, Button, Pagination } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
 
 import { BookFilters } from '../components/BookFilters';
@@ -32,7 +32,7 @@ export function BooksListPage() {
       toast.success(t('books.details.reserveSuccessToast', { title }));
       refresh();
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     }
   }
 

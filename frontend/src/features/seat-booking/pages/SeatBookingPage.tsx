@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { PageTitle, SeatCard } from '@/components/common';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type SeatBookingRecord, type SeatSlot } from '@/providers/AuthProvider';
 
 import { BookingSummary } from '../components/BookingSummary';
@@ -110,7 +110,7 @@ export function SeatBookingPage() {
   }, [getMySeatBookings]);
 
   function reportError(error: unknown) {
-    toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+    toast.error(getErrorMessage(error, t('common.errors.generic')));
   }
 
   async function refreshSchedule() {

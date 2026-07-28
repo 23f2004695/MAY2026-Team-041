@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { PageTitle } from '@/components/common';
 import {
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { LANGUAGES } from '@/i18n/languages';
-import { comingSoonToast } from '@/lib/comingSoonToast';
+import { getErrorMessage } from '@/lib/api';
 import { isValidEmail } from '@/lib/email';
 import { useAuth, type Role } from '@/providers/AuthProvider';
 import { useLanguage } from '@/providers/LanguageProvider';
@@ -139,7 +140,7 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { role, fullName, email, logout } = useAuth();
+  const { role, fullName, email, logout, deleteAccount } = useAuth();
   const hasStaffAccount = role === 'admin' || role === 'manager' || role === 'it-head';
   const [togglePrefs, setTogglePrefs] = useState(
     () => (role && preferencesByRole[role]) ?? initialNotificationPrefs,
@@ -173,6 +174,17 @@ export function SettingsPage() {
   function handleLogOut() {
     logout();
     navigate(ROUTES.HOME);
+  }
+
+  async function handleDeleteAccount() {
+    if (!window.confirm(t('settings.account.deleteAccountConfirm'))) return;
+    try {
+      await deleteAccount();
+      toast.success(t('settings.account.deleteAccountSuccess'));
+      navigate(ROUTES.HOME);
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
   }
 
   return (
@@ -311,7 +323,7 @@ export function SettingsPage() {
                 variant="danger"
                 size="sm"
                 className="w-fit"
-                onClick={() => comingSoonToast(t('settings.account.deleteAccount'))}
+                onClick={handleDeleteAccount}
               >
                 {t('settings.account.deleteAccount')}
               </Button>

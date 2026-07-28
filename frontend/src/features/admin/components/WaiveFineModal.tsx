@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button, Input, Modal } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type MemberSummary } from '@/providers/AuthProvider';
 
 const AMOUNT_PATTERN = /^[1-9]\d*$/;
@@ -81,7 +81,7 @@ export function WaiveFineModal({ open, onClose, onWaived }: WaiveFineModalProps)
       onWaived();
       onClose();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 

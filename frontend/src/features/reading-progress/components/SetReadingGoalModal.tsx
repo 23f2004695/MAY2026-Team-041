@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button, Input, Modal } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type ReadingGoal } from '@/providers/AuthProvider';
 
 // Whole numbers only, no leading zero games needed since this is a book count — a plain
@@ -60,7 +60,7 @@ export function SetReadingGoalModal({
       toast.success('Reading goal saved');
       onClose();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Could not save goal');
+      toast.error(getErrorMessage(err, 'Could not save goal'));
     }
   }
 

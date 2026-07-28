@@ -23,10 +23,10 @@ export function PublicLayout() {
       <Header />
       {/* pb-24 reserves space under the fixed ChatbotWidget (size-14 button + margin),
           matching AppShellLayout's reserve, so it never sits on top of page/footer content.
-          Skipped on the landing page: its own Footer (rendered inside Outlet, below) is a
-          70vh block that already clears the widget on its own — adding pb-24 after it just
-          left a dangling empty gap at the true end of the page. */}
-      <main className={cn('flex-1', !isLandingPage && 'pb-24')}>
+          Skipped whenever the large Footer follows (landing page, and largeFooterRoutes
+          below): it's a 70vh block that already clears the widget on its own — adding
+          pb-24 before it just left a dangling empty gap at the end of the page. */}
+      <main className={cn('flex-1', !isLandingPage && !isLargeFooterPage && 'pb-24')}>
         <Outlet />
       </main>
       {isLandingPage ? null : isLargeFooterPage ? <LandingFooter sticky={false} /> : <Footer minimal />}

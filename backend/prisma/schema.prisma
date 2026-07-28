@@ -68,6 +68,16 @@ model User {
   createdEvents      Event[]             @relation("EventCreator")
   eventRegistrations EventRegistration[] @relation("MemberEventRegistrations")
 
+  permissionRequestsFiled   PermissionRequest[] @relation("PermissionRequestRequestedBy")
+  permissionRequestsDecided PermissionRequest[] @relation("PermissionRequestDecidedBy")
+
+  loans        Loan[] @relation("LoanMember")
+  loansCreated Loan[] @relation("LoanCreatedBy")
+
+  eventManagerAssignments EventManagerAssignment[] @relation("EventManagerAssignment")
+
+  bookRecordsLogged BookRecord[] @relation("BookRecordLoggedBy")
+
   @@map("users")
 }
 
@@ -113,6 +123,8 @@ model Book {
   readingProgress ReadingProgress[]
   reservations    Reservation[]
   reviews         Review[]
+  loans           Loan[]
+  bookRecords     BookRecord[]
 
   @@map("books")
 }
@@ -130,7 +142,8 @@ model Event {
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  registrations EventRegistration[]
+  registrations      EventRegistration[]
+  managerAssignments EventManagerAssignment[]
 
   @@map("events")
 }
@@ -145,6 +158,21 @@ model EventRegistration {
 
   @@unique([eventId, memberId])
   @@map("event_registrations")
+}
+
+// A manager helping run an event, separate from the single creator on Event.createdBy —
+// many-to-many so bigger events can have several managers assigned (the creator can
+// assign themselves too, they're just another manager-role user).
+model EventManagerAssignment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  eventId   String   @map("event_id") @db.Uuid
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  managerId String   @map("manager_id") @db.Uuid
+  manager   User     @relation("EventManagerAssignment", fields: [managerId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([eventId, managerId])
+  @@map("event_manager_assignments")
 }
 
 // ponytail: one active goal per member (upsert), not a history of past years' goals —
@@ -203,14 +231,18 @@ model Review {
   @@map("reviews")
 }
 
+// status: pending (awaiting manager decision) -> approved (a Loan now tracks the due
+// date/fine) | rejected | cancelled (member backed out while still pending).
 model Reservation {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  memberId  String    @map("member_id") @db.Uuid
-  member    User      @relation("MemberReservations", fields: [memberId], references: [id])
-  bookId    String    @map("book_id") @db.Uuid
-  book      Book      @relation(fields: [bookId], references: [id])
-  status    String    @default("active") @db.VarChar(20)
-  createdAt DateTime  @default(now()) @map("created_at")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String   @map("member_id") @db.Uuid
+  member    User     @relation("MemberReservations", fields: [memberId], references: [id])
+  bookId    String   @map("book_id") @db.Uuid
+  book      Book     @relation(fields: [bookId], references: [id])
+  status    String   @default("pending") @db.VarChar(20)
+  loanId    String?  @unique @map("loan_id") @db.Uuid
+  loan      Loan?    @relation(fields: [loanId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("reservations")
 }
@@ -349,6 +381,21 @@ model Expense {
   @@map("expenses")
 }
 
+// IT-Head's log of non-loan book events — lost, donated, or purchased copies.
+// type: "lost" | "donated" | "purchased".
+model BookRecord {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookId     String   @map("book_id") @db.Uuid
+  book       Book     @relation(fields: [bookId], references: [id])
+  type       String   @db.VarChar(20)
+  note       String?
+  loggedById String   @map("logged_by_id") @db.Uuid
+  loggedBy   User     @relation("BookRecordLoggedBy", fields: [loggedById], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("book_records")
+}
+
 // ponytail: only refunds and fee waivers go through this approval queue — membership
 // renewal is payment-driven (see Payment.planMonths), not a request anyone approves.
 // Filed by a manager on a member's behalf (members can't file their own); decided by
@@ -441,4 +488,46 @@ model SupportTicket {
   updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
 
   @@map("support_tickets")
+}
+
+// A manager/librarian requesting a specific elevated action be authorized (e.g. "approve
+// fine waivers") — decided by an IT Head. Like BillingRequest, this only records the
+// decision; there's no fine-grained permission-enforcement system behind it yet, so
+// granting one doesn't change what the requester can actually do in the app today.
+model PermissionRequest {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  requestedById String    @map("requested_by_id") @db.Uuid
+  requestedBy   User      @relation("PermissionRequestRequestedBy", fields: [requestedById], references: [id])
+  permission    String    @db.VarChar(100)
+  reason        String
+  status        String    @default("pending") @db.VarChar(20) // pending | granted | denied
+  decidedById   String?   @map("decided_by_id") @db.Uuid
+  decidedBy     User?     @relation("PermissionRequestDecidedBy", fields: [decidedById], references: [id])
+  decidedAt     DateTime? @map("decided_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  @@map("permission_requests")
+}
+
+// ponytail: no per-copy tracking (see Book.totalCopies comment) — a loan just decrements
+// availability conceptually, it doesn't reference a specific physical copy. Fine amount
+// is computed on read from (returnedAt ?? now) vs dueDate, not stored, so it can't drift;
+// only whether it's been settled (finePaid) is persisted.
+model Loan {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bookId      String    @map("book_id") @db.Uuid
+  book        Book      @relation(fields: [bookId], references: [id])
+  memberId    String    @map("member_id") @db.Uuid
+  member      User      @relation("LoanMember", fields: [memberId], references: [id])
+  borrowedAt  DateTime  @default(now()) @map("borrowed_at")
+  dueDate     DateTime  @map("due_date")
+  returnedAt  DateTime? @map("returned_at")
+  finePaid    Boolean   @default(false) @map("fine_paid")
+  createdById String    @map("created_by_id") @db.Uuid
+  createdBy   User      @relation("LoanCreatedBy", fields: [createdById], references: [id])
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  reservation Reservation?
+
+  @@map("loans")
 }

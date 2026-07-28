@@ -31,6 +31,12 @@ def create_refresh_token(user_id: str, token_version: int) -> str:
     return _encode({"sub": user_id, "type": "refresh", "ver": token_version, "exp": expires_at})
 
 
+def create_reset_token(user_id: str, token_version: int) -> str:
+    settings = get_settings()
+    expires_at = datetime.now(UTC) + timedelta(minutes=settings.reset_token_expire_minutes)
+    return _encode({"sub": user_id, "type": "reset", "ver": token_version, "exp": expires_at})
+
+
 def decode_token(token: str) -> dict:
     """Decode and verify a JWT's signature/expiry. Callers must still check
     payload["type"] themselves — this does not distinguish access vs refresh."""

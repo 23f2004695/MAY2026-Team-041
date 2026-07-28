@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
 
 os.environ["APP_ENV"] = "test"
 
@@ -26,14 +27,16 @@ def _unique_email() -> str:
 async def _db_connection():
     await prisma.connect()
     yield
-    await prisma.readingprogress.delete_many(
-        where={"member": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
-    )
-    await prisma.guardianlink.delete_many(
-        where={"member": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
-    )
+    domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
+    await prisma.readingprogress.delete_many(where={"member": domain_filter})
+    await prisma.guardianlink.delete_many(where={"member": domain_filter})
+    await prisma.loan.delete_many(where={"member": domain_filter})
+    await prisma.payment.delete_many(where={"user": domain_filter})
+    await prisma.notification.delete_many(where={"user": domain_filter})
+    await prisma.seatbooking.delete_many(where={"member": domain_filter})
+    await prisma.seatnotifyrequest.delete_many(where={"member": domain_filter})
     await prisma.book.delete_many(where={"title": {"startswith": "Guardian Test Book"}})
-    await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
+    await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
 
 
@@ -129,6 +132,139 @@ async def test_guardian_children_requires_guardian_role(client):
 
     response = await client.get(
         "/api/v1/guardian/children", headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 403
+
+
+async def _link(client, admin_token, guardian, member):
+    await client.post(
+        "/api/v1/guardian/links",
+        json={"guardian_id": guardian.id, "member_id": member.id},
+        headers={"Authorization": f"Bearer {admin_token}"},
+    )
+
+
+async def test_pay_child_fines_clears_overdue_loan_and_pays(client):
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+
+    book = await prisma.book.create(
+        data={"title": "Guardian Test Book Fines", "author": "A", "category": "Fiction"}
+    )
+    loan = await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": child.id,
+            "dueDate": datetime.now(UTC) - timedelta(days=3),
+            "createdById": admin.id,
+        }
+    )
+
+    guardian_token = await _login(client, guardian)
+    children_before = await client.get(
+        "/api/v1/guardian/children", headers={"Authorization": f"Bearer {guardian_token}"}
+    )
+    child_out = next(c for c in children_before.json() if c["id"] == child.id)
+    assert child_out["outstanding_fine"] > 0
+    assert child_out["fine_book_title"] == "Guardian Test Book Fines"
+
+    response = await client.post(
+        f"/api/v1/guardian/children/{child.id}/pay-fines",
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert response.status_code == 204
+
+    updated_loan = await prisma.loan.find_unique(where={"id": loan.id})
+    assert updated_loan.finePaid is True
+
+    children_after = await client.get(
+        "/api/v1/guardian/children", headers={"Authorization": f"Bearer {guardian_token}"}
+    )
+    child_out_after = next(c for c in children_after.json() if c["id"] == child.id)
+    assert child_out_after["outstanding_fine"] == 0
+
+
+async def test_pay_child_fines_with_no_fines_returns_400(client):
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+    guardian_token = await _login(client, guardian)
+
+    response = await client.post(
+        f"/api/v1/guardian/children/{child.id}/pay-fines",
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert response.status_code == 400
+
+
+async def test_pay_child_fines_rejects_unlinked_child(client):
+    guardian = await _make_user(Role.GUARDIAN)
+    stranger = await _make_user(Role.MEMBER)
+    guardian_token = await _login(client, guardian)
+
+    response = await client.post(
+        f"/api/v1/guardian/children/{stranger.id}/pay-fines",
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert response.status_code == 403
+
+
+async def test_renew_child_subscription_creates_membership_payment(client):
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+    guardian_token = await _login(client, guardian)
+
+    response = await client.post(
+        f"/api/v1/guardian/children/{child.id}/renew",
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert response.status_code == 204
+
+    payment = await prisma.payment.find_first(where={"userId": child.id, "planMonths": 1})
+    assert payment is not None
+    assert payment.amount == 499
+
+
+async def test_book_seat_for_child(client):
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+    guardian_token = await _login(client, guardian)
+
+    tomorrow = (datetime.now(UTC) + timedelta(days=1)).date()
+    response = await client.post(
+        f"/api/v1/guardian/children/{child.id}/seat-bookings",
+        json={"seat_label": "A1", "date": tomorrow.isoformat(), "hour": 10},
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+
+    assert response.status_code == 201
+    booking = await prisma.seatbooking.find_first(where={"memberId": child.id})
+    assert booking is not None
+    assert booking.seatLabel == "A1"
+
+
+async def test_seat_booking_for_child_rejects_unlinked_child(client):
+    guardian = await _make_user(Role.GUARDIAN)
+    stranger = await _make_user(Role.MEMBER)
+    guardian_token = await _login(client, guardian)
+
+    tomorrow = (datetime.now(UTC) + timedelta(days=1)).date()
+    response = await client.post(
+        f"/api/v1/guardian/children/{stranger.id}/seat-bookings",
+        json={"seat_label": "A2", "date": tomorrow.isoformat(), "hour": 10},
+        headers={"Authorization": f"Bearer {guardian_token}"},
     )
 
     assert response.status_code == 403

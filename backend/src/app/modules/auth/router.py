@@ -6,10 +6,12 @@ from prisma.models import User
 from app.api.deps import get_current_user
 from app.modules.auth import service
 from app.modules.auth.schemas import (
+    ForgotPasswordRequest,
     GoogleLoginRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
+    ResetPasswordRequest,
     TokenResponse,
     UpdateProfileRequest,
 )
@@ -48,3 +50,18 @@ async def refresh(payload: RefreshRequest) -> TokenResponse:
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(user: Annotated[User, Depends(get_current_user)]) -> None:
     await service.logout(user)
+
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_account(user: Annotated[User, Depends(get_current_user)]) -> None:
+    await service.delete_account(user)
+
+
+@router.post("/forgot-password", status_code=status.HTTP_204_NO_CONTENT)
+async def forgot_password(payload: ForgotPasswordRequest) -> None:
+    await service.forgot_password(payload)
+
+
+@router.post("/reset-password", status_code=status.HTTP_204_NO_CONTENT)
+async def reset_password(payload: ResetPasswordRequest) -> None:
+    await service.reset_password(payload)

@@ -73,6 +73,30 @@ def _seat_label(prefix: str) -> str:
     return prefix
 
 
+async def test_availability_summary_is_public_and_has_the_right_shape():
+    app = create_app()
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/v1/seat-booking/availability")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 32
+    assert body["available"] + body["booked"] == 32
+
+
+async def test_availability_summary_reflects_a_booking_for_the_current_hour(member_user):
+    now = datetime.now(UTC)
+    async with _client_as(member_user) as client:
+        before = await client.get("/api/v1/seat-booking/availability")
+        created = await client.post(
+            "/api/v1/seat-booking",
+            json={"seat_label": "D8", "date": now.date().isoformat(), "hour": now.hour},
+        )
+        after = await client.get("/api/v1/seat-booking/availability")
+    assert created.status_code == 201
+    assert after.json()["booked"] == before.json()["booked"] + 1
+    assert after.json()["available"] == before.json()["available"] - 1
+
+
 async def test_get_schedule_requires_authentication():
     app = create_app()
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:

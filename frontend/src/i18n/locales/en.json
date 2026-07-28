@@ -76,6 +76,7 @@
     "dashboard": "Dashboard",
     "pricing": "Pricing",
     "books": "Books",
+    "borrowHistory": "Borrow History",
     "reservations": "Reservations",
     "seatBooking": "Seat Booking",
     "community": "Community",
@@ -114,7 +115,6 @@
   "auth": {
     "login": {
       "title": "Log in",
-      "subtitle": "Real authentication ships in Milestone 3. Pick a role to preview the app.",
       "continueAs": "Continue as {{role}}",
       "roles": {
         "admin": "Admin",
@@ -132,11 +132,11 @@
       "orPreviewRole": "Or preview a role",
       "errors": {
         "password": "Password is required."
-      }
+      },
+      "forgotPassword": "Forgot password?"
     },
     "register": {
       "title": "Create an account",
-      "subtitle": "Real registration ships in Milestone 3. Submitting this form previews the app as a member.",
       "fullName": "Full name",
       "email": "Email",
       "phoneNumber": "Phone number",
@@ -156,6 +156,23 @@
         "confirmPassword": "Passwords do not match.",
         "terms": "You must accept the terms to continue."
       }
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email and we'll send you a link to reset it.",
+      "submit": "Send Reset Link",
+      "successTitle": "Check your email",
+      "successDescription": "If an account exists for that email, we've sent a link to reset your password.",
+      "backToLogin": "Back to log in"
+    },
+    "resetPassword": {
+      "title": "Reset your password",
+      "subtitle": "Choose a new password for your account.",
+      "submit": "Reset Password",
+      "successToast": "Password reset. Please log in with your new password.",
+      "invalidTitle": "Invalid or expired link",
+      "invalidDescription": "This password reset link is invalid or has expired. Request a new one to continue.",
+      "requestNewLink": "Request a new link"
     }
   },
   "notFound": {
@@ -406,33 +423,42 @@
     },
     "accessControl": {
       "title": "Access Control",
+      "empty": "No members or managers to show yet.",
       "status": {
         "active": "Active",
         "deactivated": "Deactivated"
       },
       "pendingPermission": "Requested: {{permission}}",
       "grantAccess": "Grant Access",
+      "deny": "Deny",
       "deactivate": "Deactivate",
       "reactivate": "Reactivate",
-      "grantToast": "Granting access for {{name}}",
-      "deactivateToast": "Deactivating {{name}}",
-      "reactivateToast": "Reactivating {{name}}"
+      "grantedToast": "Granted {{name}}'s request",
+      "deniedToast": "Denied {{name}}'s request",
+      "deactivateToast": "Deactivated {{name}}",
+      "reactivateToast": "Reactivated {{name}}"
     },
     "issueResolution": {
       "title": "Issue Resolution",
+      "empty": "No support tickets yet.",
       "categories": {
-        "technical": "Technical",
-        "account": "Account",
-        "bookAccess": "Book Access",
+        "bookReservation": "Book Reservation",
+        "payment": "Payment",
+        "seatBooking": "Seat Booking",
+        "harassment": "Harassment",
+        "offlineLibrary": "Offline Library",
+        "attendance": "Attendance",
         "other": "Other"
       },
       "status": {
         "open": "Open",
-        "resolved": "Resolved"
+        "resolved": "Resolved",
+        "closed": "Closed"
       },
       "from": "Reported by {{name}}",
       "resolve": "Resolve",
-      "resolveToast": "Resolving issue from {{name}}"
+      "resolutionNoteLabel": "Resolution note",
+      "resolveToast": "Resolved the issue from {{name}}"
     },
     "bookRecords": {
       "title": "Book Records",
@@ -440,10 +466,12 @@
         "lost": "Lost",
         "donated": "Donated",
         "purchased": "Purchased"
-      }
+      },
+      "empty": "No book record changes logged yet."
     },
     "feeStatus": {
       "title": "Fee Status",
+      "empty": "No outstanding fees — everyone's paid up.",
       "dueDate": "Due {{date}}",
       "status": {
         "paid": "Paid",
@@ -453,6 +481,7 @@
     },
     "lateFines": {
       "title": "Late Return Fines",
+      "empty": "No overdue fines right now.",
       "borrowedBy": "Borrowed by {{name}}",
       "dueDate": "Was due {{date}}",
       "daysLate": "{{count}}d late",
@@ -461,19 +490,26 @@
         "unpaid": "Unpaid"
       },
       "sendReminder": "Send Reminder",
-      "reminderToast": "Sending a fine reminder to {{name}}"
+      "markPaid": "Mark Paid",
+      "reminderToast": "Sent a fine reminder to {{name}}",
+      "markedPaidToast": "Marked {{name}}'s fine as paid"
     },
     "quickActions": {
-      "grantAccess": "Grant Access",
-      "deactivateUser": "Deactivate User",
-      "resolveIssue": "Resolve Issue",
       "logBookChange": "Log Book Change",
       "toasts": {
-        "grantingAccess": "Granting access",
-        "deactivatingUser": "Deactivating a user",
-        "resolvingIssue": "Resolving an issue",
         "loggingBookChange": "Logging a book record change"
       }
+    },
+    "logBookChangeModal": {
+      "title": "Log Book Change",
+      "bookLabel": "Book",
+      "bookSearchPlaceholder": "Search books by title or author",
+      "noBooksFound": "No books found",
+      "changeBook": "Change",
+      "typeLabel": "Record type",
+      "noteLabel": "Note (optional)",
+      "submit": "Log Record",
+      "successToast": "Logged a {{type}} record for {{book}}"
     }
   },
   "guardian": {
@@ -510,6 +546,7 @@
     "subscription": {
       "title": "Subscription & Fines",
       "expiresOn": "Expires {{date}}",
+      "noSubscription": "No active subscription",
       "fineOwed": "Fine owed: {{amount}}",
       "noFine": "No outstanding fine",
       "renew": "Renew",
@@ -526,7 +563,9 @@
         "reasons": {
           "lateReturn": "Late book return"
         }
-      }
+      },
+      "emptyTitle": "No children linked yet.",
+      "emptyDescription": "Ask your child to link your email from their Settings page."
     },
     "seatReservation": {
       "title": "Reserve a Seat for Your Child",
@@ -545,8 +584,7 @@
       "renewSubscription": "Renew Subscription",
       "toasts": {
         "payingAllFines": "Paying all outstanding fines",
-        "renewingSubscription": "Renewing subscription",
-        "contactingStaff": "Contacting the front desk"
+        "renewingSubscription": "Renewing subscription"
       },
       "contactStaff": "Contact Staff"
     }
@@ -654,18 +692,27 @@
       "emptyTitle": "No pending cash payments",
       "emptyDescription": "Members who choose to pay at the counter will show up here.",
       "markPaid": "Mark as Paid",
-      "markPaidToast": "Marking {{name}}'s payment as received"
+      "markPaidToast": "Payment marked as received"
     },
     "quickActions": {
       "bookSeatForMember": "Book Seat for Member",
       "issueBookForMember": "Issue Book for Member",
       "registerNewMember": "Register New Member",
       "fileBillingRequest": "File Refund / Fee Waiver Request",
+      "requestPermission": "Request Permission",
       "toasts": {
         "bookingSeat": "Booking a seat for a member",
         "issuingBook": "Issuing a book for a member",
         "registeringMember": "Registering a new member"
       }
+    },
+    "requestPermission": {
+      "title": "Request Permission",
+      "permissionLabel": "Permission",
+      "permissionPlaceholder": "e.g. Fine waiver approval",
+      "reasonLabel": "Reason",
+      "submit": "Send Request",
+      "successToast": "Request sent to the IT Head for approval"
     },
     "billingRequest": {
       "title": "File a Billing Request",
@@ -688,40 +735,133 @@
       "phoneLabel": "Phone number",
       "phonePlaceholder": "+91 98765 43210",
       "planLabel": "Membership plan",
+      "passwordLabel": "Initial password",
+      "passwordHint": "Set an initial password and share it with the member — they can change it later from their profile.",
       "submit": "Register Member",
       "successToast": "{{name}} has been registered as a new member",
       "errors": {
         "name": "Name is required.",
         "email": "Enter a valid email address.",
-        "phoneNumber": "Enter a valid phone number."
+        "phoneNumber": "Enter a valid phone number.",
+        "password": "At least 8 characters, with an uppercase letter, a lowercase letter, a digit, and a special character."
       }
     },
     "addGuardian": {
       "title": "Add Guardian",
-      "description": "Link a guardian to a student using the email each of them registered with.",
-      "studentEmailLabel": "Student's email",
-      "studentEmailPlaceholder": "student@example.com",
-      "guardianEmailLabel": "Guardian's email",
-      "guardianEmailPlaceholder": "guardian@example.com",
+      "description": "Search for an active, registered student and guardian to link their accounts.",
+      "studentEmailLabel": "Student",
+      "studentEmailPlaceholder": "Search active members by name or email",
+      "guardianEmailLabel": "Guardian",
+      "guardianEmailPlaceholder": "Search active guardians by name or email",
       "submit": "Add Guardian",
-      "successToast": "Linked guardian {{guardianEmail}} to {{studentEmail}}",
-      "errors": {
-        "studentEmail": "Enter a valid email address.",
-        "guardianEmail": "Enter a valid email address."
+      "successToast": "Linked guardian {{guardianEmail}} to {{studentEmail}}"
+    },
+    "bookSeatModal": {
+      "title": "Book a Seat for a Member",
+      "memberLabel": "Member",
+      "hourLabel": "Time slot",
+      "submit": "Book Seat",
+      "successToast": "Seat {{seatId}} booked for {{name}}"
+    },
+    "issueBookModal": {
+      "title": "Issue a Book for a Member",
+      "memberLabel": "Member",
+      "bookLabel": "Book",
+      "bookSearchPlaceholder": "Search for a book by title or author",
+      "noBooksFound": "No books found",
+      "unavailable": "no copies available",
+      "durationLabel": "Loan duration",
+      "durationOption": "{{count}} days",
+      "submit": "Issue Book",
+      "successToast": "\"{{book}}\" issued to {{name}}"
+    },
+    "pendingReservations": {
+      "title": "Pending Borrow Requests",
+      "emptyTitle": "No pending requests",
+      "emptyDescription": "Online requests to borrow a book will show up here for approval.",
+      "requestedBy": "Requested by {{name}}",
+      "durationOption": "{{count}} days",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approveToast": "Approved {{name}}'s request",
+      "rejectToast": "Declined {{name}}'s request"
+    },
+    "activeLoans": {
+      "title": "Books Out on Loan",
+      "emptyTitle": "No active loans",
+      "emptyDescription": "Books currently checked out will show up here.",
+      "borrowedBy": "Borrowed by {{name}}",
+      "dueDate": "Due back {{date}}",
+      "daysLate": "{{count}} day(s) late",
+      "sendReminder": "Send Reminder",
+      "markReturned": "Mark Returned",
+      "returnedToast": "Marked {{name}}'s book as returned",
+      "reminderToast": "Reminder sent to {{name}}"
+    },
+    "books": {
+      "pageTitle": "Books",
+      "pageDescription": "Check which books are on the shelf right now and when a checked-out copy is due back.",
+      "searchPlaceholder": "Search by title or author",
+      "table": {
+        "title": "Book",
+        "category": "Category",
+        "copies": "Copies",
+        "status": "Status"
+      },
+      "copiesAvailable": "{{available}} of {{total}} available",
+      "status": {
+        "available": "Available",
+        "unavailable": "Unavailable"
+      },
+      "expectedBack": "Expected back {{date}}",
+      "expectedBackUnknown": "No return date on file",
+      "empty": {
+        "title": "No books found",
+        "description": "Try a different title or author."
+      }
+    },
+    "borrowHistory": {
+      "pageTitle": "Borrow History",
+      "pageDescription": "Every book loan on record — active, overdue, and returned.",
+      "table": {
+        "book": "Book",
+        "member": "Member",
+        "borrowed": "Borrowed",
+        "due": "Due",
+        "returned": "Returned",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "overdue": "Overdue",
+        "returned": "Returned"
+      },
+      "notReturned": "Not returned",
+      "empty": {
+        "title": "No loan history",
+        "description": "Loans will show up here once books are issued to members."
       }
     }
   },
-  "placeholder": {
-    "comingSoon": "Coming soon",
-    "community": {
-      "description": "Reading clubs and discussions."
+  "myLoans": {
+    "pageTitle": "My Borrow History",
+    "pageDescription": "Books you've borrowed, with dates.",
+    "table": {
+      "book": "Book",
+      "borrowed": "Borrowed",
+      "due": "Due",
+      "returned": "Returned",
+      "status": "Status"
     },
-    "settings": {
-      "description": "Manage your preferences."
+    "status": {
+      "active": "Active",
+      "overdue": "Overdue",
+      "returned": "Returned"
     },
-    "forgotPassword": {
-      "title": "Forgot Password",
-      "description": "Reset your password."
+    "notReturned": "Not returned",
+    "empty": {
+      "title": "No borrowed books yet",
+      "description": "Books you borrow will show up here with their dates."
     }
   },
   "landing": {
@@ -888,7 +1028,9 @@
         "title": "Find your perfect study space",
         "description": "Filter by zone, floor, or seat type and book in seconds.",
         "button": "Explore All Spaces"
-      }
+      },
+      "booked": "Booked",
+      "bookedSub": "Reserved right now"
     },
     "readingChallenge": {
       "eyebrow": "Achievements",
@@ -1207,8 +1349,8 @@
       },
       "backToBooks": "Back to Books",
       "copiesAvailable": "{{total}} copies in the library",
-      "reserveButton": "Reserve this book",
-      "reserveSuccessToast": "Reserved \"{{title}}\" — pick it up at the front desk"
+      "reserveButton": "Request to borrow",
+      "reserveSuccessToast": "Requested \"{{title}}\" — awaiting manager approval"
     },
     "wishlist": {
       "button": "Wishlist",
@@ -1233,16 +1375,13 @@
     },
     "details": {
       "defaultTitle": "Event details",
+      "edit": "Edit",
       "attending": "{{attendees}}/{{capacity}} attending",
       "registrationTitle": "Registration",
       "registered": "You’re registered",
       "notRegistered": "Not registered",
       "register": "Register",
       "cancelRegistration": "Cancel registration",
-      "toasts": {
-        "registering": "Registering",
-        "cancellingRegistration": "Cancelling registration"
-      },
       "managerAssignmentsTitle": "Manager Assignments",
       "noManagersAssigned": "No managers assigned yet.",
       "registeredAttendeesTitle": "Registered Attendees",
@@ -1256,7 +1395,7 @@
   },
   "reservations": {
     "pageTitle": "Reservations",
-    "pageDescription": "Track your book reservations",
+    "pageDescription": "Track your book borrow requests",
     "search": {
       "placeholder": "Search by book title…",
       "ariaLabel": "Search reservations",
@@ -1267,12 +1406,16 @@
     "current": {
       "heading": "Current Reservations",
       "emptyTitle": "No active reservations",
-      "emptyDescription": "Reserve a book from the catalog to see it here.",
+      "emptyDescription": "Request to borrow a book from the catalog to see it here.",
       "browseBooks": "Browse Books"
     },
     "status": {
-      "ready": "Ready for pickup"
+      "pending": "Awaiting approval",
+      "approved": "Approved",
+      "rejected": "Declined",
+      "cancelled": "Cancelled"
     },
+    "dueBy": "Return by {{date}}",
     "actions": {
       "cancel": "Cancel"
     },
@@ -1339,13 +1482,14 @@
   },
   "leaderboard": {
     "pageTitle": "Leaderboard",
-    "pageDescription": "Top readers in the community this month",
+    "pageDescription": "Top readers in the community",
     "table": {
       "rank": "Rank",
       "reader": "Reader",
       "points": "Points",
       "badges": "Badges",
-      "hoursRead": "Hours Read"
+      "hoursRead": "Hours Read",
+      "booksCompleted": "Books Completed"
     },
     "hoursSuffix": "{{hours}}h"
   },
@@ -1491,7 +1635,9 @@
       "logOut": "Log out",
       "dangerZone": "Danger zone",
       "deleteAccount": "Delete account",
-      "deleteAccountHint": "Permanently delete your account and all your data."
+      "deleteAccountHint": "Permanently delete your account and all your data.",
+      "deleteAccountConfirm": "Delete your account? This can't be undone.",
+      "deleteAccountSuccess": "Your account has been deleted."
     }
   },
   "reviews": {
@@ -1565,11 +1711,14 @@
       "postComment": "New comment",
       "postLike": "New like",
       "paymentReceived": "Payment received",
+      "paymentPending": "Cash payment requested",
+      "bookRecord": "Book record logged",
       "pendingRequest": "Billing request needs approval",
       "announcement": "Announcement",
       "supportTicket": "New support ticket",
       "supportTicketResolved": "Your ticket was resolved",
-      "supportTicketReopened": "A ticket was reopened"
+      "supportTicketReopened": "A ticket was reopened",
+      "fineReminder": "Overdue book reminder"
     }
   },
   "support": {

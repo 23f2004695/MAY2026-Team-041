@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ProgressBar } from '@/components/common';
+import { NoResults } from '@/components/feedback';
 import { Loader, Modal } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
 import {
@@ -34,7 +35,7 @@ function RevenueByPlanContent({ report }: { report: RevenueByPlanReport }) {
   const { t } = useTranslation();
 
   if (report.items.length === 0) {
-    return <p className="text-sm text-muted-foreground">{t('admin.reports.empty')}</p>;
+    return <NoResults title={t('admin.reports.empty')} />;
   }
 
   return (
@@ -108,7 +109,7 @@ function ExpenseBreakdownContent({ report }: { report: ExpenseBreakdownReport })
   const { t } = useTranslation();
 
   if (report.items.length === 0) {
-    return <p className="text-sm text-muted-foreground">{t('admin.reports.empty')}</p>;
+    return <NoResults title={t('admin.reports.empty')} />;
   }
 
   return (

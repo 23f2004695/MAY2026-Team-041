@@ -17,26 +17,36 @@ import { useTranslation } from 'react-i18next';
 
 import { ProgressBar, StatisticCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
-import { comingSoonToast } from '@/lib/comingSoonToast';
-import { children, childBorrowedBooks, guardianStats } from '@/mocks/guardian';
-import { accessEntries, issueTickets } from '@/mocks/itHead';
-import { pendingPayments, registrationRequests, walkInRequests } from '@/mocks/manager';
+import { guardianStats } from '@/mocks/guardian';
+import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
   useAuth,
   type AuditLogEntry,
+  type GuardianChild,
+  type MemberRecord,
   type Membership,
+  type PermissionRequestRecord,
   type ReadingProgressEntry,
+  type SupportTicketRecord,
 } from '@/providers/AuthProvider';
 
 import { AuditLog } from '@/features/admin/components/AuditLog';
 import { NewRegistrations } from '@/features/dashboard/components/NewRegistrations';
+import { RegisterMemberModal } from '@/features/dashboard/components/RegisterMemberModal';
 import { WalkInAssistance } from '@/features/dashboard/components/WalkInAssistance';
 import { BorrowedBooksByChild } from '@/features/guardian/components/BorrowedBooksByChild';
 import { ChildrenPresence } from '@/features/guardian/components/ChildrenPresence';
 import { AccessControl } from '@/features/it-head/components/AccessControl';
 import { IssueResolution } from '@/features/it-head/components/IssueResolution';
+import { ResolveTicketModal } from '@/features/it-head/components/ResolveTicketModal';
 
 import { ProfileHeader } from '../components/ProfileHeader';
+
+// No online flow yet lets a visitor submit a walk-in/registration request, so
+// these queues have nothing real to show — kept empty rather than mocked
+// (mirrors ManagerDashboard.tsx, the primary manager view for this).
+const NO_WALK_INS: WalkInRequest[] = [];
+const NO_REGISTRATIONS: RegistrationRequest[] = [];
 
 function AdminProfile() {
   const { t } = useTranslation();
@@ -82,8 +92,19 @@ function AdminProfile() {
   );
 }
 
+// ponytail: GuardianChild has no presence/loan/fine fields server-side yet —
+// linkedChildren is overridden with the real count, ChildrenPresence/
+// BorrowedBooksByChild get empty arrays and show their honest empty states
+// instead of fabricated per-child data (mirrors GuardianDashboardPage).
 function GuardianProfile() {
   const { t } = useTranslation();
+  const { getGuardianChildren } = useAuth();
+  const [realChildren, setRealChildren] = useState<GuardianChild[]>([]);
+
+  useEffect(() => {
+    getGuardianChildren().then(setRealChildren).catch(() => setRealChildren([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -95,19 +116,24 @@ function GuardianProfile() {
             key={stat.labelKey}
             icon={stat.icon}
             label={t(stat.labelKey)}
-            value={stat.value}
+            value={
+              stat.labelKey === 'guardian.stats.linkedChildren'
+                ? String(realChildren.length)
+                : stat.value
+            }
           />
         ))}
       </div>
 
-      <ChildrenPresence children={children} />
-      <BorrowedBooksByChild books={childBorrowedBooks} children={children} />
+      <ChildrenPresence children={[]} />
+      <BorrowedBooksByChild books={[]} children={[]} />
     </div>
   );
 }
 
 function ManagerProfile() {
   const { t } = useTranslation();
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-6">
@@ -117,42 +143,68 @@ function ManagerProfile() {
         <StatisticCard
           icon={Armchair}
           label={t('profile.managerStats.walkInRequests')}
-          value={String(walkInRequests.length)}
+          value={String(NO_WALK_INS.length)}
         />
         <StatisticCard
           icon={UserPlus}
           label={t('profile.managerStats.newRegistrations')}
-          value={String(registrationRequests.length)}
+          value={String(NO_REGISTRATIONS.length)}
         />
         <StatisticCard
           icon={IndianRupee}
           label={t('profile.managerStats.pendingPayments')}
-          value={String(pendingPayments.length)}
+          value="0"
         />
       </div>
 
-      <WalkInAssistance requests={walkInRequests} />
-      <NewRegistrations
-        requests={registrationRequests}
-        onRegister={(request) => comingSoonToast(request.name)}
+      <WalkInAssistance requests={NO_WALK_INS} />
+      <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
+
+      <RegisterMemberModal
+        open={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onRegistered={() => {}}
       />
     </div>
   );
 }
 
+const IT_HEAD_ACCESS_ROLES = new Set(['member', 'manager']);
+
 function ITHeadProfile() {
   const { t } = useTranslation();
-  const openIssues = useMemo(
-    () => issueTickets.filter((ticket) => ticket.status === 'open').length,
-    [],
-  );
+  const { getMembers, getPermissionRequests, getStaffSupportTickets } = useAuth();
+  const [members, setMembers] = useState<MemberRecord[]>([]);
+  const [permissionRequests, setPermissionRequests] = useState<PermissionRequestRecord[]>([]);
+  const [tickets, setTickets] = useState<SupportTicketRecord[]>([]);
+  const [resolvingTicket, setResolvingTicket] = useState<SupportTicketRecord | null>(null);
+
+  function refreshAccessControl() {
+    getMembers({ page_size: 100 })
+      .then((data) => setMembers(data.items.filter((m) => IT_HEAD_ACCESS_ROLES.has(m.role.name))))
+      .catch(() => setMembers([]));
+    getPermissionRequests()
+      .then(setPermissionRequests)
+      .catch(() => setPermissionRequests([]));
+  }
+
+  function refreshTickets() {
+    getStaffSupportTickets()
+      .then(setTickets)
+      .catch(() => setTickets([]));
+  }
+
+  useEffect(refreshAccessControl, [getMembers, getPermissionRequests]);
+  useEffect(refreshTickets, [getStaffSupportTickets]);
+
+  const openIssues = useMemo(() => tickets.filter((t) => t.status === 'open').length, [tickets]);
   const resolvedIssues = useMemo(
-    () => issueTickets.filter((ticket) => ticket.status === 'resolved').length,
-    [],
+    () => tickets.filter((t) => t.status === 'resolved').length,
+    [tickets],
   );
   const pendingPermissions = useMemo(
-    () => accessEntries.filter((entry) => entry.pendingPermission).length,
-    [],
+    () => permissionRequests.filter((r) => r.status === 'pending').length,
+    [permissionRequests],
   );
 
   return (
@@ -177,8 +229,18 @@ function ITHeadProfile() {
         />
       </div>
 
-      <AccessControl entries={accessEntries} />
-      <IssueResolution tickets={issueTickets} />
+      <AccessControl
+        members={members}
+        permissionRequests={permissionRequests}
+        onChanged={refreshAccessControl}
+      />
+      <IssueResolution tickets={tickets} onResolveClick={setResolvingTicket} />
+
+      <ResolveTicketModal
+        ticket={resolvingTicket}
+        onClose={() => setResolvingTicket(null)}
+        onResolved={refreshTickets}
+      />
     </div>
   );
 }

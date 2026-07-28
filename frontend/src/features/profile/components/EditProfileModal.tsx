@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Avatar, Button, Input, Modal } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { editProfileSchema, type EditProfileFormValues } from '@/lib/authSchema';
 import { getAvatarPresets } from '@/lib/avatarPresets';
 import { cn } from '@/lib/cn';
@@ -47,7 +47,7 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
       toast.success('Profile updated');
       onClose();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Could not update profile');
+      toast.error(getErrorMessage(err, 'Could not update profile'));
     }
   }
 

@@ -64,6 +64,10 @@ export interface GuardianChild {
   email: string;
   currently_reading: ReadingProgressEntry[];
   completed: ReadingProgressEntry[];
+  outstanding_fine: number;
+  fine_book_title: string | null;
+  fine_due_date: string | null;
+  subscription_expires_on: string | null;
 }
 
 export interface ReadingGoalPayload {
@@ -84,11 +88,20 @@ export interface ReadingStreak {
   longest_streak_days: number;
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  member_id: string;
+  full_name: string;
+  books_completed: number;
+  is_current_user: boolean;
+}
+
 export interface Reservation {
   id: string;
   book_id: string;
   book_title: string;
-  status: string;
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
+  due_date: string | null;
   created_at: string;
 }
 
@@ -327,6 +340,24 @@ export interface SupportTicketRecord {
   updated_at: string;
 }
 
+export type BookRecordType = 'lost' | 'donated' | 'purchased';
+
+export interface BookRecordEntry {
+  id: string;
+  book_id: string;
+  book_title: string;
+  type: BookRecordType;
+  note: string | null;
+  logged_by_name: string;
+  created_at: string;
+}
+
+export interface BookRecordPayload {
+  book_id: string;
+  type: BookRecordType;
+  note?: string;
+}
+
 export interface SupportTicketPayload {
   category: SupportTicketCategory;
   description: string;
@@ -334,6 +365,97 @@ export interface SupportTicketPayload {
 
 export interface ResolveTicketPayload {
   resolution_note: string;
+}
+
+export interface MemberRole {
+  id: string;
+  name: string;
+}
+
+export interface MemberRecord {
+  id: string;
+  email: string;
+  full_name: string;
+  phone: string | null;
+  avatar_url: string | null;
+  role: MemberRole;
+  is_active: boolean;
+  last_login_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MemberListResponse {
+  items: MemberRecord[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface MemberListQuery {
+  search?: string;
+  role?: string;
+  active_only?: boolean;
+  page?: number;
+  page_size?: number;
+}
+
+export interface PermissionRequestPayload {
+  permission: string;
+  reason: string;
+}
+
+export interface PermissionRequestRecord {
+  id: string;
+  permission: string;
+  reason: string;
+  status: string;
+  requested_by_id: string;
+  requested_by_name: string;
+  decided_by_name: string | null;
+  decided_at: string | null;
+  created_at: string;
+}
+
+export interface LoanPayload {
+  book_id: string;
+  member_id: string;
+}
+
+export interface LoanRecord {
+  id: string;
+  book_id: string;
+  book_title: string;
+  member_id: string;
+  member_name: string;
+  borrowed_at: string;
+  due_date: string;
+  returned_at: string | null;
+  days_late: number;
+  fine_amount: number;
+  fine_paid: boolean;
+  status: 'active' | 'overdue' | 'returned';
+}
+
+export interface ITHeadStats {
+  active_members: number;
+  open_issues: number;
+  pending_permissions: number;
+  fees_outstanding: number;
+  late_fines_outstanding: number;
+}
+
+export interface FeeStatusEntryRecord {
+  member_id: string;
+  member_name: string;
+  amount_due: number;
+  status: 'paid' | 'due' | 'overdue';
+  due_date: string | null;
+}
+
+export interface ITHeadDashboard {
+  stats: ITHeadStats;
+  fee_status: FeeStatusEntryRecord[];
 }
 
 export interface ExpensePayload {
@@ -476,6 +598,75 @@ export interface MemberSummary {
   email: string;
 }
 
+export interface MemberSearchOptions {
+  /** Exact role name match, e.g. 'member' or 'guardian'. */
+  role?: string;
+  /** Only return active accounts. */
+  activeOnly?: boolean;
+}
+
+export interface ManagerDashboardStats {
+  seats_booked_today: number;
+  books_issued_today: number;
+  new_registrations_today: number;
+  pending_tasks: number;
+}
+
+export interface ManagerSeatBookingPayload {
+  member_id: string;
+  seat_label: string;
+  date: string;
+  hour: number;
+}
+
+export type LoanDurationDays = 3 | 5 | 7 | 10;
+
+export interface ManagerLoanPayload {
+  member_id: string;
+  book_id: string;
+  duration_days: LoanDurationDays;
+}
+
+export interface ManagerGuardianLinkPayload {
+  student_email: string;
+  guardian_email: string;
+}
+
+export interface PendingReservationRequest {
+  id: string;
+  book_id: string;
+  book_title: string;
+  member_id: string;
+  member_name: string;
+  member_email: string;
+  requested_at: string;
+}
+
+export interface ManagerBookAvailability {
+  id: string;
+  title: string;
+  author: string;
+  category: string;
+  total_copies: number;
+  available_copies: number;
+  is_available: boolean;
+  /** Earliest due date among this book's active loans; set only when unavailable. */
+  expected_available_at: string | null;
+}
+
+export interface ManagerBookListResponse {
+  items: ManagerBookAvailability[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface ManagerBookQuery {
+  search?: string;
+  page?: number;
+  page_size?: number;
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   role: Role | null;
@@ -501,15 +692,24 @@ interface AuthContextValue extends AuthState {
   loginWithCredentials: (email: string, password: string) => Promise<void>;
   loginWithGoogleToken: (idToken: string) => Promise<void>;
   registerAccount: (payload: RegisterPayload, postAuthRedirect: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  resetPassword: (payload: { token: string; password: string }) => Promise<void>;
   completeProfile: (payload: CompleteProfilePayload) => Promise<void>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
   createPayment: (payload: PaymentPayload) => Promise<void>;
+  payAtLibrary: (payload: PaymentPayload) => Promise<void>;
+  deleteAccount: () => Promise<void>;
   getMembership: () => Promise<Membership | null>;
   getGuardianChildren: () => Promise<GuardianChild[]>;
+  payChildFines: (childId: string) => Promise<void>;
+  renewChildSubscription: (childId: string) => Promise<void>;
+  bookSeatForChild: (childId: string, payload: SeatSlotPayload) => Promise<SeatBookingRecord>;
+  requestSeatNotifyForChild: (childId: string, payload: SeatSlotPayload) => Promise<void>;
   getMyReadingProgress: () => Promise<ReadingProgressEntry[]>;
   getReadingGoal: () => Promise<ReadingGoal | null>;
   setReadingGoal: (payload: ReadingGoalPayload) => Promise<ReadingGoal>;
   getReadingStreak: () => Promise<ReadingStreak>;
+  getLeaderboard: () => Promise<LeaderboardEntry[]>;
   getMyReservations: () => Promise<Reservation[]>;
   reserveBook: (bookId: string) => Promise<Reservation>;
   cancelReservation: (reservationId: string) => Promise<void>;
@@ -557,7 +757,18 @@ interface AuthContextValue extends AuthState {
   ) => Promise<SupportTicketRecord>;
   confirmSupportTicket: (ticketId: string) => Promise<SupportTicketRecord>;
   reopenSupportTicket: (ticketId: string) => Promise<SupportTicketRecord>;
-  searchMembers: (query: string) => Promise<MemberSummary[]>;
+  searchMembers: (query: string, options?: MemberSearchOptions) => Promise<MemberSummary[]>;
+  getManagerDashboard: () => Promise<ManagerDashboardStats>;
+  bookSeatForMember: (payload: ManagerSeatBookingPayload) => Promise<SeatBookingRecord>;
+  issueLoanForMember: (payload: ManagerLoanPayload) => Promise<LoanRecord>;
+  linkGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
+  getManagerBooks: (query?: ManagerBookQuery) => Promise<ManagerBookListResponse>;
+  getPendingReservations: () => Promise<PendingReservationRequest[]>;
+  approveReservation: (id: string, durationDays: LoanDurationDays) => Promise<Reservation>;
+  rejectReservation: (id: string) => Promise<Reservation>;
+  getActiveLoans: () => Promise<LoanRecord[]>;
+  getLoanHistory: () => Promise<LoanRecord[]>;
+  getMyLoans: () => Promise<LoanRecord[]>;
   getBillingRequests: () => Promise<BillingRequestRecord[]>;
   createBillingRequest: (payload: BillingRequestPayload) => Promise<BillingRequestRecord>;
   approveBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
@@ -570,6 +781,19 @@ interface AuthContextValue extends AuthState {
   getCoupons: () => Promise<Coupon[]>;
   generateCoupon: (payload: CouponPayload) => Promise<Coupon>;
   validateCoupon: (code: string) => Promise<CouponValidation>;
+  getMembers: (query?: MemberListQuery) => Promise<MemberListResponse>;
+  getPermissionRequests: () => Promise<PermissionRequestRecord[]>;
+  createPermissionRequest: (payload: PermissionRequestPayload) => Promise<PermissionRequestRecord>;
+  grantPermissionRequest: (id: string) => Promise<PermissionRequestRecord>;
+  denyPermissionRequest: (id: string) => Promise<PermissionRequestRecord>;
+  createLoan: (payload: LoanPayload) => Promise<LoanRecord>;
+  getLoanFines: () => Promise<LoanRecord[]>;
+  returnLoan: (id: string) => Promise<LoanRecord>;
+  markFinePaid: (id: string) => Promise<LoanRecord>;
+  sendFineReminder: (id: string) => Promise<void>;
+  getITHeadDashboard: () => Promise<ITHeadDashboard>;
+  getBookRecords: () => Promise<BookRecordEntry[]>;
+  createBookRecord: (payload: BookRecordPayload) => Promise<BookRecordEntry>;
   clearPostAuthRedirect: () => void;
   logout: () => void;
 }
@@ -654,6 +878,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     applySession(await apiPost<TokenResponse>('/auth/register', payload), false, postAuthRedirect);
   }
 
+  async function forgotPassword(email: string) {
+    await apiPost<undefined>('/auth/forgot-password', { email });
+  }
+
+  async function resetPassword(payload: { token: string; password: string }) {
+    await apiPost<undefined>('/auth/reset-password', payload);
+  }
+
   async function completeProfile(payload: CompleteProfilePayload) {
     if (!state.token) throw new Error('Not authenticated');
     applySession(await apiPatch<TokenResponse>('/auth/me', payload, state.token));
@@ -672,6 +904,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiPost('/payments', payload, state.token);
   }
 
+  async function payAtLibrary(payload: PaymentPayload) {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost('/payments/pay-at-library', payload, state.token);
+  }
+
+  async function deleteAccount() {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiDelete('/auth/me', state.token);
+    setState(SIGNED_OUT);
+  }
+
   async function getMembership(): Promise<Membership | null> {
     if (!state.token) return null;
     return apiGet<Membership | null>('/payments/me/membership', state.token);
@@ -680,6 +923,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function getGuardianChildren(): Promise<GuardianChild[]> {
     if (!state.token) return [];
     return apiGet<GuardianChild[]>('/guardian/children', state.token);
+  }
+
+  async function payChildFines(childId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost(`/guardian/children/${childId}/pay-fines`, undefined, state.token);
+  }
+
+  async function renewChildSubscription(childId: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost(`/guardian/children/${childId}/renew`, undefined, state.token);
+  }
+
+  async function bookSeatForChild(
+    childId: string,
+    payload: SeatSlotPayload,
+  ): Promise<SeatBookingRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SeatBookingRecord>(
+      `/guardian/children/${childId}/seat-bookings`,
+      payload,
+      state.token,
+    );
+  }
+
+  async function requestSeatNotifyForChild(
+    childId: string,
+    payload: SeatSlotPayload,
+  ): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost(`/guardian/children/${childId}/seat-notify`, payload, state.token);
   }
 
   async function getMyReadingProgress(): Promise<ReadingProgressEntry[]> {
@@ -700,6 +973,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function getReadingStreak(): Promise<ReadingStreak> {
     if (!state.token) return { current_streak_days: 0, longest_streak_days: 0 };
     return apiGet<ReadingStreak>('/members/me/reading-streak', state.token);
+  }
+
+  async function getLeaderboard(): Promise<LeaderboardEntry[]> {
+    if (!state.token) return [];
+    return apiGet<LeaderboardEntry[]>('/leaderboard', state.token);
   }
 
   async function getMyReservations(): Promise<Reservation[]> {
@@ -953,13 +1231,82 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   }
 
-  async function searchMembers(query: string): Promise<MemberSummary[]> {
+  async function searchMembers(
+    query: string,
+    options?: MemberSearchOptions,
+  ): Promise<MemberSummary[]> {
     if (!state.token || query.trim().length === 0) return [];
-    const data = await apiGet<{ items: MemberSummary[] }>(
-      `/members?search=${encodeURIComponent(query.trim())}&page_size=6`,
+    const params = new URLSearchParams({ search: query.trim(), page_size: '6' });
+    if (options?.role) params.set('role', options.role);
+    if (options?.activeOnly) params.set('active_only', 'true');
+    const data = await apiGet<{ items: MemberSummary[] }>(`/members?${params}`, state.token);
+    return data.items;
+  }
+
+  async function getManagerDashboard(): Promise<ManagerDashboardStats> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<ManagerDashboardStats>('/manager/dashboard', state.token);
+  }
+
+  async function bookSeatForMember(payload: ManagerSeatBookingPayload): Promise<SeatBookingRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<SeatBookingRecord>('/manager/seat-bookings', payload, state.token);
+  }
+
+  async function issueLoanForMember(payload: ManagerLoanPayload): Promise<LoanRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>('/manager/loans', payload, state.token);
+  }
+
+  async function linkGuardian(payload: ManagerGuardianLinkPayload): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost<undefined>('/manager/guardian-links', payload, state.token);
+  }
+
+  async function getPendingReservations(): Promise<PendingReservationRequest[]> {
+    if (!state.token) return [];
+    return apiGet<PendingReservationRequest[]>('/manager/reservations/pending', state.token);
+  }
+
+  async function approveReservation(
+    id: string,
+    durationDays: LoanDurationDays,
+  ): Promise<Reservation> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<Reservation>(
+      `/manager/reservations/${id}/approve`,
+      { duration_days: durationDays },
       state.token,
     );
-    return data.items;
+  }
+
+  async function rejectReservation(id: string): Promise<Reservation> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<Reservation>(`/manager/reservations/${id}/reject`, undefined, state.token);
+  }
+
+  async function getActiveLoans(): Promise<LoanRecord[]> {
+    if (!state.token) return [];
+    return apiGet<LoanRecord[]>('/loans', state.token);
+  }
+
+  async function getLoanHistory(): Promise<LoanRecord[]> {
+    if (!state.token) return [];
+    return apiGet<LoanRecord[]>('/loans/history', state.token);
+  }
+
+  async function getMyLoans(): Promise<LoanRecord[]> {
+    if (!state.token) return [];
+    return apiGet<LoanRecord[]>('/loans/me', state.token);
+  }
+
+  async function getManagerBooks(query: ManagerBookQuery = {}): Promise<ManagerBookListResponse> {
+    if (!state.token) throw new Error('Not authenticated');
+    const params = new URLSearchParams();
+    if (query.search) params.set('search', query.search);
+    if (query.page) params.set('page', String(query.page));
+    if (query.page_size) params.set('page_size', String(query.page_size));
+    return apiGet<ManagerBookListResponse>(`/manager/books?${params}`, state.token);
   }
 
   async function getBillingRequests(): Promise<BillingRequestRecord[]> {
@@ -1035,6 +1382,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiGet<CouponValidation>(`/coupons/${encodeURIComponent(code)}/validate`, state.token);
   }
 
+  async function getMembers(query: MemberListQuery = {}): Promise<MemberListResponse> {
+    if (!state.token) return { items: [], total: 0, page: 1, page_size: 20 };
+    const params = new URLSearchParams({
+      page: String(query.page ?? 1),
+      page_size: String(query.page_size ?? 20),
+    });
+    if (query.search?.trim()) params.set('search', query.search.trim());
+    if (query.role) params.set('role', query.role);
+    if (query.active_only) params.set('active_only', 'true');
+    return apiGet<MemberListResponse>(`/members?${params}`, state.token);
+  }
+
+  async function getPermissionRequests(): Promise<PermissionRequestRecord[]> {
+    if (!state.token) return [];
+    return apiGet<PermissionRequestRecord[]>('/permission-requests', state.token);
+  }
+
+  async function createPermissionRequest(
+    payload: PermissionRequestPayload,
+  ): Promise<PermissionRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<PermissionRequestRecord>('/permission-requests', payload, state.token);
+  }
+
+  async function grantPermissionRequest(id: string): Promise<PermissionRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/grant`, undefined, state.token);
+  }
+
+  async function denyPermissionRequest(id: string): Promise<PermissionRequestRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/deny`, undefined, state.token);
+  }
+
+  async function createLoan(payload: LoanPayload): Promise<LoanRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>('/loans', payload, state.token);
+  }
+
+  async function getLoanFines(): Promise<LoanRecord[]> {
+    if (!state.token) return [];
+    return apiGet<LoanRecord[]>('/loans/fines', state.token);
+  }
+
+  async function returnLoan(id: string): Promise<LoanRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>(`/loans/${id}/return`, undefined, state.token);
+  }
+
+  async function markFinePaid(id: string): Promise<LoanRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>(`/loans/${id}/mark-fine-paid`, undefined, state.token);
+  }
+
+  async function sendFineReminder(id: string): Promise<void> {
+    if (!state.token) throw new Error('Not authenticated');
+    await apiPost(`/loans/${id}/remind`, undefined, state.token);
+  }
+
+  async function getBookRecords(): Promise<BookRecordEntry[]> {
+    if (!state.token) return [];
+    return apiGet<BookRecordEntry[]>('/book-records', state.token);
+  }
+
+  async function createBookRecord(payload: BookRecordPayload): Promise<BookRecordEntry> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<BookRecordEntry>('/book-records', payload, state.token);
+  }
+
+  async function getITHeadDashboard(): Promise<ITHeadDashboard> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiGet<ITHeadDashboard>('/it-head/dashboard', state.token);
+  }
+
   async function refreshAccessToken(): Promise<string | null> {
     if (!state.refreshToken) return null;
     try {
@@ -1072,15 +1493,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithCredentials,
         loginWithGoogleToken,
         registerAccount,
+        forgotPassword,
+        resetPassword,
         completeProfile,
         updateProfile,
         createPayment,
+        payAtLibrary,
+        deleteAccount,
         getMembership,
         getGuardianChildren,
+        payChildFines,
+        renewChildSubscription,
+        bookSeatForChild,
+        requestSeatNotifyForChild,
         getMyReadingProgress,
         getReadingGoal,
         setReadingGoal,
         getReadingStreak,
+        getLeaderboard,
         getMyReservations,
         reserveBook,
         cancelReservation,
@@ -1126,6 +1556,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         confirmSupportTicket,
         reopenSupportTicket,
         searchMembers,
+        getManagerDashboard,
+        bookSeatForMember,
+        issueLoanForMember,
+        getPendingReservations,
+        approveReservation,
+        rejectReservation,
+        getActiveLoans,
+        getLoanHistory,
+        getMyLoans,
+        linkGuardian,
+        getManagerBooks,
         getBillingRequests,
         createBillingRequest,
         approveBillingRequest,
@@ -1138,6 +1579,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getCoupons,
         generateCoupon,
         validateCoupon,
+        getMembers,
+        getPermissionRequests,
+        createPermissionRequest,
+        grantPermissionRequest,
+        denyPermissionRequest,
+        createLoan,
+        getLoanFines,
+        returnLoan,
+        markFinePaid,
+        sendFineReminder,
+        getITHeadDashboard,
+        getBookRecords,
+        createBookRecord,
         clearPostAuthRedirect,
         logout,
       }}

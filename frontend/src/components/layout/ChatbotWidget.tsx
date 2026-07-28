@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui';
-import { apiPost, ApiError } from '@/lib/api';
+import { apiPost, getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/providers/AuthProvider';
 import { CONVERSATION_TREE, type TreeNode } from '@/lib/chatbot';
@@ -149,7 +149,7 @@ export function ChatbotWidget() {
         {
           id: crypto.randomUUID(),
           from: 'bot',
-          text: err instanceof ApiError ? err.message : 'Something went wrong. Please try again.',
+          text: getErrorMessage(err, 'Something went wrong. Please try again.'),
           source: 'error',
         },
       ]);
@@ -299,7 +299,7 @@ export function ChatbotWidget() {
               {/* Option chips */}
               {showOptions && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-1.5 pt-1">
-                  {currentNode.options!.map((option) => (
+                  {(currentNode.options ?? []).map((option) => (
                     <button
                       key={option.label}
                       type="button"

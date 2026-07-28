@@ -44,6 +44,12 @@ class ScheduleOut(BaseModel):
     seats: list[SeatSlotOut]
 
 
+class SeatAvailabilitySummary(BaseModel):
+    available: int
+    booked: int
+    total: int
+
+
 class SeatBookingOut(BaseModel):
     id: str
     seat_label: str

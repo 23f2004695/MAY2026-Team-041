@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
 
 os.environ["APP_ENV"] = "test"
 
@@ -319,6 +320,85 @@ async def test_logout_requires_authentication(client):
     assert response.status_code == 401
 
 
+async def test_forgot_password_unknown_email_returns_204(client):
+    response = await client.post(
+        "/api/v1/auth/forgot-password", json={"email": _unique_email()}
+    )
+
+    assert response.status_code == 204
+
+
+async def test_forgot_password_sends_email_and_reset_token_changes_password(client, monkeypatch):
+    sent = {}
+    monkeypatch.setattr(
+        service,
+        "send_email",
+        lambda to, subject, body: sent.update(to=to, subject=subject, body=body),
+    )
+
+    email = _unique_email()
+    await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Reset Test"},
+    )
+
+    response = await client.post("/api/v1/auth/forgot-password", json={"email": email})
+    assert response.status_code == 204
+    assert sent["to"] == email
+    assert "reset-password?token=" in sent["body"]
+
+    token = sent["body"].split("token=")[1].split("\n")[0]
+    reset_response = await client.post(
+        "/api/v1/auth/reset-password", json={"token": token, "password": "NewPassword123"}
+    )
+    assert reset_response.status_code == 204
+
+    old_login = await client.post(
+        "/api/v1/auth/login", json={"email": email, "password": "Password123!"}
+    )
+    assert old_login.status_code == 401
+
+    new_login = await client.post(
+        "/api/v1/auth/login", json={"email": email, "password": "NewPassword123"}
+    )
+    assert new_login.status_code == 200
+
+
+async def test_reset_password_rejects_reused_token(client, monkeypatch):
+    sent = {}
+    monkeypatch.setattr(
+        service,
+        "send_email",
+        lambda to, subject, body: sent.update(body=body),
+    )
+
+    email = _unique_email()
+    await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Reset Reuse Test"},
+    )
+    await client.post("/api/v1/auth/forgot-password", json={"email": email})
+    token = sent["body"].split("token=")[1].split("\n")[0]
+
+    first = await client.post(
+        "/api/v1/auth/reset-password", json={"token": token, "password": "NewPassword123"}
+    )
+    assert first.status_code == 204
+
+    second = await client.post(
+        "/api/v1/auth/reset-password", json={"token": token, "password": "AnotherPass123"}
+    )
+    assert second.status_code == 400
+
+
+async def test_reset_password_rejects_garbage_token(client):
+    response = await client.post(
+        "/api/v1/auth/reset-password", json={"token": "not-a-jwt", "password": "NewPassword123"}
+    )
+
+    assert response.status_code == 400
+
+
 async def test_logout_revokes_outstanding_refresh_tokens(client):
     email = _unique_email()
     register_response = await client.post(
@@ -337,3 +417,53 @@ async def test_logout_revokes_outstanding_refresh_tokens(client):
         "/api/v1/auth/refresh", json={"refresh_token": refresh_token}
     )
     assert reuse_response.status_code == 401
+
+
+async def test_delete_account_soft_deletes_and_blocks_login(client):
+    email = _unique_email()
+    password = "Password123!"
+    register_response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": password, "full_name": "Delete Me"},
+    )
+    access_token = register_response.json()["access_token"]
+
+    delete_response = await client.delete(
+        "/api/v1/auth/me", headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert delete_response.status_code == 204
+
+    login_response = await client.post(
+        "/api/v1/auth/login", json={"email": email, "password": password}
+    )
+    assert login_response.status_code == 401
+
+
+async def test_delete_account_blocked_by_outstanding_loan(client):
+    email = _unique_email()
+    register_response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Borrower"},
+    )
+    access_token = register_response.json()["access_token"]
+    user = await prisma.user.find_unique(where={"email": email})
+    book = await prisma.book.create(
+        data={"title": f"Auth Test Book {uuid.uuid4().hex[:8]}", "author": "A", "category": "Fiction"}
+    )
+    loan = await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=14),
+            "createdById": user.id,
+        }
+    )
+
+    try:
+        response = await client.delete(
+            "/api/v1/auth/me", headers={"Authorization": f"Bearer {access_token}"}
+        )
+        assert response.status_code == 409
+    finally:
+        await prisma.loan.delete(where={"id": loan.id})
+        await prisma.book.delete(where={"id": book.id})

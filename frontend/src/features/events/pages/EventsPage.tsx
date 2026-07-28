@@ -26,6 +26,7 @@ export interface Event {
   capacity: number;
   registered: boolean;
   registrants: Registrant[];
+  assigned_managers: Registrant[];
 }
 
 interface EventListResponse {
@@ -52,6 +53,7 @@ export function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
 
   const activeEvent = events.find((e) => e.id === activeEventId) ?? null;
 
@@ -88,18 +90,13 @@ export function EventsPage() {
   }
 
   async function removeRegistrant(eventId: string, memberId: string) {
-    // Staff-only: not wired to a dedicated endpoint yet — optimistic UI update only
-    setEvents((prev) =>
-      prev.map((e) =>
-        e.id === eventId
-          ? {
-              ...e,
-              registrants: e.registrants.filter((r) => r.id !== memberId),
-              attendees: e.attendees - 1,
-            }
-          : e,
-      ),
-    );
+    if (!token) return;
+    try {
+      const updated = await apiDelete<Event>(`/events/${eventId}/registrants/${memberId}`, token);
+      setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+    } catch (err) {
+      if (err instanceof ApiError) console.error(err.message);
+    }
   }
 
   if (loading) {
@@ -172,17 +169,21 @@ export function EventsPage() {
         event={activeEvent}
         onClose={() => setActiveEventId(null)}
         onToggleRegistration={toggleRegistration}
-        onRemoveRegistrant={(eventId, name) => {
-          const event = events.find((e) => e.id === eventId);
-          const registrant = event?.registrants.find((r) => r.full_name === name);
-          if (registrant) removeRegistrant(eventId, registrant.id);
+        onRemoveRegistrant={removeRegistrant}
+        onEdit={(event) => {
+          setActiveEventId(null);
+          setEditingEvent(event);
         }}
       />
 
       <CreateEventModal
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        onCreated={fetchEvents}
+        open={createOpen || editingEvent !== null}
+        event={editingEvent}
+        onClose={() => {
+          setCreateOpen(false);
+          setEditingEvent(null);
+        }}
+        onSaved={fetchEvents}
       />
     </div>
   );

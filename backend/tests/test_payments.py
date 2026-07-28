@@ -165,6 +165,40 @@ async def test_membership_reflects_latest_plan_payment(client, member_user):
     assert body["is_active"] is True
 
 
+@pytest_asyncio.fixture
+async def manager_user():
+    role = await repository.upsert_role(Role.MANAGER)
+    return await repository.create_member(
+        email=_unique_email(),
+        password_hash=hash_password("Password123!"),
+        full_name="Front Desk Manager",
+        phone=None,
+        avatar_url=None,
+        role_id=role.id,
+    )
+
+
+async def test_pay_at_library_notifies_managers(client, member_user, manager_user):
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": member_user.email, "password": "Password123!"}
+    )
+    token = login.json()["access_token"]
+
+    response = await client.post(
+        "/api/v1/payments/pay-at-library",
+        json={"amount": 150, "label": "Overdue fine"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 204
+    notification = await prisma.notification.find_first(
+        where={"userId": manager_user.id, "type": "payment-pending"}
+    )
+    assert notification is not None
+    assert member_user.fullName in notification.message
+    assert "150" in notification.message
+
+
 async def _login(client, user) -> dict:
     login = await client.post(
         "/api/v1/auth/login", json={"email": user.email, "password": "Password123!"}

@@ -18,8 +18,17 @@ from app.modules.members.schemas import (
 )
 
 
-async def list_members(*, search: str | None, page: int, page_size: int) -> MemberListResponse:
-    items, total = await repository.list_members(search=search, page=page, page_size=page_size)
+async def list_members(
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    role: str | None = None,
+    active_only: bool = False,
+) -> MemberListResponse:
+    items, total = await repository.list_members(
+        search=search, page=page, page_size=page_size, role=role, active_only=active_only
+    )
     return MemberListResponse(
         items=[MemberOut.from_prisma(item) for item in items],
         total=total,

@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
+import { apiPost, getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { isValidEmail } from '@/lib/email';
 
@@ -127,9 +128,21 @@ export function ContactUsPage() {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [location.hash]);
 
-  function onSubmit() {
-    toast.success(t('contactUs.toasts.success'));
-    reset();
+  async function onSubmit(values: ContactUsFormValues) {
+    try {
+      await apiPost('/contact', {
+        name: values.name,
+        email: values.email,
+        phone_number: values.phoneNumber,
+        organization: values.organization,
+        subject: values.subject,
+        message: values.message,
+      });
+      toast.success(t('contactUs.toasts.success'));
+      reset();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
   }
 
   function scrollToSection(id: string) {

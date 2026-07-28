@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { PageTitle, ReviewCard, StatisticCard } from '@/components/common';
 import { Button, Dialog, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { apiGet, ApiError } from '@/lib/api';
+import { apiGet, getErrorMessage } from '@/lib/api';
 import { useAuth, type BookReviews, type Review } from '@/providers/AuthProvider';
 
 import type { Book } from '../../books/hooks/useBooks';
@@ -107,7 +107,7 @@ export function ReviewsPage() {
       setFeaturedBook(book);
       setBookReviews(reviewsForBook);
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 
@@ -127,7 +127,7 @@ export function ReviewsPage() {
         getBookReviews(featuredBook.id).then(setBookReviews).catch(() => {});
       }
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 

@@ -86,3 +86,7 @@ export function apiPut<T>(path: string, body: unknown, token: string): Promise<T
 export function apiDelete<T>(path: string, token: string): Promise<T> {
   return apiRequest<T>('DELETE', path, undefined, token);
 }
+
+export function getErrorMessage(err: unknown, fallback: string): string {
+  return err instanceof ApiError ? err.message : fallback;
+}

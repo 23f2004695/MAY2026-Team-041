@@ -4,6 +4,7 @@ import {
   Calendar,
   CalendarCheck,
   Cpu,
+  History,
   LayoutDashboard,
   LifeBuoy,
   type LucideIcon,
@@ -28,6 +29,7 @@ export interface NavItem {
 export const userNavigation: NavItem[] = [
   { label: 'nav.dashboard', path: ROUTES.DASHBOARD, icon: LayoutDashboard },
   { label: 'nav.books', path: ROUTES.BOOKS, icon: BookOpen },
+  { label: 'nav.borrowHistory', path: ROUTES.BORROW_HISTORY, icon: History },
   { label: 'nav.reservations', path: ROUTES.RESERVATIONS, icon: Ticket },
   { label: 'nav.seatBooking', path: ROUTES.SEAT_BOOKING, icon: CalendarCheck },
   { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
@@ -58,6 +60,8 @@ export const adminNavigation: NavItem[] = [
 
 export const managerNavigation: NavItem[] = [
   { label: 'nav.dashboard', path: ROUTES.DASHBOARD, icon: LayoutDashboard },
+  { label: 'nav.books', path: ROUTES.MANAGER_BOOKS, icon: BookOpen },
+  { label: 'nav.borrowHistory', path: ROUTES.MANAGER_BORROW_HISTORY, icon: History },
   { label: 'nav.community', path: ROUTES.COMMUNITY, icon: MessageCircle },
   { label: 'nav.events', path: ROUTES.EVENTS, icon: Calendar },
   { label: 'nav.leaderboard', path: ROUTES.LEADERBOARD, icon: Trophy },

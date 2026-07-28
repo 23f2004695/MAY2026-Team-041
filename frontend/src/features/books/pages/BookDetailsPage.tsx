@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { apiGet, ApiError } from '@/lib/api';
+import { apiGet, getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -34,10 +34,11 @@ export function BookDetailsPage() {
     if (!book) return;
     try {
       await reserveBook(book.id);
+      // Requesting to borrow doesn't hold a copy — the book stays visible as available
+      // to others until a manager approves the request.
       toast.success(t('books.details.reserveSuccessToast', { title: book.title }));
-      setBook({ ...book, available: false, total_copies: book.total_copies - 1 });
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     }
   }
 

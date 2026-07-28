@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import { StatisticCard, PageTitle } from '@/components/common';
 import { Button, Dialog, EmptyState } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import {
   useAuth,
   type BannedAuthor,
@@ -134,7 +134,7 @@ export function CommunityPage() {
   );
 
   function reportError(error: unknown) {
-    toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+    toast.error(getErrorMessage(error, t('common.errors.generic')));
   }
 
   async function handleSubmitPost(draft: PostDraft) {

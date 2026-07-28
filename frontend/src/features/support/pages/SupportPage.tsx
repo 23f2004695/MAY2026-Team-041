@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { PageHeader } from '@/components/common';
 import { Button } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type SupportTicketRecord, type SupportTicketStatus } from '@/providers/AuthProvider';
 
 import { GUARDIAN_CATEGORIES, MEMBER_CATEGORIES } from '../constants';
@@ -32,7 +32,7 @@ function RaiserView({ role }: { role: 'member' | 'guardian' }) {
       toast.success(t('support.toasts.confirmed'));
       refresh();
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     }
   }
 
@@ -42,7 +42,7 @@ function RaiserView({ role }: { role: 'member' | 'guardian' }) {
       toast.success(t('support.toasts.reopened'));
       refresh();
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     }
   }
 
@@ -92,7 +92,7 @@ function StaffView() {
       toast.success(t('support.staff.resolvedToast'));
       refresh();
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     }
   }
 

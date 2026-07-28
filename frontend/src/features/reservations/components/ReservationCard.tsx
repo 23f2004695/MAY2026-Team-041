@@ -1,12 +1,19 @@
 import { useTranslation } from 'react-i18next';
 
-import { Badge, Button, Card, CardContent } from '@/components/ui';
+import { Badge, Button, Card, CardContent, type BadgeVariant } from '@/components/ui';
 import type { Reservation } from '@/providers/AuthProvider';
 
 export interface ReservationCardProps {
   reservation: Reservation;
   onCancel: () => void;
 }
+
+const badgeVariantByStatus: Record<Reservation['status'], BadgeVariant> = {
+  pending: 'warning',
+  approved: 'success',
+  rejected: 'danger',
+  cancelled: 'outline',
+};
 
 export function ReservationCard({ reservation, onCancel }: ReservationCardProps) {
   const { t } = useTranslation();
@@ -25,12 +32,27 @@ export function ReservationCard({ reservation, onCancel }: ReservationCardProps)
               }),
             })}
           </p>
+          {reservation.status === 'approved' && reservation.due_date && (
+            <p className="text-sm text-muted-foreground">
+              {t('reservations.dueBy', {
+                date: new Date(reservation.due_date).toLocaleDateString(undefined, {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                }),
+              })}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="success">{t('reservations.status.ready')}</Badge>
-          <Button size="sm" variant="outline" onClick={onCancel}>
-            {t('reservations.actions.cancel')}
-          </Button>
+          <Badge variant={badgeVariantByStatus[reservation.status]}>
+            {t(`reservations.status.${reservation.status}`)}
+          </Badge>
+          {reservation.status === 'pending' && (
+            <Button size="sm" variant="outline" onClick={onCancel}>
+              {t('reservations.actions.cancel')}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

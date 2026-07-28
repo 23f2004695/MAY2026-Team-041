@@ -10,7 +10,6 @@ import { PageLoader } from '@/components/common';
 import { ErrorState } from '@/components/feedback';
 import { ROUTES } from '@/constants/routes';
 import { NotFound } from '@/pages/NotFound';
-import { PlaceholderPage } from '@/pages/PlaceholderPage';
 
 import { ProtectedRoute, PublicRoute, RoleRoute } from './guards';
 
@@ -39,6 +38,12 @@ const TranslateDemoPage = lazy(() =>
 );
 const Login = lazy(() => import('@/pages/Login').then((m) => ({ default: m.Login })));
 const Register = lazy(() => import('@/pages/Register').then((m) => ({ default: m.Register })));
+const ForgotPassword = lazy(() =>
+  import('@/pages/ForgotPassword').then((m) => ({ default: m.ForgotPassword })),
+);
+const ResetPassword = lazy(() =>
+  import('@/pages/ResetPassword').then((m) => ({ default: m.ResetPassword })),
+);
 
 
 const DashboardPage = lazy(() =>
@@ -49,6 +54,21 @@ const BooksListPage = lazy(() =>
 );
 const BookDetailsPage = lazy(() =>
   import('@/features/books/pages/BookDetailsPage').then((m) => ({ default: m.BookDetailsPage })),
+);
+const ManagerBooksPage = lazy(() =>
+  import('@/features/dashboard/pages/ManagerBooksPage').then((m) => ({
+    default: m.ManagerBooksPage,
+  })),
+);
+const ManagerBorrowHistoryPage = lazy(() =>
+  import('@/features/dashboard/pages/ManagerBorrowHistoryPage').then((m) => ({
+    default: m.ManagerBorrowHistoryPage,
+  })),
+);
+const MyBorrowHistoryPage = lazy(() =>
+  import('@/features/dashboard/pages/MyBorrowHistoryPage').then((m) => ({
+    default: m.MyBorrowHistoryPage,
+  })),
 );
 const ReservationsPage = lazy(() =>
   import('@/features/reservations/pages/ReservationsPage').then((m) => ({
@@ -129,15 +149,8 @@ const router = createBrowserRouter([
         children: [
           { path: relative(ROUTES.LOGIN), element: withSuspense(<Login />) },
           { path: relative(ROUTES.REGISTER), element: withSuspense(<Register />) },
-          {
-            path: relative(ROUTES.FORGOT_PASSWORD),
-            element: (
-              <PlaceholderPage
-                titleKey="placeholder.forgotPassword.title"
-                descriptionKey="placeholder.forgotPassword.description"
-              />
-            ),
-          },
+          { path: relative(ROUTES.FORGOT_PASSWORD), element: withSuspense(<ForgotPassword />) },
+          { path: relative(ROUTES.RESET_PASSWORD), element: withSuspense(<ResetPassword />) },
         ],
       },
       { path: '*', element: <NotFound /> },
@@ -154,6 +167,12 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.DASHBOARD), element: withSuspense(<DashboardPage />) },
       { path: relative(ROUTES.BOOKS), element: withSuspense(<BooksListPage />) },
       { path: relative(ROUTES.BOOK_DETAILS), element: withSuspense(<BookDetailsPage />) },
+      { path: relative(ROUTES.MANAGER_BOOKS), element: withSuspense(<ManagerBooksPage />) },
+      {
+        path: relative(ROUTES.MANAGER_BORROW_HISTORY),
+        element: withSuspense(<ManagerBorrowHistoryPage />),
+      },
+      { path: relative(ROUTES.BORROW_HISTORY), element: withSuspense(<MyBorrowHistoryPage />) },
       { path: relative(ROUTES.RESERVATIONS), element: withSuspense(<ReservationsPage />) },
       { path: relative(ROUTES.SEAT_BOOKING), element: withSuspense(<SeatBookingPage />) },
       { path: relative(ROUTES.PAYMENT), element: withSuspense(<PaymentPage />) },

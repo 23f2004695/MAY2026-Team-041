@@ -250,7 +250,7 @@ export function AdminDashboardPage() {
       <CreateEventModal
         open={createEventOpen}
         onClose={() => setCreateEventOpen(false)}
-        onCreated={() => setCreateEventOpen(false)}
+        onSaved={() => setCreateEventOpen(false)}
       />
     </div>
   );

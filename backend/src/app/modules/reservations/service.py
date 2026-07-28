@@ -1,8 +1,16 @@
 from fastapi import HTTPException, status
 
+from app.core.constants import Role
+from app.db.prisma import prisma
 from app.modules.notifications import service as notifications_service
 from app.modules.reservations import repository
 from app.modules.reservations.schemas import ReservationCreate, ReservationOut
+
+
+async def _notify_managers(message: str) -> None:
+    managers = await prisma.user.find_many(where={"role": {"name": Role.MANAGER}, "deletedAt": None})
+    for manager in managers:
+        await notifications_service.create_notification(manager.id, "reservation-requested", message)
 
 
 async def list_my_reservations(member_id: str) -> list[ReservationOut]:
@@ -22,8 +30,11 @@ async def create_reservation(member_id: str, payload: ReservationCreate) -> Rese
 
     await notifications_service.create_notification(
         member_id,
-        "reservation-ready",
-        f'Your reservation for "{reservation.book.title}" is ready for pickup.',
+        "reservation-requested",
+        f'Your request to borrow "{reservation.book.title}" is awaiting manager approval.',
+    )
+    await _notify_managers(
+        f'{reservation.member.fullName} requested to borrow "{reservation.book.title}".'
     )
     return ReservationOut.from_prisma(reservation)
 
@@ -33,8 +44,8 @@ async def cancel_reservation(member_id: str, reservation_id: str) -> None:
     if (
         reservation is None
         or reservation.memberId != member_id
-        or reservation.status != "active"
+        or reservation.status != "pending"
     ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Reservation not found")
 
-    await repository.cancel_reservation(reservation)
+    await repository.cancel_reservation(reservation_id)
