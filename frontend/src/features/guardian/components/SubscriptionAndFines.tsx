@@ -1,33 +1,53 @@
-import { ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
-import { Button, Card, CardContent, CardHeader, CardTitle, Modal } from '@/components/ui';
-import { ROUTES } from '@/constants/routes';
-import type { Child } from '@/mocks/guardian';
+import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, Modal } from '@/components/ui';
+import { getErrorMessage } from '@/lib/api';
+import { formatCurrency } from '@/lib/format';
+import { useAuth, type GuardianChild } from '@/providers/AuthProvider';
 
-export function SubscriptionAndFines({ children }: { children: Child[] }) {
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+export interface SubscriptionAndFinesProps {
+  children: GuardianChild[];
+  onChanged: () => void;
+}
+
+export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFinesProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { payChildFines, renewChildSubscription } = useAuth();
   const [fineDetailsChildId, setFineDetailsChildId] = useState<string | null>(null);
+  const [pendingChildId, setPendingChildId] = useState<string | null>(null);
   const fineDetailsChild = children.find((child) => child.id === fineDetailsChildId) ?? null;
 
-  function payFine(child: Child) {
-    const amount = Number(child.outstandingFine.replace(/[^\d.]/g, ''));
-    navigate(
-      `${ROUTES.PAYMENT}?amount=${amount}&label=${encodeURIComponent(t('guardian.subscription.fineOwed', { amount: child.outstandingFine }) + ' — ' + child.name)}`,
-    );
+  async function payFine(child: GuardianChild) {
+    setPendingChildId(child.id);
+    try {
+      await payChildFines(child.id);
+      toast.success(t('guardian.subscription.fineOwed', { amount: formatCurrency(child.outstanding_fine) }));
+      setFineDetailsChildId(null);
+      onChanged();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    } finally {
+      setPendingChildId(null);
+    }
   }
 
-  // Renew goes straight to Payment for the child's existing plan — Payment
-  // offers a "Change Plan" link back to Pricing for anyone who wants a
-  // different one, same as the member's own subscription card.
-  function renewChild(child: Child) {
-    const label = t('guardian.subscription.renewToast', { name: child.name });
-    // Renewal always renews at the 1-month plan/price, matching the member's own
-    // subscription card — see MemberSubscription.tsx's renewOrViewPlans.
-    navigate(`${ROUTES.PAYMENT}?plan=1m&label=${encodeURIComponent(label)}&renewal=1`);
+  async function renewChild(child: GuardianChild) {
+    setPendingChildId(child.id);
+    try {
+      await renewChildSubscription(child.id);
+      toast.success(t('guardian.subscription.renewToast', { name: child.full_name }));
+      onChanged();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    } finally {
+      setPendingChildId(null);
+    }
   }
 
   return (
@@ -36,12 +56,19 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
         <CardTitle>{t('guardian.subscription.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
+        {children.length === 0 && (
+          <EmptyState
+            title={t('guardian.subscription.emptyTitle')}
+            description={t('guardian.subscription.emptyDescription')}
+          />
+        )}
         {children.map((child) => {
-          const hasFine = child.outstandingFine !== '₹0';
+          const hasFine = child.outstanding_fine > 0;
+          const isPending = pendingChildId === child.id;
           return (
             <div key={child.id} className="flex flex-col gap-2 rounded-lg border border-border p-3 text-sm">
               <div className="flex items-start justify-between gap-2">
-                <p className="font-medium text-foreground">{child.name}</p>
+                <p className="font-medium text-foreground">{child.full_name}</p>
                 {hasFine && (
                   <button
                     type="button"
@@ -49,28 +76,38 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
                     className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline"
                   >
                     {t('guardian.subscription.viewFineDetails')}
-                    <ArrowUpRight className="size-4" />
                   </button>
                 )}
               </div>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-muted-foreground">
-                    {t('guardian.subscription.expiresOn', { date: child.subscriptionExpiresOn })}
+                    {child.subscription_expires_on
+                      ? t('guardian.subscription.expiresOn', {
+                          date: formatDate(child.subscription_expires_on),
+                        })
+                      : t('guardian.subscription.noSubscription')}
                   </p>
                   <p className={hasFine ? 'text-danger' : 'text-muted-foreground'}>
                     {hasFine
-                      ? t('guardian.subscription.fineOwed', { amount: child.outstandingFine })
+                      ? t('guardian.subscription.fineOwed', {
+                          amount: formatCurrency(child.outstanding_fine),
+                        })
                       : t('guardian.subscription.noFine')}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   {hasFine && (
-                    <Button size="sm" variant="outline" onClick={() => payFine(child)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      isLoading={isPending}
+                      onClick={() => payFine(child)}
+                    >
                       {t('guardian.subscription.payFine')}
                     </Button>
                   )}
-                  <Button size="sm" onClick={() => renewChild(child)}>
+                  <Button size="sm" isLoading={isPending} onClick={() => renewChild(child)}>
                     {t('guardian.subscription.renew')}
                   </Button>
                 </div>
@@ -85,7 +122,7 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
         onClose={() => setFineDetailsChildId(null)}
         title={
           fineDetailsChild
-            ? `${t('guardian.subscription.fineDetails.title')} — ${fineDetailsChild.name}`
+            ? `${t('guardian.subscription.fineDetails.title')} — ${fineDetailsChild.full_name}`
             : t('guardian.subscription.fineDetails.title')
         }
       >
@@ -94,31 +131,31 @@ export function SubscriptionAndFines({ children }: { children: Child[] }) {
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">{t('guardian.subscription.fineDetails.reason')}</span>
               <span className="text-right font-medium text-foreground">
-                {fineDetailsChild.fineReasonKey
-                  ? t(`guardian.subscription.fineDetails.reasons.${fineDetailsChild.fineReasonKey}`)
+                {fineDetailsChild.fine_book_title
+                  ? t('guardian.subscription.fineDetails.reasons.lateReturn')
                   : '—'}
-                {fineDetailsChild.fineBookTitle ? ` — ${fineDetailsChild.fineBookTitle}` : ''}
+                {fineDetailsChild.fine_book_title ? ` — ${fineDetailsChild.fine_book_title}` : ''}
               </span>
             </div>
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">{t('guardian.subscription.fineDetails.amountDue')}</span>
-              <span className="font-semibold text-danger">{fineDetailsChild.outstandingFine}</span>
+              <span className="font-semibold text-danger">
+                {formatCurrency(fineDetailsChild.outstanding_fine)}
+              </span>
             </div>
-            {fineDetailsChild.fineDueDate && (
+            {fineDetailsChild.fine_due_date && (
               <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground">{t('guardian.subscription.fineDetails.payBy')}</span>
-                <span className="font-medium text-foreground">{fineDetailsChild.fineDueDate}</span>
+                <span className="font-medium text-foreground">
+                  {formatDate(fineDetailsChild.fine_due_date)}
+                </span>
               </div>
             )}
-            {fineDetailsChild.fineDailyPenalty && fineDetailsChild.fineEscalatedAmount && (
-              <div className="rounded-md bg-danger/10 p-3 text-danger">
-                {t('guardian.subscription.fineDetails.escalationNotice', {
-                  daily: fineDetailsChild.fineDailyPenalty,
-                  escalated: fineDetailsChild.fineEscalatedAmount,
-                })}
-              </div>
-            )}
-            <Button size="sm" onClick={() => payFine(fineDetailsChild)}>
+            <Button
+              size="sm"
+              isLoading={pendingChildId === fineDetailsChild.id}
+              onClick={() => payFine(fineDetailsChild)}
+            >
               {t('guardian.subscription.payFine')}
             </Button>
           </div>

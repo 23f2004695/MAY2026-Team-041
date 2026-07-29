@@ -21,7 +21,7 @@ from app.modules.members.schemas import (
 
 router = APIRouter(prefix="/members", tags=["members"])
 
-manage_members = require_role(Role.ADMIN, Role.LIBRARIAN, Role.MANAGER)
+manage_members = require_role(Role.ADMIN, Role.LIBRARIAN, Role.MANAGER, Role.IT_HEAD)
 
 
 @router.get("", response_model=MemberListResponse)
@@ -30,8 +30,12 @@ async def list_members(
     search: Annotated[str | None, Query(description="Match against full name or email")] = None,
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+    role: Annotated[str | None, Query(description="Exact role name match")] = None,
+    active_only: Annotated[bool, Query(description="Only include active accounts")] = False,
 ) -> MemberListResponse:
-    return await service.list_members(search=search, page=page, page_size=page_size)
+    return await service.list_members(
+        search=search, page=page, page_size=page_size, role=role, active_only=active_only
+    )
 
 
 @router.post("", response_model=MemberOut, status_code=status.HTTP_201_CREATED)

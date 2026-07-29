@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { apiGet } from '@/lib/api';
+import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 
 export interface Book {
   id: string;
@@ -19,44 +20,26 @@ interface BookListResponse {
 }
 
 export const PAGE_SIZE = 15;
-const SEARCH_DEBOUNCE_MS = 300;
+
+const EMPTY_BOOK_LIST: BookListResponse = { items: [], total: 0 };
 
 export function useBooks(search: string, category: string, page: number) {
-  const [items, setItems] = useState<Book[]>([]);
-  const [total, setTotal] = useState(0);
-  const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    const timer = setTimeout(() => {
+  const { data, refresh } = useDebouncedFetch<BookListResponse>(
+    () => {
       const params = new URLSearchParams({ page: String(page), page_size: String(PAGE_SIZE) });
       if (search.trim()) params.set('search', search.trim());
       if (category !== 'All') params.set('category', category);
-
-      apiGet<BookListResponse>(`/books?${params}`)
-        .then((data) => {
-          if (cancelled) return;
-          setItems(data.items);
-          setTotal(data.total);
-        })
-        .catch(() => {
-          if (cancelled) return;
-          setItems([]);
-          setTotal(0);
-        });
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [search, category, page, reloadKey]);
+      return apiGet<BookListResponse>(`/books?${params}`);
+    },
+    [search, category, page],
+    EMPTY_BOOK_LIST,
+  );
 
   return {
-    items,
-    total,
-    totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
-    refresh: () => setReloadKey((key) => key + 1),
+    items: data.items,
+    total: data.total,
+    totalPages: Math.max(1, Math.ceil(data.total / PAGE_SIZE)),
+    refresh,
   };
 }
 

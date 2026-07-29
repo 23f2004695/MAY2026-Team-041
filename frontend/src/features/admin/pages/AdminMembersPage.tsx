@@ -1,5 +1,5 @@
 import { SearchX, ShieldCheck, ShieldOff } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -18,13 +18,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
+import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 import { useAuth, type AdminMemberRecord, type Role } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 20;
-const SEARCH_DEBOUNCE_MS = 300;
 const ROLES: Role[] = ['member', 'librarian', 'manager', 'it-head', 'guardian', 'admin'];
+const EMPTY_MEMBER_LIST = { items: [] as AdminMemberRecord[], total: 0 };
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -97,43 +98,14 @@ export function AdminMembersPage() {
   const { getAdminMembers, updateAdminMember } = useAuth();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState<AdminMemberRecord[]>([]);
-  const [total, setTotal] = useState(0);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  function refresh() {
-    getAdminMembers({ search, page, page_size: PAGE_SIZE })
-      .then((data) => {
-        setItems(data.items);
-        setTotal(data.total);
-      })
-      .catch(() => {
-        setItems([]);
-        setTotal(0);
-      });
-  }
-
-  useEffect(() => {
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      getAdminMembers({ search, page, page_size: PAGE_SIZE })
-        .then((data) => {
-          if (cancelled) return;
-          setItems(data.items);
-          setTotal(data.total);
-        })
-        .catch(() => {
-          if (cancelled) return;
-          setItems([]);
-          setTotal(0);
-        });
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [search, page, getAdminMembers]);
+  const { data, refresh } = useDebouncedFetch(
+    () => getAdminMembers({ search, page, page_size: PAGE_SIZE }),
+    [search, page, getAdminMembers],
+    EMPTY_MEMBER_LIST,
+  );
+  const { items, total } = data;
 
   function updateSearch(value: string) {
     setSearch(value);
@@ -147,7 +119,7 @@ export function AdminMembersPage() {
       toast.success(t('admin.members.toasts.roleUpdated', { name: member.full_name, role: roleName }));
       refresh();
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     } finally {
       setUpdatingId(null);
     }
@@ -164,7 +136,7 @@ export function AdminMembersPage() {
       );
       refresh();
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     } finally {
       setUpdatingId(null);
     }

@@ -107,6 +107,50 @@ async def test_create_payment_rejects_non_positive_amount(client, member_user):
     assert response.status_code == 422
 
 
+async def test_list_my_payments_requires_authentication(client):
+    response = await client.get("/api/v1/payments/me")
+
+    assert response.status_code == 401
+
+
+async def test_list_my_payments_returns_only_the_caller_s_own_payments(
+    client, member_user, admin_user
+):
+    member_headers = await _login(client, member_user)
+    admin_headers = await _login(client, admin_user)
+
+    await client.post(
+        "/api/v1/payments", json={"amount": 499, "label": "1 Month"}, headers=member_headers
+    )
+    await client.post(
+        "/api/v1/payments", json={"amount": 999, "label": "3 Months"}, headers=admin_headers
+    )
+
+    response = await client.get("/api/v1/payments/me", headers=member_headers)
+
+    assert response.status_code == 200
+    body = response.json()
+    assert len(body) == 1
+    assert body[0]["amount"] == 499
+    assert body[0]["label"] == "1 Month"
+
+
+async def test_list_my_payments_orders_newest_first(client, member_user):
+    member_headers = await _login(client, member_user)
+
+    await client.post(
+        "/api/v1/payments", json={"amount": 100, "label": "First"}, headers=member_headers
+    )
+    await client.post(
+        "/api/v1/payments", json={"amount": 200, "label": "Second"}, headers=member_headers
+    )
+
+    response = await client.get("/api/v1/payments/me", headers=member_headers)
+
+    labels = [p["label"] for p in response.json()]
+    assert labels.index("Second") < labels.index("First")
+
+
 async def test_membership_requires_authentication(client):
     response = await client.get("/api/v1/payments/me/membership")
 
@@ -163,6 +207,40 @@ async def test_membership_reflects_latest_plan_payment(client, member_user):
     body = response.json()
     assert body["plan_label"] == "1 Month — ₹499"
     assert body["is_active"] is True
+
+
+@pytest_asyncio.fixture
+async def manager_user():
+    role = await repository.upsert_role(Role.MANAGER)
+    return await repository.create_member(
+        email=_unique_email(),
+        password_hash=hash_password("Password123!"),
+        full_name="Front Desk Manager",
+        phone=None,
+        avatar_url=None,
+        role_id=role.id,
+    )
+
+
+async def test_pay_at_library_notifies_managers(client, member_user, manager_user):
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": member_user.email, "password": "Password123!"}
+    )
+    token = login.json()["access_token"]
+
+    response = await client.post(
+        "/api/v1/payments/pay-at-library",
+        json={"amount": 150, "label": "Overdue fine"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 204
+    notification = await prisma.notification.find_first(
+        where={"userId": manager_user.id, "type": "payment-pending"}
+    )
+    assert notification is not None
+    assert member_user.fullName in notification.message
+    assert "150" in notification.message
 
 
 async def _login(client, user) -> dict:

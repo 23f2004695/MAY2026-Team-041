@@ -2,12 +2,15 @@ import { BookOpen, HandCoins, MessageSquare, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { comingSoonToast } from '@/lib/comingSoonToast';
-import { childBorrowedBooks, children, guardianStats } from '@/mocks/guardian';
+import { RaiseTicketModal } from '@/features/support/components/RaiseTicketModal';
+import { GUARDIAN_CATEGORIES } from '@/features/support/constants';
+import { getErrorMessage } from '@/lib/api';
+import { guardianStats } from '@/mocks/guardian';
 import { useAuth, type GuardianChild } from '@/providers/AuthProvider';
 
 import { BorrowedBooksByChild } from '../components/BorrowedBooksByChild';
@@ -15,9 +18,10 @@ import { ChildrenPresence } from '../components/ChildrenPresence';
 import { SeatReservationForChild } from '../components/SeatReservationForChild';
 import { SubscriptionAndFines } from '../components/SubscriptionAndFines';
 
-// ponytail: only linkedChildren + reading progress come from the real
-// GuardianLink/ReadingProgress tables — presence, fines, borrowed books and
-// seat booking have no backend yet, so those sections stay on mock data.
+// ponytail: child identity always comes from the real GuardianLink/ReadingProgress
+// tables now (getGuardianChildren) — GuardianChild has no presence/loan/fine fields
+// server-side yet, so ChildrenPresence/BorrowedBooksByChild/SubscriptionAndFines get
+// empty arrays and show their honest empty states instead of fabricated per-child data.
 function ChildrenReadingProgress({ realChildren }: { realChildren: GuardianChild[] }) {
   const { t } = useTranslation();
 
@@ -53,13 +57,45 @@ function ChildrenReadingProgress({ realChildren }: { realChildren: GuardianChild
 
 export function GuardianDashboardPage() {
   const { t } = useTranslation();
-  const { getGuardianChildren } = useAuth();
+  const { getGuardianChildren, payChildFines, renewChildSubscription } = useAuth();
   const [realChildren, setRealChildren] = useState<GuardianChild[]>([]);
+  const [ticketModalOpen, setTicketModalOpen] = useState(false);
 
-  useEffect(() => {
+  function refreshChildren() {
     getGuardianChildren().then(setRealChildren).catch(() => setRealChildren([]));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
+
+  useEffect(refreshChildren, [getGuardianChildren]);
+
+  const childrenWithFines = realChildren.filter((child) => child.outstanding_fine > 0);
+
+  async function handlePayAllFines() {
+    if (childrenWithFines.length === 0) {
+      toast.info(t('guardian.subscription.noFine'));
+      return;
+    }
+    try {
+      await Promise.all(childrenWithFines.map((child) => payChildFines(child.id)));
+      toast.success(t('guardian.quickActions.toasts.payingAllFines'));
+      refreshChildren();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
+  }
+
+  async function handleRenewAll() {
+    if (realChildren.length === 0) {
+      toast.info(t('guardian.subscription.emptyTitle'));
+      return;
+    }
+    try {
+      await Promise.all(realChildren.map((child) => renewChildSubscription(child.id)));
+      toast.success(t('guardian.quickActions.toasts.renewingSubscription'));
+      refreshChildren();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -83,13 +119,13 @@ export function GuardianDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <ChildrenPresence children={children} />
-        <BorrowedBooksByChild books={childBorrowedBooks} children={children} />
+        <ChildrenPresence children={[]} />
+        <BorrowedBooksByChild books={[]} children={[]} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <SubscriptionAndFines children={children} />
-        <SeatReservationForChild children={children} />
+        <SubscriptionAndFines children={realChildren} onChanged={refreshChildren} />
+        <SeatReservationForChild children={realChildren} />
       </div>
 
       <ChildrenReadingProgress realChildren={realChildren} />
@@ -99,19 +135,26 @@ export function GuardianDashboardPage() {
           {
             label: t('guardian.quickActions.payAllFines'),
             icon: HandCoins,
-            onClick: () => comingSoonToast(t('guardian.quickActions.toasts.payingAllFines')),
+            onClick: handlePayAllFines,
           },
           {
             label: t('guardian.quickActions.renewSubscription'),
             icon: RefreshCw,
-            onClick: () => comingSoonToast(t('guardian.quickActions.toasts.renewingSubscription')),
+            onClick: handleRenewAll,
           },
           {
             label: t('guardian.quickActions.contactStaff'),
             icon: MessageSquare,
-            onClick: () => comingSoonToast(t('guardian.quickActions.toasts.contactingStaff')),
+            onClick: () => setTicketModalOpen(true),
           },
         ]}
+      />
+
+      <RaiseTicketModal
+        open={ticketModalOpen}
+        onClose={() => setTicketModalOpen(false)}
+        categories={GUARDIAN_CATEGORIES}
+        onCreated={() => toast.success(t('support.toasts.created'))}
       />
     </div>
   );

@@ -104,30 +104,6 @@ export interface BookRecordEntry {
   date: string;
 }
 
-export const bookRecords: BookRecordEntry[] = [
-  {
-    id: 'br1',
-    type: 'lost',
-    title: 'The Midnight Library',
-    detail: 'Reported lost by Rohan Verma',
-    date: 'Jul 12, 2026',
-  },
-  {
-    id: 'br2',
-    type: 'donated',
-    title: 'Sapiens: A Brief History of Humankind',
-    detail: 'Donated by Ananya Iyer (3 copies)',
-    date: 'Jul 10, 2026',
-  },
-  {
-    id: 'br3',
-    type: 'purchased',
-    title: 'Atomic Habits',
-    detail: 'Purchased from Bookish Distributors (10 copies)',
-    date: 'Jul 8, 2026',
-  },
-];
-
 export interface FeeStatusEntry {
   id: string;
   studentName: string;

@@ -458,3 +458,64 @@ async def test_list_members_includes_role_status_and_event_registrations(
     manager_row = _find_member(body, manager_user.id)
     assert manager_row["role"] == "manager"
     assert manager_row["event_registrations"] == 0
+
+
+def _find_payment(items: list[dict], member_id: str) -> dict:
+    return next(item for item in items if item["member_id"] == member_id)
+
+
+async def test_list_payments_requires_admin_role(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/admin/payments")
+    assert response.status_code == 403
+
+
+async def test_list_payments_includes_member_details(admin_user, member_user):
+    async with _client_as(member_user) as client:
+        await client.post(
+            "/api/v1/payments",
+            json={"amount": 499, "label": "1 Month — ₹499", "plan_months": 1},
+        )
+
+    async with _client_as(admin_user) as client:
+        response = await client.get("/api/v1/admin/payments")
+
+    assert response.status_code == 200
+    body = response.json()
+    row = _find_payment(body["items"], member_user.id)
+    assert row["member_name"] == member_user.fullName
+    assert row["member_email"] == member_user.email
+    assert row["amount"] == 499
+    assert row["label"] == "1 Month — ₹499"
+    assert row["status"] == "success"
+    assert row["plan_months"] == 1
+
+
+async def test_list_payments_orders_newest_first(admin_user, member_user):
+    async with _client_as(member_user) as client:
+        await client.post("/api/v1/payments", json={"amount": 100, "label": "First"})
+        await client.post("/api/v1/payments", json={"amount": 200, "label": "Second"})
+
+    async with _client_as(admin_user) as client:
+        response = await client.get("/api/v1/admin/payments")
+
+    labels = [item["label"] for item in response.json()["items"]]
+    assert labels.index("Second") < labels.index("First")
+
+
+async def test_list_payments_search_filters_by_member_email(admin_user, member_user):
+    other_member = await _make_user(Role.MEMBER)
+    async with _client_as(member_user) as client:
+        await client.post("/api/v1/payments", json={"amount": 50, "label": "Mine"})
+    async with _client_as(other_member) as client:
+        await client.post("/api/v1/payments", json={"amount": 60, "label": "Not mine"})
+
+    async with _client_as(admin_user) as client:
+        response = await client.get(
+            "/api/v1/admin/payments", params={"search": member_user.email}
+        )
+
+    body = response.json()
+    assert all(member_user.email == item["member_email"] for item in body["items"])
+    assert any(item["member_id"] == member_user.id for item in body["items"])
+    assert not any(item["member_id"] == other_member.id for item in body["items"])

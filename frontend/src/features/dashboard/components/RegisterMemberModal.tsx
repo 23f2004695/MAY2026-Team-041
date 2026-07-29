@@ -2,10 +2,14 @@ import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button, Input, Modal, Select } from '@/components/ui';
+import { getErrorMessage } from '@/lib/api';
+import { PASSWORD_PATTERN } from '@/lib/authSchema';
 import { isValidEmail } from '@/lib/email';
+import { useAuth } from '@/providers/AuthProvider';
 
 // Exactly 10 digits, starting with 6-9 (Indian mobile).
 const PHONE_PATTERN = /^[6-9]\d{9}$/;
@@ -16,6 +20,9 @@ const registerMemberSchema = z.object({
   phoneNumber: z
     .string()
     .regex(PHONE_PATTERN, { message: 'managerDashboard.registerMember.errors.phoneNumber' }),
+  password: z
+    .string()
+    .regex(PASSWORD_PATTERN, { message: 'managerDashboard.registerMember.errors.password' }),
   membershipPlan: z.enum(['basic', 'standard', 'premium']),
 });
 
@@ -24,7 +31,7 @@ export type RegisterMemberFormValues = z.infer<typeof registerMemberSchema>;
 export interface RegisterMemberModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (member: RegisterMemberFormValues) => void;
+  onRegistered: () => void;
   /** Pre-fills from a pending online registration request being completed at the counter. */
   initialValues?: { name: string; email: string };
 }
@@ -32,10 +39,11 @@ export interface RegisterMemberModalProps {
 export function RegisterMemberModal({
   open,
   onClose,
-  onSubmit,
+  onRegistered,
   initialValues,
 }: RegisterMemberModalProps) {
   const { t } = useTranslation();
+  const { createMember } = useAuth();
   const {
     register,
     handleSubmit,
@@ -48,6 +56,7 @@ export function RegisterMemberModal({
       name: '',
       email: '',
       phoneNumber: '',
+      password: '',
       membershipPlan: 'basic',
     },
   });
@@ -60,13 +69,25 @@ export function RegisterMemberModal({
       name: initialValues?.name ?? '',
       email: initialValues?.email ?? '',
       phoneNumber: '',
+      password: '',
       membershipPlan: 'basic',
     });
   }, [open, initialValues, reset]);
 
-  function onValid(values: RegisterMemberFormValues) {
-    onSubmit(values);
-    onClose();
+  async function onValid(values: RegisterMemberFormValues) {
+    try {
+      const member = await createMember({
+        full_name: values.name,
+        email: values.email,
+        phone: values.phoneNumber,
+        password: values.password,
+      });
+      toast.success(t('managerDashboard.registerMember.successToast', { name: member.full_name }));
+      onRegistered();
+      onClose();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
   }
 
   return (
@@ -99,6 +120,15 @@ export function RegisterMemberModal({
             },
           })}
         />
+        <Input
+          type="password"
+          label={t('managerDashboard.registerMember.passwordLabel')}
+          error={errors.password?.message ? t(errors.password.message) : undefined}
+          {...register('password')}
+        />
+        <p className="text-xs text-muted-foreground">
+          {t('managerDashboard.registerMember.passwordHint')}
+        </p>
         <Select
           label={t('managerDashboard.registerMember.planLabel')}
           error={errors.membershipPlan?.message ? t(errors.membershipPlan.message) : undefined}

@@ -36,6 +36,12 @@ async def create_event(payload: EventCreate, *, creator_id: str) -> EventOut:
             "createdBy": creator_id,
         }
     )
+
+    if payload.manager_ids:
+        manager_ids = await repository.list_manager_ids(payload.manager_ids)
+        await repository.set_manager_assignments(event.id, manager_ids)
+        event = await repository.find_by_id(event.id)
+
     return EventOut.from_prisma(event, member_id=creator_id)
 
 
@@ -57,6 +63,12 @@ async def update_event(event_id: str, payload: EventUpdate) -> EventOut:
         data["capacity"] = payload.capacity
 
     updated = await repository.update_event(event_id, data) if data else event
+
+    if payload.manager_ids is not None:
+        manager_ids = await repository.list_manager_ids(payload.manager_ids)
+        await repository.set_manager_assignments(event_id, manager_ids)
+        updated = await repository.find_by_id(event_id)
+
     return EventOut.from_prisma(updated)
 
 
@@ -85,7 +97,7 @@ async def register(event_id: str, member_id: str) -> EventOut:
     return EventOut.from_prisma(updated, member_id=member_id)
 
 
-async def unregister(event_id: str, member_id: str) -> EventOut:
+async def unregister(event_id: str, member_id: str, *, viewer_id: str | None = None) -> EventOut:
     event = await repository.find_by_id(event_id)
     if event is None or event.deletedAt is not None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
@@ -96,7 +108,9 @@ async def unregister(event_id: str, member_id: str) -> EventOut:
 
     await repository.delete_registration(event_id, member_id)
     updated = await repository.find_by_id(event_id)
-    return EventOut.from_prisma(updated, member_id=member_id)
+    # viewer_id lets staff remove someone else's registration without the response's
+    # `registered` flag flipping to reflect the removed member instead of themselves.
+    return EventOut.from_prisma(updated, member_id=viewer_id or member_id)
 
 
 async def get_attendance_summary() -> AttendanceSummary:

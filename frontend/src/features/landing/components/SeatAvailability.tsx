@@ -1,4 +1,5 @@
-import { ArrowRight, Armchair, Clock, Radio, Sparkles, User } from 'lucide-react';
+import { ArrowRight, Armchair, Clock, Radio, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,29 +11,33 @@ import {
   type IconBadgeTone,
 } from '@/components/common';
 import { Badge, Button, Card } from '@/components/ui';
-import type { SeatStatus } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
+import { apiGet } from '@/lib/api';
 import { cn } from '@/lib/cn';
-import { seatStats } from '@/mocks/landing';
 
 import { FloorPlanArt } from './FloorPlanArt';
 
-const statTone: Record<SeatStatus, IconBadgeTone> = {
+type Bucket = 'available' | 'booked';
+
+interface AvailabilitySummary {
+  available: number;
+  booked: number;
+  total: number;
+}
+
+const statTone: Record<Bucket, IconBadgeTone> = {
   available: 'success',
-  reserved: 'warning',
-  occupied: 'danger',
+  booked: 'warning',
 };
 
-const statIcons: Record<SeatStatus, typeof Armchair> = {
+const statIcons: Record<Bucket, typeof Armchair> = {
   available: Armchair,
-  reserved: Clock,
-  occupied: User,
+  booked: Clock,
 };
 
-const legendDotClasses: Record<SeatStatus, string> = {
+const legendDotClasses: Record<Bucket, string> = {
   available: 'bg-success',
-  reserved: 'bg-warning',
-  occupied: 'bg-danger',
+  booked: 'bg-warning',
 };
 
 const featureRows = [
@@ -41,11 +46,18 @@ const featureRows = [
   { key: 'betterExperience', icon: Sparkles },
 ] as const;
 
-const statuses: SeatStatus[] = ['available', 'reserved', 'occupied'];
+const buckets: Bucket[] = ['available', 'booked'];
 
 export function SeatAvailability() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [summary, setSummary] = useState<AvailabilitySummary | null>(null);
+
+  useEffect(() => {
+    apiGet<AvailabilitySummary>('/seat-booking/availability')
+      .then(setSummary)
+      .catch(() => setSummary(null));
+  }, []);
 
   return (
     <Section ariaLabelledBy="seat-availability-heading" tone="secondary">
@@ -93,24 +105,24 @@ export function SeatAvailability() {
 
         {/* Stats + legend */}
         <Divider spacing="lg" className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div className="grid gap-3 sm:grid-cols-3">
-            {statuses.map((status) => {
-              const Icon = statIcons[status];
+          <div className="grid gap-3 sm:grid-cols-2">
+            {buckets.map((bucket) => {
+              const Icon = statIcons[bucket];
               return (
                 <div
-                  key={status}
+                  key={bucket}
                   className="flex items-center gap-3 rounded-2xl border border-border p-4"
                 >
-                  <IconBadge icon={Icon} tone={statTone[status]} size={10} />
+                  <IconBadge icon={Icon} tone={statTone[bucket]} size={10} />
                   <div>
                     <p className="text-2xl font-semibold leading-tight text-foreground">
-                      {seatStats[status]}
+                      {summary ? summary[bucket] : '—'}
                     </p>
                     <p className="text-sm font-medium text-foreground">
-                      {t(`landing.seatAvailability.${status}`)}
+                      {t(`landing.seatAvailability.${bucket}`)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t(`landing.seatAvailability.${status}Sub`)}
+                      {t(`landing.seatAvailability.${bucket}Sub`)}
                     </p>
                   </div>
                 </div>
@@ -119,10 +131,10 @@ export function SeatAvailability() {
           </div>
 
           <div className="flex flex-row flex-wrap gap-x-5 gap-y-2 lg:flex-col lg:gap-2">
-            {statuses.map((status) => (
-              <span key={status} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className={cn('size-2.5 rounded-full', legendDotClasses[status])} />
-                {t(`landing.seatAvailability.${status}`)}
+            {buckets.map((bucket) => (
+              <span key={bucket} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className={cn('size-2.5 rounded-full', legendDotClasses[bucket])} />
+                {t(`landing.seatAvailability.${bucket}`)}
               </span>
             ))}
           </div>

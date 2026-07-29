@@ -20,6 +20,22 @@ export const loginSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
+export const forgotPasswordSchema = z.object({ email });
+
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z
+  .object({
+    password: z.string().regex(PASSWORD_PATTERN, { message: 'auth.register.errors.password' }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.confirmPassword === data.password, {
+    message: 'auth.register.errors.confirmPassword',
+    path: ['confirmPassword'],
+  });
+
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+
 const PLAN_IDS = ['1m', '3m', '6m', '12m'] as const;
 
 export const registerSchema = z

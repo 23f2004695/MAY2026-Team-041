@@ -44,9 +44,12 @@
         "unread": "अपठित"
       },
       "review": {
-        "ratedOutOf5": "5 में से {{rating}} रेटिंग"
+        "ratedOutOf5": "5 में से {{rating}} रेटिंग",
+        "deleteReview": "समीक्षा हटाएँ",
+        "editReview": "समीक्षा संपादित करें"
       }
-    }
+    },
+    "dashboardSectionsHeading": "डैशबोर्ड सेक्शन"
   },
   "language": {
     "label": "भाषा"
@@ -60,7 +63,9 @@
     "openChat": "Shelfie से बात करें",
     "closeChat": "चैट बंद करें",
     "demoReply": "मुझसे बात करने के लिए धन्यवाद! मैं अभी भी डेमो मोड में हूँ, इसलिए मेरे जवाब फिलहाल एक झलक हैं — पूर्ण एआई-संचालित जवाब जल्द आ रहे हैं।",
-    "tooltip": "यहाँ Shelfie से बात करें"
+    "tooltip": "यहाँ Shelfie से बात करें",
+    "fallback": "मुझे अभी इसके बारे में पक्का नहीं पता! पुस्तकें उधार लेने, सीट आरक्षण, सदस्यता, जुर्माने, पठन क्लब, दान, या आयोजनों के बारे में पूछकर देखें। अधिक सहायता के लिए आप हमारे 'हमसे संपर्क करें' पेज पर भी जा सकते हैं।",
+    "suggestedTitle": "सुझाए गए प्रश्न"
   },
   "topUtilityBar": {
     "website": "वेबसाइट",
@@ -86,7 +91,9 @@
     "itHeadOverview": "आईटी अवलोकन",
     "guardianOverview": "अभिभावक अवलोकन",
     "backToApp": "ऐप पर वापस जाएँ",
-    "contactUs": "हमसे संपर्क करें"
+    "contactUs": "हमसे संपर्क करें",
+    "borrowHistory": "उधार इतिहास",
+    "payments": "भुगतान"
   },
   "userMenu": {
     "openAccountMenu": "खाता मेनू खोलें",
@@ -109,7 +116,6 @@
   "auth": {
     "login": {
       "title": "लॉग इन करें",
-      "subtitle": "असली प्रमाणीकरण माइलस्टोन 3 में आएगा। ऐप का पूर्वावलोकन करने के लिए एक भूमिका चुनें।",
       "continueAs": "{{role}} के रूप में जारी रखें",
       "roles": {
         "admin": "एडमिन",
@@ -127,11 +133,11 @@
       "orPreviewRole": "या एक भूमिका का पूर्वावलोकन करें",
       "errors": {
         "password": "पासवर्ड आवश्यक है।"
-      }
+      },
+      "forgotPassword": "पासवर्ड भूल गए?"
     },
     "register": {
       "title": "खाता बनाएँ",
-      "subtitle": "असली पंजीकरण माइलस्टोन 3 में आएगा। यह फ़ॉर्म सबमिट करने पर ऐप का पूर्वावलोकन एक सदस्य के रूप में होगा।",
       "fullName": "पूरा नाम",
       "email": "ईमेल",
       "password": "पासवर्ड",
@@ -145,8 +151,29 @@
         "email": "एक मान्य ईमेल पता दर्ज करें।",
         "password": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।",
         "confirmPassword": "पासवर्ड मेल नहीं खाते।",
-        "terms": "जारी रखने के लिए आपको शर्तें स्वीकार करनी होंगी।"
-      }
+        "terms": "जारी रखने के लिए आपको शर्तें स्वीकार करनी होंगी।",
+        "phoneNumber": "एक मान्य 10-अंकीय भारतीय मोबाइल नंबर दर्ज करें (उदा. 9876543210)।"
+      },
+      "membershipPlan": "सदस्यता योजना",
+      "phoneNumber": "फ़ोन नंबर",
+      "phoneNumberPlaceholder": "9876543210"
+    },
+    "forgotPassword": {
+      "title": "अपना पासवर्ड भूल गए?",
+      "subtitle": "अपना ईमेल दर्ज करें और हम आपको इसे रीसेट करने के लिए एक लिंक भेजेंगे।",
+      "submit": "रीसेट लिंक भेजें",
+      "successTitle": "अपना ईमेल जांचें",
+      "successDescription": "यदि उस ईमेल के लिए कोई खाता मौजूद है, तो हमने आपका पासवर्ड रीसेट करने के लिए एक लिंक भेज दिया है।",
+      "backToLogin": "लॉग इन पर वापस जाएँ"
+    },
+    "resetPassword": {
+      "title": "अपना पासवर्ड रीसेट करें",
+      "subtitle": "अपने खाते के लिए एक नया पासवर्ड चुनें।",
+      "submit": "पासवर्ड रीसेट करें",
+      "successToast": "पासवर्ड रीसेट हो गया। कृपया अपने नए पासवर्ड से लॉग इन करें।",
+      "invalidTitle": "अमान्य या समाप्त हो चुका लिंक",
+      "invalidDescription": "यह पासवर्ड रीसेट लिंक अमान्य है या समाप्त हो चुका है। जारी रखने के लिए एक नया लिंक का अनुरोध करें।",
+      "requestNewLink": "नए लिंक का अनुरोध करें"
     }
   },
   "notFound": {
@@ -170,7 +197,9 @@
       "apply": "लागू करें",
       "applied": "कूपन {{code}} लागू किया गया — {{percent}}% छूट",
       "remove": "हटाएं"
-    }
+    },
+    "changePlan": "योजना बदलें",
+    "renewingCurrentPlan": "आपकी मौजूदा योजना का नवीनीकरण किया जा रहा है।"
   },
   "feedback": {
     "error": {
@@ -372,6 +401,31 @@
         "generatedToast": "कूपन {{code}} बनाया गया",
         "summary": "{{percent}}% छूट · {{used}}/{{max}} उपयोग हुआ"
       }
+    },
+    "seatOccupancy": {
+      "emptyDescription": "आज के स्लॉट दर्ज होते ही सीट भरने का डेटा यहाँ दिखाई देगा।",
+      "emptyTitle": "अभी तक कोई ऑक्युपेंसी डेटा नहीं",
+      "summary": "{{peakHour}} पर पीक ({{peakPercent}}% भरा) · {{avgPercent}}% औसत ऑक्युपेंसी",
+      "title": "सीट भरने की आवृत्ति (कल)"
+    },
+    "seatStatus": {
+      "title": "लाइव सीट स्थिति"
+    },
+    "payments": {
+      "pageTitle": "भुगतान",
+      "pageDescription": "सभी सदस्यों के सभी दर्ज भुगतान।",
+      "searchPlaceholder": "सदस्य के नाम या ईमेल से खोजें",
+      "table": {
+        "member": "सदस्य",
+        "amount": "राशि",
+        "label": "विवरण",
+        "status": "स्थिति",
+        "date": "तारीख़"
+      },
+      "empty": {
+        "title": "कोई भुगतान नहीं मिला",
+        "description": "कोई अलग खोज आज़माएँ, या सदस्यों के भुगतान शुरू करने के बाद फिर से जाँचें।"
+      }
     }
   },
   "itHead": {
@@ -386,33 +440,42 @@
     },
     "accessControl": {
       "title": "एक्सेस नियंत्रण",
+      "empty": "अभी तक कोई सदस्य या मैनेजर नहीं है।",
       "status": {
         "active": "सक्रिय",
         "deactivated": "निष्क्रिय"
       },
       "pendingPermission": "अनुरोधित: {{permission}}",
       "grantAccess": "अनुमति दें",
+      "deny": "अस्वीकार करें",
       "deactivate": "निष्क्रिय करें",
       "reactivate": "पुनः सक्रिय करें",
-      "grantToast": "{{name}} को अनुमति दी जा रही है",
-      "deactivateToast": "{{name}} को निष्क्रिय किया जा रहा है",
-      "reactivateToast": "{{name}} को पुनः सक्रिय किया जा रहा है"
+      "grantedToast": "{{name}} का अनुरोध स्वीकृत किया गया",
+      "deniedToast": "{{name}} का अनुरोध अस्वीकार किया गया",
+      "deactivateToast": "{{name}} को निष्क्रिय किया गया",
+      "reactivateToast": "{{name}} को पुनः सक्रिय किया गया"
     },
     "issueResolution": {
       "title": "समस्या समाधान",
+      "empty": "अभी तक कोई सहायता टिकट नहीं।",
       "categories": {
-        "technical": "तकनीकी",
-        "account": "खाता",
-        "bookAccess": "पुस्तक एक्सेस",
+        "bookReservation": "पुस्तक आरक्षण",
+        "payment": "भुगतान",
+        "seatBooking": "सीट बुकिंग",
+        "harassment": "उत्पीड़न",
+        "offlineLibrary": "ऑफ़लाइन लाइब्रेरी",
+        "attendance": "उपस्थिति",
         "other": "अन्य"
       },
       "status": {
         "open": "लंबित",
-        "resolved": "हल हो गया"
+        "resolved": "हल हो गया",
+        "closed": "बंद"
       },
       "from": "{{name}} द्वारा रिपोर्ट किया गया",
       "resolve": "हल करें",
-      "resolveToast": "{{name}} की समस्या हल की जा रही है"
+      "resolutionNoteLabel": "समाधान नोट",
+      "resolveToast": "{{name}} की समस्या हल कर दी गई"
     },
     "bookRecords": {
       "title": "पुस्तक रिकॉर्ड",
@@ -420,10 +483,12 @@
         "lost": "गुम",
         "donated": "दान की गई",
         "purchased": "खरीदी गई"
-      }
+      },
+      "empty": "अभी तक कोई पुस्तक रिकॉर्ड परिवर्तन दर्ज नहीं किया गया है।"
     },
     "feeStatus": {
       "title": "शुल्क स्थिति",
+      "empty": "कोई बकाया शुल्क नहीं — सभी का भुगतान हो चुका है।",
       "dueDate": "देय तिथि {{date}}",
       "status": {
         "paid": "भुगतान हो गया",
@@ -433,6 +498,7 @@
     },
     "lateFines": {
       "title": "विलंब वापसी जुर्माना",
+      "empty": "अभी कोई अतिदेय जुर्माना नहीं है।",
       "borrowedBy": "{{name}} द्वारा उधार लिया गया",
       "dueDate": "वापसी की तिथि थी {{date}}",
       "daysLate": "{{count}} दिन देर से",
@@ -441,19 +507,26 @@
         "unpaid": "बकाया"
       },
       "sendReminder": "याद दिलाएं",
-      "reminderToast": "{{name}} को जुर्माने की याद दिलाई जा रही है"
+      "markPaid": "भुगतान हुआ चिह्नित करें",
+      "reminderToast": "{{name}} को जुर्माने की याद दिलाई गई",
+      "markedPaidToast": "{{name}} का जुर्माना भुगतान हुआ चिह्नित किया गया"
     },
     "quickActions": {
-      "grantAccess": "अनुमति दें",
-      "deactivateUser": "उपयोगकर्ता निष्क्रिय करें",
-      "resolveIssue": "समस्या हल करें",
       "logBookChange": "पुस्तक रिकॉर्ड दर्ज करें",
       "toasts": {
-        "grantingAccess": "अनुमति दी जा रही है",
-        "deactivatingUser": "उपयोगकर्ता निष्क्रिय किया जा रहा है",
-        "resolvingIssue": "समस्या हल की जा रही है",
         "loggingBookChange": "पुस्तक रिकॉर्ड परिवर्तन दर्ज किया जा रहा है"
       }
+    },
+    "logBookChangeModal": {
+      "title": "पुस्तक रिकॉर्ड दर्ज करें",
+      "bookLabel": "पुस्तक",
+      "bookSearchPlaceholder": "शीर्षक या लेखक से पुस्तकें खोजें",
+      "noBooksFound": "कोई पुस्तक नहीं मिली",
+      "changeBook": "बदलें",
+      "typeLabel": "रिकॉर्ड प्रकार",
+      "noteLabel": "टिप्पणी (वैकल्पिक)",
+      "submit": "रिकॉर्ड दर्ज करें",
+      "successToast": "{{book}} के लिए {{type}} रिकॉर्ड दर्ज किया गया"
     }
   },
   "guardian": {
@@ -490,12 +563,26 @@
     "subscription": {
       "title": "सदस्यता और जुर्माना",
       "expiresOn": "{{date}} को समाप्त",
+      "noSubscription": "कोई सक्रिय सदस्यता नहीं",
       "fineOwed": "बकाया जुर्माना: {{amount}}",
       "noFine": "कोई बकाया जुर्माना नहीं",
       "renew": "नवीनीकरण करें",
       "payFine": "जुर्माना भरें",
       "renewToast": "{{name}} की सदस्यता का नवीनीकरण किया जा रहा है",
-      "payFineToast": "{{name}} के लिए {{amount}} का जुर्माना भरा जा रहा है"
+      "payFineToast": "{{name}} के लिए {{amount}} का जुर्माना भरा जा रहा है",
+      "fineDetails": {
+        "amountDue": "देय राशि",
+        "escalationNotice": "यदि नियत तारीख़ के बाद भुगतान नहीं किया गया, तो यह जुर्माना प्रतिदिन {{daily}} बढ़ जाएगा, अधिकतम {{escalated}} तक।",
+        "payBy": "इस तारीख़ तक भुगतान करें",
+        "reason": "कारण",
+        "reasons": {
+          "lateReturn": "पुस्तक देर से वापसी"
+        },
+        "title": "जुर्माना विवरण"
+      },
+      "viewFineDetails": "विवरण देखें",
+      "emptyTitle": "अभी तक कोई बच्चा लिंक नहीं किया गया है।",
+      "emptyDescription": "अपने बच्चे से कहें कि वे अपनी सेटिंग्स से आपका ईमेल लिंक करें।"
     },
     "seatReservation": {
       "title": "अपने बच्चे के लिए सीट आरक्षित करें",
@@ -504,15 +591,17 @@
       "selectPrompt": "जारी रखने के लिए एक उपलब्ध सीट चुनें।",
       "selected": "{{name}} के लिए सीट {{seatId}} चुनी गई",
       "confirmButton": "बुकिंग की पुष्टि करें",
-      "confirmToast": "{{name}} के लिए सीट {{seatId}} बुक की जा रही है"
+      "confirmToast": "{{name}} के लिए सीट {{seatId}} बुक की जा रही है",
+      "notifyButton": "उपलब्ध होने पर मुझे सूचित करें",
+      "notifySet": "जब यह सीट खाली होगी तो हम आपको सूचित करेंगे",
+      "notifyToast": "जब सीट {{seatId}}, {{name}} के लिए उपलब्ध होगी, हम आपको सूचित करेंगे"
     },
     "quickActions": {
       "payAllFines": "सभी जुर्माने भरें",
       "renewSubscription": "सदस्यता नवीनीकृत करें",
       "toasts": {
         "payingAllFines": "सभी बकाया जुर्माने भरे जा रहे हैं",
-        "renewingSubscription": "सदस्यता नवीनीकृत की जा रही है",
-        "contactingStaff": "लाइब्रेरियन से संपर्क किया जा रहा है"
+        "renewingSubscription": "सदस्यता नवीनीकृत की जा रही है"
       },
       "contactStaff": "लाइब्रेरियन से संपर्क करें"
     }
@@ -533,7 +622,19 @@
       "noFine": "कोई बकाया जुर्माना नहीं",
       "renew": "नवीनीकरण करें",
       "viewPlans": "योजनाएँ देखें",
-      "payFine": "जुर्माना भरें"
+      "payFine": "जुर्माना भरें",
+      "fineDetails": {
+        "amountDue": "देय राशि",
+        "escalationNotice": "यदि नियत तारीख़ के बाद भुगतान नहीं किया गया, तो यह जुर्माना प्रतिदिन {{daily}} बढ़ जाएगा, अधिकतम {{escalated}} तक।",
+        "payBy": "इस तारीख़ तक भुगतान करें",
+        "reason": "कारण",
+        "reasons": {
+          "lateReturn": "पुस्तक देर से वापसी"
+        },
+        "title": "जुर्माना विवरण"
+      },
+      "renewalPaymentLabel": "{{plan}} — नवीनीकरण",
+      "viewFineDetails": "विवरण देखें"
     },
     "stats": {
       "booksBorrowed": "उधार ली गई पुस्तकें",
@@ -608,30 +709,155 @@
       "emptyTitle": "कोई लंबित नकद भुगतान नहीं",
       "emptyDescription": "काउंटर पर भुगतान करने वाले सदस्य यहाँ दिखाई देंगे।",
       "markPaid": "भुगतान प्राप्त चिह्नित करें",
-      "markPaidToast": "{{name}} का भुगतान प्राप्त के रूप में चिह्नित किया जा रहा है"
+      "markPaidToast": "भुगतान प्राप्त के रूप में चिह्नित किया गया"
     },
     "quickActions": {
       "bookSeatForMember": "सदस्य के लिए सीट बुक करें",
       "issueBookForMember": "सदस्य के लिए पुस्तक जारी करें",
       "registerNewMember": "नया सदस्य पंजीकृत करें",
+      "requestPermission": "अनुमति का अनुरोध करें",
       "toasts": {
         "bookingSeat": "सदस्य के लिए सीट बुक की जा रही है",
         "issuingBook": "सदस्य के लिए पुस्तक जारी की जा रही है",
         "registeringMember": "नए सदस्य को पंजीकृत किया जा रहा है"
+      },
+      "fileBillingRequest": "रिफ़ंड / शुल्क माफ़ी अनुरोध दर्ज करें"
+    },
+    "requestPermission": {
+      "title": "अनुमति का अनुरोध करें",
+      "permissionLabel": "अनुमति",
+      "permissionPlaceholder": "उदा. जुर्माना माफी स्वीकृति",
+      "reasonLabel": "कारण",
+      "submit": "अनुरोध भेजें",
+      "successToast": "अनुमोदन के लिए आईटी हेड को अनुरोध भेजा गया"
+    },
+    "activeLoans": {
+      "borrowedBy": "{{name}} द्वारा उधार ली गई",
+      "daysLate": "{{count}} दिन देर से",
+      "dueDate": "{{date}} तक वापसी देय",
+      "emptyDescription": "अभी चेक-आउट की गई पुस्तकें यहाँ दिखाई देंगी।",
+      "emptyTitle": "कोई सक्रिय लोन नहीं",
+      "markReturned": "वापस चिह्नित करें",
+      "reminderToast": "{{name}} को रिमाइंडर भेजा गया",
+      "returnedToast": "{{name}} की पुस्तक वापस चिह्नित की गई",
+      "sendReminder": "रिमाइंडर भेजें",
+      "title": "उधार पर दी गई पुस्तकें"
+    },
+    "addGuardian": {
+      "description": "अपने खातों को लिंक करने के लिए एक सक्रिय, पंजीकृत छात्र और अभिभावक खोजें।",
+      "guardianEmailLabel": "अभिभावक",
+      "guardianEmailPlaceholder": "नाम या ईमेल से सक्रिय अभिभावक खोजें",
+      "studentEmailLabel": "छात्र",
+      "studentEmailPlaceholder": "नाम या ईमेल से सक्रिय सदस्य खोजें",
+      "submit": "अभिभावक जोड़ें",
+      "successToast": "अभिभावक {{guardianEmail}} को {{studentEmail}} से लिंक किया गया",
+      "title": "अभिभावक जोड़ें"
+    },
+    "billingRequest": {
+      "amountLabel": "राशि (₹)",
+      "changeMember": "बदलें",
+      "memberLabel": "सदस्य",
+      "memberSearchPlaceholder": "किसी सदस्य को खोजें",
+      "noMembersFound": "कोई सदस्य नहीं मिला",
+      "reasonLabel": "कारण",
+      "submit": "अनुरोध सबमिट करें",
+      "successToast": "{{name}} के लिए अनुरोध दर्ज किया गया — एडमिन की मंज़ूरी बाकी",
+      "title": "बिलिंग अनुरोध दर्ज करें",
+      "typeLabel": "अनुरोध प्रकार"
+    },
+    "bookSeatModal": {
+      "hourLabel": "समय स्लॉट",
+      "memberLabel": "सदस्य",
+      "submit": "सीट बुक करें",
+      "successToast": "{{name}} के लिए सीट {{seatId}} बुक की गई",
+      "title": "किसी सदस्य के लिए सीट बुक करें"
+    },
+    "books": {
+      "copiesAvailable": "{{total}} में से {{available}} उपलब्ध",
+      "empty": {
+        "description": "कोई अलग शीर्षक या लेखक आज़माएँ।",
+        "title": "कोई पुस्तक नहीं मिली"
+      },
+      "expectedBack": "{{date}} तक वापसी अपेक्षित",
+      "expectedBackUnknown": "रिकॉर्ड में कोई वापसी तारीख़ नहीं",
+      "pageDescription": "जाँचें कि अभी शेल्फ़ पर कौन-सी पुस्तकें हैं और चेक-आउट की गई प्रति कब वापस आनी है।",
+      "pageTitle": "पुस्तकें",
+      "searchPlaceholder": "शीर्षक या लेखक से खोजें",
+      "status": {
+        "available": "उपलब्ध",
+        "unavailable": "अनुपलब्ध"
+      },
+      "table": {
+        "category": "श्रेणी",
+        "copies": "प्रतियाँ",
+        "status": "स्थिति",
+        "title": "पुस्तक"
       }
-    }
-  },
-  "placeholder": {
-    "comingSoon": "जल्द आ रहा है",
-    "community": {
-      "description": "रीडिंग क्लब और चर्चाएँ।"
     },
-    "settings": {
-      "description": "अपनी प्राथमिकताएँ प्रबंधित करें।"
+    "borrowHistory": {
+      "empty": {
+        "description": "पुस्तकें जारी होते ही लोन यहाँ दिखाई देंगे।",
+        "title": "कोई लोन इतिहास नहीं"
+      },
+      "notReturned": "वापस नहीं की गई",
+      "pageDescription": "रिकॉर्ड में मौजूद हर पुस्तक लोन — सक्रिय, विलंबित और वापस की गई।",
+      "pageTitle": "उधार इतिहास",
+      "status": {
+        "active": "सक्रिय",
+        "overdue": "विलंबित",
+        "returned": "वापस की गई"
+      },
+      "table": {
+        "book": "पुस्तक",
+        "borrowed": "उधार ली गई",
+        "due": "देय",
+        "member": "सदस्य",
+        "returned": "वापस की गई",
+        "status": "स्थिति"
+      }
     },
-    "forgotPassword": {
-      "title": "पासवर्ड भूल गए",
-      "description": "अपना पासवर्ड रीसेट करें।"
+    "issueBookModal": {
+      "bookLabel": "पुस्तक",
+      "bookSearchPlaceholder": "शीर्षक या लेखक से पुस्तक खोजें",
+      "durationLabel": "लोन अवधि",
+      "durationOption": "{{count}} दिन",
+      "memberLabel": "सदस्य",
+      "noBooksFound": "कोई पुस्तक नहीं मिली",
+      "submit": "पुस्तक जारी करें",
+      "successToast": "\"{{book}}\" {{name}} को जारी की गई",
+      "title": "किसी सदस्य के लिए पुस्तक जारी करें",
+      "unavailable": "कोई प्रति उपलब्ध नहीं"
+    },
+    "pendingReservations": {
+      "approve": "स्वीकृत करें",
+      "approveToast": "{{name}} का अनुरोध स्वीकृत किया गया",
+      "durationOption": "{{count}} दिन",
+      "emptyDescription": "पुस्तक उधार लेने के ऑनलाइन अनुरोध स्वीकृति के लिए यहाँ दिखाई देंगे।",
+      "emptyTitle": "कोई लंबित अनुरोध नहीं",
+      "reject": "अस्वीकार करें",
+      "rejectToast": "{{name}} का अनुरोध अस्वीकार किया गया",
+      "requestedBy": "{{name}} द्वारा अनुरोधित",
+      "title": "लंबित उधार अनुरोध"
+    },
+    "registerMember": {
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "member@example.com",
+      "errors": {
+        "email": "एक मान्य ईमेल पता दर्ज करें।",
+        "name": "नाम आवश्यक है।",
+        "password": "कम से कम 8 अक्षर, जिसमें एक बड़ा अक्षर, एक छोटा अक्षर, एक अंक और एक विशेष चिह्न हो।",
+        "phoneNumber": "एक मान्य फ़ोन नंबर दर्ज करें।"
+      },
+      "nameLabel": "पूरा नाम",
+      "namePlaceholder": "सदस्य का पूरा नाम",
+      "passwordHint": "एक शुरुआती पासवर्ड सेट करें और उसे सदस्य के साथ साझा करें — वे इसे बाद में अपनी प्रोफ़ाइल से बदल सकते हैं।",
+      "passwordLabel": "शुरुआती पासवर्ड",
+      "phoneLabel": "फ़ोन नंबर",
+      "phonePlaceholder": "+91 98765 43210",
+      "planLabel": "सदस्यता योजना",
+      "submit": "सदस्य पंजीकृत करें",
+      "successToast": "{{name}} को नए सदस्य के रूप में पंजीकृत किया गया है",
+      "title": "नया सदस्य पंजीकृत करें"
     }
   },
   "landing": {
@@ -696,7 +922,11 @@
           "title": "AI Recommendations",
           "description": "एक संवादात्मक रीडिंग सहायक से व्यक्तिगत पुस्तक सुझाव पाएँ।"
         }
-      }
+      },
+      "headingHighlight": "आधुनिक",
+      "headingPrefix": "हर वह चीज़ जो एक",
+      "headingSuffix": "लाइब्रेरी को चाहिए",
+      "imgAlt": "डिजिटल लाइब्रेरी सर्च, क्यूआर कोड से उधार लेने, सीट बुकिंग, एआई सिफ़ारिशों और पठन चुनौतियों का उपयोग करते विद्यार्थियों का चित्रण"
     },
     "howItWorks": {
       "badge": "प्रक्रिया",
@@ -720,6 +950,19 @@
           "title": "पढ़ें और भाग लें",
           "description": "अपनी प्रगति ट्रैक करें और इससे जुड़ी कम्युनिटी में शामिल हों।"
         }
+      },
+      "community": {
+        "headingHighlight": "बनाते हैं।",
+        "headingPrefix": "मिलकर, हम एक मज़बूत पठन समुदाय",
+        "memberCaption": "2K+ सदस्य और बढ़ रहे हैं!",
+        "memberCount": "2K+",
+        "subheading": "पढ़ें • सीखें • जुड़ें"
+      },
+      "imgAlt": {
+        "1": "एक मुफ़्त सदस्यता खाता बनाने की स्क्रीन का पूर्वावलोकन",
+        "2": "श्रेणी, लेखक, या मूड के अनुसार पुस्तकें खोजने की स्क्रीन का पूर्वावलोकन",
+        "3": "लाइब्रेरी डेस्क पर पुस्तक आरक्षण की पुष्टि करते दो लोग",
+        "4": "पठन स्ट्रीक, बैज और सामुदायिक आयोजनों की स्क्रीन का पूर्वावलोकन"
       }
     },
     "mood": {
@@ -733,7 +976,15 @@
         "curious": "जिज्ञासु",
         "motivated": "प्रेरित",
         "studyMode": "स्टडी मोड"
-      }
+      },
+      "captions": {
+        "curious": "एक्सप्लोर करें और खोजें",
+        "happy": "फ़ील-गुड रीड्स",
+        "motivated": "बनाएँ और आगे बढ़ें",
+        "relaxed": "शांत पठन",
+        "studyMode": "फ़ोकस और सीखें"
+      },
+      "imgAlt": "अलग-अलग पठन मूड के लिए पुस्तक सिफ़ारिशों से घिरे एक विद्यार्थी का चित्रण"
     },
     "seatAvailability": {
       "heading": "लाइव सीट उपलब्धता",
@@ -772,7 +1023,9 @@
         "title": "अपनी सही अध्ययन जगह खोजें",
         "description": "क्षेत्र, मंज़िल या सीट के प्रकार के अनुसार फ़िल्टर करें और सेकंडों में बुक करें।",
         "button": "सभी स्थान देखें"
-      }
+      },
+      "booked": "बुक की गई",
+      "bookedSub": "अभी आरक्षित"
     },
     "readingChallenge": {
       "eyebrow": "उपलब्धियाँ",
@@ -839,7 +1092,10 @@
           "title": "स्वयंसेवी कार्यक्रम",
           "description": "आयोजनों को चलाने, दान को व्यवस्थित करने, या नए सदस्यों का मार्गदर्शन करने में मदद करें।"
         }
-      }
+      },
+      "exploreAria": "{{title}} एक्सप्लोर करें",
+      "headingHighlight": "",
+      "imgAlt": "पठन क्लब मीटिंग में मेज़ के चारों ओर इकट्ठे सदस्यों का चित्रण, जिसमें पुस्तक चर्चाएँ, समीक्षाएँ, पठन क्लब और स्वयंसेवी कार्यक्रम दिखाए गए हैं"
     },
     "testimonials": {
       "heading": "हमारे सदस्य क्या कहते हैं",
@@ -905,6 +1161,10 @@
       "website": "वेबसाइट",
       "communityForum": "कम्युनिटी फोरम",
       "newsletter": "न्यूज़लेटर"
+    },
+    "preview": {
+      "imgAlt": "लाइब्रेरी प्लेटफ़ॉर्म डैशबोर्ड का पूर्वावलोकन",
+      "title": "अपनी पूरी लाइब्रेरी, एक ही जगह पर देखें।"
     }
   },
   "pricing": {
@@ -1089,7 +1349,10 @@
       "backToBooks": "पुस्तकों पर वापस जाएँ",
       "copiesAvailable": "लाइब्रेरी में {{total}} प्रतियाँ",
       "reserveButton": "यह पुस्तक आरक्षित करें",
-      "reserveSuccessToast": "\"{{title}}\" आरक्षित हो गई — फ्रंट डेस्क से लें"
+      "reserveSuccessToast": "\"{{title}}\" आरक्षित हो गई — फ्रंट डेस्क से लें",
+      "relatedBooks": {
+        "title": "जिन पाठकों ने यह पुस्तक ली, उन्होंने यह भी ली…"
+      }
     },
     "wishlist": {
       "button": "विशलिस्ट",
@@ -1114,18 +1377,18 @@
     },
     "details": {
       "defaultTitle": "आयोजन विवरण",
+      "edit": "संपादित करें",
       "attending": "{{attendees}}/{{capacity}} उपस्थित",
       "registrationTitle": "पंजीकरण",
       "registered": "आप पंजीकृत हैं",
       "notRegistered": "पंजीकृत नहीं",
       "register": "पंजीकरण करें",
       "cancelRegistration": "पंजीकरण रद्द करें",
-      "toasts": {
-        "registering": "पंजीकरण किया जा रहा है",
-        "cancellingRegistration": "पंजीकरण रद्द किया जा रहा है"
-      },
       "managerAssignmentsTitle": "मैनेजर नियुक्तियाँ",
-      "noManagersAssigned": "अभी तक कोई मैनेजर नियुक्त नहीं किया गया है।"
+      "noManagersAssigned": "अभी तक कोई मैनेजर नियुक्त नहीं किया गया है।",
+      "noRegistrants": "अभी तक किसी ने पंजीकरण नहीं किया है।",
+      "registeredAttendeesTitle": "पंजीकृत उपस्थित सदस्य",
+      "removeRegistrant": "हटाएँ"
     },
     "empty": {
       "title": "कोई आयोजन निर्धारित नहीं",
@@ -1149,7 +1412,11 @@
       "browseBooks": "पुस्तकें ब्राउज़ करें"
     },
     "status": {
-      "ready": "पिकअप के लिए तैयार"
+      "ready": "पिकअप के लिए तैयार",
+      "approved": "स्वीकृत",
+      "cancelled": "रद्द",
+      "pending": "स्वीकृति की प्रतीक्षा में",
+      "rejected": "अस्वीकृत"
     },
     "actions": {
       "cancel": "रद्द करें"
@@ -1159,7 +1426,13 @@
       "description": "इससे \"{{book}}\" के लिए आपका आरक्षण रद्द हो जाएगा।",
       "confirmLabel": "आरक्षण रद्द करें"
     },
-    "cancelSuccessToast": "\"{{book}}\" के लिए आपका आरक्षण रद्द कर दिया गया"
+    "cancelSuccessToast": "\"{{book}}\" के लिए आपका आरक्षण रद्द कर दिया गया",
+    "dueBy": "{{date}} तक वापस करें",
+    "queue": {
+      "position": "क्रम में #{{position}}",
+      "eta": "आपकी बारी आने में ~{{days}} दिन",
+      "etaReady": "एक प्रति उपलब्ध है, प्रबंधक की मंज़ूरी बाकी है"
+    }
   },
   "seatBooking": {
     "pageTitle": "सीट बुकिंग",
@@ -1169,8 +1442,18 @@
       "title": "बुकिंग सारांश",
       "selected": "आज के लिए सीट {{seatId}} चयनित",
       "selectPrompt": "जारी रखने के लिए एक उपलब्ध सीट चुनें।",
-      "confirmButton": "बुकिंग की पुष्टि करें"
-    }
+      "confirmButton": "बुकिंग की पुष्टि करें",
+      "alreadyBookedThisSlot": "आपके पास इस समय स्लॉट के लिए पहले से ही एक अलग सीट बुक है — बदलने के लिए पहले उसे रद्द करें।",
+      "bookedByYou": "आपने इस समय स्लॉट के लिए सीट {{seatId}} बुक की है",
+      "cancelButton": "बुकिंग रद्द करें",
+      "notifyButton": "उपलब्ध होने पर मुझे सूचित करें",
+      "notifySet": "जब यह सीट खाली होगी तो हम आपको सूचित करेंगे",
+      "notifyToast": "जब सीट {{seatId}} उपलब्ध होगी, हम आपको सूचित करेंगे",
+      "reservedByOther": "सीट {{seatId}} इस समय स्लॉट के लिए आरक्षित है",
+      "slotLabel": "सीट {{seatId}} · {{date}} · {{hour}}",
+      "yourBookings": "आपकी आगामी बुकिंग"
+    },
+    "today": "आज"
   },
   "readingProgress": {
     "pageTitle": "पठन प्रगति",
@@ -1185,6 +1468,12 @@
       "currentDays_other": "{{count}} दिन",
       "longest_one": "सबसे लंबी स्ट्रीक: {{count}} दिन",
       "longest_other": "सबसे लंबी स्ट्रीक: {{count}} दिन"
+    },
+    "certificate": {
+      "shareButton": "लक्ष्य पूरा — प्रमाणपत्र साझा करें",
+      "title": "आपका पठन प्रमाणपत्र",
+      "download": "डाउनलोड करें",
+      "share": "साझा करें"
     },
     "lists": {
       "currentlyReading": {
@@ -1203,7 +1492,8 @@
     "emptyState": {
       "title": "अभी यहाँ कुछ भी नहीं"
     },
-    "byAuthor": "लेखक {{author}}"
+    "byAuthor": "लेखक {{author}}",
+    "guardianPageDescription": "आपके बच्चों की पठन गतिविधि"
   },
   "leaderboard": {
     "pageTitle": "लीडरबोर्ड",
@@ -1213,7 +1503,8 @@
       "reader": "पाठक",
       "points": "अंक",
       "badges": "बैज",
-      "hoursRead": "पढ़े गए घंटे"
+      "hoursRead": "पढ़े गए घंटे",
+      "booksCompleted": "पूरी की गई पुस्तकें"
     },
     "hoursSuffix": "{{hours}} घं."
   },
@@ -1226,13 +1517,16 @@
     "filterAriaLabel": "पोस्ट फ़िल्टर करें",
     "filters": {
       "all": "सभी पोस्ट",
-      "saved": "सहेजी गई"
+      "saved": "सहेजी गई",
+      "reported": "रिपोर्ट की गई"
     },
     "empty": {
       "title": "अभी तक कोई पोस्ट नहीं",
       "description": "आप जो पढ़ रहे हैं उसे साझा करने वाले पहले व्यक्ति बनें।",
       "savedTitle": "अभी तक कोई सहेजी गई पोस्ट नहीं",
-      "savedDescription": "आपकी सहेजी गई पोस्ट यहाँ दिखाई देंगी।"
+      "savedDescription": "आपकी सहेजी गई पोस्ट यहाँ दिखाई देंगी।",
+      "reportedDescription": "फ़्लैग की गई पोस्ट और टिप्पणियाँ समीक्षा के लिए यहाँ दिखाई देंगी।",
+      "reportedTitle": "कोई रिपोर्ट की गई सामग्री नहीं"
     },
     "post": {
       "likeAria": "पोस्ट पसंद करें",
@@ -1246,7 +1540,13 @@
       "sendComment": "टिप्पणी भेजें",
       "reply": "जवाब दें",
       "replyPlaceholder": "जवाब लिखें...",
-      "sendReply": "जवाब भेजें"
+      "sendReply": "जवाब भेजें",
+      "banAria": "{{author}} को बैन करें",
+      "bannedBadge": "बैन किया गया",
+      "removeComment": "हटाएँ",
+      "report": "रिपोर्ट करें",
+      "reportAria": "{{author}} की पोस्ट रिपोर्ट करें",
+      "reportedBadge": "रिपोर्ट की गई"
     },
     "createPostModal": {
       "title": "पोस्ट बनाएं",
@@ -1266,6 +1566,21 @@
       "title": "पोस्ट हटाएं?",
       "description": "इसे वापस नहीं लाया जा सकता।",
       "confirmLabel": "हटाएं"
+    },
+    "adminStats": {
+      "reportedComments": "रिपोर्ट की गई टिप्पणियाँ",
+      "totalComments": "कुल टिप्पणियाँ",
+      "totalPosts": "कुल पोस्ट"
+    },
+    "banDialog": {
+      "confirmLabel": "24 घंटे के लिए बैन करें",
+      "description": "{{author}} 24 घंटे तक कम्युनिटी में पोस्ट या टिप्पणी नहीं कर पाएँगे। आप उन्हें कभी भी अनबैन कर सकते हैं।",
+      "title": "{{author}} को अस्थायी रूप से बैन करें?"
+    },
+    "bannedUsers": {
+      "status": "24 घंटे के लिए बैन",
+      "title": "बैन किए गए उपयोगकर्ता",
+      "unban": "अनबैन करें"
     }
   },
   "settings": {
@@ -1298,7 +1613,46 @@
       "logOut": "लॉग आउट",
       "dangerZone": "खतरे का क्षेत्र",
       "deleteAccount": "खाता हटाएं",
-      "deleteAccountHint": "अपना खाता और सभी डेटा स्थायी रूप से हटाएं।"
+      "deleteAccountHint": "अपना खाता और सभी डेटा स्थायी रूप से हटाएं।",
+      "deleteAccountConfirm": "अपना खाता हटाएं? यह पूर्ववत नहीं किया जा सकता।",
+      "deleteAccountSuccess": "आपका खाता हटा दिया गया है।"
+    },
+    "adminPreferences": {
+      "items": {
+        "autoApproveSmallRefunds": "₹500 से कम के रिफ़ंड स्वतः स्वीकृत करें",
+        "financialActivityAlerts": "रीयल-टाइम वित्तीय गतिविधि अलर्ट",
+        "lowStockAlerts": "कम पुस्तक-स्टॉक अलर्ट",
+        "pendingRequestDigest": "दैनिक लंबित-अनुरोध ईमेल डाइजेस्ट"
+      },
+      "title": "एडमिन प्राथमिकताएँ"
+    },
+    "guardianLink": {
+      "description": "अभिभावक का ईमेल लिंक करें ताकि वे आपकी लाइब्रेरी गतिविधि ट्रैक कर सकें।",
+      "emailLabel": "अभिभावक का ईमेल",
+      "emailPlaceholder": "guardian@example.com",
+      "invalidEmail": "एक मान्य ईमेल पता दर्ज करें।",
+      "linkButton": "अभिभावक लिंक करें",
+      "linked": "लिंक किया गया",
+      "title": "अभिभावक",
+      "unlink": "अनलिंक करें"
+    },
+    "itHeadPreferences": {
+      "items": {
+        "accessRequestAlerts": "नए एक्सेस-अनुमति अनुरोध अलर्ट",
+        "bookRecordAlerts": "पुस्तक रिकॉर्ड परिवर्तन अलर्ट (खोई/दान की गई/खरीदी गई)",
+        "feeOutstandingDigest": "साप्ताहिक शुल्क और जुर्माना बकाया डाइजेस्ट",
+        "issueTicketAlerts": "नई समस्या टिकट अलर्ट"
+      },
+      "title": "आईटी हेड प्राथमिकताएँ"
+    },
+    "managerPreferences": {
+      "items": {
+        "endOfDaySummary": "दिन के अंत की शिफ़्ट सारांश ईमेल",
+        "pendingPaymentReminders": "लंबित काउंटर-भुगतान रिमाइंडर",
+        "registrationRequestAlerts": "नए पंजीकरण अनुरोध अलर्ट",
+        "walkInRequestAlerts": "वॉक-इन सीट/पुस्तक अनुरोध अलर्ट"
+      },
+      "title": "मैनेजर प्राथमिकताएँ"
     }
   },
   "reviews": {
@@ -1316,6 +1670,38 @@
     "empty": {
       "title": "अभी तक कोई समीक्षा नहीं",
       "description": "इस पुस्तक के बारे में अपनी राय साझा करने वाले पहले व्यक्ति बनें।"
+    },
+    "admin": {
+      "pageDescription": "पूरे संग्रह की समीक्षाएँ",
+      "stats": {
+        "averageRating": "औसत रेटिंग",
+        "booksReviewed": "समीक्षित पुस्तकें",
+        "totalReviews": "कुल समीक्षाएँ"
+      }
+    },
+    "deleteDialog": {
+      "confirmLabel": "हटाएँ",
+      "description": "इसे पूर्ववत नहीं किया जा सकता।",
+      "title": "समीक्षा हटाएँ?"
+    },
+    "writeReviewModal": {
+      "addImage": "जोड़ें",
+      "bookLabel": "पुस्तक",
+      "bookSearchFailed": "पुस्तकें खोजी नहीं जा सकीं — अपना कनेक्शन जाँचें और फिर कोशिश करें",
+      "bookSearchPlaceholder": "समीक्षा के लिए पुस्तक खोजें",
+      "changeBook": "पुस्तक बदलें",
+      "commentLabel": "आपकी समीक्षा",
+      "commentPlaceholder": "आपको यह पुस्तक कैसी लगी?",
+      "editTitle": "समीक्षा संपादित करें",
+      "imagesHint": "अधिकतम {{count}} तस्वीरें",
+      "imagesLabel": "फ़ोटो जोड़ें (वैकल्पिक)",
+      "noBooksFound": "कोई पुस्तक नहीं मिली",
+      "ratingLabel": "आपकी रेटिंग",
+      "removeImage": "तस्वीर हटाएँ",
+      "saveChanges": "बदलाव सहेजें",
+      "submit": "समीक्षा पोस्ट करें",
+      "title": "समीक्षा लिखें",
+      "you": "आप"
     }
   },
   "notifications": {
@@ -1341,11 +1727,14 @@
       "postComment": "नई टिप्पणी",
       "postLike": "नई लाइक",
       "paymentReceived": "भुगतान प्राप्त हुआ",
+      "paymentPending": "नकद भुगतान अनुरोध",
+      "bookRecord": "पुस्तक रिकॉर्ड दर्ज किया गया",
       "pendingRequest": "बिलिंग अनुरोध को मंज़ूरी चाहिए",
       "announcement": "घोषणा",
       "supportTicket": "नई सहायता टिकट",
       "supportTicketResolved": "आपकी टिकट हल हो गई",
-      "supportTicketReopened": "एक टिकट फिर से खोली गई"
+      "supportTicketReopened": "एक टिकट फिर से खोली गई",
+      "fineReminder": "किताब देरी की याद दिलाना"
     }
   },
   "support": {
@@ -1463,6 +1852,28 @@
         "borrowedOn": "उधार लेने की तारीख",
         "returnedOn": "वापसी की तारीख"
       }
+    },
+    "adminStats": {
+      "actionsThisMonth": "इस महीने की कार्रवाइयाँ",
+      "expensesApproved": "स्वीकृत व्यय",
+      "finesWaived": "माफ़ किए गए जुर्माने"
+    },
+    "itHeadStats": {
+      "openIssues": "खुली समस्याएँ",
+      "pendingPermissions": "लंबित अनुमतियाँ",
+      "resolvedIssues": "सुलझाई गई समस्याएँ"
+    },
+    "managerStats": {
+      "newRegistrations": "नए पंजीकरण",
+      "pendingPayments": "लंबित भुगतान",
+      "walkInRequests": "वॉक-इन अनुरोध"
+    },
+    "paymentHistory": {
+      "title": "भुगतान इतिहास",
+      "empty": {
+        "title": "अभी तक कोई भुगतान नहीं",
+        "description": "आपके द्वारा किए गए भुगतान यहाँ दिखाई देंगे।"
+      }
     }
   },
   "contactUs": {
@@ -1564,6 +1975,78 @@
         "loseBook": {
           "question": "What happens if I lose a book?",
           "answer": "1. Report the lost book through your account or the library desk.\n2. You may be charged a replacement fee.\n3. Contact the Pricing & Fines department for assistance.\nEmail: pricing@readingclub.org\nPhone: +1 (555) 010-2001"
+        },
+        "bookingLimit": {
+          "answer": "अधिकांश सदस्य प्रति सप्ताह अधिकतम पाँच सीट बुकिंग कर सकते हैं।\nयदि आपको अतिरिक्त एक्सेस चाहिए, तो अधिक विकल्पों के लिए सीट बुकिंग विभाग से संपर्क करें।\nईमेल: booking@readingclub.org\nफ़ोन: +1 (555) 010-2003",
+          "question": "मैं हर सप्ताह कितनी बुकिंग कर सकता/सकती हूँ?"
+        },
+        "cancelReservation": {
+          "answer": "1. मेरे आरक्षण खोलें।\n2. वह सीट आरक्षण खोजें जिसे आप रद्द करना चाहते हैं।\n3. आरक्षण रद्द करें पर क्लिक करें।\n4. रद्दीकरण की पुष्टि करें।",
+          "question": "मैं आरक्षण कैसे रद्द करूँ?"
+        },
+        "clubMeetings": {
+          "answer": "1. पठन क्लब का विवरण खोलें।\n2. वहाँ दी गई मीटिंग अनुसूची देखें।\n3. क्लब पेज या कैलेंडर से मीटिंग में शामिल हों।\n4. यदि आपको अपना मीटिंग समय बदलना है, तो क्लब आयोजक से संपर्क करें।",
+          "question": "क्लब मीटिंग्स का शेड्यूल कैसे तय होता है?"
+        },
+        "createReadingClub": {
+          "answer": "पठन क्लब बनाने के अनुरोधों की समीक्षा हमारी कम्युनिटी टीम करती है।\nकृपया बुक्स एंड क्लब्स विभाग से संपर्क करें।\nईमेल: clubs@readingclub.org\nफ़ोन: +1 (555) 010-2002",
+          "question": "मैं पठन क्लब कैसे बनाऊँ?"
+        },
+        "donateBooks": {
+          "answer": "1. दान अनुभाग या लाइब्रेरी डेस्क पर जाएँ।\n2. अच्छी स्थिति वाली पुस्तकें तैयार करें।\n3. उन्हें निर्धारित दान क्षेत्र में जमा करें।\n4. हम समीक्षा करके स्वीकृत शीर्षकों को संग्रह में जोड़ देंगे।",
+          "question": "मैं पुस्तकें कैसे दान करूँ?"
+        },
+        "donateFunds": {
+          "answer": "1. दान पेज खोलें।\n2. योगदान राशि चुनें।\n3. अपने भुगतान विवरण दर्ज करें।\n4. अपना दान सबमिट करें।\n5. आपको एक पुष्टिकरण रसीद प्राप्त होगी।",
+          "question": "मैं धन कैसे दान करूँ?"
+        },
+        "donationCondition": {
+          "answer": "कृपया ऐसी पुस्तकें दान करें जो हल्के इस्तेमाल में हों, जिनके कवर सही सलामत हों, पन्ने साफ हों और कोई सामग्री गायब न हो।\nयदि आपके पास बड़ा संग्रह है, तो शेड्यूलिंग के लिए दान विभाग से संपर्क करें।\nईमेल: donations@readingclub.org\nफ़ोन: +1 (555) 010-2004",
+          "question": "दान की गई पुस्तकें किस स्थिति में होनी चाहिए?"
+        },
+        "donationReceipt": {
+          "answer": "हाँ। पुस्तकें या धन दान करने के बाद, हम आपके रिकॉर्ड के लिए आपके ईमेल पते पर एक दान रसीद भेजेंगे।",
+          "question": "क्या मुझे दान रसीद मिलेगी?"
+        },
+        "joinReadingClub": {
+          "answer": "1. पठन क्लब अनुभाग खोलें।\n2. उपलब्ध क्लब ब्राउज़ करें।\n3. वह क्लब चुनें जिसमें आपकी रुचि है।\n4. क्लब में शामिल हों पर क्लिक करें।\n5. आपका सदस्यता अनुरोध सबमिट कर दिया जाएगा।",
+          "question": "मैं पठन क्लब में कैसे शामिल हो सकता/सकती हूँ?"
+        },
+        "leaveClub": {
+          "answer": "1. क्लब विवरण पेज खोलें।\n2. क्लब छोड़ें चुनें।\n3. पुष्टि करें कि आप क्लब छोड़ना चाहते हैं।\n4. आपकी सदस्यता तुरंत हटा दी जाएगी।",
+          "question": "क्या मैं शामिल होने के बाद क्लब छोड़ सकता/सकती हूँ?"
+        },
+        "organizeEvent": {
+          "answer": "हाँ, आप हमारी टीम के माध्यम से सामुदायिक आयोजन आयोजित कर सकते हैं।\nअपने आयोजन पर चर्चा करने के लिए कृपया बुक्स एंड क्लब्स विभाग से संपर्क करें या 'हमसे संपर्क करें' फ़ॉर्म का उपयोग करें।\nईमेल: clubs@readingclub.org\nफ़ोन: +1 (555) 010-2002",
+          "question": "क्या मैं लाइब्रेरी के माध्यम से कोई आयोजन कर सकता/सकती हूँ?"
+        },
+        "overdueFines": {
+          "answer": "1. जुर्माना विलंब के दिनों की संख्या और पुस्तक के प्रकार पर आधारित होता है।\n2. सटीक बकाया राशि के लिए अपना खाता देखें।\n3. भुगतान से पहले जुर्माने का विवरण देखें।",
+          "question": "विलंबित जुर्माने की गणना कैसे होती है?"
+        },
+        "payFines": {
+          "answer": "1. मेरा खाता खोलें।\n2. जुर्माने और भुगतान पर जाएँ।\n3. बकाया जुर्माने देखें।\n4. अभी भुगतान करें चुनें।\n5. उपलब्ध भुगतान विधि से भुगतान पूरा करें।",
+          "question": "मैं अपना जुर्माना कैसे चुकाऊँ?"
+        },
+        "registerEvents": {
+          "answer": "1. आयोजन पेज खोलें।\n2. उपलब्ध आयोजन ब्राउज़ करें।\n3. एक आयोजन चुनें और रजिस्टर पर क्लिक करें।\n4. अपने पंजीकरण विवरण की पुष्टि करें।",
+          "question": "मैं लाइब्रेरी के आयोजनों के लिए पंजीकरण कैसे करूँ?"
+        },
+        "reserveSeat": {
+          "answer": "1. सीट बुकिंग पेज पर जाएँ।\n2. अपनी पसंदीदा तारीख़ और समय स्लॉट चुनें।\n3. सीटिंग मैप से उपलब्ध सीट चुनें।\n4. अपने आरक्षण की पुष्टि करें।\n5. एक पुष्टिकरण सूचना दिखाई देगी।",
+          "question": "मैं पढ़ने की सीट कैसे आरक्षित करूँ?"
+        },
+        "seatUnavailable": {
+          "answer": "आपकी पसंदीदा सीट पहले से बुक हो सकती है या अस्थायी रूप से अनुपलब्ध हो सकती है।\nकृपया कोई अन्य स्लॉट या समय चुनें, या सहायता के लिए सीट बुकिंग विभाग से संपर्क करें।\nईमेल: booking@readingclub.org\nफ़ोन: +1 (555) 010-2003",
+          "question": "मेरी पसंदीदा सीट क्यों अनुपलब्ध है?"
+        },
+        "volunteer": {
+          "answer": "1. आयोजन या कम्युनिटी पेज पर जाएँ।\n2. स्वयंसेवा के अवसर देखें।\n3. किसी भूमिका के लिए रुचि दिखाएँ।\n4. हमारी टीम अगले चरणों के लिए आपसे संपर्क करेगी।",
+          "question": "मैं स्वयंसेवा कैसे कर सकता/सकती हूँ?"
+        },
+        "waiveFine": {
+          "answer": "जुर्माना माफ़ी की समीक्षा प्रत्येक मामले के आधार पर की जाती है।\nसहायता के लिए कृपया मूल्य निर्धारण और जुर्माना विभाग से संपर्क करें।\nईमेल: pricing@readingclub.org\nफ़ोन: +1 (555) 010-2001",
+          "question": "क्या जुर्माना माफ़ किया जा सकता है?"
         }
       },
       "joinReadingClub": {
@@ -1638,6 +2121,17 @@
         "question": "Can I organize an event through the library?",
         "answer": "Yes, you can organize community events through our team.\nPlease contact the Books & Clubs department or use the Contact Us form to discuss your event.\nEmail: clubs@readingclub.org\nPhone: +1 (555) 010-2002"
       }
+    },
+    "actions": {
+      "callUs": "हमें कॉल करें",
+      "contactUs": "हमसे संपर्क करें",
+      "emailUs": "हमें ईमेल करें",
+      "faq": "सहायता केंद्र",
+      "home": "होम"
+    },
+    "stillNeedHelp": {
+      "description": "सदस्यता, पठन क्लब, दान, सीट आरक्षण, या जुर्माने के बारे में सवाल हैं? हमारी टीम मदद के लिए यहाँ है।",
+      "title": "अभी भी सहायता चाहिए?"
     }
   },
   "stillNeedHelp": {
@@ -1650,5 +2144,26 @@
     "contactUs": "Contact Us",
     "faq": "Help Center",
     "home": "Home"
+  },
+  "myLoans": {
+    "empty": {
+      "description": "आपकी उधार ली गई पुस्तकें उनकी तारीख़ों के साथ यहाँ दिखाई देंगी।",
+      "title": "अभी तक कोई पुस्तक उधार नहीं ली गई"
+    },
+    "notReturned": "वापस नहीं की गई",
+    "pageDescription": "आपने जो पुस्तकें उधार ली हैं, उनकी तारीख़ों के साथ।",
+    "pageTitle": "मेरा उधार इतिहास",
+    "status": {
+      "active": "सक्रिय",
+      "overdue": "विलंबित",
+      "returned": "वापस की गई"
+    },
+    "table": {
+      "book": "पुस्तक",
+      "borrowed": "उधार ली गई",
+      "due": "देय",
+      "returned": "वापस की गई",
+      "status": "स्थिति"
+    }
   }
 }

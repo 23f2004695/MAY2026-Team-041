@@ -18,6 +18,7 @@ from app.modules.events.schemas import (
 router = APIRouter(prefix="/events", tags=["events"])
 
 manage_events = require_role(Role.ADMIN, Role.MANAGER)
+moderate_registrants = require_role(Role.ADMIN, Role.IT_HEAD)
 
 
 @router.get("", response_model=EventListResponse)
@@ -83,3 +84,12 @@ async def unregister(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> EventOut:
     return await service.unregister(str(event_id), current_user.id)
+
+
+@router.delete("/{event_id}/registrants/{member_id}", response_model=EventOut)
+async def remove_registrant(
+    event_id: UUID,
+    member_id: UUID,
+    current_user: Annotated[User, Depends(moderate_registrants)],
+) -> EventOut:
+    return await service.unregister(str(event_id), str(member_id), viewer_id=current_user.id)

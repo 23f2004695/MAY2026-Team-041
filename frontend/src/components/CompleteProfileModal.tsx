@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 import { Button, Checkbox, Input, Modal, Select } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { completeProfileSchema, type CompleteProfileFormValues } from '@/lib/authSchema';
 import { usePlanOptions } from '@/lib/planOptions';
 import { useAuth } from '@/providers/AuthProvider';
@@ -48,7 +48,7 @@ export function CompleteProfileModal() {
         `${ROUTES.PAYMENT}?plan=${values.membershipPlan}&label=${encodeURIComponent(plan?.label ?? '')}`,
       );
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Could not save your details');
+      toast.error(getErrorMessage(err, 'Could not save your details'));
     }
   }
 

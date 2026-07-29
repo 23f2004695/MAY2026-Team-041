@@ -2,10 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { Button, Input } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { ROUTES } from '@/constants/routes';
+import { getErrorMessage } from '@/lib/api';
 import { loginSchema, type LoginFormValues } from '@/lib/authSchema';
 import { renderGoogleSignInButton } from '@/lib/googleIdentity';
 import { useAuth, type Role } from '@/providers/AuthProvider';
@@ -35,7 +37,7 @@ export function Login() {
     if (!GOOGLE_CLIENT_ID || !googleButtonRef.current) return;
     renderGoogleSignInButton(googleButtonRef.current, GOOGLE_CLIENT_ID, (idToken) => {
       loginWithGoogleToken(idToken).catch((err: unknown) => {
-        toast.error(err instanceof ApiError ? err.message : 'Google sign-in failed');
+        toast.error(getErrorMessage(err, 'Google sign-in failed'));
       });
     }).catch(() => toast.error('Could not load Google sign-in'));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,7 +47,7 @@ export function Login() {
     try {
       await login(role);
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Could not preview this role');
+      toast.error(getErrorMessage(err, 'Could not preview this role'));
     }
   }
 
@@ -53,7 +55,7 @@ export function Login() {
     try {
       await loginWithCredentials(values.email, values.password);
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Log in failed');
+      toast.error(getErrorMessage(err, 'Log in failed'));
     }
   }
 
@@ -61,7 +63,6 @@ export function Login() {
     <div className="mx-auto flex max-w-sm flex-col gap-4 p-8">
       <div>
         <h1 className="text-2xl font-semibold text-foreground">{t('auth.login.title')}</h1>
-        <p className="text-muted-foreground">{t('auth.login.subtitle')}</p>
       </div>
 
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -79,6 +80,12 @@ export function Login() {
           error={errors.password?.message ? t(errors.password.message) : undefined}
           {...register('password')}
         />
+        <Link
+          to={ROUTES.FORGOT_PASSWORD}
+          className="self-end text-sm font-medium text-primary hover:underline"
+        >
+          {t('auth.login.forgotPassword')}
+        </Link>
         <Button type="submit" isLoading={isSubmitting}>
           {t('auth.login.logInWithPassword')}
         </Button>

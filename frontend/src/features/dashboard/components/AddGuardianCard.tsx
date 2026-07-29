@@ -1,45 +1,47 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
+import { toast } from 'sonner';
 
-import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@/components/ui';
-import { isValidEmail } from '@/lib/email';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { getErrorMessage } from '@/lib/api';
+import { useAuth, type MemberSummary } from '@/providers/AuthProvider';
 
-const addGuardianSchema = z.object({
-  studentEmail: z
-    .string()
-    .refine(isValidEmail, { message: 'managerDashboard.addGuardian.errors.studentEmail' }),
-  guardianEmail: z
-    .string()
-    .refine(isValidEmail, { message: 'managerDashboard.addGuardian.errors.guardianEmail' }),
-});
-
-type AddGuardianFormValues = z.infer<typeof addGuardianSchema>;
-
-export interface AddGuardianCardProps {
-  onAddGuardian: (values: AddGuardianFormValues) => void;
-}
+import { MemberPicker } from './MemberPicker';
 
 // Manager-side counterpart to the member's own "link a guardian" settings card —
-// here the manager links an already-registered student to an already-registered
-// guardian account by the email each of them registered with.
-export function AddGuardianCard({ onAddGuardian }: AddGuardianCardProps) {
+// here the manager links an already-registered, active student to an already-registered,
+// active guardian account by searching each one by name or email.
+export function AddGuardianCard() {
   const { t } = useTranslation();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<AddGuardianFormValues>({
-    resolver: zodResolver(addGuardianSchema),
-    defaultValues: { studentEmail: '', guardianEmail: '' },
-  });
+  const { linkGuardian } = useAuth();
+  const [selectedStudent, setSelectedStudent] = useState<MemberSummary | null>(null);
+  const [selectedGuardian, setSelectedGuardian] = useState<MemberSummary | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function onValid(values: AddGuardianFormValues) {
-    onAddGuardian(values);
-    reset();
+  async function onSubmit() {
+    if (!selectedStudent || !selectedGuardian) return;
+    setIsSubmitting(true);
+    try {
+      await linkGuardian({
+        student_email: selectedStudent.email,
+        guardian_email: selectedGuardian.email,
+      });
+      toast.success(
+        t('managerDashboard.addGuardian.successToast', {
+          studentEmail: selectedStudent.email,
+          guardianEmail: selectedGuardian.email,
+        }),
+      );
+      setSelectedStudent(null);
+      setSelectedGuardian(null);
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
+
+  const canSubmit = selectedStudent !== null && selectedGuardian !== null;
 
   return (
     <Card>
@@ -48,30 +50,39 @@ export function AddGuardianCard({ onAddGuardian }: AddGuardianCardProps) {
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">{t('managerDashboard.addGuardian.description')}</p>
-        <form
-          onSubmit={handleSubmit(onValid)}
-          className="flex flex-col gap-3 sm:flex-row sm:items-end"
-        >
-          <Input
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <MemberPicker
+            className="flex-1"
+            selectedMember={selectedStudent}
+            onSelect={setSelectedStudent}
+            role="member"
+            activeOnly
             label={t('managerDashboard.addGuardian.studentEmailLabel')}
-            type="email"
-            placeholder={t('managerDashboard.addGuardian.studentEmailPlaceholder')}
-            error={errors.studentEmail?.message ? t(errors.studentEmail.message) : undefined}
-            className="flex-1"
-            {...register('studentEmail')}
+            searchPlaceholder={t('managerDashboard.addGuardian.studentEmailPlaceholder')}
+            changeLabel={t('managerDashboard.billingRequest.changeMember')}
+            noResultsLabel={t('managerDashboard.billingRequest.noMembersFound')}
           />
-          <Input
+          <MemberPicker
+            className="flex-1"
+            selectedMember={selectedGuardian}
+            onSelect={setSelectedGuardian}
+            role="guardian"
+            activeOnly
             label={t('managerDashboard.addGuardian.guardianEmailLabel')}
-            type="email"
-            placeholder={t('managerDashboard.addGuardian.guardianEmailPlaceholder')}
-            error={errors.guardianEmail?.message ? t(errors.guardianEmail.message) : undefined}
-            className="flex-1"
-            {...register('guardianEmail')}
+            searchPlaceholder={t('managerDashboard.addGuardian.guardianEmailPlaceholder')}
+            changeLabel={t('managerDashboard.billingRequest.changeMember')}
+            noResultsLabel={t('managerDashboard.billingRequest.noMembersFound')}
           />
-          <Button type="submit" isLoading={isSubmitting} className="w-fit">
+          <Button
+            type="button"
+            isLoading={isSubmitting}
+            disabled={!canSubmit}
+            onClick={onSubmit}
+            className="w-fit"
+          >
             {t('managerDashboard.addGuardian.submit')}
           </Button>
-        </form>
+        </div>
       </CardContent>
     </Card>
   );

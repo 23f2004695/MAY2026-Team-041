@@ -1,10 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import type { BorrowedBook } from '@/mocks/dashboard';
+import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
+
+export interface CurrentlyBorrowedBook {
+  id: string;
+  title: string;
+  borrowedOn: string;
+}
 
 export interface CurrentlyBorrowedProps {
-  books: BorrowedBook[];
+  books: CurrentlyBorrowedBook[];
 }
 
 export function CurrentlyBorrowed({ books }: CurrentlyBorrowedProps) {
@@ -16,17 +21,23 @@ export function CurrentlyBorrowed({ books }: CurrentlyBorrowedProps) {
         <CardTitle>{t('dashboard.currentlyBorrowed.title')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="flex flex-col gap-3">
-          {books.map((book) => (
-            <li key={book.id} className="flex items-center justify-between text-sm">
-              <div>
+        {books.length === 0 ? (
+          <EmptyState
+            title={t('myLoans.empty.title')}
+            description={t('myLoans.empty.description')}
+          />
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {books.map((book) => (
+              <li key={book.id} className="flex items-center justify-between text-sm">
                 <p className="font-medium text-foreground">{book.title}</p>
-                <p className="text-muted-foreground">{book.author}</p>
-              </div>
-              <span className="text-muted-foreground">{t('common.time.since', { date: book.borrowedOn })}</span>
-            </li>
-          ))}
-        </ul>
+                <span className="text-muted-foreground">
+                  {t('common.time.since', { date: book.borrowedOn })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

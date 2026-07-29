@@ -9,6 +9,7 @@ class EventCreate(BaseModel):
     location: str = Field(min_length=1, max_length=255)
     date: datetime
     capacity: int = Field(gt=0)
+    manager_ids: list[str] = Field(default_factory=list)
 
 
 class EventUpdate(BaseModel):
@@ -17,6 +18,8 @@ class EventUpdate(BaseModel):
     location: str | None = Field(default=None, min_length=1, max_length=255)
     date: datetime | None = None
     capacity: int | None = Field(default=None, gt=0)
+    # None = leave assignments unchanged; a list (even empty) replaces the whole set.
+    manager_ids: list[str] | None = None
 
 
 class RegistrantOut(BaseModel):
@@ -35,11 +38,13 @@ class EventOut(BaseModel):
     attendees: int
     registered: bool
     registrants: list[RegistrantOut]
+    assigned_managers: list[RegistrantOut]
     created_at: datetime
 
     @staticmethod
     def from_prisma(event, *, member_id: str | None = None) -> "EventOut":
         registrants = event.registrations or []
+        assignments = event.managerAssignments or []
         return EventOut(
             id=event.id,
             title=event.title,
@@ -56,6 +61,14 @@ class EventOut(BaseModel):
                     email=r.member.email,
                 )
                 for r in registrants
+            ],
+            assigned_managers=[
+                RegistrantOut(
+                    id=a.manager.id,
+                    full_name=a.manager.fullName,
+                    email=a.manager.email,
+                )
+                for a in assignments
             ],
             created_at=event.createdAt,
         )

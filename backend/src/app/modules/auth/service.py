@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 import jwt
 from fastapi import HTTPException, status
 from google.auth.transport import requests as google_requests
@@ -7,21 +9,26 @@ from prisma.models import User
 
 from app.core.config import get_settings
 from app.core.constants import Role
+from app.core.mail import send_email
 from app.core.security import (
     create_access_token,
     create_refresh_token,
+    create_reset_token,
     decode_token,
     hash_password,
     verify_password,
 )
 from app.modules.auth.schemas import (
+    ForgotPasswordRequest,
     GoogleLoginRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
+    ResetPasswordRequest,
     TokenResponse,
     UpdateProfileRequest,
 )
+from app.modules.loans import service as loans_service
 from app.modules.members import repository
 from app.modules.members.schemas import MemberOut
 
@@ -30,6 +37,9 @@ InvalidCredentials = HTTPException(
 )
 InvalidRefreshToken = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token"
+)
+InvalidResetToken = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired reset link"
 )
 
 
@@ -157,6 +167,66 @@ async def refresh(payload: RefreshRequest) -> TokenResponse:
 
 
 async def logout(user: User) -> None:
+    await repository.bump_token_version(user.id)
+
+
+async def delete_account(user: User) -> None:
+    if user.role.name != Role.MEMBER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Staff accounts can't be self-deleted — contact an admin",
+        )
+
+    loans = await loans_service.list_my_loans(user.id)
+    if any(loan.status != "returned" or not loan.fine_paid for loan in loans):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Return all borrowed books and clear outstanding fines before deleting "
+            "your account",
+        )
+
+    await repository.update_member(user.id, {"deletedAt": datetime.now(UTC), "isActive": False})
+    await repository.bump_token_version(user.id)
+
+
+async def forgot_password(payload: ForgotPasswordRequest) -> None:
+    user = await repository.find_by_email(payload.email)
+    # ponytail: always 204 regardless of whether the account exists — don't let this
+    # endpoint be used to enumerate registered emails.
+    if user is None or not user.isActive or user.deletedAt is not None:
+        return
+
+    token = create_reset_token(user.id, user.tokenVersion)
+    reset_link = f"{get_settings().frontend_url}/reset-password?token={token}"
+    send_email(
+        user.email,
+        "Reset your library password",
+        f"Reset your password: {reset_link}\n\nThis link expires in "
+        f"{get_settings().reset_token_expire_minutes} minutes. If you didn't request this, ignore it.",
+    )
+
+
+async def reset_password(payload: ResetPasswordRequest) -> None:
+    try:
+        claims = decode_token(payload.token)
+    except jwt.InvalidTokenError as exc:
+        raise InvalidResetToken from exc
+
+    if claims.get("type") != "reset":
+        raise InvalidResetToken
+
+    user_id = claims.get("sub")
+    user = await repository.find_by_id(user_id) if user_id else None
+    if user is None or not user.isActive or user.deletedAt is not None:
+        raise InvalidResetToken
+
+    # ver must match — a used or superseded reset token, or one issued before a
+    # subsequent logout/reset, is rejected the same way refresh() rejects stale tokens.
+    if claims.get("ver") != user.tokenVersion:
+        raise InvalidResetToken
+
+    await repository.update_member(user.id, {"passwordHash": hash_password(payload.password)})
+    # Bump tokenVersion so the reset token (and every existing session) is invalidated.
     await repository.bump_token_version(user.id)
 
 

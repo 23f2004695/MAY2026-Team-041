@@ -9,6 +9,7 @@ from app.modules.admin import service
 from app.modules.admin.schemas import (
     AdminDashboardOut,
     AdminMemberListOut,
+    AdminPaymentListOut,
     AnnouncementCreate,
     AnnouncementOut,
     ExpenseBreakdownOut,
@@ -78,3 +79,13 @@ async def list_admin_members(
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> AdminMemberListOut:
     return await service.list_members(search=search, page=page, page_size=page_size)
+
+
+@router.get("/payments", response_model=AdminPaymentListOut)
+async def list_admin_payments(
+    _: Annotated[User, Depends(manage_admin)],
+    search: Annotated[str | None, Query(description="Match against member name or email")] = None,
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+) -> AdminPaymentListOut:
+    return await service.list_payments(search=search, page=page, page_size=page_size)

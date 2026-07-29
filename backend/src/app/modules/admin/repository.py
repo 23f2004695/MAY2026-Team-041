@@ -3,6 +3,7 @@ from datetime import datetime
 from prisma.models import Expense, Payment, User
 
 from app.core.constants import Role
+from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 
@@ -95,15 +96,38 @@ async def list_members(
             {"email": {"contains": search, "mode": "insensitive"}},
         ]
 
-    total = await prisma.user.count(where=where)
-    items = await prisma.user.find_many(
+    return await paginate(
+        prisma.user,
         where=where,
         include={"role": True},
         order={"createdAt": "desc"},
         skip=(page - 1) * page_size,
         take=page_size,
     )
-    return items, total
+
+
+async def list_payments(
+    *, search: str | None, page: int, page_size: int
+) -> tuple[list[Payment], int]:
+    where: dict = {}
+    if search:
+        where["user"] = {
+            "is": {
+                "OR": [
+                    {"fullName": {"contains": search, "mode": "insensitive"}},
+                    {"email": {"contains": search, "mode": "insensitive"}},
+                ]
+            }
+        }
+
+    return await paginate(
+        prisma.payment,
+        where=where,
+        include={"user": True},
+        order={"createdAt": "desc"},
+        skip=(page - 1) * page_size,
+        take=page_size,
+    )
 
 
 # Latest-row-per-user via a single ordered query is simpler than a per-user lookup and

@@ -17,7 +17,7 @@ import {
   Users,
 } from 'lucide-react';
 
-import type { IconBadgeTone, SeatStatus } from '@/components/common';
+import type { IconBadgeTone } from '@/components/common';
 
 // Display copy for everything below lives in i18n locale files (src/i18n/locales/*.json),
 // keyed by `id`. These mocks hold only structural/icon data plus real-world proper nouns
@@ -117,12 +117,6 @@ export const moodRecommendations: MoodRecommendation[] = [
     books: ['Deep Work', 'How to Read a Book'],
   },
 ];
-
-export const seatStats: Record<SeatStatus, number> = {
-  available: 18,
-  reserved: 6,
-  occupied: 12,
-};
 
 export interface Achievement {
   id: string;

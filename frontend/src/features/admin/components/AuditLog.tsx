@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
+import { NoResults } from '@/components/feedback';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
@@ -73,7 +74,7 @@ export function AuditLog({ entries }: { entries: AuditLogEntry[] }) {
       </CardHeader>
       <CardContent>
         {entries.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t('admin.auditLog.empty')}</p>
+          <NoResults title={t('admin.auditLog.empty')} />
         ) : (
           <ul className="flex flex-col gap-3">
             {entries.map((entry) => (

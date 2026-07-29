@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button, Input, Modal } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { PASSWORD_PATTERN, PHONE_PATTERN } from '@/lib/authSchema';
 import { isValidEmail } from '@/lib/email';
 import { useAuth } from '@/providers/AuthProvider';
@@ -58,7 +58,7 @@ export function InviteMemberModal({ open, onClose, onInvited }: InviteMemberModa
       onInvited();
       onClose();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 

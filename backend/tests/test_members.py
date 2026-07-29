@@ -130,6 +130,60 @@ async def test_list_members_search_and_pagination(admin_user):
     assert all(unique_marker in item["full_name"] for item in body["items"])
 
 
+async def test_list_members_filters_by_role(admin_user):
+    unique_marker = uuid.uuid4().hex[:8]
+    guardian_role = await repository.upsert_role(Role.GUARDIAN)
+    await repository.create_member(
+        email=_unique_email(),
+        password_hash=None,
+        full_name=f"Guardian-{unique_marker}",
+        phone=None,
+        avatar_url=None,
+        role_id=guardian_role.id,
+    )
+
+    async with _client_as(admin_user) as client:
+        await client.post(
+            "/api/v1/members",
+            json={
+                "email": _unique_email(),
+                "password": "Password123!",
+                "full_name": f"Member-{unique_marker}",
+            },
+        )
+        response = await client.get(
+            "/api/v1/members", params={"search": unique_marker, "role": Role.GUARDIAN}
+        )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 1
+    assert body["items"][0]["role"]["name"] == Role.GUARDIAN
+
+
+async def test_list_members_active_only_excludes_inactive_accounts(admin_user):
+    unique_marker = uuid.uuid4().hex[:8]
+    async with _client_as(admin_user) as client:
+        created = await client.post(
+            "/api/v1/members",
+            json={
+                "email": _unique_email(),
+                "password": "Password123!",
+                "full_name": f"Inactive-{unique_marker}",
+            },
+        )
+        await client.put(
+            f"/api/v1/members/{created.json()['id']}", json={"is_active": False}
+        )
+
+        response = await client.get(
+            "/api/v1/members", params={"search": unique_marker, "active_only": True}
+        )
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 0
+
+
 async def test_update_member_changes_fields(admin_user):
     async with _client_as(admin_user) as client:
         created = await client.post(

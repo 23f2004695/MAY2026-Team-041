@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { PageHeader } from '@/components/common';
 import { Button, Dialog, EmptyState, SearchBar } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { type Reservation, useAuth } from '@/providers/AuthProvider';
 
 import { ReservationCard } from '../components/ReservationCard';
@@ -40,7 +40,7 @@ export function ReservationsPage() {
       setReservations((prev) => prev.filter((entry) => entry.id !== cancellingReservation.id));
       toast.success(t('reservations.cancelSuccessToast', { book: cancellingReservation.book_title }));
     } catch (error) {
-      toast.error(error instanceof ApiError ? error.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
     } finally {
       setCancellingId(null);
     }

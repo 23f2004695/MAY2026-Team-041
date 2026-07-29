@@ -8,12 +8,18 @@ from app.api.deps import get_current_user
 from app.modules.seat_booking import service
 from app.modules.seat_booking.schemas import (
     ScheduleOut,
+    SeatAvailabilitySummary,
     SeatBookingCreate,
     SeatBookingOut,
     SeatNotifyCreate,
 )
 
 router = APIRouter(prefix="/seat-booking", tags=["seat-booking"])
+
+
+@router.get("/availability", response_model=SeatAvailabilitySummary)
+async def get_availability_summary() -> SeatAvailabilitySummary:
+    return await service.get_availability_summary()
 
 
 @router.get("/schedule", response_model=ScheduleOut)

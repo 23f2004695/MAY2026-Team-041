@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from prisma.models import LoginActivity, ReadingGoal, ReadingProgress, Role, User
 
+from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 MEMBER_INCLUDE = {"role": True}
@@ -37,23 +38,33 @@ async def touch_last_login(user_id: str) -> None:
     )
 
 
-async def list_members(*, search: str | None, page: int, page_size: int) -> tuple[list[User], int]:
+async def list_members(
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    role: str | None = None,
+    active_only: bool = False,
+) -> tuple[list[User], int]:
     where: dict = {"deletedAt": None}
+    if active_only:
+        where["isActive"] = True
+    if role:
+        where["role"] = {"name": role}
     if search:
         where["OR"] = [
             {"fullName": {"contains": search, "mode": "insensitive"}},
             {"email": {"contains": search, "mode": "insensitive"}},
         ]
 
-    total = await prisma.user.count(where=where)
-    items = await prisma.user.find_many(
+    return await paginate(
+        prisma.user,
         where=where,
         include=MEMBER_INCLUDE,
         order={"createdAt": "desc"},
         skip=(page - 1) * page_size,
         take=page_size,
     )
-    return items, total
 
 
 async def create_member(

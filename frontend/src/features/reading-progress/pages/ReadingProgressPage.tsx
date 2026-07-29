@@ -1,4 +1,4 @@
-import { Flame, Target } from 'lucide-react';
+import { Award, Flame, Target } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ import {
 
 import { BookProgressList } from '../components/BookProgressList';
 import { SetReadingGoalModal } from '../components/SetReadingGoalModal';
+import { ShareCertificateModal } from '../components/ShareCertificateModal';
 
 function toProgressBooks(entries: ReadingProgressEntry[]) {
   return entries.map((entry) => ({
@@ -72,10 +73,11 @@ function GuardianReadingProgress() {
 // reading|completed only) — shows its real empty state rather than mock titles.
 function MemberReadingProgress() {
   const { t } = useTranslation();
-  const { getMyReadingProgress, getReadingGoal, getReadingStreak } = useAuth();
+  const { fullName, getMyReadingProgress, getReadingGoal, getReadingStreak } = useAuth();
   const [progress, setProgress] = useState<ReadingProgressEntry[]>([]);
   const [goal, setGoal] = useState<ReadingGoal | null>(null);
   const [goalModalOpen, setGoalModalOpen] = useState(false);
+  const [certificate, setCertificate] = useState<'yearly' | 'monthly' | null>(null);
   const [streak, setStreak] = useState<ReadingStreak>({
     current_streak_days: 0,
     longest_streak_days: 0,
@@ -123,6 +125,17 @@ function MemberReadingProgress() {
                   <p className="mt-1.5 text-sm text-muted-foreground">
                     {goal.books_completed_this_year} of {goal.yearly_goal} books this year
                   </p>
+                  {goal.yearly_goal > 0 && goal.books_completed_this_year >= goal.yearly_goal && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-2"
+                      leadingIcon={<Award className="size-4" />}
+                      onClick={() => setCertificate('yearly')}
+                    >
+                      {t('readingProgress.certificate.shareButton')}
+                    </Button>
+                  )}
                 </div>
                 <div>
                   <ProgressBar
@@ -131,6 +144,17 @@ function MemberReadingProgress() {
                   <p className="mt-1.5 text-sm text-muted-foreground">
                     {goal.books_completed_this_month} of {goal.monthly_goal} books this month
                   </p>
+                  {goal.monthly_goal > 0 && goal.books_completed_this_month >= goal.monthly_goal && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-2"
+                      leadingIcon={<Award className="size-4" />}
+                      onClick={() => setCertificate('monthly')}
+                    >
+                      {t('readingProgress.certificate.shareButton')}
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : (
@@ -165,6 +189,23 @@ function MemberReadingProgress() {
         currentGoal={goal}
         onSaved={setGoal}
       />
+
+      {goal && certificate && (
+        <ShareCertificateModal
+          open={certificate !== null}
+          onClose={() => setCertificate(null)}
+          memberName={fullName ?? ''}
+          count={
+            certificate === 'yearly' ? goal.books_completed_this_year : goal.books_completed_this_month
+          }
+          goal={certificate === 'yearly' ? goal.yearly_goal : goal.monthly_goal}
+          periodLabel={
+            certificate === 'yearly'
+              ? String(new Date().getFullYear())
+              : new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+          }
+        />
+      )}
 
       <div className="grid gap-4 lg:grid-cols-3">
         <BookProgressList

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Dialog } from '@/components/ui';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type BillingRequestRecord, type BillingRequestType } from '@/providers/AuthProvider';
 
 const typeLabelKey: Record<BillingRequestType, string> = {
@@ -49,7 +49,7 @@ export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
       setPendingAction(null);
       onDecided();
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : t('common.errors.generic'));
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setIsDeciding(false);
     }

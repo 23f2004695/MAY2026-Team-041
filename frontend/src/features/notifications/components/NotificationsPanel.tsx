@@ -17,11 +17,14 @@ const NOTIFICATION_TITLE_KEYS: Partial<Record<string, string>> = {
   'post-comment': 'postComment',
   'post-like': 'postLike',
   'payment-received': 'paymentReceived',
+  'payment-pending': 'paymentPending',
   'pending-request': 'pendingRequest',
+  'book-record': 'bookRecord',
   announcement: 'announcement',
   'support-ticket': 'supportTicket',
   'support-ticket-resolved': 'supportTicketResolved',
   'support-ticket-reopened': 'supportTicketReopened',
+  'fine-reminder': 'fineReminder',
 };
 
 function NotificationRow({

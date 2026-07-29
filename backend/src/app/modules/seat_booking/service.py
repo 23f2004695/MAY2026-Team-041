@@ -10,6 +10,7 @@ from app.modules.seat_booking import repository
 from app.modules.seat_booking.constants import MAX_DAYS_AHEAD, SEAT_LABELS
 from app.modules.seat_booking.schemas import (
     ScheduleOut,
+    SeatAvailabilitySummary,
     SeatBookingCreate,
     SeatBookingOut,
     SeatNotifyCreate,
@@ -37,6 +38,17 @@ def _validate_slot(target_date: date_type, hour: int) -> None:
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST, "Cannot book a time slot that has already passed"
         )
+
+
+async def get_availability_summary() -> SeatAvailabilitySummary:
+    # Public (no auth) — landing-page marketing widget. Only a booked-vs-available
+    # count is meaningful here: the model has no presence/check-in concept, so a
+    # true "physically occupied right now" figure doesn't exist to report.
+    now = _now()
+    bookings = await repository.list_bookings_for_slot(now.date(), now.hour)
+    total = len(SEAT_LABELS)
+    booked = len(bookings)
+    return SeatAvailabilitySummary(available=total - booked, booked=booked, total=total)
 
 
 async def get_schedule(user: User, target_date: date_type, hour: int) -> ScheduleOut:

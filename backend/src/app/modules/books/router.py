@@ -34,6 +34,11 @@ async def get_book(book_id: UUID) -> BookOut:
     return await service.get_book(str(book_id))
 
 
+@router.get("/{book_id}/related", response_model=list[BookOut])
+async def get_related_books(book_id: UUID) -> list[BookOut]:
+    return await service.get_related_books(str(book_id))
+
+
 @router.post("", response_model=BookOut, status_code=status.HTTP_201_CREATED)
 async def create_book(
     payload: BookCreate,

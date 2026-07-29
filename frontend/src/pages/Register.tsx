@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 import { Button, Checkbox, Input, Select } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { registerSchema, type RegisterFormValues } from '@/lib/authSchema';
 import { usePlanOptions } from '@/lib/planOptions';
 import { useAuth } from '@/providers/AuthProvider';
@@ -55,7 +55,7 @@ export function Register() {
         paymentRedirect,
       );
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Registration failed');
+      toast.error(getErrorMessage(err, 'Registration failed'));
     }
   }
 
@@ -63,7 +63,6 @@ export function Register() {
     <div className="mx-auto flex max-w-sm flex-col gap-4 p-8">
       <div>
         <h1 className="text-2xl font-semibold text-foreground">{t('auth.register.title')}</h1>
-        <p className="text-muted-foreground">{t('auth.register.subtitle')}</p>
       </div>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)} noValidate>
         <Input
