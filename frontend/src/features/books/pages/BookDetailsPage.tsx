@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
+import { BookCard } from '@/components/common';
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { apiGet, getErrorMessage } from '@/lib/api';
@@ -20,6 +21,7 @@ export function BookDetailsPage() {
   const { reserveBook } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
   const [loadedFor, setLoadedFor] = useState<string | undefined>(undefined);
+  const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const { isWishlisted, toggleWishlist } = useWishlist();
 
   useEffect(() => {
@@ -28,6 +30,9 @@ export function BookDetailsPage() {
       .then((data) => setBook(data))
       .catch(() => setBook(null))
       .finally(() => setLoadedFor(bookId));
+    apiGet<Book[]>(`/books/${bookId}/related`)
+      .then(setRelatedBooks)
+      .catch(() => setRelatedBooks([]));
   }, [bookId]);
 
   async function handleReserve() {
@@ -109,6 +114,28 @@ export function BookDetailsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {relatedBooks.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold text-foreground">
+            {t('books.details.relatedBooks.title')}
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedBooks.map((related) => (
+              <BookCard
+                key={related.id}
+                title={related.title}
+                author={related.author}
+                category={related.category}
+                available={related.available}
+                href={ROUTES.BOOK_DETAILS.replace(':bookId', related.id)}
+                isWishlisted={isWishlisted(related.id)}
+                onToggleWishlist={() => toggleWishlist(related.id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

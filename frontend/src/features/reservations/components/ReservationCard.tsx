@@ -43,6 +43,17 @@ export function ReservationCard({ reservation, onCancel }: ReservationCardProps)
               })}
             </p>
           )}
+          {reservation.status === 'pending' && reservation.queue_position !== null && (
+            <p className="text-sm text-muted-foreground">
+              {t('reservations.queue.position', { position: reservation.queue_position })}
+              {reservation.eta_days !== null &&
+                ` — ${
+                  reservation.eta_days === 0
+                    ? t('reservations.queue.etaReady')
+                    : t('reservations.queue.eta', { days: reservation.eta_days })
+                }`}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <Badge variant={badgeVariantByStatus[reservation.status]}>

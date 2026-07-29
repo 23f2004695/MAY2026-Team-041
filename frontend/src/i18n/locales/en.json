@@ -92,7 +92,8 @@
     "itHeadOverview": "IT Overview",
     "guardianOverview": "Guardian Overview",
     "backToApp": "Back to App",
-    "contactUs": "Contact Us"
+    "contactUs": "Contact Us",
+    "payments": "Payments"
   },
   "userMenu": {
     "openAccountMenu": "Open account menu",
@@ -408,6 +409,22 @@
         "generate": "Generate",
         "generatedToast": "Generated coupon {{code}}",
         "summary": "{{percent}}% off · used {{used}}/{{max}}"
+      }
+    },
+    "payments": {
+      "pageTitle": "Payments",
+      "pageDescription": "Every payment on record, across all members.",
+      "searchPlaceholder": "Search by member name or email",
+      "table": {
+        "member": "Member",
+        "amount": "Amount",
+        "label": "Description",
+        "status": "Status",
+        "date": "Date"
+      },
+      "empty": {
+        "title": "No payments found",
+        "description": "Try a different search, or check back once members start paying."
       }
     }
   },
@@ -1350,7 +1367,10 @@
       "backToBooks": "Back to Books",
       "copiesAvailable": "{{total}} copies in the library",
       "reserveButton": "Request to borrow",
-      "reserveSuccessToast": "Requested \"{{title}}\" — awaiting manager approval"
+      "reserveSuccessToast": "Requested \"{{title}}\" — awaiting manager approval",
+      "relatedBooks": {
+        "title": "Readers who borrowed this also borrowed…"
+      }
     },
     "wishlist": {
       "button": "Wishlist",
@@ -1416,6 +1436,11 @@
       "cancelled": "Cancelled"
     },
     "dueBy": "Return by {{date}}",
+    "queue": {
+      "position": "#{{position}} in queue",
+      "eta": "~{{days}} day(s) until it's your turn",
+      "etaReady": "a copy is free, awaiting manager approval"
+    },
     "actions": {
       "cancel": "Cancel"
     },
@@ -1460,6 +1485,12 @@
       "currentDays_other": "{{count}} days",
       "longest_one": "Longest streak: {{count}} day",
       "longest_other": "Longest streak: {{count}} days"
+    },
+    "certificate": {
+      "shareButton": "Goal complete — share certificate",
+      "title": "Your Reading Certificate",
+      "download": "Download",
+      "share": "Share"
     },
     "lists": {
       "currentlyReading": {
@@ -1850,6 +1881,13 @@
         "title": "Title",
         "borrowedOn": "Borrowed On",
         "returnedOn": "Returned On"
+      }
+    },
+    "paymentHistory": {
+      "title": "Payment History",
+      "empty": {
+        "title": "No payments yet",
+        "description": "Payments you make will show up here."
       }
     }
   },

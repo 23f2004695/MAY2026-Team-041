@@ -42,6 +42,14 @@ export interface PaymentPayload {
   coupon_code?: string;
 }
 
+export interface PaymentRecord {
+  id: string;
+  amount: number;
+  label: string;
+  status: string;
+  created_at: string;
+}
+
 export interface Membership {
   plan_label: string;
   purchased_at: string;
@@ -103,6 +111,8 @@ export interface Reservation {
   status: 'pending' | 'approved' | 'rejected' | 'cancelled';
   due_date: string | null;
   created_at: string;
+  queue_position: number | null;
+  eta_days: number | null;
 }
 
 export interface PostComment {
@@ -308,6 +318,31 @@ export interface AdminMemberListResponse {
 }
 
 export interface AdminMemberQuery {
+  search?: string;
+  page?: number;
+  page_size?: number;
+}
+
+export interface AdminPaymentRecord {
+  id: string;
+  member_id: string;
+  member_name: string;
+  member_email: string;
+  amount: number;
+  label: string;
+  status: string;
+  plan_months: number | null;
+  created_at: string;
+}
+
+export interface AdminPaymentListResponse {
+  items: AdminPaymentRecord[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface AdminPaymentQuery {
   search?: string;
   page?: number;
   page_size?: number;
@@ -700,6 +735,7 @@ interface AuthContextValue extends AuthState {
   payAtLibrary: (payload: PaymentPayload) => Promise<void>;
   deleteAccount: () => Promise<void>;
   getMembership: () => Promise<Membership | null>;
+  getMyPayments: () => Promise<PaymentRecord[]>;
   getGuardianChildren: () => Promise<GuardianChild[]>;
   payChildFines: (childId: string) => Promise<void>;
   renewChildSubscription: (childId: string) => Promise<void>;
@@ -748,6 +784,7 @@ interface AuthContextValue extends AuthState {
   getMembershipGrowthReport: () => Promise<MembershipGrowthReport>;
   getAdminMembers: (query?: AdminMemberQuery) => Promise<AdminMemberListResponse>;
   updateAdminMember: (memberId: string, payload: AdminMemberUpdatePayload) => Promise<void>;
+  getAdminPayments: (query?: AdminPaymentQuery) => Promise<AdminPaymentListResponse>;
   createSupportTicket: (payload: SupportTicketPayload) => Promise<SupportTicketRecord>;
   getMySupportTickets: () => Promise<SupportTicketRecord[]>;
   getStaffSupportTickets: (status?: SupportTicketStatus) => Promise<SupportTicketRecord[]>;
@@ -918,6 +955,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function getMembership(): Promise<Membership | null> {
     if (!state.token) return null;
     return apiGet<Membership | null>('/payments/me/membership', state.token);
+  }
+
+  async function getMyPayments(): Promise<PaymentRecord[]> {
+    if (!state.token) return [];
+    return apiGet<PaymentRecord[]>('/payments/me', state.token);
   }
 
   async function getGuardianChildren(): Promise<GuardianChild[]> {
@@ -1177,6 +1219,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     if (query.search?.trim()) params.set('search', query.search.trim());
     return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, state.token);
+  }
+
+  async function getAdminPayments(query: AdminPaymentQuery = {}): Promise<AdminPaymentListResponse> {
+    if (!state.token) return { items: [], total: 0, page: 1, page_size: 20 };
+    const params = new URLSearchParams({
+      page: String(query.page ?? 1),
+      page_size: String(query.page_size ?? 20),
+    });
+    if (query.search?.trim()) params.set('search', query.search.trim());
+    return apiGet<AdminPaymentListResponse>(`/admin/payments?${params}`, state.token);
   }
 
   async function updateAdminMember(
@@ -1501,6 +1553,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         payAtLibrary,
         deleteAccount,
         getMembership,
+        getMyPayments,
         getGuardianChildren,
         payChildFines,
         renewChildSubscription,
@@ -1549,6 +1602,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getMembershipGrowthReport,
         getAdminMembers,
         updateAdminMember,
+        getAdminPayments,
         createSupportTicket,
         getMySupportTickets,
         getStaffSupportTickets,

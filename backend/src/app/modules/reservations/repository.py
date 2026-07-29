@@ -29,6 +29,13 @@ async def list_pending() -> list[Reservation]:
     )
 
 
+async def list_pending_for_book(book_id: str) -> list[Reservation]:
+    return await prisma.reservation.find_many(
+        where={"bookId": book_id, "status": "pending"},
+        order={"createdAt": "asc"},
+    )
+
+
 async def count_available_copies(book_id: str) -> int:
     book = await books_repository.find_by_id(book_id)
     if book is None:

@@ -43,6 +43,13 @@ async def count_active_for_book(book_id: str) -> int:
     return await prisma.loan.count(where={"bookId": book_id, "returnedAt": None})
 
 
+async def list_active_for_book(book_id: str) -> list[Loan]:
+    return await prisma.loan.find_many(
+        where={"bookId": book_id, "returnedAt": None},
+        order={"dueDate": "asc"},
+    )
+
+
 async def mark_returned(loan_id: str, *, returned_at: datetime) -> Loan:
     return await prisma.loan.update(
         where={"id": loan_id}, data={"returnedAt": returned_at}, include=INCLUDE

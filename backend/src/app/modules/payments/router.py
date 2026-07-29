@@ -49,6 +49,14 @@ async def pay_at_library(
         await notifications_service.create_notification(manager.id, "payment-pending", message)
 
 
+@router.get("/me", response_model=list[PaymentOut])
+async def list_my_payments(
+    user: Annotated[User, Depends(get_current_user)],
+) -> list[PaymentOut]:
+    payments = await repository.list_payments_for_user(user.id)
+    return [PaymentOut.from_prisma(payment) for payment in payments]
+
+
 @router.get("/me/membership", response_model=MembershipOut | None)
 async def get_my_membership(
     user: Annotated[User, Depends(get_current_user)],

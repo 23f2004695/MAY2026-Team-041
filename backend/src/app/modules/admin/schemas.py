@@ -150,3 +150,22 @@ class AdminMemberListOut(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class AdminPaymentOut(BaseModel):
+    id: str
+    member_id: str
+    member_name: str
+    member_email: str
+    amount: int
+    label: str
+    status: str
+    plan_months: int | None
+    created_at: datetime
+
+
+class AdminPaymentListOut(BaseModel):
+    items: list[AdminPaymentOut]
+    total: int
+    page: int
+    page_size: int

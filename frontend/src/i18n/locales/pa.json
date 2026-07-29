@@ -92,7 +92,8 @@
     "guardianOverview": "ਸਰਪ੍ਰਸਤ ਸੰਖੇਪ ਜਾਣਕਾਰੀ",
     "backToApp": "ਐਪ 'ਤੇ ਵਾਪਸ ਜਾਓ",
     "contactUs": "ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
-    "borrowHistory": "ਉਧਾਰ ਇਤਿਹਾਸ"
+    "borrowHistory": "ਉਧਾਰ ਇਤਿਹਾਸ",
+    "payments": "ਭੁਗਤਾਨ"
   },
   "userMenu": {
     "openAccountMenu": "ਖਾਤਾ ਮੀਨੂ ਖੋਲ੍ਹੋ",
@@ -409,6 +410,22 @@
     },
     "seatStatus": {
       "title": "ਲਾਈਵ ਸੀਟ ਸਥਿਤੀ"
+    },
+    "payments": {
+      "pageTitle": "ਭੁਗਤਾਨ",
+      "pageDescription": "ਸਾਰੇ ਮੈਂਬਰਾਂ ਦੇ ਸਾਰੇ ਦਰਜ ਭੁਗਤਾਨ।",
+      "searchPlaceholder": "ਮੈਂਬਰ ਦੇ ਨਾਮ ਜਾਂ ਈਮੇਲ ਦੁਆਰਾ ਖੋਜੋ",
+      "table": {
+        "member": "ਮੈਂਬਰ",
+        "amount": "ਰਾਸ਼ੀ",
+        "label": "ਵੇਰਵਾ",
+        "status": "ਸਥਿਤੀ",
+        "date": "ਮਿਤੀ"
+      },
+      "empty": {
+        "title": "ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ ਮਿਲਿਆ",
+        "description": "ਕੋਈ ਵੱਖਰੀ ਖੋਜ ਅਜ਼ਮਾਓ, ਜਾਂ ਮੈਂਬਰਾਂ ਦੇ ਭੁਗਤਾਨ ਸ਼ੁਰੂ ਕਰਨ ਤੋਂ ਬਾਅਦ ਦੁਬਾਰਾ ਜਾਂਚੋ।"
+      }
     }
   },
   "itHead": {
@@ -1332,7 +1349,10 @@
       "backToBooks": "ਕਿਤਾਬਾਂ 'ਤੇ ਵਾਪਸ ਜਾਓ",
       "copiesAvailable": "ਲਾਇਬ੍ਰੇਰੀ ਵਿੱਚ {{total}} ਕਾਪੀਆਂ",
       "reserveButton": "ਇਹ ਕਿਤਾਬ ਰਿਜ਼ਰਵ ਕਰੋ",
-      "reserveSuccessToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਹੋ ਗਈ — ਫਰੰਟ ਡੈਸਕ ਤੋਂ ਲਵੋ"
+      "reserveSuccessToast": "\"{{title}}\" ਰਿਜ਼ਰਵ ਹੋ ਗਈ — ਫਰੰਟ ਡੈਸਕ ਤੋਂ ਲਵੋ",
+      "relatedBooks": {
+        "title": "ਜਿਨ੍ਹਾਂ ਪਾਠਕਾਂ ਨੇ ਇਹ ਕਿਤਾਬ ਲਈ, ਉਨ੍ਹਾਂ ਨੇ ਇਹ ਵੀ ਲਈ…"
+      }
     },
     "wishlist": {
       "button": "ਵਿਸ਼ਲਿਸਟ",
@@ -1407,7 +1427,12 @@
       "confirmLabel": "ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਕਰੋ"
     },
     "cancelSuccessToast": "\"{{book}}\" ਲਈ ਤੁਹਾਡੀ ਰਿਜ਼ਰਵੇਸ਼ਨ ਰੱਦ ਕਰ ਦਿੱਤੀ ਗਈ",
-    "dueBy": "{{date}} ਤੱਕ ਵਾਪਸ ਕਰੋ"
+    "dueBy": "{{date}} ਤੱਕ ਵਾਪਸ ਕਰੋ",
+    "queue": {
+      "position": "ਕਤਾਰ ਵਿੱਚ #{{position}}",
+      "eta": "ਤੁਹਾਡੀ ਵਾਰੀ ਆਉਣ ਵਿੱਚ ~{{days}} ਦਿਨ",
+      "etaReady": "ਇੱਕ ਕਾਪੀ ਖਾਲੀ ਹੈ, ਮੈਨੇਜਰ ਦੀ ਮਨਜ਼ੂਰੀ ਬਾਕੀ ਹੈ"
+    }
   },
   "seatBooking": {
     "pageTitle": "ਸੀਟ ਬੁਕਿੰਗ",
@@ -1443,6 +1468,12 @@
       "currentDays_other": "{{count}} ਦਿਨ",
       "longest_one": "ਸਭ ਤੋਂ ਲੰਬੀ ਸਟ੍ਰੀਕ: {{count}} ਦਿਨ",
       "longest_other": "ਸਭ ਤੋਂ ਲੰਬੀ ਸਟ੍ਰੀਕ: {{count}} ਦਿਨ"
+    },
+    "certificate": {
+      "shareButton": "ਟੀਚਾ ਪੂਰਾ — ਸਰਟੀਫਿਕੇਟ ਸਾਂਝਾ ਕਰੋ",
+      "title": "ਤੁਹਾਡਾ ਰੀਡਿੰਗ ਸਰਟੀਫਿਕੇਟ",
+      "download": "ਡਾਊਨਲੋਡ ਕਰੋ",
+      "share": "ਸਾਂਝਾ ਕਰੋ"
     },
     "lists": {
       "currentlyReading": {
@@ -1836,6 +1867,13 @@
       "newRegistrations": "ਨਵੀਆਂ ਰਜਿਸਟ੍ਰੇਸ਼ਨਾਂ",
       "pendingPayments": "ਬਕਾਇਆ ਭੁਗਤਾਨ",
       "walkInRequests": "ਵਾਕ-ਇਨ ਬੇਨਤੀਆਂ"
+    },
+    "paymentHistory": {
+      "title": "ਭੁਗਤਾਨ ਇਤਿਹਾਸ",
+      "empty": {
+        "title": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ",
+        "description": "ਤੁਹਾਡੇ ਦੁਆਰਾ ਕੀਤੇ ਭੁਗਤਾਨ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।"
+      }
     }
   },
   "contactUs": {

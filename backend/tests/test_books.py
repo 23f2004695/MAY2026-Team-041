@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
 
 os.environ["APP_ENV"] = "test"
 
@@ -55,6 +56,7 @@ async def _make_user(role_name: str):
 async def _db_connection():
     await prisma.connect()
     yield
+    await prisma.loan.delete_many(where={"book": {"title": {"startswith": TEST_TITLE_MARKER}}})
     await prisma.book.delete_many(where={"title": {"startswith": TEST_TITLE_MARKER}})
     await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
     await prisma.disconnect()
@@ -282,3 +284,55 @@ async def test_delete_book_success_as_admin(admin_user, librarian_user):
 
     assert delete_response.status_code == 204
     assert get_response.status_code == 404
+
+
+async def test_related_books_not_found():
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/books/{uuid.uuid4()}/related")
+
+    assert response.status_code == 404
+
+
+async def test_related_books_ranks_by_co_borrowing(member_user):
+    anchor = await prisma.book.create(data=_book_payload(category="Fiction"))
+    co_borrowed = await prisma.book.create(data=_book_payload(category="Sci-Fi"))
+    unrelated = await prisma.book.create(data=_book_payload(category="History"))
+
+    other_member = await _make_user(Role.MEMBER)
+    for reader in (member_user, other_member):
+        await prisma.loan.create(
+            data={
+                "bookId": anchor.id,
+                "memberId": reader.id,
+                "dueDate": datetime.now(UTC) + timedelta(days=7),
+                "createdById": reader.id,
+            }
+        )
+        await prisma.loan.create(
+            data={
+                "bookId": co_borrowed.id,
+                "memberId": reader.id,
+                "dueDate": datetime.now(UTC) + timedelta(days=7),
+                "createdById": reader.id,
+            }
+        )
+
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/books/{anchor.id}/related")
+
+    assert response.status_code == 200
+    ids = [item["id"] for item in response.json()]
+    assert co_borrowed.id in ids
+    assert unrelated.id not in ids or ids.index(co_borrowed.id) < ids.index(unrelated.id)
+
+
+async def test_related_books_falls_back_to_category_without_loan_history():
+    anchor = await prisma.book.create(data=_book_payload(category="Poetry"))
+    same_category = await prisma.book.create(data=_book_payload(category="Poetry"))
+
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/books/{anchor.id}/related")
+
+    assert response.status_code == 200
+    ids = [item["id"] for item in response.json()]
+    assert same_category.id in ids

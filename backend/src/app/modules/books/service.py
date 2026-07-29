@@ -26,6 +26,28 @@ async def get_book(book_id: str) -> BookOut:
     return BookOut.from_prisma(book)
 
 
+RELATED_BOOKS_LIMIT = 6
+
+
+async def get_related_books(book_id: str) -> list[BookOut]:
+    book = await repository.find_by_id(book_id)
+    if book is None or book.deletedAt is not None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+
+    related = await repository.find_co_borrowed(book_id, limit=RELATED_BOOKS_LIMIT)
+
+    if len(related) < RELATED_BOOKS_LIMIT:
+        exclude_ids = [book_id] + [b.id for b in related]
+        related += await repository.find_by_category_or_author(
+            category=book.category,
+            author=book.author,
+            exclude_ids=exclude_ids,
+            limit=RELATED_BOOKS_LIMIT - len(related),
+        )
+
+    return [BookOut.from_prisma(b) for b in related]
+
+
 async def create_book(payload: BookCreate) -> BookOut:
     try:
         book = await repository.create_book(

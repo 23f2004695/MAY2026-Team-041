@@ -106,6 +106,30 @@ async def list_members(
     )
 
 
+async def list_payments(
+    *, search: str | None, page: int, page_size: int
+) -> tuple[list[Payment], int]:
+    where: dict = {}
+    if search:
+        where["user"] = {
+            "is": {
+                "OR": [
+                    {"fullName": {"contains": search, "mode": "insensitive"}},
+                    {"email": {"contains": search, "mode": "insensitive"}},
+                ]
+            }
+        }
+
+    return await paginate(
+        prisma.payment,
+        where=where,
+        include={"user": True},
+        order={"createdAt": "desc"},
+        skip=(page - 1) * page_size,
+        take=page_size,
+    )
+
+
 # Latest-row-per-user via a single ordered query is simpler than a per-user lookup and
 # avoids N+1s for a page of members; dict.setdefault keeps the first (most recent) row.
 async def list_latest_payments(member_ids: list[str]) -> dict[str, Payment]:

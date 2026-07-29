@@ -120,6 +120,11 @@ const AdminDashboardPage = lazy(() =>
 const AdminMembersPage = lazy(() =>
   import('@/features/admin/pages/AdminMembersPage').then((m) => ({ default: m.AdminMembersPage })),
 );
+const AdminPaymentsPage = lazy(() =>
+  import('@/features/admin/pages/AdminPaymentsPage').then((m) => ({
+    default: m.AdminPaymentsPage,
+  })),
+);
 const ITHeadDashboardPage = lazy(() =>
   import('@/features/it-head/pages/ITHeadDashboardPage').then((m) => ({
     default: m.ITHeadDashboardPage,
@@ -196,6 +201,7 @@ const router = createBrowserRouter([
     children: [
       { path: relative(ROUTES.ADMIN), element: withSuspense(<AdminDashboardPage />) },
       { path: relative(ROUTES.ADMIN_MEMBERS), element: withSuspense(<AdminMembersPage />) },
+      { path: relative(ROUTES.ADMIN_PAYMENTS), element: withSuspense(<AdminPaymentsPage />) },
     ],
   },
   {

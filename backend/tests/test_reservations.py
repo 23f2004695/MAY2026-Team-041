@@ -192,3 +192,52 @@ async def test_cancel_another_members_reservation_is_not_found(member_user, libr
         response = await client.delete(f"/api/v1/reservations/{reservation_id}")
 
     assert response.status_code == 404
+
+
+async def test_first_in_line_is_position_one_with_zero_day_eta(member_user, librarian_user):
+    book_id = await _create_book(librarian_user, total_copies=1)
+
+    async with _client_as(member_user) as client:
+        created = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert created.json()["queue_position"] == 1
+    assert created.json()["eta_days"] == 0
+
+
+async def test_second_in_line_has_unknown_eta_before_any_copy_is_loaned_out(
+    member_user, librarian_user
+):
+    other_member = await _make_user(Role.MEMBER)
+    book_id = await _create_book(librarian_user, total_copies=1)
+
+    async with _client_as(other_member) as client:
+        await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    async with _client_as(member_user) as client:
+        second = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    # 1 copy, 2 pending requests, but nobody has actually borrowed it yet (only manager
+    # approval creates a loan) — there's no due date to count down from.
+    assert second.json()["queue_position"] == 2
+    assert second.json()["eta_days"] is None
+
+
+async def test_second_in_line_eta_matches_the_active_loans_due_date(member_user, librarian_user):
+    manager = await _make_user(Role.MANAGER)
+    other_member = await _make_user(Role.MEMBER)
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async with _client_as(manager) as client:
+        await client.post("/api/v1/loans", json={"book_id": book_id, "member_id": other_member.id})
+
+    third_member = await _make_user(Role.MEMBER)
+    async with _client_as(third_member) as client:
+        await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    async with _client_as(member_user) as client:
+        second = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    # 2 copies, 1 on loan (14-day period) -> 1 available now, 2 pending requests.
+    # First request gets the free copy now; second has to wait for the loan's due date.
+    assert second.json()["queue_position"] == 2
+    assert second.json()["eta_days"] == 14

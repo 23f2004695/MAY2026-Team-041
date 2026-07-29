@@ -16,7 +16,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ProgressBar, StatisticCard } from '@/components/common';
-import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
+import { Badge, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
+import { formatCurrency } from '@/lib/format';
 import { guardianStats } from '@/mocks/guardian';
 import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
@@ -25,6 +26,7 @@ import {
   type GuardianChild,
   type MemberRecord,
   type Membership,
+  type PaymentRecord,
   type PermissionRequestRecord,
   type ReadingProgressEntry,
   type SupportTicketRecord,
@@ -249,6 +251,14 @@ function formatJoinDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 }
 
+function formatPaymentDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
 // ponytail: booksRead comes from real ReadingProgress (status=completed); pagesRead
 // and hoursRead have no tracking source at all (no page counts, no time tracking)
 // so they show honest zeros instead of fabricated numbers. Achievements and borrow
@@ -256,13 +266,15 @@ function formatJoinDate(iso: string) {
 // empty states rather than the old mock badges/table rows.
 function MemberProfile() {
   const { t } = useTranslation();
-  const { fullName, email, getMembership, getMyReadingProgress } = useAuth();
+  const { fullName, email, getMembership, getMyReadingProgress, getMyPayments } = useAuth();
   const [membership, setMembership] = useState<Membership | null>(null);
   const [progress, setProgress] = useState<ReadingProgressEntry[]>([]);
+  const [payments, setPayments] = useState<PaymentRecord[]>([]);
 
   useEffect(() => {
     getMembership().then(setMembership).catch(() => setMembership(null));
     getMyReadingProgress().then(setProgress).catch(() => setProgress([]));
+    getMyPayments().then(setPayments).catch(() => setPayments([]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -283,6 +295,45 @@ function MemberProfile() {
         <StatisticCard icon={FileText} label={t('profile.stats.pagesRead')} value="0" />
         <StatisticCard icon={Clock} label={t('profile.stats.hoursRead')} value="0" />
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('profile.paymentHistory.title')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {payments.length === 0 ? (
+            <EmptyState
+              icon={IndianRupee}
+              title={t('profile.paymentHistory.empty.title')}
+              description={t('profile.paymentHistory.empty.description')}
+            />
+          ) : (
+            <ul className="flex flex-col gap-3">
+              {payments.map((payment) => (
+                <li
+                  key={payment.id}
+                  className="flex items-center justify-between gap-2 rounded-lg border border-border p-3 text-sm"
+                >
+                  <div>
+                    <p className="font-medium text-foreground">{payment.label}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatPaymentDate(payment.created_at)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-foreground">
+                      {formatCurrency(payment.amount)}
+                    </span>
+                    <Badge variant={payment.status === 'success' ? 'success' : 'outline'}>
+                      {payment.status}
+                    </Badge>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

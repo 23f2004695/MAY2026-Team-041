@@ -92,7 +92,8 @@
     "guardianOverview": "अभिभावक अवलोकन",
     "backToApp": "ऐप पर वापस जाएँ",
     "contactUs": "हमसे संपर्क करें",
-    "borrowHistory": "उधार इतिहास"
+    "borrowHistory": "उधार इतिहास",
+    "payments": "भुगतान"
   },
   "userMenu": {
     "openAccountMenu": "खाता मेनू खोलें",
@@ -409,6 +410,22 @@
     },
     "seatStatus": {
       "title": "लाइव सीट स्थिति"
+    },
+    "payments": {
+      "pageTitle": "भुगतान",
+      "pageDescription": "सभी सदस्यों के सभी दर्ज भुगतान।",
+      "searchPlaceholder": "सदस्य के नाम या ईमेल से खोजें",
+      "table": {
+        "member": "सदस्य",
+        "amount": "राशि",
+        "label": "विवरण",
+        "status": "स्थिति",
+        "date": "तारीख़"
+      },
+      "empty": {
+        "title": "कोई भुगतान नहीं मिला",
+        "description": "कोई अलग खोज आज़माएँ, या सदस्यों के भुगतान शुरू करने के बाद फिर से जाँचें।"
+      }
     }
   },
   "itHead": {
@@ -1332,7 +1349,10 @@
       "backToBooks": "पुस्तकों पर वापस जाएँ",
       "copiesAvailable": "लाइब्रेरी में {{total}} प्रतियाँ",
       "reserveButton": "यह पुस्तक आरक्षित करें",
-      "reserveSuccessToast": "\"{{title}}\" आरक्षित हो गई — फ्रंट डेस्क से लें"
+      "reserveSuccessToast": "\"{{title}}\" आरक्षित हो गई — फ्रंट डेस्क से लें",
+      "relatedBooks": {
+        "title": "जिन पाठकों ने यह पुस्तक ली, उन्होंने यह भी ली…"
+      }
     },
     "wishlist": {
       "button": "विशलिस्ट",
@@ -1407,7 +1427,12 @@
       "confirmLabel": "आरक्षण रद्द करें"
     },
     "cancelSuccessToast": "\"{{book}}\" के लिए आपका आरक्षण रद्द कर दिया गया",
-    "dueBy": "{{date}} तक वापस करें"
+    "dueBy": "{{date}} तक वापस करें",
+    "queue": {
+      "position": "क्रम में #{{position}}",
+      "eta": "आपकी बारी आने में ~{{days}} दिन",
+      "etaReady": "एक प्रति उपलब्ध है, प्रबंधक की मंज़ूरी बाकी है"
+    }
   },
   "seatBooking": {
     "pageTitle": "सीट बुकिंग",
@@ -1443,6 +1468,12 @@
       "currentDays_other": "{{count}} दिन",
       "longest_one": "सबसे लंबी स्ट्रीक: {{count}} दिन",
       "longest_other": "सबसे लंबी स्ट्रीक: {{count}} दिन"
+    },
+    "certificate": {
+      "shareButton": "लक्ष्य पूरा — प्रमाणपत्र साझा करें",
+      "title": "आपका पठन प्रमाणपत्र",
+      "download": "डाउनलोड करें",
+      "share": "साझा करें"
     },
     "lists": {
       "currentlyReading": {
@@ -1836,6 +1867,13 @@
       "newRegistrations": "नए पंजीकरण",
       "pendingPayments": "लंबित भुगतान",
       "walkInRequests": "वॉक-इन अनुरोध"
+    },
+    "paymentHistory": {
+      "title": "भुगतान इतिहास",
+      "empty": {
+        "title": "अभी तक कोई भुगतान नहीं",
+        "description": "आपके द्वारा किए गए भुगतान यहाँ दिखाई देंगे।"
+      }
     }
   },
   "contactUs": {

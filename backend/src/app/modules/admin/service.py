@@ -7,6 +7,8 @@ from app.modules.admin.schemas import (
     AdminDashboardOut,
     AdminMemberListOut,
     AdminMemberOut,
+    AdminPaymentListOut,
+    AdminPaymentOut,
     AdminStatsOut,
     AnnouncementCreate,
     AnnouncementOut,
@@ -321,3 +323,23 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> Admi
         )
 
     return AdminMemberListOut(items=items, total=total, page=page, page_size=page_size)
+
+
+async def list_payments(*, search: str | None, page: int, page_size: int) -> AdminPaymentListOut:
+    payments, total = await repository.list_payments(search=search, page=page, page_size=page_size)
+
+    items = [
+        AdminPaymentOut(
+            id=payment.id,
+            member_id=payment.userId,
+            member_name=payment.user.fullName,
+            member_email=payment.user.email,
+            amount=payment.amount,
+            label=payment.label,
+            status=payment.status,
+            plan_months=payment.planMonths,
+            created_at=payment.createdAt,
+        )
+        for payment in payments
+    ]
+    return AdminPaymentListOut(items=items, total=total, page=page, page_size=page_size)
