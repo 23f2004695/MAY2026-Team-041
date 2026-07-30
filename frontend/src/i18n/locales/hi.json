@@ -187,6 +187,8 @@
     "amountDue": "देय राशि",
     "payWithRazorpay": "Razorpay से भुगतान करें",
     "payOnlineToast": "₹{{amount}} का भुगतान प्रोसेस किया जा रहा है",
+    "paymentSuccessToast": "भुगतान सफल रहा",
+    "razorpayLoadError": "भुगतान गेटवे लोड नहीं हो सका — अपना कनेक्शन जांचें और फिर से कोशिश करें।",
     "payAtLibraryTitle": "व्यक्तिगत रूप से भुगतान करना पसंद करेंगे?",
     "payAtLibraryDescription": "ऑनलाइन भुगतान छोड़ें — काउंटर पर जाएँ और मैनेजर को नकद भुगतान करें।",
     "contactManager": "मैनेजर को सूचित करें",
@@ -1910,6 +1912,11 @@
       "seatBooking": "Seat Booking",
       "donations": "Donations",
       "caption": "All contact details are monitored during business hours."
+    },
+    "map": {
+      "title": "हमसे मिलें",
+      "description": "हमें कनॉट प्लेस, नई दिल्ली में खोजें।",
+      "getDirections": "दिशा-निर्देश पाएं"
     },
     "errors": {
       "name": "Name is required.",

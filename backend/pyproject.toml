@@ -17,6 +17,7 @@ dependencies = [
     "pydantic-settings>=2.3.0",
     "pyjwt>=2.9.0",
     "python-dotenv>=1.0.1",
+    "razorpay>=2.0.1",
     "uvicorn[standard]>=0.30.0",
 ]
 

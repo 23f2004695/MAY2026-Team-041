@@ -187,6 +187,8 @@
     "amountDue": "ਬਕਾਇਆ ਰਕਮ",
     "payWithRazorpay": "Razorpay ਨਾਲ ਭੁਗਤਾਨ ਕਰੋ",
     "payOnlineToast": "₹{{amount}} ਦਾ ਭੁਗਤਾਨ ਪ੍ਰੋਸੈਸ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+    "paymentSuccessToast": "ਭੁਗਤਾਨ ਸਫਲ ਹੋਇਆ",
+    "razorpayLoadError": "ਭੁਗਤਾਨ ਗੇਟਵੇ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ — ਆਪਣਾ ਕਨੈਕਸ਼ਨ ਜਾਂਚੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
     "payAtLibraryTitle": "ਖੁਦ ਹਾਜ਼ਰ ਹੋ ਕੇ ਭੁਗਤਾਨ ਕਰਨਾ ਪਸੰਦ ਕਰੋਗੇ?",
     "payAtLibraryDescription": "ਆਨਲਾਈਨ ਭੁਗਤਾਨ ਛੱਡੋ — ਕਾਊਂਟਰ 'ਤੇ ਜਾਓ ਅਤੇ ਮੈਨੇਜਰ ਨੂੰ ਨਕਦ ਭੁਗਤਾਨ ਕਰੋ।",
     "contactManager": "ਮੈਨੇਜਰ ਨੂੰ ਸੂਚਿਤ ਕਰੋ",
@@ -1910,6 +1912,11 @@
       "seatBooking": "Seat Booking",
       "donations": "Donations",
       "caption": "All contact details are monitored during business hours."
+    },
+    "map": {
+      "title": "ਸਾਨੂੰ ਮਿਲੋ",
+      "description": "ਸਾਨੂੰ ਕਨਾਟ ਪਲੇਸ, ਨਵੀਂ ਦਿੱਲੀ ਵਿੱਚ ਲੱਭੋ।",
+      "getDirections": "ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼ ਲਵੋ"
     },
     "errors": {
       "name": "Name is required.",

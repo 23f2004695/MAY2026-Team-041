@@ -4,6 +4,7 @@ import uuid
 os.environ["APP_ENV"] = "test"
 
 import pytest_asyncio
+import razorpay
 from httpx import ASGITransport, AsyncClient
 
 from app.core.config import get_settings
@@ -12,6 +13,7 @@ from app.core.security import hash_password
 from app.db.prisma import prisma
 from app.main import create_app
 from app.modules.members import repository
+from app.modules.payments import service as payments_service
 
 os.environ.setdefault("DATABASE_URL", get_settings().database_url)
 
@@ -308,3 +310,171 @@ async def test_payment_with_an_exhausted_coupon_fails(client, member_user, admin
         headers=member_headers,
     )
     assert second.status_code == 409
+
+
+class _FakeOrderResource:
+    def __init__(self):
+        self.created: dict | None = None
+
+    def create(self, data: dict) -> dict:
+        self.created = data
+        return {"id": "order_fake123", "amount": data["amount"], "notes": data["notes"]}
+
+    def fetch(self, order_id: str) -> dict:
+        assert self.created is not None
+        return {"id": order_id, "amount": self.created["amount"], "notes": self.created["notes"]}
+
+
+class _FakeUtility:
+    def __init__(self, *, should_fail: bool = False):
+        self.should_fail = should_fail
+
+    def verify_payment_signature(self, params: dict) -> bool:
+        if self.should_fail:
+            raise razorpay.errors.SignatureVerificationError("bad signature")
+        return True
+
+
+class _FakeRazorpayClient:
+    def __init__(self, *, should_fail_signature: bool = False):
+        self.order = _FakeOrderResource()
+        self.utility = _FakeUtility(should_fail=should_fail_signature)
+
+
+async def test_create_razorpay_order_requires_authentication(client):
+    response = await client.post(
+        "/api/v1/payments/razorpay/order", json={"amount": 499, "label": "1 Month"}
+    )
+    assert response.status_code == 401
+
+
+async def test_create_razorpay_order_without_configured_keys_returns_503(
+    client, member_user, monkeypatch
+):
+    settings = get_settings()
+    monkeypatch.setattr(settings, "razorpay_key_id", "")
+    monkeypatch.setattr(settings, "razorpay_key_secret", "")
+    monkeypatch.setattr(payments_service, "get_settings", lambda: settings)
+    member_headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 499, "label": "1 Month"},
+        headers=member_headers,
+    )
+    assert response.status_code == 503
+
+
+async def test_create_razorpay_order_returns_order_details(client, member_user, monkeypatch):
+    fake_client = _FakeRazorpayClient()
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    member_headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 499, "label": "1 Month — ₹499", "plan_months": 1},
+        headers=member_headers,
+    )
+
+    assert response.status_code == 201
+    body = response.json()
+    assert body["order_id"] == "order_fake123"
+    assert body["amount"] == 499
+    assert body["currency"] == "INR"
+    assert fake_client.order.created["amount"] == 49900
+
+
+async def test_create_razorpay_order_applies_coupon_before_charging(
+    client, member_user, admin_user, monkeypatch
+):
+    admin_headers = await _login(client, admin_user)
+    coupon = await _generate_coupon(client, admin_headers, discount_percent=20, max_uses=1)
+    fake_client = _FakeRazorpayClient()
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    member_headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 500, "label": "Test", "coupon_code": coupon["code"]},
+        headers=member_headers,
+    )
+
+    assert response.status_code == 201
+    assert response.json()["amount"] == 400
+    assert fake_client.order.created["amount"] == 40000
+
+
+async def test_verify_razorpay_payment_rejects_bad_signature(client, member_user, monkeypatch):
+    fake_client = _FakeRazorpayClient(should_fail_signature=True)
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    member_headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments/razorpay/verify",
+        json={
+            "razorpay_order_id": "order_fake123",
+            "razorpay_payment_id": "pay_fake123",
+            "razorpay_signature": "not-a-real-signature",
+        },
+        headers=member_headers,
+    )
+
+    assert response.status_code == 400
+
+
+async def test_verify_razorpay_payment_rejects_another_members_order(
+    client, member_user, admin_user, monkeypatch
+):
+    fake_client = _FakeRazorpayClient()
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    admin_headers = await _login(client, admin_user)
+    member_headers = await _login(client, member_user)
+
+    await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 499, "label": "1 Month"},
+        headers=member_headers,
+    )
+
+    response = await client.post(
+        "/api/v1/payments/razorpay/verify",
+        json={
+            "razorpay_order_id": "order_fake123",
+            "razorpay_payment_id": "pay_fake123",
+            "razorpay_signature": "irrelevant-since-fake-verifies-anything-valid",
+        },
+        headers=admin_headers,
+    )
+
+    assert response.status_code == 403
+
+
+async def test_verify_razorpay_payment_records_a_real_payment(client, member_user, monkeypatch):
+    fake_client = _FakeRazorpayClient()
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    member_headers = await _login(client, member_user)
+
+    await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 499, "label": "1 Month — ₹499", "plan_months": 1},
+        headers=member_headers,
+    )
+
+    response = await client.post(
+        "/api/v1/payments/razorpay/verify",
+        json={
+            "razorpay_order_id": "order_fake123",
+            "razorpay_payment_id": "pay_fake123",
+            "razorpay_signature": "sig_fake123",
+        },
+        headers=member_headers,
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["amount"] == 499
+    assert body["label"] == "1 Month — ₹499"
+    assert body["status"] == "success"
+
+    membership = await client.get("/api/v1/payments/me/membership", headers=member_headers)
+    assert membership.json()["is_active"] is True
