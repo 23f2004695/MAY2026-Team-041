@@ -101,7 +101,8 @@ RAG_KNOWLEDGE: list[dict] = [
     {
         "keywords": ["donate book", "donation", "donate fund"],
         "answer": (
-            "To donate books: bring gently used books to the library desk or use the Donations section. "
+            "To donate books: bring gently used books to the library desk or use the "
+            "Donations section. "
             "For fund donations, open the Donations page and follow the steps. "
             "Contact: donations@readingclub.org"
         ),

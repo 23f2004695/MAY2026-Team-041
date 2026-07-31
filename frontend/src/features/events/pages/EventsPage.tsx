@@ -57,9 +57,7 @@ export function EventsPage() {
 
   const activeEvent = events.find((e) => e.id === activeEventId) ?? null;
 
-  useEffect(() => {
-    fetchEvents();
-  }, [token]);
+  useEffect(fetchEvents, [token]);
 
   function fetchEvents() {
     setLoading(true);

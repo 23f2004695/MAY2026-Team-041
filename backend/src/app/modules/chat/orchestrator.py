@@ -122,7 +122,8 @@ TOOLS = [get_upcoming_events, get_books, get_members, get_my_reading_progress]
 
 # ── System prompt ─────────────────────────────────────────────────────────────
 def _system_prompt(user_name: str, role: str, member_id: str) -> str:
-    return f"""You are Shelfie, a friendly library assistant for the Community Reading Club platform.
+    return f"""You are Shelfie, a friendly library assistant for the Community Reading Club
+platform.
 
 Current user: {user_name} | Role: {role} | ID: {member_id}
 

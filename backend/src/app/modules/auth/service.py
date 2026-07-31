@@ -202,7 +202,8 @@ async def forgot_password(payload: ForgotPasswordRequest) -> None:
         user.email,
         "Reset your library password",
         f"Reset your password: {reset_link}\n\nThis link expires in "
-        f"{get_settings().reset_token_expire_minutes} minutes. If you didn't request this, ignore it.",
+        f"{get_settings().reset_token_expire_minutes} minutes. "
+        "If you didn't request this, ignore it.",
     )
 
 

@@ -19,8 +19,6 @@ export function PricingCardsSection() {
 
   useEffect(() => {
     let cancelled = false;
-    setIsLoading(true);
-    setHasError(false);
     getPricingPlans()
       .then((data) => {
         if (cancelled) return;
@@ -39,6 +37,12 @@ export function PricingCardsSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reloadKey]);
 
+  function handleRetry() {
+    setIsLoading(true);
+    setHasError(false);
+    setReloadKey((key) => key + 1);
+  }
+
   return (
     <Section ariaLabel="Pricing plans" tone="secondary">
       <FadeUp>
@@ -52,10 +56,7 @@ export function PricingCardsSection() {
           <Loader />
         </div>
       ) : hasError ? (
-        <ErrorState
-          className="mt-12 min-h-0 py-8"
-          onRetry={() => setReloadKey((key) => key + 1)}
-        />
+        <ErrorState className="mt-12 min-h-0 py-8" onRetry={handleRetry} />
       ) : (
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4 lg:items-start">
           {plans.map((plan, index) => (
