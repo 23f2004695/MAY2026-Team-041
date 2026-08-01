@@ -153,16 +153,73 @@ make format
 make test
 ```
 
-Run Playwright tests:
+## Testing
+
+There are three test suites, each checking a different layer:
+
+| Suite | Tool | What it checks | Location |
+|---|---|---|---|
+| Backend | pytest | API endpoints, business logic, DB state | `backend/tests/` |
+| Frontend units | Vitest | Individual components/functions, no server | `frontend/src/**/*.test.tsx` |
+| End-to-end | Playwright | The full flow through a real browser against the real backend + DB | `frontend/tests/e2e/` |
+
+**Backend (pytest)** — needs PostgreSQL running (`docker compose up -d --wait db`, or
+just run `make backend-dev` once beforehand):
 
 ```bash
-make test-e2e
+cd backend
+uv run pytest
 ```
 
-Install Playwright browsers once before the first e2e run:
+or from the repo root:
 
 ```bash
-npm run test:e2e:install
+make test-backend
+```
+
+**Frontend units (Vitest)** — no server needed:
+
+```bash
+cd frontend
+npm run test
+```
+
+or from the repo root:
+
+```bash
+make test-frontend
+```
+
+**End-to-end (Playwright)** — this one drives a real browser against a real running
+backend, so it needs more set up first:
+
+1. Install Playwright's browser binaries once (skip if already installed):
+   ```bash
+   npm run test:e2e:install
+   ```
+2. Start PostgreSQL and the backend (leave this running in its own terminal):
+   ```bash
+   make backend-dev
+   ```
+3. Seed the dev accounts (one per role — used by the Login page's "Continue as
+   `<role>`" buttons and by the e2e tests) and the pricing plans, once per fresh
+   database:
+   ```bash
+   cd backend
+   uv run python scripts/seed_dev_accounts.py
+   uv run python scripts/seed_pricing_plans.py
+   ```
+4. Run the suite (this auto-starts the frontend dev server itself — no need to run
+   `npm run frontend` separately):
+   ```bash
+   make test-e2e
+   ```
+
+Run everything (backend + frontend units only, not e2e — e2e needs the manual setup
+above):
+
+```bash
+make test
 ```
 
 ## Database

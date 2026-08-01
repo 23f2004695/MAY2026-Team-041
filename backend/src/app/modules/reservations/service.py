@@ -11,9 +11,13 @@ from app.modules.reservations.schemas import ReservationCreate, ReservationOut
 
 
 async def _notify_managers(message: str) -> None:
-    managers = await prisma.user.find_many(where={"role": {"name": Role.MANAGER}, "deletedAt": None})
+    managers = await prisma.user.find_many(
+        where={"role": {"name": Role.MANAGER}, "deletedAt": None}
+    )
     for manager in managers:
-        await notifications_service.create_notification(manager.id, "reservation-requested", message)
+        await notifications_service.create_notification(
+            manager.id, "reservation-requested", message
+        )
 
 
 async def _queue_info(reservation) -> tuple[int | None, int | None]:

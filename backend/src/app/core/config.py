@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     )
     jwt_algorithm: str = "HS256"
     google_client_id: str = Field(default="", validation_alias="GOOGLE_CLIENT_ID")
+    # Left blank in dev — order creation 503s until test-mode keys from the Razorpay
+    # dashboard (Settings > API Keys) are set. key_secret never leaves the backend.
+    razorpay_key_id: str = Field(default="", validation_alias="RAZORPAY_KEY_ID")
+    razorpay_key_secret: str = Field(default="", validation_alias="RAZORPAY_KEY_SECRET")
     openai_api_key: str = Field(default="", validation_alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", validation_alias="OPENAI_MODEL")
     access_token_expire_minutes: int = 15

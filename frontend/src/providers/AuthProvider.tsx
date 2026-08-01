@@ -50,6 +50,20 @@ export interface PaymentRecord {
   created_at: string;
 }
 
+export interface RazorpayOrder {
+  order_id: string;
+  amount: number;
+  currency: string;
+  key_id: string;
+  label: string;
+}
+
+export interface RazorpayVerifyPayload {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
 export interface Membership {
   plan_label: string;
   purchased_at: string;
@@ -732,6 +746,8 @@ interface AuthContextValue extends AuthState {
   completeProfile: (payload: CompleteProfilePayload) => Promise<void>;
   updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
   createPayment: (payload: PaymentPayload) => Promise<void>;
+  createRazorpayOrder: (payload: PaymentPayload) => Promise<RazorpayOrder>;
+  verifyRazorpayPayment: (payload: RazorpayVerifyPayload) => Promise<PaymentRecord>;
   payAtLibrary: (payload: PaymentPayload) => Promise<void>;
   deleteAccount: () => Promise<void>;
   getMembership: () => Promise<Membership | null>;
@@ -939,6 +955,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function createPayment(payload: PaymentPayload) {
     if (!state.token) throw new Error('Not authenticated');
     await apiPost('/payments', payload, state.token);
+  }
+
+  async function createRazorpayOrder(payload: PaymentPayload): Promise<RazorpayOrder> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<RazorpayOrder>('/payments/razorpay/order', payload, state.token);
+  }
+
+  async function verifyRazorpayPayment(payload: RazorpayVerifyPayload): Promise<PaymentRecord> {
+    if (!state.token) throw new Error('Not authenticated');
+    return apiPost<PaymentRecord>('/payments/razorpay/verify', payload, state.token);
   }
 
   async function payAtLibrary(payload: PaymentPayload) {
@@ -1550,6 +1576,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         completeProfile,
         updateProfile,
         createPayment,
+        createRazorpayOrder,
+        verifyRazorpayPayment,
         payAtLibrary,
         deleteAccount,
         getMembership,

@@ -187,6 +187,8 @@
     "amountDue": "Amount due",
     "payWithRazorpay": "Pay with Razorpay",
     "payOnlineToast": "Processing ₹{{amount}} payment",
+    "paymentSuccessToast": "Payment successful",
+    "razorpayLoadError": "Couldn't load the payment gateway — check your connection and try again.",
     "payAtLibraryTitle": "Prefer to pay in person?",
     "payAtLibraryDescription": "Skip online payment — visit the counter and pay the manager in cash.",
     "contactManager": "Notify the Manager",
@@ -1925,6 +1927,11 @@
       "seatBooking": "Seat Booking",
       "donations": "Donations",
       "caption": "All contact details are monitored during business hours."
+    },
+    "map": {
+      "title": "Visit Us",
+      "description": "Find us at Connaught Place, New Delhi.",
+      "getDirections": "Get directions"
     },
     "errors": {
       "name": "Name is required.",

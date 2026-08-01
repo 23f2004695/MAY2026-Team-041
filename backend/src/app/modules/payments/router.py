@@ -10,7 +10,14 @@ from app.db.prisma import prisma
 from app.modules.coupons import service as coupons_service
 from app.modules.notifications import service as notifications_service
 from app.modules.payments import repository
-from app.modules.payments.schemas import MembershipOut, PaymentCreate, PaymentOut
+from app.modules.payments import service as payments_service
+from app.modules.payments.schemas import (
+    MembershipOut,
+    PaymentCreate,
+    PaymentOut,
+    RazorpayOrderOut,
+    RazorpayVerifyRequest,
+)
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
@@ -47,6 +54,24 @@ async def pay_at_library(
     message = f"{user.fullName} wants to pay ₹{payload.amount} in cash for {payload.label}."
     for manager in managers:
         await notifications_service.create_notification(manager.id, "payment-pending", message)
+
+
+@router.post(
+    "/razorpay/order", response_model=RazorpayOrderOut, status_code=status.HTTP_201_CREATED
+)
+async def create_razorpay_order(
+    payload: PaymentCreate,
+    user: Annotated[User, Depends(get_current_user)],
+) -> RazorpayOrderOut:
+    return await payments_service.create_razorpay_order(user, payload)
+
+
+@router.post("/razorpay/verify", response_model=PaymentOut)
+async def verify_razorpay_payment(
+    payload: RazorpayVerifyRequest,
+    user: Annotated[User, Depends(get_current_user)],
+) -> PaymentOut:
+    return await payments_service.verify_and_record_razorpay_payment(user, payload)
 
 
 @router.get("/me", response_model=list[PaymentOut])

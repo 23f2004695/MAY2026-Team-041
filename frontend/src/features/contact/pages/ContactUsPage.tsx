@@ -28,6 +28,8 @@ import { apiPost, getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { isValidEmail } from '@/lib/email';
 
+import { LibraryMap } from '../components/LibraryMap';
+
 // International-friendly: an optional leading +, then 7-15 digits (spaces/dashes/parens allowed).
 const PHONE_PATTERN = /^\+?[\d\s()-]{7,20}$/;
 
@@ -365,6 +367,16 @@ export function ContactUsPage() {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+
+            <Card className="mt-6 rounded-3xl border-border bg-surface shadow-panel">
+              <CardHeader>
+                <CardTitle>{t('contactUs.map.title')}</CardTitle>
+                <CardDescription>{t('contactUs.map.description')}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LibraryMap />
               </CardContent>
             </Card>
           </div>
