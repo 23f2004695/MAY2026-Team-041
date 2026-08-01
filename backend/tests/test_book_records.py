@@ -61,6 +61,8 @@ async def _login(client: AsyncClient, user) -> str:
 
 
 async def test_create_book_record_requires_it_head_role(client):
+    """Test Case 1: Create Book Record Requires IT-Head Role"""
+
     member = await _make_user(Role.MEMBER)
     token = await _login(client, member)
     book = await prisma.book.create(
@@ -72,36 +74,44 @@ async def test_create_book_record_requires_it_head_role(client):
         json={"book_id": book.id, "type": "lost"},
         headers={"Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 403
+
+    print("\nCreate Book Record Response:", response.status_code, response.text)
+
+    assert response.status_code == 403 
 
 
 async def test_create_and_list_book_record(client):
+    """Test Case 2: Create and List Book Record Success"""
+
     it_head = await _make_user(Role.IT_HEAD)
     token = await _login(client, it_head)
     book = await prisma.book.create(
         data={"title": f"{TEST_BOOK_TITLE_PREFIX} B", "author": "A", "category": "Fiction"}
     )
-
     create_response = await client.post(
         "/api/v1/book-records",
         json={"book_id": book.id, "type": "donated", "note": "Donated by a member"},
         headers={"Authorization": f"Bearer {token}"},
     )
-    assert create_response.status_code == 201
-    body = create_response.json()
+    print("\nCreate Book Record Response:", create_response.status_code, create_response.text)
+    assert create_response.status_code == 201 
+    body = create_response.json()  
     assert body["type"] == "donated"
     assert body["book_title"] == f"{TEST_BOOK_TITLE_PREFIX} B"
     assert body["note"] == "Donated by a member"
     assert body["logged_by_name"] == it_head.fullName
-
     list_response = await client.get(
         "/api/v1/book-records", headers={"Authorization": f"Bearer {token}"}
     )
+    print("\nList Book Records Response:", list_response.status_code, list_response.text)
+
     assert list_response.status_code == 200
     assert any(r["id"] == body["id"] for r in list_response.json())
 
 
 async def test_create_book_record_rejects_unknown_type(client):
+    """Test Case 3: Create Book Record Unknown Type"""
+
     it_head = await _make_user(Role.IT_HEAD)
     token = await _login(client, it_head)
     book = await prisma.book.create(
@@ -113,10 +123,14 @@ async def test_create_book_record_rejects_unknown_type(client):
         json={"book_id": book.id, "type": "damaged"},
         headers={"Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 422
 
+    print("\nCreate Book Record Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
 
 async def test_create_book_record_rejects_unknown_book(client):
+    """Test Case 4: Create Book Record Unknown Book"""
+
     it_head = await _make_user(Role.IT_HEAD)
     token = await _login(client, it_head)
 
@@ -125,4 +139,7 @@ async def test_create_book_record_rejects_unknown_book(client):
         json={"book_id": str(uuid.uuid4()), "type": "lost"},
         headers={"Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 404
+
+    print("\nCreate Book Record Response:", response.status_code, response.text)
+
+    assert response.status_code == 404  

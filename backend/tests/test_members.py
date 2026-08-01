@@ -59,31 +59,53 @@ def _client_as(user) -> AsyncClient:
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
 
 
+async def test_list_members_success(admin_user):
+    """Test Case 1: List Members Success (as admin)"""
+
+    async with _client_as(admin_user) as client:
+        response = await client.get("/api/v1/members")
+
+    print("\nList Members Response:", response.status_code, response.text)
+
+    assert response.status_code == 200  
+    body = response.json()
+    assert "items" in body 
+    assert "total" in body
+
+
 async def test_list_members_requires_authentication():
+    """Test Case 2: List Members Unauthenticated"""
+
     app = create_app()
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/v1/members")
 
-    assert response.status_code == 401
+    print("\nList Members Response:", response.status_code, response.text)
+
+    assert response.status_code == 401  
 
 
 async def test_list_members_forbidden_for_member_role(member_user):
+    """Test Case 3: List Members Forbidden (non-admin/member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.get("/api/v1/members")
 
-    assert response.status_code == 403
+    print("\nList Members Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_create_member_defaults_to_member_role(admin_user):
+    """Test Case 4: Create Member Success"""
     email = _unique_email()
     async with _client_as(admin_user) as client:
         response = await client.post(
             "/api/v1/members",
-            json={"email": email, "password": "Password123!", "full_name": "Walk-in Visitor"},
-        )
-
-    assert response.status_code == 201
-    body = response.json()
+            json={"email": email, "password": "Password123!", "full_name": "Walk-in Visitor"},)
+    print("\nCreate Member Response:", response.status_code, response.text)
+    assert response.status_code == 201 
+    body = response.json()  
     assert body["email"] == email
     assert body["full_name"] == "Walk-in Visitor"
     assert body["role"]["name"] == Role.MEMBER
@@ -92,7 +114,26 @@ async def test_create_member_defaults_to_member_role(admin_user):
     assert "password_hash" not in body
 
 
+async def test_create_member_missing_required_field(admin_user):
+    """Test Case 5: Create Member Missing Required Field"""
+
+    async with _client_as(admin_user) as client:
+        response = await client.post(
+            "/api/v1/members",
+            json={"password": "Password123!", "full_name": "No Email"},
+        )
+
+    print("\nCreate Member Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "email"] 
+    assert body["detail"][0]["type"] == "missing"
+
+
 async def test_create_member_duplicate_email_conflicts(admin_user):
+    """Test Case 6: Create Member Duplicate Email"""
+
     email = _unique_email()
     payload = {"email": email, "password": "Password123!", "full_name": "Duplicate Test"}
 
@@ -100,8 +141,24 @@ async def test_create_member_duplicate_email_conflicts(admin_user):
         first = await client.post("/api/v1/members", json=payload)
         second = await client.post("/api/v1/members", json=payload)
 
+    print("\nCreate Member Response:", second.status_code, second.text)
+
     assert first.status_code == 201
     assert second.status_code == 409
+
+
+async def test_create_member_forbidden_for_member_role(member_user):
+    """Test Case 7: Create Member Forbidden (non-admin)"""
+
+    async with _client_as(member_user) as client:
+        response = await client.post(
+            "/api/v1/members",
+            json={"email": _unique_email(), "password": "Password123!", "full_name": "Nope"},
+        )
+
+    print("\nCreate Member Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_list_members_search_and_pagination(admin_user):
@@ -114,13 +171,9 @@ async def test_list_members_search_and_pagination(admin_user):
                     "email": _unique_email(),
                     "password": "Password123!",
                     "full_name": f"Searchable-{unique_marker}-{i}",
-                },
-            )
-
+                },)
         response = await client.get(
-            "/api/v1/members", params={"search": unique_marker, "page": 1, "page_size": 2}
-        )
-
+            "/api/v1/members", params={"search": unique_marker, "page": 1, "page_size": 2})
     assert response.status_code == 200
     body = response.json()
     assert body["total"] == 3
@@ -185,6 +238,8 @@ async def test_list_members_active_only_excludes_inactive_accounts(admin_user):
 
 
 async def test_update_member_changes_fields(admin_user):
+    """Test Case 8: Update Member Success"""
+
     async with _client_as(admin_user) as client:
         created = await client.post(
             "/api/v1/members",
@@ -201,21 +256,26 @@ async def test_update_member_changes_fields(admin_user):
             json={"full_name": "After Update", "is_active": False},
         )
 
-    assert response.status_code == 200
-    body = response.json()
+    print("\nUpdate Member Response:", response.status_code, response.text)
+
+    assert response.status_code == 200  # ✅ Status Code Check
+    body = response.json()  # ✅ Response Body Check
     assert body["full_name"] == "After Update"
     assert body["is_active"] is False
 
 
 async def test_update_member_not_found(admin_user):
+    """Test Case 9: Update Member Not Found"""
+
     async with _client_as(admin_user) as client:
         response = await client.put(
             f"/api/v1/members/{uuid.uuid4()}",
             json={"full_name": "Nobody"},
         )
 
-    assert response.status_code == 404
+    print("\nUpdate Member Response:", response.status_code, response.text)
 
+    assert response.status_code == 404 
 
 async def test_update_member_rejects_malformed_id(admin_user):
     async with _client_as(admin_user) as client:

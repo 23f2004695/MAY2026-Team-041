@@ -89,43 +89,64 @@ def _anon_client() -> AsyncClient:
 
 
 async def test_list_books_is_public():
+    """Test Case 1: List Books Success (public, no auth)"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/books")
 
-    assert response.status_code == 200
-    body = response.json()
-    assert "items" in body and "total" in body
+    print("\nList Books Response:", response.status_code, response.text)
 
+    assert response.status_code == 200 
+    body = response.json()
+    assert "items" in body and "total" in body  
 
 async def test_get_book_not_found():
+    """Test Case 2: Get Book Not Found"""
+
     async with _anon_client() as client:
         response = await client.get(f"/api/v1/books/{uuid.uuid4()}")
 
-    assert response.status_code == 404
+    print("\nGet Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 404  
 
 
 async def test_get_book_rejects_malformed_id():
+    """Test Case 3: Get Book Malformed ID"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/books/not-a-uuid")
 
-    assert response.status_code == 422
+    print("\nGet Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 422 
 
 
 async def test_create_book_requires_authentication():
+    """Test Case 4: Create Book Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.post("/api/v1/books", json=_book_payload())
 
-    assert response.status_code == 401
+    print("\nCreate Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 401 
 
 
 async def test_create_book_forbidden_for_member_role(member_user):
+    """Test Case 5: Create Book Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.post("/api/v1/books", json=_book_payload())
 
-    assert response.status_code == 403
+    print("\nCreate Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 403 
 
 
 async def test_create_book_success_as_librarian(librarian_user):
+    """Test Case 6: Create Book Success (as librarian)"""
+
     title = _unique_title()
     isbn = _unique_isbn()
     async with _client_as(librarian_user) as client:
@@ -139,9 +160,9 @@ async def test_create_book_success_as_librarian(librarian_user):
                 language="English",
             ),
         )
-
-    assert response.status_code == 201
-    body = response.json()
+    print("\nCreate Book Response:", response.status_code, response.text)
+    assert response.status_code == 201 
+    body = response.json() 
     assert body["title"] == title
     assert body["isbn"] == isbn
     assert body["published_year"] == 2020
@@ -151,35 +172,50 @@ async def test_create_book_success_as_librarian(librarian_user):
 
 
 async def test_create_book_duplicate_isbn_conflicts(librarian_user):
+    """Test Case 7: Create Book Duplicate ISBN"""
+
     isbn = _unique_isbn()
     async with _client_as(librarian_user) as client:
         first = await client.post("/api/v1/books", json=_book_payload(isbn=isbn))
         second = await client.post("/api/v1/books", json=_book_payload(isbn=isbn))
 
+    print("\nCreate Book Response:", second.status_code, second.text)
+
     assert first.status_code == 201
-    assert second.status_code == 409
+    assert second.status_code == 409 
 
 
 async def test_create_book_rejects_invalid_isbn(librarian_user):
+    """Test Case 8: Create Book Invalid ISBN"""
+
     async with _client_as(librarian_user) as client:
         response = await client.post("/api/v1/books", json=_book_payload(isbn="not-an-isbn"))
 
-    assert response.status_code == 422
+    print("\nCreate Book Response:", response.status_code, response.text)
 
+    assert response.status_code == 422 
+    
 
 async def test_create_book_rejects_future_published_year(librarian_user):
+    """Test Case 9: Create Book Future Published Year"""
+
     async with _client_as(librarian_user) as client:
         response = await client.post("/api/v1/books", json=_book_payload(published_year=3000))
 
-    assert response.status_code == 422
+    print("\nCreate Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
 
 
 async def test_create_book_requires_author_and_category(librarian_user):
+    """Test Case 10: Create Book Missing Author/Category"""
+
     async with _client_as(librarian_user) as client:
         response = await client.post("/api/v1/books", json={"title": _unique_title()})
 
-    assert response.status_code == 422
+    print("\nCreate Book Response:", response.status_code, response.text)
 
+    assert response.status_code == 422 
 
 async def test_create_book_available_when_copies_positive(librarian_user):
     async with _client_as(librarian_user) as client:
@@ -272,6 +308,8 @@ async def test_delete_book_forbidden_for_librarian(librarian_user):
 
 
 async def test_delete_book_success_as_admin(admin_user, librarian_user):
+    """Test Case 11: Delete Book Success (as admin)"""
+
     async with _client_as(librarian_user) as client:
         created = await client.post("/api/v1/books", json=_book_payload())
         book_id = created.json()["id"]
@@ -279,11 +317,13 @@ async def test_delete_book_success_as_admin(admin_user, librarian_user):
     async with _client_as(admin_user) as client:
         delete_response = await client.delete(f"/api/v1/books/{book_id}")
 
+    print("\nDelete Book Response:", delete_response.status_code, delete_response.text)
+
     async with _anon_client() as client:
         get_response = await client.get(f"/api/v1/books/{book_id}")
 
-    assert delete_response.status_code == 204
-    assert get_response.status_code == 404
+    assert delete_response.status_code == 204  
+    assert get_response.status_code == 404  
 
 
 async def test_related_books_not_found():

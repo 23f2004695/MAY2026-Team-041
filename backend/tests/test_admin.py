@@ -86,9 +86,14 @@ async def _get_dashboard(user) -> dict:
 
 
 async def test_dashboard_requires_authentication():
+    """Test Case 1: Dashboard Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/admin/dashboard")
-    assert response.status_code == 401
+
+    print("\nDashboard Response:", response.status_code, response.text)
+
+    assert response.status_code == 401  # ✅ Status Code Check
 
 
 async def test_dashboard_forbidden_for_member(member_user):

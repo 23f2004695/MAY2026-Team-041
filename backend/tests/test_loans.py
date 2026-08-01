@@ -81,29 +81,43 @@ def _anon_client() -> AsyncClient:
 
 
 async def test_create_loan_requires_authentication():
+    """Test Case 1: Create Loan Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": str(uuid.uuid4()), "member_id": str(uuid.uuid4())}
         )
-    assert response.status_code == 401
+
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 401 
 
 
 async def test_member_cannot_create_a_loan(member_user, book):
+    """Test Case 2: Create Loan Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
         )
-    assert response.status_code == 403
+
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_it_head_can_create_a_loan(it_head_user, member_user, book):
+    """Test Case 3: Create Loan Success (as IT-Head)"""
+
     async with _client_as(it_head_user) as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
         )
 
-    assert response.status_code == 201
-    body = response.json()
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 201 
+    body = response.json() 
     assert body["book_title"] == book.title
     assert body["member_name"] == member_user.fullName
     assert body["status"] == "active"
@@ -112,11 +126,16 @@ async def test_it_head_can_create_a_loan(it_head_user, member_user, book):
 
 
 async def test_create_loan_for_missing_book_returns_404(it_head_user, member_user):
+    """Test Case 4: Create Loan Missing Book"""
+
     async with _client_as(it_head_user) as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": str(uuid.uuid4()), "member_id": member_user.id}
         )
-    assert response.status_code == 404
+
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 404 
 
 
 async def test_overdue_loan_appears_in_fines_with_computed_fine(it_head_user, member_user, book):

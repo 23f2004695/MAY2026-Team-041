@@ -82,35 +82,54 @@ def _anon_client() -> AsyncClient:
 
 
 async def test_list_plans_is_public(test_plan):
+    """Test Case 1: List Plans Success (public)"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/pricing-plans")
 
-    assert response.status_code == 200
-    body = response.json()
+    print("\nList Plans Response:", response.status_code, response.text)
+
+    assert response.status_code == 200  
+    body = response.json()  
     assert any(plan["id"] == test_plan.id for plan in body)
 
 
 async def test_list_plans_is_ordered_by_months_ascending(test_plan):
+    """Test Case 2: List Plans Ordered by Months"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/pricing-plans")
 
     months = [plan["months"] for plan in response.json()]
-    assert months == sorted(months)
+
+    print("\nList Plans Response:", response.status_code, months)
+
+    assert months == sorted(months)  
 
 
 async def test_update_plan_requires_authentication(test_plan):
+    """Test Case 3: Update Plan Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.patch(
             f"/api/v1/pricing-plans/{test_plan.id}", json={"price": 200, "save_percent": 5}
         )
-    assert response.status_code == 401
+
+    print("\nUpdate Plan Response:", response.status_code, response.text)
+
+    assert response.status_code == 401 
 
 
 async def test_member_cannot_update_a_plan(member_user, test_plan):
+    """Test Case 4: Update Plan Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.patch(
             f"/api/v1/pricing-plans/{test_plan.id}", json={"price": 200, "save_percent": 5}
         )
+
+    print("\nUpdate Plan Response:", response.status_code, response.text)
+
     assert response.status_code == 403
 
 

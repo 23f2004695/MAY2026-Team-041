@@ -60,27 +60,135 @@ async def test_register_returns_token_and_member_role(client):
 
 
 async def test_register_duplicate_email_conflicts(client):
+    """Test Case 7: Duplicate Email"""
+
     payload = {"email": _unique_email(), "password": "Password123!", "full_name": "Dup"}
     first = await client.post("/api/v1/auth/register", json=payload)
     second = await client.post("/api/v1/auth/register", json=payload)
 
+    print("\nRegister Response:", second.status_code, second.text)
+
     assert first.status_code == 201
-    assert second.status_code == 409
+    assert second.status_code == 409 
+
+
+async def test_register_missing_email(client):
+    """Test Case 2: Missing Email"""
+
+    payload = {"password": "Password123!", "full_name": "New User"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/register", json=payload, headers=headers)
+
+    print("\nRegister Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "email"] 
+    assert body["detail"][0]["type"] == "missing"
+
+
+async def test_register_missing_password(client):
+    """Test Case 3: Missing Password"""
+
+    payload = {"email": _unique_email(), "full_name": "New User"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/register", json=payload, headers=headers)
+
+    print("\nRegister Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "password"]
+    assert body["detail"][0]["type"] == "missing"
+
+
+async def test_register_missing_full_name(client):
+    """Test Case 4: Missing Full Name"""
+
+    payload = {"email": _unique_email(), "password": "Password123!"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/register", json=payload, headers=headers)
+
+    print("\nRegister Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "full_name"]
+    assert body["detail"][0]["type"] == "missing"
+
+
+async def test_register_invalid_email_format(client):
+    """Test Case 5: Invalid Email Format"""
+
+    payload = {"email": "not-an-email", "password": "Password123!", "full_name": "New User"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/register", json=payload, headers=headers)
+
+    print("\nRegister Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "email"]
+    assert body["detail"][0]["type"] == "value_error"
+
+
+async def test_register_weak_password(client):
+    """Test Case 6: Weak Password"""
+
+    payload = {"email": _unique_email(), "password": "abc123", "full_name": "New User"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/register", json=payload, headers=headers)
+
+    print("\nRegister Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "password"]
+    assert body["detail"][0]["type"] == "string_too_short"
+
+
+async def test_register_invalid_role_is_ignored(client):
+    """Test Case 8: Invalid Role"""
+    payload = {
+        "email": _unique_email(),
+        "password": "Password123!",
+        "full_name": "New User",
+        "role": "superadmin",
+    }
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/register", json=payload, headers=headers)
+
+    print("\nRegister Response:", response.status_code, response.text)
+
+    assert response.status_code == 201 
+    body = response.json()
+    assert body["user"]["role"]["name"] == "member" 
 
 
 async def test_login_with_correct_password_returns_token(client):
+    """Test Case 1: Login Success"""
+
     email = _unique_email()
     await client.post(
         "/api/v1/auth/register",
         json={"email": email, "password": "Password123!", "full_name": "Login Test"},
-    )
-
+)
     response = await client.post(
         "/api/v1/auth/login", json={"email": email, "password": "Password123!"}
     )
 
-    assert response.status_code == 200
-    assert response.json()["access_token"]
+    print("\nLogin Response:", response.status_code, response.text)
+
+    assert response.status_code == 200  
+    body = response.json()
+    assert body["access_token"]  
+    assert body["user"]["email"] == email
 
 
 async def test_login_with_wrong_password_rejected(client):
@@ -93,16 +201,67 @@ async def test_login_with_wrong_password_rejected(client):
     response = await client.post(
         "/api/v1/auth/login", json={"email": email, "password": "WrongPassword1"}
     )
-
     assert response.status_code == 401
 
 
 async def test_login_unknown_email_rejected(client):
+    """Test Case 3: Unknown Email"""
+
     response = await client.post(
         "/api/v1/auth/login", json={"email": _unique_email(), "password": "Password123!"}
     )
 
+    print("\nLogin Response:", response.status_code, response.text)
+
     assert response.status_code == 401
+
+
+async def test_login_missing_email(client):
+    """Test Case 4: Missing Email"""
+
+    payload = {"password": "Password123!"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/login", json=payload, headers=headers)
+
+    print("\nLogin Response:", response.status_code, response.text)
+
+    assert response.status_code == 422
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "email"]
+    assert body["detail"][0]["type"] == "missing"
+
+
+async def test_login_missing_password(client):
+    """Test Case 5: Missing Password"""
+
+    payload = {"email": _unique_email()}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/login", json=payload, headers=headers)
+
+    print("\nLogin Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "password"]
+    assert body["detail"][0]["type"] == "missing"
+
+
+async def test_login_invalid_email_format(client):
+    """Test Case 6: Invalid Email Format"""
+
+    payload = {"email": "not-an-email", "password": "Password123!"}
+    headers = {"Content-Type": "application/json"}
+
+    response = await client.post("/api/v1/auth/login", json=payload, headers=headers)
+
+    print("\nLogin Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
+    body = response.json()
+    assert body["detail"][0]["loc"] == ["body", "email"] 
+    assert body["detail"][0]["type"] == "value_error"
 
 
 async def test_google_login_without_configured_client_id_returns_503(client, monkeypatch):
