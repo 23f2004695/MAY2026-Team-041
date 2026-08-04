@@ -56,20 +56,14 @@ export function PricingCard({ duration, isActive, index, onSelect }: PricingCard
           </span>
         )}
 
+        {/* Plain onClick, no role="button"/tabIndex — this card wraps a real,
+        independently focusable "Choose plan" Button below, and a nested interactive
+        control breaks WCAG 4.1.2 for keyboard/screen-reader users. onSelect only
+        toggles which tier looks highlighted; it's not required to actually choose a
+        plan (see handleChoosePlan, which reads `duration` from props, not `active`),
+        so keyboard users lose nothing — they can go straight to the CTA button. */}
         <Card
           onClick={onSelect}
-          role={onSelect ? 'button' : undefined}
-          tabIndex={onSelect ? 0 : undefined}
-          onKeyDown={
-            onSelect
-              ? (event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    onSelect();
-                  }
-                }
-              : undefined
-          }
           className={cn(
             'flex h-full flex-col rounded-2xl p-6 sm:p-8',
             onSelect && 'cursor-pointer',

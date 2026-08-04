@@ -4,12 +4,10 @@ import { toast } from 'sonner';
 
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, Modal } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate } from '@/lib/format';
 import { useAuth, type GuardianChild } from '@/providers/AuthProvider';
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
+import { ChildPaymentHistoryModal } from './ChildPaymentHistoryModal';
 
 export interface SubscriptionAndFinesProps {
   children: GuardianChild[];
@@ -20,8 +18,10 @@ export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFin
   const { t } = useTranslation();
   const { payChildFines, renewChildSubscription } = useAuth();
   const [fineDetailsChildId, setFineDetailsChildId] = useState<string | null>(null);
+  const [historyChildId, setHistoryChildId] = useState<string | null>(null);
   const [pendingChildId, setPendingChildId] = useState<string | null>(null);
   const fineDetailsChild = children.find((child) => child.id === fineDetailsChildId) ?? null;
+  const historyChild = children.find((child) => child.id === historyChildId) ?? null;
 
   async function payFine(child: GuardianChild) {
     setPendingChildId(child.id);
@@ -69,15 +69,24 @@ export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFin
             <div key={child.id} className="flex flex-col gap-2 rounded-lg border border-border p-3 text-sm">
               <div className="flex items-start justify-between gap-2">
                 <p className="font-medium text-foreground">{child.full_name}</p>
-                {hasFine && (
+                <div className="flex shrink-0 items-center gap-3">
                   <button
                     type="button"
-                    onClick={() => setFineDetailsChildId(child.id)}
-                    className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline"
+                    onClick={() => setHistoryChildId(child.id)}
+                    className="text-sm font-medium text-primary hover:underline"
                   >
-                    {t('guardian.subscription.viewFineDetails')}
+                    {t('guardian.subscription.viewPaymentHistory')}
                   </button>
-                )}
+                  {hasFine && (
+                    <button
+                      type="button"
+                      onClick={() => setFineDetailsChildId(child.id)}
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      {t('guardian.subscription.viewFineDetails')}
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -161,6 +170,12 @@ export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFin
           </div>
         )}
       </Modal>
+
+      <ChildPaymentHistoryModal
+        childId={historyChildId}
+        childName={historyChild?.full_name ?? ''}
+        onClose={() => setHistoryChildId(null)}
+      />
     </Card>
   );
 }

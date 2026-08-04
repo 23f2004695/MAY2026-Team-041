@@ -19,21 +19,13 @@ import {
   TableRow,
 } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate } from '@/lib/format';
 import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 import { useAuth, type AdminMemberRecord, type Role } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 20;
 const ROLES: Role[] = ['member', 'librarian', 'manager', 'it-head', 'guardian', 'admin'];
 const EMPTY_MEMBER_LIST = { items: [] as AdminMemberRecord[], total: 0 };
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 function LastPaymentCell({ member }: { member: AdminMemberRecord }) {
   const { t } = useTranslation();
@@ -197,6 +189,7 @@ export function AdminMembersPage() {
                       value={member.role}
                       disabled={updatingId === member.id}
                       onChange={(event) => changeRole(member, event.target.value)}
+                      aria-label={t('admin.members.roleSelectLabel', { name: member.full_name })}
                       className="rounded border border-border bg-surface px-2 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50"
                     >
                       {ROLES.map((role) => (

@@ -1,5 +1,5 @@
 import { Bookmark, Flag, Heart, MessageCircle, Pencil, Send, Trash2, UserX } from 'lucide-react';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar, Badge, Card, CardContent, CardHeader } from '@/components/ui';
@@ -10,21 +10,21 @@ import { useAuth } from '@/providers/AuthProvider';
 
 export interface PostCardProps {
   post: CommunityPost;
-  onToggleLike: () => void;
-  onToggleSave?: () => void;
-  onAddComment: (content: string) => void;
-  onAddReply: (commentId: string, content: string) => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
+  isBanned: boolean;
+  onToggleLike: (postId: string) => void;
+  onToggleSave: (postId: string) => void;
+  onAddComment: (postId: string, content: string) => void;
+  onAddReply: (postId: string, commentId: string, content: string) => void;
+  onEdit: (post: CommunityPost) => void;
+  onDelete: (postId: string) => void;
   /** Staff-only: lets a reported comment be removed. */
-  onDeleteComment?: (commentId: string) => void;
+  onDeleteComment: (postId: string, commentId: string) => void;
   /** IT Head-only: temporarily bans the post's author from Community. */
-  onBan?: () => void;
-  isBanned?: boolean;
+  onBan: (authorId: string, authorName: string) => void;
   /** Member/Manager-only: flags this post for admin review. */
-  onReportPost?: () => void;
+  onReportPost: (postId: string) => void;
   /** Member/Manager-only: flags a comment on this post for admin review. */
-  onReportComment?: (commentId: string) => void;
+  onReportComment: (postId: string, commentId: string) => void;
 }
 
 function CommentRow({
@@ -135,8 +135,9 @@ function CommentRow({
   );
 }
 
-export function PostCard({
+export const PostCard = memo(function PostCard({
   post,
+  isBanned,
   onToggleLike,
   onToggleSave,
   onAddComment,
@@ -145,12 +146,14 @@ export function PostCard({
   onDelete,
   onDeleteComment,
   onBan,
-  isBanned,
   onReportPost,
   onReportComment,
 }: PostCardProps) {
   const { t } = useTranslation();
-  const { userId } = useAuth();
+  const { userId, role } = useAuth();
+  const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
+  const canModerate = role === 'admin' || role === 'it-head';
+  const canReport = role === 'member' || role === 'manager';
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [commentDraft, setCommentDraft] = useState('');
 
@@ -158,7 +161,7 @@ export function PostCard({
     event.preventDefault();
     const content = commentDraft.trim();
     if (!content) return;
-    onAddComment(content);
+    onAddComment(post.id, content);
     setCommentDraft('');
   }
 
@@ -175,40 +178,40 @@ export function PostCard({
           <p className="text-xs text-muted-foreground">{formatRelativeTime(post.created_at)}</p>
         </div>
         {post.book_title && <Badge variant="outline">{post.book_title}</Badge>}
-        {onReportPost && !post.reported && (
+        {canReport && !post.is_own && !post.reported && (
           <button
             type="button"
-            onClick={onReportPost}
+            onClick={() => onReportPost(post.id)}
             aria-label={t('community.post.reportAria', { author: post.author_name })}
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
           >
             <Flag className="size-4" />
           </button>
         )}
-        {onBan && (
+        {canModerate && !post.is_own && (
           <button
             type="button"
-            onClick={onBan}
+            onClick={() => onBan(post.author_id, post.author_name)}
             aria-label={t('community.post.banAria', { author: post.author_name })}
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
           >
             <UserX className="size-4" />
           </button>
         )}
-        {onEdit && (
+        {post.is_own && (
           <button
             type="button"
-            onClick={onEdit}
+            onClick={() => onEdit(post)}
             aria-label={t('community.post.editAria')}
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
           >
             <Pencil className="size-4" />
           </button>
         )}
-        {onDelete && (
+        {(post.is_own || canModerate) && (
           <button
             type="button"
-            onClick={onDelete}
+            onClick={() => onDelete(post.id)}
             aria-label={t('community.post.deleteAria')}
             className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
           >
@@ -235,7 +238,7 @@ export function PostCard({
         <div className="flex items-center gap-1 border-t border-border pt-2">
           <button
             type="button"
-            onClick={onToggleLike}
+            onClick={() => onToggleLike(post.id)}
             aria-pressed={post.is_liked}
             aria-label={t(post.is_liked ? 'community.post.unlikeAria' : 'community.post.likeAria')}
             className={cn(
@@ -258,10 +261,10 @@ export function PostCard({
             {post.comments.length}
           </button>
 
-          {onToggleSave && (
+          {!isStaff && (
             <button
               type="button"
-              onClick={onToggleSave}
+              onClick={() => onToggleSave(post.id)}
               aria-pressed={post.is_saved}
               aria-label={t(post.is_saved ? 'community.post.unsaveAria' : 'community.post.saveAria')}
               className={cn(
@@ -281,9 +284,13 @@ export function PostCard({
                 key={comment.id}
                 comment={comment}
                 currentUserId={userId}
-                onReply={onAddReply}
-                onDeleteComment={onDeleteComment}
-                onReportComment={onReportComment}
+                onReply={(commentId, content) => onAddReply(post.id, commentId, content)}
+                onDeleteComment={
+                  isStaff ? (commentId) => onDeleteComment(post.id, commentId) : undefined
+                }
+                onReportComment={
+                  canReport ? (commentId) => onReportComment(post.id, commentId) : undefined
+                }
               />
             ))}
 
@@ -309,4 +316,4 @@ export function PostCard({
       </CardContent>
     </Card>
   );
-}
+});

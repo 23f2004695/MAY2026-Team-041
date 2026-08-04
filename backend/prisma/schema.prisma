@@ -78,6 +78,8 @@ model User {
 
   bookRecordsLogged BookRecord[] @relation("BookRecordLoggedBy")
 
+  // Role-scoped lookups ("all managers", "all admins") skip soft-deleted rows.
+  @@index([roleId, deletedAt])
   @@map("users")
 }
 
@@ -89,6 +91,7 @@ model GuardianLink {
   member     User     @relation("GuardianLinkMember", fields: [memberId], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
 
+  @@index([guardianId])
   @@map("guardian_links")
 }
 
@@ -102,6 +105,7 @@ model Payment {
   planMonths Int?     @map("plan_months")
   createdAt  DateTime @default(now()) @map("created_at")
 
+  @@index([userId, createdAt])
   @@map("payments")
 }
 
@@ -145,6 +149,7 @@ model Event {
   registrations      EventRegistration[]
   managerAssignments EventManagerAssignment[]
 
+  @@index([createdBy])
   @@map("events")
 }
 
@@ -157,6 +162,7 @@ model EventRegistration {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([eventId, memberId])
+  @@index([memberId])
   @@map("event_registrations")
 }
 
@@ -172,6 +178,7 @@ model EventManagerAssignment {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([eventId, managerId])
+  @@index([managerId])
   @@map("event_manager_assignments")
 }
 
@@ -209,6 +216,7 @@ model ReadingProgress {
   updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([memberId, bookId])
+  @@index([bookId])
   @@map("reading_progress")
 }
 
@@ -228,6 +236,7 @@ model Review {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([memberId, bookId])
+  @@index([bookId])
   @@map("reviews")
 }
 
@@ -244,6 +253,9 @@ model Reservation {
   loan      Loan?    @relation(fields: [loanId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([memberId])
+  // The queue lookups all filter by book + status, ordered by request time.
+  @@index([bookId, status, createdAt])
   @@map("reservations")
 }
 
@@ -263,6 +275,8 @@ model CommunityPost {
   likes    CommunityPostLike[]
   saves    CommunityPostSave[]
 
+  @@index([authorId])
+  @@index([deletedAt, createdAt])
   @@map("community_posts")
 }
 
@@ -281,6 +295,9 @@ model CommunityComment {
   reported  Boolean            @default(false)
   createdAt DateTime           @default(now()) @map("created_at")
 
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
   @@map("community_comments")
 }
 
@@ -293,6 +310,7 @@ model CommunityPostLike {
   createdAt DateTime      @default(now()) @map("created_at")
 
   @@unique([postId, userId])
+  @@index([userId])
   @@map("community_post_likes")
 }
 
@@ -305,6 +323,7 @@ model CommunityPostSave {
   createdAt DateTime      @default(now()) @map("created_at")
 
   @@unique([postId, userId])
+  @@index([userId])
   @@map("community_post_saves")
 }
 
@@ -334,6 +353,8 @@ model SeatBooking {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([seatLabel, date, hour])
+  @@index([memberId])
+  @@index([date, hour])
   @@map("seat_bookings")
 }
 
@@ -349,6 +370,7 @@ model SeatNotifyRequest {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([seatLabel, date, hour, memberId])
+  @@index([memberId])
   @@map("seat_notify_requests")
 }
 
@@ -365,6 +387,9 @@ model Notification {
   read      Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
 
+  // Biggest table in the app, and always read as "this user's, newest first".
+  @@index([userId, createdAt])
+  @@index([userId, read])
   @@map("notifications")
 }
 
@@ -378,6 +403,8 @@ model Expense {
   loggedBy   User     @relation("ExpenseLoggedBy", fields: [loggedById], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
 
+  @@index([loggedById])
+  @@index([createdAt])
   @@map("expenses")
 }
 
@@ -393,6 +420,8 @@ model BookRecord {
   loggedBy   User     @relation("BookRecordLoggedBy", fields: [loggedById], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
 
+  @@index([bookId])
+  @@index([loggedById])
   @@map("book_records")
 }
 
@@ -416,6 +445,10 @@ model BillingRequest {
   decidedAt   DateTime? @map("decided_at")
   createdAt   DateTime  @default(now()) @map("created_at")
 
+  @@index([memberId])
+  @@index([createdById])
+  @@index([decidedById])
+  @@index([status])
   @@map("billing_requests")
 }
 
@@ -430,6 +463,8 @@ model AuditLogEntry {
   metadata  Json
   createdAt DateTime @default(now()) @map("created_at")
 
+  @@index([actorId])
+  @@index([createdAt])
   @@map("audit_log_entries")
 }
 
@@ -463,6 +498,7 @@ model Coupon {
   createdBy       User     @relation("CouponCreatedBy", fields: [createdById], references: [id])
   createdAt       DateTime @default(now()) @map("created_at")
 
+  @@index([createdById])
   @@map("coupons")
 }
 
@@ -487,6 +523,9 @@ model SupportTicket {
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
 
+  @@index([raisedById])
+  @@index([resolvedById])
+  @@index([status])
   @@map("support_tickets")
 }
 
@@ -506,6 +545,9 @@ model PermissionRequest {
   decidedAt     DateTime? @map("decided_at")
   createdAt     DateTime  @default(now()) @map("created_at")
 
+  @@index([requestedById])
+  @@index([decidedById])
+  @@index([status])
   @@map("permission_requests")
 }
 
@@ -526,8 +568,19 @@ model Loan {
   createdById String    @map("created_by_id") @db.Uuid
   createdBy   User      @relation("LoanCreatedBy", fields: [createdById], references: [id])
   createdAt   DateTime  @default(now()) @map("created_at")
+  // When the due-soon sweep last emailed about this loan. Without it every server
+  // restart re-ran the sweep and re-notified everyone in the window (see
+  // send_due_soon_reminders).
+  lastRemindedAt DateTime? @map("last_reminded_at")
 
   reservation Reservation?
 
+  @@index([memberId])
+  @@index([bookId])
+  @@index([createdById])
+  // The due-soon sweep filters on "still out", ordered by due date.
+  @@index([returnedAt, dueDate])
+  // The fines view filters on due date alone, so it needs that as the leading column.
+  @@index([dueDate])
   @@map("loans")
 }

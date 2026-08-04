@@ -4,20 +4,13 @@ import { toast } from 'sonner';
 
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Dialog } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
+import { formatDate } from '@/lib/format';
 import { useAuth, type BillingRequestRecord, type BillingRequestType } from '@/providers/AuthProvider';
 
 const typeLabelKey: Record<BillingRequestType, string> = {
   refund: 'admin.pendingRequests.types.refundRequest',
   fee_waiver: 'admin.pendingRequests.types.feeWaiverRequest',
 };
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 type PendingAction = { request: BillingRequestRecord; kind: 'approve' | 'reject' };
 

@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, Select } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
+import { formatDate } from '@/lib/format';
 import { type LoanDurationDays, type PendingReservationRequest } from '@/providers/AuthProvider';
 
 const DURATION_CHOICES: LoanDurationDays[] = [3, 5, 7, 10];
@@ -12,10 +13,6 @@ export interface PendingReservationsProps {
   requests: PendingReservationRequest[];
   onApprove: (id: string, durationDays: LoanDurationDays) => Promise<unknown>;
   onReject: (id: string) => Promise<unknown>;
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 export function PendingReservations({ requests, onApprove, onReject }: PendingReservationsProps) {

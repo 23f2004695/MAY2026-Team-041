@@ -15,19 +15,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
+import { formatDate } from '@/lib/format';
 import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 import { useAuth, type ManagerBookAvailability } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 20;
 const EMPTY_BOOK_LIST = { items: [] as ManagerBookAvailability[], total: 0 };
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 function StatusCell({ book }: { book: ManagerBookAvailability }) {
   const { t } = useTranslation();

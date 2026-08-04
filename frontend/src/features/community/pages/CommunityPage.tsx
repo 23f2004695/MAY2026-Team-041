@@ -1,5 +1,5 @@
 import { Bookmark, Flag, MessageCircle, Plus, UserX, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -74,7 +74,6 @@ export function CommunityPage() {
   } = useAuth();
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
-  const canReport = role === 'member' || role === 'manager';
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>('all');
@@ -133,9 +132,12 @@ export function CommunityPage() {
     [posts],
   );
 
-  function reportError(error: unknown) {
-    toast.error(getErrorMessage(error, t('common.errors.generic')));
-  }
+  const reportError = useCallback(
+    (error: unknown) => {
+      toast.error(getErrorMessage(error, t('common.errors.generic')));
+    },
+    [t],
+  );
 
   async function handleSubmitPost(draft: PostDraft) {
     const payload = { book_title: draft.bookTitle || null, content: draft.content, images: draft.images };
@@ -196,80 +198,112 @@ export function CommunityPage() {
     }
   }
 
-  async function toggleLike(postId: string) {
-    try {
-      const updated = await toggleCommunityLike(postId);
-      setPosts((prev) => replacePost(prev, updated));
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  // Stable across renders (all deps are themselves stable: useAuth()'s functions are memoized,
+  // reportError only changes if the language changes) — passed straight through to PostCard
+  // instead of being re-wrapped in a fresh per-post closure inside the .map() below, so
+  // React.memo(PostCard) can actually skip re-rendering posts nothing changed on.
+  const toggleLike = useCallback(
+    async (postId: string) => {
+      try {
+        const updated = await toggleCommunityLike(postId);
+        setPosts((prev) => replacePost(prev, updated));
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [toggleCommunityLike, reportError],
+  );
 
-  async function toggleSave(postId: string) {
-    try {
-      const updated = await toggleCommunitySave(postId);
-      setPosts((prev) => replacePost(prev, updated));
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  const toggleSave = useCallback(
+    async (postId: string) => {
+      try {
+        const updated = await toggleCommunitySave(postId);
+        setPosts((prev) => replacePost(prev, updated));
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [toggleCommunitySave, reportError],
+  );
 
-  async function addComment(postId: string, content: string) {
-    try {
-      const updated = await addCommunityComment(postId, { content });
-      setPosts((prev) => replacePost(prev, updated));
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  const addComment = useCallback(
+    async (postId: string, content: string) => {
+      try {
+        const updated = await addCommunityComment(postId, { content });
+        setPosts((prev) => replacePost(prev, updated));
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [addCommunityComment, reportError],
+  );
 
-  async function addReply(postId: string, commentId: string, content: string) {
-    try {
-      const updated = await addCommunityComment(postId, { content, parent_id: commentId });
-      setPosts((prev) => replacePost(prev, updated));
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  const addReply = useCallback(
+    async (postId: string, commentId: string, content: string) => {
+      try {
+        const updated = await addCommunityComment(postId, { content, parent_id: commentId });
+        setPosts((prev) => replacePost(prev, updated));
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [addCommunityComment, reportError],
+  );
 
-  async function deleteComment(postId: string, commentId: string) {
-    try {
-      await deleteCommunityComment(commentId);
-      setPosts((prev) =>
-        prev.map((post) =>
-          post.id === postId
-            ? { ...post, comments: removeCommentById(post.comments, commentId) }
-            : post,
-        ),
-      );
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  const deleteComment = useCallback(
+    async (postId: string, commentId: string) => {
+      try {
+        await deleteCommunityComment(commentId);
+        setPosts((prev) =>
+          prev.map((post) =>
+            post.id === postId
+              ? { ...post, comments: removeCommentById(post.comments, commentId) }
+              : post,
+          ),
+        );
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [deleteCommunityComment, reportError],
+  );
 
-  async function reportPost(postId: string) {
-    try {
-      const updated = await reportCommunityPost(postId);
-      setPosts((prev) => replacePost(prev, updated));
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  const reportPost = useCallback(
+    async (postId: string) => {
+      try {
+        const updated = await reportCommunityPost(postId);
+        setPosts((prev) => replacePost(prev, updated));
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [reportCommunityPost, reportError],
+  );
 
-  async function reportComment(postId: string, commentId: string) {
-    try {
-      await reportCommunityComment(commentId);
-      setPosts((prev) =>
-        prev.map((post) =>
-          post.id === postId
-            ? { ...post, comments: reportCommentById(post.comments, commentId) }
-            : post,
-        ),
-      );
-    } catch (error) {
-      reportError(error);
-    }
-  }
+  const reportComment = useCallback(
+    async (postId: string, commentId: string) => {
+      try {
+        await reportCommunityComment(commentId);
+        setPosts((prev) =>
+          prev.map((post) =>
+            post.id === postId
+              ? { ...post, comments: reportCommentById(post.comments, commentId) }
+              : post,
+          ),
+        );
+      } catch (error) {
+        reportError(error);
+      }
+    },
+    [reportCommunityComment, reportError],
+  );
+
+  const handleEditPost = useCallback((post: CommunityPost) => setEditingPost(post), []);
+  const handleDeletePost = useCallback((postId: string) => setDeletingPostId(postId), []);
+  const handleBanAuthor = useCallback(
+    (authorId: string, authorName: string) => setBanningAuthor({ id: authorId, name: authorName }),
+    [],
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -389,25 +423,17 @@ export function CommunityPage() {
             <PostCard
               key={post.id}
               post={post}
-              onToggleLike={() => toggleLike(post.id)}
-              onToggleSave={isStaff ? undefined : () => toggleSave(post.id)}
-              onAddComment={(content) => addComment(post.id, content)}
-              onAddReply={(commentId, content) => addReply(post.id, commentId, content)}
-              onDeleteComment={
-                isStaff ? (commentId) => deleteComment(post.id, commentId) : undefined
-              }
-              onEdit={post.is_own ? () => setEditingPost(post) : undefined}
-              onDelete={post.is_own || canModerate ? () => setDeletingPostId(post.id) : undefined}
-              onBan={
-                canModerate && !post.is_own
-                  ? () => setBanningAuthor({ id: post.author_id, name: post.author_name })
-                  : undefined
-              }
               isBanned={bannedAuthors.some((author) => author.user_id === post.author_id)}
-              onReportPost={canReport && !post.is_own ? () => reportPost(post.id) : undefined}
-              onReportComment={
-                canReport ? (commentId) => reportComment(post.id, commentId) : undefined
-              }
+              onToggleLike={toggleLike}
+              onToggleSave={toggleSave}
+              onAddComment={addComment}
+              onAddReply={addReply}
+              onDeleteComment={deleteComment}
+              onEdit={handleEditPost}
+              onDelete={handleDeletePost}
+              onBan={handleBanAuthor}
+              onReportPost={reportPost}
+              onReportComment={reportComment}
             />
           ))}
         </div>

@@ -67,6 +67,17 @@ def _recent_month_starts(count: int, now: datetime) -> list[datetime]:
     return starts
 
 
+def _parse_month_range(month: str) -> tuple[datetime, datetime]:
+    year, month_num = (int(part) for part in month.split("-"))
+    start = datetime(year, month_num, 1, tzinfo=UTC)
+    end = (
+        datetime(year + 1, 1, 1, tzinfo=UTC)
+        if month_num == 12
+        else datetime(year, month_num + 1, 1, tzinfo=UTC)
+    )
+    return start, end
+
+
 async def get_dashboard() -> AdminDashboardOut:
     now = datetime.now(UTC)
     this_month_start = _month_start(now)
@@ -325,8 +336,13 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> Admi
     return AdminMemberListOut(items=items, total=total, page=page, page_size=page_size)
 
 
-async def list_payments(*, search: str | None, page: int, page_size: int) -> AdminPaymentListOut:
-    payments, total = await repository.list_payments(search=search, page=page, page_size=page_size)
+async def list_payments(
+    *, search: str | None, page: int, page_size: int, month: str | None = None
+) -> AdminPaymentListOut:
+    start, end = _parse_month_range(month) if month else (None, None)
+    payments, total = await repository.list_payments(
+        search=search, page=page, page_size=page_size, start=start, end=end
+    )
 
     items = [
         AdminPaymentOut(

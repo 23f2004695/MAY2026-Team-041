@@ -15,3 +15,4 @@ export * from './SearchBar';
 export * from './Select';
 export * from './Switch';
 export * from './Table';
+export * from './Textarea';

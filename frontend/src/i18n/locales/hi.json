@@ -25,6 +25,10 @@
     "errors": {
       "generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
     },
+    "export": {
+      "csv": "CSV निर्यात करें",
+      "pdf": "PDF निर्यात करें"
+    },
     "cards": {
       "event": {
         "registered": "पंजीकृत",
@@ -33,7 +37,8 @@
       },
       "book": {
         "reserve": "आरक्षित करें",
-        "viewDetailsAria": "{{title}} के लिए विवरण देखें"
+        "viewDetailsAria": "{{title}} के लिए विवरण देखें",
+        "viewSummaryAria": "{{title}} का सारांश देखें"
       },
       "seat": {
         "labelWithStatus": "{{label}}: {{status}}",
@@ -417,8 +422,10 @@
       "pageTitle": "भुगतान",
       "pageDescription": "सभी सदस्यों के सभी दर्ज भुगतान।",
       "searchPlaceholder": "सदस्य के नाम या ईमेल से खोजें",
+      "monthFilter": "महीने के अनुसार फ़िल्टर करें",
       "table": {
         "member": "सदस्य",
+        "email": "ईमेल",
         "amount": "राशि",
         "label": "विवरण",
         "status": "स्थिति",
@@ -583,8 +590,16 @@
         "title": "जुर्माना विवरण"
       },
       "viewFineDetails": "विवरण देखें",
+      "viewPaymentHistory": "भुगतान इतिहास",
       "emptyTitle": "अभी तक कोई बच्चा लिंक नहीं किया गया है।",
       "emptyDescription": "अपने बच्चे से कहें कि वे अपनी सेटिंग्स से आपका ईमेल लिंक करें।"
+    },
+    "paymentHistory": {
+      "title": "भुगतान इतिहास",
+      "empty": {
+        "title": "अभी तक कोई भुगतान नहीं",
+        "description": "इस बच्चे के लिए किए गए भुगतान यहाँ दिखाई देंगे।"
+      }
     },
     "seatReservation": {
       "title": "अपने बच्चे के लिए सीट आरक्षित करें",
@@ -1332,7 +1347,13 @@
       "searchPlaceholder": "शीर्षक या लेखक द्वारा खोजें…",
       "searchAriaLabel": "पुस्तकें खोजें",
       "categoryAriaLabel": "श्रेणी के अनुसार फ़िल्टर करें",
-      "allCategories": "सभी"
+      "allCategories": "सभी",
+      "sortAriaLabel": "पुस्तकें क्रमबद्ध करें",
+      "sortOptions": {
+        "newest": "नवीनतम आगमन",
+        "rating": "सर्वाधिक रेटेड",
+        "recommended": "आपके लिए अनुशंसित"
+      }
     },
     "status": {
       "available": "उपलब्ध",
@@ -1367,6 +1388,9 @@
         "title": "आपकी विशलिस्ट खाली है",
         "description": "किसी भी किताब को यहाँ सहेजने के लिए हार्ट पर टैप करें।"
       }
+    },
+    "summary": {
+      "empty": "इस किताब के लिए अभी तक कोई सारांश उपलब्ध नहीं है।"
     }
   },
   "events": {
@@ -1661,6 +1685,7 @@
     "pageTitle": "पुस्तक समीक्षाएँ",
     "byAuthor": "लेखक {{author}}",
     "writeReview": "समीक्षा लिखें",
+    "viewReviews": "समीक्षाएं देखें",
     "writeReviewDisabledHint": "समीक्षाएँ अभी सबमिशन के लिए खुली नहीं हैं",
     "commentsHeading": "टिप्पणियाँ",
     "summary": {
@@ -1875,6 +1900,12 @@
       "empty": {
         "title": "अभी तक कोई भुगतान नहीं",
         "description": "आपके द्वारा किए गए भुगतान यहाँ दिखाई देंगे।"
+      },
+      "table": {
+        "label": "लेबल",
+        "amount": "राशि",
+        "status": "स्थिति",
+        "date": "तारीख"
       }
     }
   },

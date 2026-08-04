@@ -9,7 +9,7 @@ from prisma.models import User
 
 from app.core.config import get_settings
 from app.core.constants import Role
-from app.core.mail import send_email
+from app.core.mail import send_email_async
 from app.core.security import (
     create_access_token,
     create_refresh_token,
@@ -198,7 +198,7 @@ async def forgot_password(payload: ForgotPasswordRequest) -> None:
 
     token = create_reset_token(user.id, user.tokenVersion)
     reset_link = f"{get_settings().frontend_url}/reset-password?token={token}"
-    send_email(
+    await send_email_async(
         user.email,
         "Reset your library password",
         f"Reset your password: {reset_link}\n\nThis link expires in "

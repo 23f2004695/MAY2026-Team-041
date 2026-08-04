@@ -1,7 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, useContext, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react';
 
+import * as reviewsApi from '@/features/reviews/api';
+import type { BookReviews, RatingBreakdownEntry, Review, ReviewPayload } from '@/features/reviews/types';
 import {
   apiDelete,
   apiGet,
@@ -12,6 +14,10 @@ import {
   type TokenResponse,
 } from '@/lib/api';
 import { useLocalStorageState } from '@/lib/useLocalStorageState';
+
+// Re-exported so existing `import { BookReviews } from '@/providers/AuthProvider'` call sites
+// keep working — the types now live in features/reviews/types.ts.
+export type { BookReviews, RatingBreakdownEntry, Review, ReviewPayload };
 
 export type Role = 'admin' | 'member' | 'manager' | 'it-head' | 'guardian' | 'librarian';
 
@@ -209,39 +215,6 @@ export interface AppNotificationRecord {
   created_at: string;
 }
 
-export interface ReviewPayload {
-  rating: number;
-  comment: string;
-  images: string[];
-}
-
-export interface Review {
-  id: string;
-  book_id: string;
-  book_title: string;
-  book_author: string;
-  reviewer_id: string;
-  reviewer_name: string;
-  reviewer_avatar_url: string | null;
-  rating: number;
-  comment: string;
-  images: string[];
-  created_at: string;
-  is_own: boolean;
-}
-
-export interface RatingBreakdownEntry {
-  stars: number;
-  percent: number;
-}
-
-export interface BookReviews {
-  items: Review[];
-  average_rating: number;
-  total_reviews: number;
-  breakdown: RatingBreakdownEntry[];
-}
-
 export type ExpenseCategory = 'staffSalaries' | 'bookProcurement' | 'utilities' | 'marketing';
 
 export interface AdminTrend {
@@ -358,6 +331,7 @@ export interface AdminPaymentListResponse {
 
 export interface AdminPaymentQuery {
   search?: string;
+  month?: string;
   page?: number;
   page_size?: number;
 }
@@ -753,6 +727,7 @@ interface AuthContextValue extends AuthState {
   getMembership: () => Promise<Membership | null>;
   getMyPayments: () => Promise<PaymentRecord[]>;
   getGuardianChildren: () => Promise<GuardianChild[]>;
+  getChildPayments: (childId: string) => Promise<PaymentRecord[]>;
   payChildFines: (childId: string) => Promise<void>;
   renewChildSubscription: (childId: string) => Promise<void>;
   bookSeatForChild: (childId: string, payload: SeatSlotPayload) => Promise<SeatBookingRecord>;
@@ -876,6 +851,12 @@ const DEV_PREVIEW_PASSWORD = 'DevPreview123!';
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useLocalStorageState<AuthState>('mock-auth', SIGNED_OUT);
 
+  // Lets the ~110 action functions below read the current token without being in their
+  // closure — so those functions can be created once (via useMemo, see the bottom of this
+  // component) and never recreated, instead of getting new identities on every render.
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   // A real session always sets isAuthenticated and token together (see applySession) — the
   // only way to see one without the other is a session cached by the old role-preview login,
   // which faked isAuthenticated/role locally with no real token. Clear it so ProtectedRoute
@@ -915,7 +896,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function clearPostAuthRedirect() {
-    setState({ ...state, postAuthRedirect: null });
+    setState({ ...stateRef.current, postAuthRedirect: null });
   }
 
   async function loginWithCredentials(email: string, password: string) {
@@ -940,78 +921,83 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function completeProfile(payload: CompleteProfilePayload) {
-    if (!state.token) throw new Error('Not authenticated');
-    applySession(await apiPatch<TokenResponse>('/auth/me', payload, state.token));
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    applySession(await apiPatch<TokenResponse>('/auth/me', payload, stateRef.current.token));
   }
 
   async function updateProfile(payload: UpdateProfilePayload) {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     applySession(
-      await apiPatch<TokenResponse>('/auth/me', payload, state.token),
-      state.needsProfileCompletion,
+      await apiPatch<TokenResponse>('/auth/me', payload, stateRef.current.token),
+      stateRef.current.needsProfileCompletion,
     );
   }
 
   async function createPayment(payload: PaymentPayload) {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost('/payments', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost('/payments', payload, stateRef.current.token);
   }
 
   async function createRazorpayOrder(payload: PaymentPayload): Promise<RazorpayOrder> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<RazorpayOrder>('/payments/razorpay/order', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<RazorpayOrder>('/payments/razorpay/order', payload, stateRef.current.token);
   }
 
   async function verifyRazorpayPayment(payload: RazorpayVerifyPayload): Promise<PaymentRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<PaymentRecord>('/payments/razorpay/verify', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<PaymentRecord>('/payments/razorpay/verify', payload, stateRef.current.token);
   }
 
   async function payAtLibrary(payload: PaymentPayload) {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost('/payments/pay-at-library', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost('/payments/pay-at-library', payload, stateRef.current.token);
   }
 
   async function deleteAccount() {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete('/auth/me', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete('/auth/me', stateRef.current.token);
     setState(SIGNED_OUT);
   }
 
   async function getMembership(): Promise<Membership | null> {
-    if (!state.token) return null;
-    return apiGet<Membership | null>('/payments/me/membership', state.token);
+    if (!stateRef.current.token) return null;
+    return apiGet<Membership | null>('/payments/me/membership', stateRef.current.token);
   }
 
   async function getMyPayments(): Promise<PaymentRecord[]> {
-    if (!state.token) return [];
-    return apiGet<PaymentRecord[]>('/payments/me', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<PaymentRecord[]>('/payments/me', stateRef.current.token);
   }
 
   async function getGuardianChildren(): Promise<GuardianChild[]> {
-    if (!state.token) return [];
-    return apiGet<GuardianChild[]>('/guardian/children', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<GuardianChild[]>('/guardian/children', stateRef.current.token);
+  }
+
+  async function getChildPayments(childId: string): Promise<PaymentRecord[]> {
+    if (!stateRef.current.token) return [];
+    return apiGet<PaymentRecord[]>(`/guardian/children/${childId}/payments`, stateRef.current.token);
   }
 
   async function payChildFines(childId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost(`/guardian/children/${childId}/pay-fines`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/guardian/children/${childId}/pay-fines`, undefined, stateRef.current.token);
   }
 
   async function renewChildSubscription(childId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost(`/guardian/children/${childId}/renew`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/guardian/children/${childId}/renew`, undefined, stateRef.current.token);
   }
 
   async function bookSeatForChild(
     childId: string,
     payload: SeatSlotPayload,
   ): Promise<SeatBookingRecord> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<SeatBookingRecord>(
       `/guardian/children/${childId}/seat-bookings`,
       payload,
-      state.token,
+      stateRef.current.token,
     );
   }
 
@@ -1019,293 +1005,289 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     childId: string,
     payload: SeatSlotPayload,
   ): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost(`/guardian/children/${childId}/seat-notify`, payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/guardian/children/${childId}/seat-notify`, payload, stateRef.current.token);
   }
 
   async function getMyReadingProgress(): Promise<ReadingProgressEntry[]> {
-    if (!state.token) return [];
-    return apiGet<ReadingProgressEntry[]>('/members/me/reading-progress', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<ReadingProgressEntry[]>('/members/me/reading-progress', stateRef.current.token);
   }
 
   async function getReadingGoal(): Promise<ReadingGoal | null> {
-    if (!state.token) return null;
-    return apiGet<ReadingGoal | null>('/members/me/reading-goal', state.token);
+    if (!stateRef.current.token) return null;
+    return apiGet<ReadingGoal | null>('/members/me/reading-goal', stateRef.current.token);
   }
 
   async function setReadingGoal(payload: ReadingGoalPayload): Promise<ReadingGoal> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPut<ReadingGoal>('/members/me/reading-goal', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPut<ReadingGoal>('/members/me/reading-goal', payload, stateRef.current.token);
   }
 
   async function getReadingStreak(): Promise<ReadingStreak> {
-    if (!state.token) return { current_streak_days: 0, longest_streak_days: 0 };
-    return apiGet<ReadingStreak>('/members/me/reading-streak', state.token);
+    if (!stateRef.current.token) return { current_streak_days: 0, longest_streak_days: 0 };
+    return apiGet<ReadingStreak>('/members/me/reading-streak', stateRef.current.token);
   }
 
   async function getLeaderboard(): Promise<LeaderboardEntry[]> {
-    if (!state.token) return [];
-    return apiGet<LeaderboardEntry[]>('/leaderboard', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<LeaderboardEntry[]>('/leaderboard', stateRef.current.token);
   }
 
   async function getMyReservations(): Promise<Reservation[]> {
-    if (!state.token) return [];
-    return apiGet<Reservation[]>('/reservations/me', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<Reservation[]>('/reservations/me', stateRef.current.token);
   }
 
   async function reserveBook(bookId: string): Promise<Reservation> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<Reservation>('/reservations', { book_id: bookId }, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<Reservation>('/reservations', { book_id: bookId }, stateRef.current.token);
   }
 
   async function cancelReservation(reservationId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete(`/reservations/${reservationId}`, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/reservations/${reservationId}`, stateRef.current.token);
   }
 
   async function getCommunityPosts(): Promise<CommunityPost[]> {
-    if (!state.token) return [];
-    return apiGet<CommunityPost[]>('/community/posts', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<CommunityPost[]>('/community/posts', stateRef.current.token);
   }
 
   async function createCommunityPost(payload: CommunityPostPayload): Promise<CommunityPost> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<CommunityPost>('/community/posts', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>('/community/posts', payload, stateRef.current.token);
   }
 
   async function updateCommunityPost(
     postId: string,
     payload: CommunityPostPayload,
   ): Promise<CommunityPost> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPut<CommunityPost>(`/community/posts/${postId}`, payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPut<CommunityPost>(`/community/posts/${postId}`, payload, stateRef.current.token);
   }
 
   async function deleteCommunityPost(postId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete(`/community/posts/${postId}`, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/community/posts/${postId}`, stateRef.current.token);
   }
 
   async function toggleCommunityLike(postId: string): Promise<CommunityPost> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<CommunityPost>(`/community/posts/${postId}/like`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/like`, undefined, stateRef.current.token);
   }
 
   async function toggleCommunitySave(postId: string): Promise<CommunityPost> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<CommunityPost>(`/community/posts/${postId}/save`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/save`, undefined, stateRef.current.token);
   }
 
   async function reportCommunityPost(postId: string): Promise<CommunityPost> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<CommunityPost>(`/community/posts/${postId}/report`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/report`, undefined, stateRef.current.token);
   }
 
   async function addCommunityComment(
     postId: string,
     payload: AddCommentPayload,
   ): Promise<CommunityPost> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<CommunityPost>(`/community/posts/${postId}/comments`, payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<CommunityPost>(`/community/posts/${postId}/comments`, payload, stateRef.current.token);
   }
 
   async function deleteCommunityComment(commentId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete(`/community/comments/${commentId}`, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/community/comments/${commentId}`, stateRef.current.token);
   }
 
   async function reportCommunityComment(commentId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost(`/community/comments/${commentId}/report`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/community/comments/${commentId}/report`, undefined, stateRef.current.token);
   }
 
   async function getBannedAuthors(): Promise<BannedAuthor[]> {
-    if (!state.token) return [];
-    return apiGet<BannedAuthor[]>('/community/banned-authors', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<BannedAuthor[]>('/community/banned-authors', stateRef.current.token);
   }
 
   async function banCommunityAuthor(userId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost(`/community/banned-authors/${userId}`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/community/banned-authors/${userId}`, undefined, stateRef.current.token);
   }
 
   async function unbanCommunityAuthor(userId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete(`/community/banned-authors/${userId}`, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/community/banned-authors/${userId}`, stateRef.current.token);
   }
 
   async function getSeatSchedule(date: string, hour: number): Promise<SeatSchedule> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiGet<SeatSchedule>(
       `/seat-booking/schedule?date=${date}&hour=${hour}`,
-      state.token,
+      stateRef.current.token,
     );
   }
 
   async function bookSeat(payload: SeatSlotPayload): Promise<SeatBookingRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<SeatBookingRecord>('/seat-booking', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<SeatBookingRecord>('/seat-booking', payload, stateRef.current.token);
   }
 
   async function getMySeatBookings(): Promise<SeatBookingRecord[]> {
-    if (!state.token) return [];
-    return apiGet<SeatBookingRecord[]>('/seat-booking/me', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<SeatBookingRecord[]>('/seat-booking/me', stateRef.current.token);
   }
 
   async function cancelSeatBooking(bookingId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete(`/seat-booking/${bookingId}`, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/seat-booking/${bookingId}`, stateRef.current.token);
   }
 
   async function requestSeatNotify(payload: SeatSlotPayload): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost('/seat-booking/notify', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost('/seat-booking/notify', payload, stateRef.current.token);
   }
 
   async function getMyNotifications(): Promise<AppNotificationRecord[]> {
-    if (!state.token) return [];
-    return apiGet<AppNotificationRecord[]>('/notifications/me', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<AppNotificationRecord[]>('/notifications/me', stateRef.current.token);
   }
 
   async function markNotificationRead(notificationId: string): Promise<AppNotificationRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<AppNotificationRecord>(`/notifications/${notificationId}/read`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<AppNotificationRecord>(`/notifications/${notificationId}/read`, undefined, stateRef.current.token);
   }
 
   async function markAllNotificationsRead(): Promise<AppNotificationRecord[]> {
-    if (!state.token) return [];
-    return apiPost<AppNotificationRecord[]>('/notifications/read-all', undefined, state.token);
+    if (!stateRef.current.token) return [];
+    return apiPost<AppNotificationRecord[]>('/notifications/read-all', undefined, stateRef.current.token);
   }
 
   async function getBookReviews(bookId: string): Promise<BookReviews> {
-    if (!state.token) return { items: [], average_rating: 0, total_reviews: 0, breakdown: [] };
-    return apiGet<BookReviews>(`/books/${bookId}/reviews`, state.token);
+    return reviewsApi.getBookReviews(bookId, stateRef.current.token);
   }
 
   async function createReview(bookId: string, payload: ReviewPayload): Promise<Review> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<Review>(`/books/${bookId}/reviews`, payload, state.token);
+    return reviewsApi.createReview(bookId, payload, stateRef.current.token);
   }
 
   async function updateReview(reviewId: string, payload: ReviewPayload): Promise<Review> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPut<Review>(`/reviews/${reviewId}`, payload, state.token);
+    return reviewsApi.updateReview(reviewId, payload, stateRef.current.token);
   }
 
   async function deleteReview(reviewId: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiDelete(`/reviews/${reviewId}`, state.token);
+    return reviewsApi.deleteReview(reviewId, stateRef.current.token);
   }
 
   async function getAllReviews(): Promise<Review[]> {
-    if (!state.token) return [];
-    return apiGet<Review[]>('/reviews', state.token);
+    return reviewsApi.getAllReviews(stateRef.current.token);
   }
 
   async function getAdminDashboard(): Promise<AdminDashboard> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<AdminDashboard>('/admin/dashboard', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<AdminDashboard>('/admin/dashboard', stateRef.current.token);
   }
 
   async function logExpense(payload: ExpensePayload): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost('/admin/expenses', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost('/admin/expenses', payload, stateRef.current.token);
   }
 
   async function getAuditLog(): Promise<AuditLogEntry[]> {
-    if (!state.token) return [];
-    return apiGet<AuditLogEntry[]>('/admin/audit-log', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<AuditLogEntry[]>('/admin/audit-log', stateRef.current.token);
   }
 
   async function getRevenueByPlanReport(): Promise<RevenueByPlanReport> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<RevenueByPlanReport>('/admin/reports/revenue-by-plan', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<RevenueByPlanReport>('/admin/reports/revenue-by-plan', stateRef.current.token);
   }
 
   async function getProfitAndLossReport(): Promise<ProfitAndLossReport> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<ProfitAndLossReport>('/admin/reports/profit-and-loss', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<ProfitAndLossReport>('/admin/reports/profit-and-loss', stateRef.current.token);
   }
 
   async function getExpenseBreakdownReport(): Promise<ExpenseBreakdownReport> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<ExpenseBreakdownReport>('/admin/reports/expense-breakdown', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<ExpenseBreakdownReport>('/admin/reports/expense-breakdown', stateRef.current.token);
   }
 
   async function getMembershipGrowthReport(): Promise<MembershipGrowthReport> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<MembershipGrowthReport>('/admin/reports/membership-growth', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<MembershipGrowthReport>('/admin/reports/membership-growth', stateRef.current.token);
   }
 
   async function getAdminMembers(query: AdminMemberQuery = {}): Promise<AdminMemberListResponse> {
-    if (!state.token) return { items: [], total: 0, page: 1, page_size: 20 };
+    if (!stateRef.current.token) return { items: [], total: 0, page: 1, page_size: 20 };
     const params = new URLSearchParams({
       page: String(query.page ?? 1),
       page_size: String(query.page_size ?? 20),
     });
     if (query.search?.trim()) params.set('search', query.search.trim());
-    return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, state.token);
+    return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, stateRef.current.token);
   }
 
   async function getAdminPayments(query: AdminPaymentQuery = {}): Promise<AdminPaymentListResponse> {
-    if (!state.token) return { items: [], total: 0, page: 1, page_size: 20 };
+    if (!stateRef.current.token) return { items: [], total: 0, page: 1, page_size: 20 };
     const params = new URLSearchParams({
       page: String(query.page ?? 1),
       page_size: String(query.page_size ?? 20),
     });
     if (query.search?.trim()) params.set('search', query.search.trim());
-    return apiGet<AdminPaymentListResponse>(`/admin/payments?${params}`, state.token);
+    if (query.month) params.set('month', query.month);
+    return apiGet<AdminPaymentListResponse>(`/admin/payments?${params}`, stateRef.current.token);
   }
 
   async function updateAdminMember(
     memberId: string,
     payload: AdminMemberUpdatePayload,
   ): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPut(`/members/${memberId}`, payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPut(`/members/${memberId}`, payload, stateRef.current.token);
   }
 
   async function createSupportTicket(payload: SupportTicketPayload): Promise<SupportTicketRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<SupportTicketRecord>('/support-tickets', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<SupportTicketRecord>('/support-tickets', payload, stateRef.current.token);
   }
 
   async function getMySupportTickets(): Promise<SupportTicketRecord[]> {
-    if (!state.token) return [];
-    return apiGet<SupportTicketRecord[]>('/support-tickets/me', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<SupportTicketRecord[]>('/support-tickets/me', stateRef.current.token);
   }
 
   async function getStaffSupportTickets(
     ticketStatus?: SupportTicketStatus,
   ): Promise<SupportTicketRecord[]> {
-    if (!state.token) return [];
+    if (!stateRef.current.token) return [];
     const query = ticketStatus ? `?status=${ticketStatus}` : '';
-    return apiGet<SupportTicketRecord[]>(`/support-tickets${query}`, state.token);
+    return apiGet<SupportTicketRecord[]>(`/support-tickets${query}`, stateRef.current.token);
   }
 
   async function resolveSupportTicket(
     ticketId: string,
     payload: ResolveTicketPayload,
   ): Promise<SupportTicketRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<SupportTicketRecord>(`/support-tickets/${ticketId}/resolve`, payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<SupportTicketRecord>(`/support-tickets/${ticketId}/resolve`, payload, stateRef.current.token);
   }
 
   async function confirmSupportTicket(ticketId: string): Promise<SupportTicketRecord> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<SupportTicketRecord>(
       `/support-tickets/${ticketId}/confirm`,
       undefined,
-      state.token,
+      stateRef.current.token,
     );
   }
 
   async function reopenSupportTicket(ticketId: string): Promise<SupportTicketRecord> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<SupportTicketRecord>(
       `/support-tickets/${ticketId}/reopen`,
       undefined,
-      state.token,
+      stateRef.current.token,
     );
   }
 
@@ -1313,155 +1295,155 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     query: string,
     options?: MemberSearchOptions,
   ): Promise<MemberSummary[]> {
-    if (!state.token || query.trim().length === 0) return [];
+    if (!stateRef.current.token || query.trim().length === 0) return [];
     const params = new URLSearchParams({ search: query.trim(), page_size: '6' });
     if (options?.role) params.set('role', options.role);
     if (options?.activeOnly) params.set('active_only', 'true');
-    const data = await apiGet<{ items: MemberSummary[] }>(`/members?${params}`, state.token);
+    const data = await apiGet<{ items: MemberSummary[] }>(`/members?${params}`, stateRef.current.token);
     return data.items;
   }
 
   async function getManagerDashboard(): Promise<ManagerDashboardStats> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<ManagerDashboardStats>('/manager/dashboard', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<ManagerDashboardStats>('/manager/dashboard', stateRef.current.token);
   }
 
   async function bookSeatForMember(payload: ManagerSeatBookingPayload): Promise<SeatBookingRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<SeatBookingRecord>('/manager/seat-bookings', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<SeatBookingRecord>('/manager/seat-bookings', payload, stateRef.current.token);
   }
 
   async function issueLoanForMember(payload: ManagerLoanPayload): Promise<LoanRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<LoanRecord>('/manager/loans', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>('/manager/loans', payload, stateRef.current.token);
   }
 
   async function linkGuardian(payload: ManagerGuardianLinkPayload): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost<undefined>('/manager/guardian-links', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost<undefined>('/manager/guardian-links', payload, stateRef.current.token);
   }
 
   async function getPendingReservations(): Promise<PendingReservationRequest[]> {
-    if (!state.token) return [];
-    return apiGet<PendingReservationRequest[]>('/manager/reservations/pending', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<PendingReservationRequest[]>('/manager/reservations/pending', stateRef.current.token);
   }
 
   async function approveReservation(
     id: string,
     durationDays: LoanDurationDays,
   ): Promise<Reservation> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<Reservation>(
       `/manager/reservations/${id}/approve`,
       { duration_days: durationDays },
-      state.token,
+      stateRef.current.token,
     );
   }
 
   async function rejectReservation(id: string): Promise<Reservation> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<Reservation>(`/manager/reservations/${id}/reject`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<Reservation>(`/manager/reservations/${id}/reject`, undefined, stateRef.current.token);
   }
 
   async function getActiveLoans(): Promise<LoanRecord[]> {
-    if (!state.token) return [];
-    return apiGet<LoanRecord[]>('/loans', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<LoanRecord[]>('/loans', stateRef.current.token);
   }
 
   async function getLoanHistory(): Promise<LoanRecord[]> {
-    if (!state.token) return [];
-    return apiGet<LoanRecord[]>('/loans/history', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<LoanRecord[]>('/loans/history', stateRef.current.token);
   }
 
   async function getMyLoans(): Promise<LoanRecord[]> {
-    if (!state.token) return [];
-    return apiGet<LoanRecord[]>('/loans/me', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<LoanRecord[]>('/loans/me', stateRef.current.token);
   }
 
   async function getManagerBooks(query: ManagerBookQuery = {}): Promise<ManagerBookListResponse> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     const params = new URLSearchParams();
     if (query.search) params.set('search', query.search);
     if (query.page) params.set('page', String(query.page));
     if (query.page_size) params.set('page_size', String(query.page_size));
-    return apiGet<ManagerBookListResponse>(`/manager/books?${params}`, state.token);
+    return apiGet<ManagerBookListResponse>(`/manager/books?${params}`, stateRef.current.token);
   }
 
   async function getBillingRequests(): Promise<BillingRequestRecord[]> {
-    if (!state.token) return [];
-    return apiGet<BillingRequestRecord[]>('/billing-requests', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<BillingRequestRecord[]>('/billing-requests', stateRef.current.token);
   }
 
   async function createBillingRequest(
     payload: BillingRequestPayload,
   ): Promise<BillingRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<BillingRequestRecord>('/billing-requests', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<BillingRequestRecord>('/billing-requests', payload, stateRef.current.token);
   }
 
   async function approveBillingRequest(requestId: string): Promise<BillingRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<BillingRequestRecord>(
       `/billing-requests/${requestId}/approve`,
       undefined,
-      state.token,
+      stateRef.current.token,
     );
   }
 
   async function rejectBillingRequest(requestId: string): Promise<BillingRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
+    if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<BillingRequestRecord>(
       `/billing-requests/${requestId}/reject`,
       undefined,
-      state.token,
+      stateRef.current.token,
     );
   }
 
   async function waiveFine(payload: WaiveFinePayload): Promise<BillingRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<BillingRequestRecord>('/billing-requests/waive-fine', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<BillingRequestRecord>('/billing-requests/waive-fine', payload, stateRef.current.token);
   }
 
   // Public — the Pricing page and Payment page read prices here without needing a session.
   async function getPricingPlans(): Promise<PricingPlan[]> {
-    return apiGet<PricingPlan[]>('/pricing-plans', state.token ?? undefined);
+    return apiGet<PricingPlan[]>('/pricing-plans', stateRef.current.token ?? undefined);
   }
 
   async function updatePricingPlan(
     id: string,
     payload: PricingPlanUpdatePayload,
   ): Promise<PricingPlan> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPatch<PricingPlan>(`/pricing-plans/${id}`, payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPatch<PricingPlan>(`/pricing-plans/${id}`, payload, stateRef.current.token);
   }
 
   async function createMember(payload: CreateMemberPayload): Promise<CreatedMember> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<CreatedMember>('/members', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<CreatedMember>('/members', payload, stateRef.current.token);
   }
 
   async function sendAnnouncement(payload: AnnouncementPayload): Promise<AnnouncementResult> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<AnnouncementResult>('/admin/announcements', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<AnnouncementResult>('/admin/announcements', payload, stateRef.current.token);
   }
 
   async function getCoupons(): Promise<Coupon[]> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<Coupon[]>('/coupons', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<Coupon[]>('/coupons', stateRef.current.token);
   }
 
   async function generateCoupon(payload: CouponPayload): Promise<Coupon> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<Coupon>('/coupons', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<Coupon>('/coupons', payload, stateRef.current.token);
   }
 
   async function validateCoupon(code: string): Promise<CouponValidation> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<CouponValidation>(`/coupons/${encodeURIComponent(code)}/validate`, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<CouponValidation>(`/coupons/${encodeURIComponent(code)}/validate`, stateRef.current.token);
   }
 
   async function getMembers(query: MemberListQuery = {}): Promise<MemberListResponse> {
-    if (!state.token) return { items: [], total: 0, page: 1, page_size: 20 };
+    if (!stateRef.current.token) return { items: [], total: 0, page: 1, page_size: 20 };
     const params = new URLSearchParams({
       page: String(query.page ?? 1),
       page_size: String(query.page_size ?? 20),
@@ -1469,69 +1451,69 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (query.search?.trim()) params.set('search', query.search.trim());
     if (query.role) params.set('role', query.role);
     if (query.active_only) params.set('active_only', 'true');
-    return apiGet<MemberListResponse>(`/members?${params}`, state.token);
+    return apiGet<MemberListResponse>(`/members?${params}`, stateRef.current.token);
   }
 
   async function getPermissionRequests(): Promise<PermissionRequestRecord[]> {
-    if (!state.token) return [];
-    return apiGet<PermissionRequestRecord[]>('/permission-requests', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<PermissionRequestRecord[]>('/permission-requests', stateRef.current.token);
   }
 
   async function createPermissionRequest(
     payload: PermissionRequestPayload,
   ): Promise<PermissionRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>('/permission-requests', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<PermissionRequestRecord>('/permission-requests', payload, stateRef.current.token);
   }
 
   async function grantPermissionRequest(id: string): Promise<PermissionRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/grant`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/grant`, undefined, stateRef.current.token);
   }
 
   async function denyPermissionRequest(id: string): Promise<PermissionRequestRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/deny`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/deny`, undefined, stateRef.current.token);
   }
 
   async function createLoan(payload: LoanPayload): Promise<LoanRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<LoanRecord>('/loans', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>('/loans', payload, stateRef.current.token);
   }
 
   async function getLoanFines(): Promise<LoanRecord[]> {
-    if (!state.token) return [];
-    return apiGet<LoanRecord[]>('/loans/fines', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<LoanRecord[]>('/loans/fines', stateRef.current.token);
   }
 
   async function returnLoan(id: string): Promise<LoanRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<LoanRecord>(`/loans/${id}/return`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>(`/loans/${id}/return`, undefined, stateRef.current.token);
   }
 
   async function markFinePaid(id: string): Promise<LoanRecord> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<LoanRecord>(`/loans/${id}/mark-fine-paid`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LoanRecord>(`/loans/${id}/mark-fine-paid`, undefined, stateRef.current.token);
   }
 
   async function sendFineReminder(id: string): Promise<void> {
-    if (!state.token) throw new Error('Not authenticated');
-    await apiPost(`/loans/${id}/remind`, undefined, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/loans/${id}/remind`, undefined, stateRef.current.token);
   }
 
   async function getBookRecords(): Promise<BookRecordEntry[]> {
-    if (!state.token) return [];
-    return apiGet<BookRecordEntry[]>('/book-records', state.token);
+    if (!stateRef.current.token) return [];
+    return apiGet<BookRecordEntry[]>('/book-records', stateRef.current.token);
   }
 
   async function createBookRecord(payload: BookRecordPayload): Promise<BookRecordEntry> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiPost<BookRecordEntry>('/book-records', payload, state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<BookRecordEntry>('/book-records', payload, stateRef.current.token);
   }
 
   async function getITHeadDashboard(): Promise<ITHeadDashboard> {
-    if (!state.token) throw new Error('Not authenticated');
-    return apiGet<ITHeadDashboard>('/it-head/dashboard', state.token);
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<ITHeadDashboard>('/it-head/dashboard', stateRef.current.token);
   }
 
   async function refreshAccessToken(): Promise<string | null> {
@@ -1557,130 +1539,143 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [state.token, state.refreshToken]);
 
   function logout() {
-    if (state.token) {
-      apiPost('/auth/logout', undefined, state.token).catch(() => {});
+    if (stateRef.current.token) {
+      apiPost('/auth/logout', undefined, stateRef.current.token).catch(() => {});
     }
     setState(SIGNED_OUT);
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        login,
-        loginWithCredentials,
-        loginWithGoogleToken,
-        registerAccount,
-        forgotPassword,
-        resetPassword,
-        completeProfile,
-        updateProfile,
-        createPayment,
-        createRazorpayOrder,
-        verifyRazorpayPayment,
-        payAtLibrary,
-        deleteAccount,
-        getMembership,
-        getMyPayments,
-        getGuardianChildren,
-        payChildFines,
-        renewChildSubscription,
-        bookSeatForChild,
-        requestSeatNotifyForChild,
-        getMyReadingProgress,
-        getReadingGoal,
-        setReadingGoal,
-        getReadingStreak,
-        getLeaderboard,
-        getMyReservations,
-        reserveBook,
-        cancelReservation,
-        getCommunityPosts,
-        createCommunityPost,
-        updateCommunityPost,
-        deleteCommunityPost,
-        toggleCommunityLike,
-        toggleCommunitySave,
-        reportCommunityPost,
-        addCommunityComment,
-        deleteCommunityComment,
-        reportCommunityComment,
-        getBannedAuthors,
-        banCommunityAuthor,
-        unbanCommunityAuthor,
-        getSeatSchedule,
-        bookSeat,
-        getMySeatBookings,
-        cancelSeatBooking,
-        requestSeatNotify,
-        getMyNotifications,
-        markNotificationRead,
-        markAllNotificationsRead,
-        getBookReviews,
-        createReview,
-        updateReview,
-        deleteReview,
-        getAllReviews,
-        getAdminDashboard,
-        logExpense,
-        getAuditLog,
-        getRevenueByPlanReport,
-        getProfitAndLossReport,
-        getExpenseBreakdownReport,
-        getMembershipGrowthReport,
-        getAdminMembers,
-        updateAdminMember,
-        getAdminPayments,
-        createSupportTicket,
-        getMySupportTickets,
-        getStaffSupportTickets,
-        resolveSupportTicket,
-        confirmSupportTicket,
-        reopenSupportTicket,
-        searchMembers,
-        getManagerDashboard,
-        bookSeatForMember,
-        issueLoanForMember,
-        getPendingReservations,
-        approveReservation,
-        rejectReservation,
-        getActiveLoans,
-        getLoanHistory,
-        getMyLoans,
-        linkGuardian,
-        getManagerBooks,
-        getBillingRequests,
-        createBillingRequest,
-        approveBillingRequest,
-        rejectBillingRequest,
-        waiveFine,
-        getPricingPlans,
-        updatePricingPlan,
-        createMember,
-        sendAnnouncement,
-        getCoupons,
-        generateCoupon,
-        validateCoupon,
-        getMembers,
-        getPermissionRequests,
-        createPermissionRequest,
-        grantPermissionRequest,
-        denyPermissionRequest,
-        createLoan,
-        getLoanFines,
-        returnLoan,
-        markFinePaid,
-        sendFineReminder,
-        getITHeadDashboard,
-        getBookRecords,
-        createBookRecord,
-        clearPostAuthRedirect,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  // Every function above reads stateRef.current rather than closing over `state`, so none of
+  // them need to change identity when auth state changes — memoized once for the provider's
+  // lifetime instead of ~110 individual useCallbacks with identical stale-closure risk.
+  const actions = useMemo(
+    () => ({
+      login,
+      loginWithCredentials,
+      loginWithGoogleToken,
+      registerAccount,
+      forgotPassword,
+      resetPassword,
+      completeProfile,
+      updateProfile,
+      createPayment,
+      createRazorpayOrder,
+      verifyRazorpayPayment,
+      payAtLibrary,
+      deleteAccount,
+      getMembership,
+      getMyPayments,
+      getGuardianChildren,
+      getChildPayments,
+      payChildFines,
+      renewChildSubscription,
+      bookSeatForChild,
+      requestSeatNotifyForChild,
+      getMyReadingProgress,
+      getReadingGoal,
+      setReadingGoal,
+      getReadingStreak,
+      getLeaderboard,
+      getMyReservations,
+      reserveBook,
+      cancelReservation,
+      getCommunityPosts,
+      createCommunityPost,
+      updateCommunityPost,
+      deleteCommunityPost,
+      toggleCommunityLike,
+      toggleCommunitySave,
+      reportCommunityPost,
+      addCommunityComment,
+      deleteCommunityComment,
+      reportCommunityComment,
+      getBannedAuthors,
+      banCommunityAuthor,
+      unbanCommunityAuthor,
+      getSeatSchedule,
+      bookSeat,
+      getMySeatBookings,
+      cancelSeatBooking,
+      requestSeatNotify,
+      getMyNotifications,
+      markNotificationRead,
+      markAllNotificationsRead,
+      getBookReviews,
+      createReview,
+      updateReview,
+      deleteReview,
+      getAllReviews,
+      getAdminDashboard,
+      logExpense,
+      getAuditLog,
+      getRevenueByPlanReport,
+      getProfitAndLossReport,
+      getExpenseBreakdownReport,
+      getMembershipGrowthReport,
+      getAdminMembers,
+      updateAdminMember,
+      getAdminPayments,
+      createSupportTicket,
+      getMySupportTickets,
+      getStaffSupportTickets,
+      resolveSupportTicket,
+      confirmSupportTicket,
+      reopenSupportTicket,
+      searchMembers,
+      getManagerDashboard,
+      bookSeatForMember,
+      issueLoanForMember,
+      getPendingReservations,
+      approveReservation,
+      rejectReservation,
+      getActiveLoans,
+      getLoanHistory,
+      getMyLoans,
+      linkGuardian,
+      getManagerBooks,
+      getBillingRequests,
+      createBillingRequest,
+      approveBillingRequest,
+      rejectBillingRequest,
+      waiveFine,
+      getPricingPlans,
+      updatePricingPlan,
+      createMember,
+      sendAnnouncement,
+      getCoupons,
+      generateCoupon,
+      validateCoupon,
+      getMembers,
+      getPermissionRequests,
+      createPermissionRequest,
+      grantPermissionRequest,
+      denyPermissionRequest,
+      createLoan,
+      getLoanFines,
+      returnLoan,
+      markFinePaid,
+      sendFineReminder,
+      getITHeadDashboard,
+      getBookRecords,
+      createBookRecord,
+      clearPostAuthRedirect,
+      logout,
+    }),
+    // login/loginWithCredentials/loginWithGoogleToken/registerAccount/completeProfile/
+    // updateProfile/deleteAccount/clearPostAuthRedirect/logout call setState from
+    // useLocalStorageState. The linter can't verify a custom hook's setter is stable (it only
+    // special-cases useState/useReducer directly), but every render's setState forwards to the
+    // same underlying stable setter, so calling any render's version is safe.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
+
+  // Only recomputes when auth state actually changes (login/logout/profile update/token
+  // refresh) — not on every render of AuthProvider or its ancestors. This is the object every
+  // useAuth() consumer subscribes to, so this is what stops the app-wide re-render fan-out.
+  const value = useMemo(() => ({ ...state, ...actions }), [state, actions]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {

@@ -1,8 +1,15 @@
 import { useState } from 'react';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Select } from '@/components/ui';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Select,
+  Textarea,
+} from '@/components/ui';
 import { useTranslateText } from '@/features/translate/hooks/useTranslateText';
-import { cn } from '@/lib/cn';
 
 const DEMO_LANGUAGES = [
   { value: 'hi', label: 'Hindi (हिन्दी)' },
@@ -37,21 +44,13 @@ export function TranslateDemoPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="demo-source-text" className="text-sm font-medium text-foreground">
-              Text to translate
-            </label>
-            <textarea
-              id="demo-source-text"
-              rows={4}
-              value={text}
-              onChange={(event) => setText(event.target.value)}
-              className={cn(
-                'w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground',
-                'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              )}
-            />
-          </div>
+          <Textarea
+            id="demo-source-text"
+            label="Text to translate"
+            rows={4}
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+          />
 
           <Select
             label="Translate to"

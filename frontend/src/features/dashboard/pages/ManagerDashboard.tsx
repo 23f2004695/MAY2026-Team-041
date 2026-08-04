@@ -94,10 +94,67 @@ export function ManagerDashboard() {
       .catch(() => setPendingPayments([]));
   }
 
-  useEffect(refreshStats, [getManagerDashboard]);
-  useEffect(refreshPendingReservations, [getPendingReservations]);
-  useEffect(refreshActiveLoans, [getActiveLoans]);
-  useEffect(refreshPendingPayments, [getMyNotifications]);
+  // refreshStats/refreshPendingReservations/refreshActiveLoans/refreshPendingPayments above
+  // stay simple (no cancellation flag) since they're also called directly from manual
+  // triggers below (modal onSaved/onBooked callbacks, action handlers) — only the
+  // mount-time effect invocation needs to guard against setting state after unmount.
+  useEffect(() => {
+    let cancelled = false;
+    getManagerDashboard()
+      .then((data) => {
+        if (!cancelled) setStats(data);
+      })
+      .catch(() => {
+        if (!cancelled) setStats(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getManagerDashboard]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPendingReservations()
+      .then((data) => {
+        if (!cancelled) setPendingReservations(data);
+      })
+      .catch(() => {
+        if (!cancelled) setPendingReservations([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getPendingReservations]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getActiveLoans()
+      .then((data) => {
+        if (!cancelled) setActiveLoans(data);
+      })
+      .catch(() => {
+        if (!cancelled) setActiveLoans([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getActiveLoans]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getMyNotifications()
+      .then((notifications) => {
+        if (!cancelled) {
+          setPendingPayments(notifications.filter((n) => n.type === 'payment-pending' && !n.read));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setPendingPayments([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getMyNotifications]);
 
   async function handleMarkPaymentPaid(notificationId: string) {
     await markNotificationRead(notificationId);

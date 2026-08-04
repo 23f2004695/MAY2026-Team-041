@@ -192,16 +192,18 @@ async def test_login_with_correct_password_returns_token(client):
 
 
 async def test_login_with_wrong_password_rejected(client):
+    """Test Case 2: Login with Wrong Password"""
+
     email = _unique_email()
     await client.post(
         "/api/v1/auth/register",
         json={"email": email, "password": "Password123!", "full_name": "Login Test"},
     )
-
     response = await client.post(
         "/api/v1/auth/login", json={"email": email, "password": "WrongPassword1"}
     )
-    assert response.status_code == 401
+    print("\nLogin Response:", response.status_code, response.text)
+    assert response.status_code == 401  
 
 
 async def test_login_unknown_email_rejected(client):
@@ -489,11 +491,11 @@ async def test_forgot_password_unknown_email_returns_204(client):
 
 async def test_forgot_password_sends_email_and_reset_token_changes_password(client, monkeypatch):
     sent = {}
-    monkeypatch.setattr(
-        service,
-        "send_email",
-        lambda to, subject, body: sent.update(to=to, subject=subject, body=body),
-    )
+
+    async def _capture(to, subject, body):
+        sent.update(to=to, subject=subject, body=body)
+
+    monkeypatch.setattr(service, "send_email_async", _capture)
 
     email = _unique_email()
     await client.post(
@@ -525,11 +527,11 @@ async def test_forgot_password_sends_email_and_reset_token_changes_password(clie
 
 async def test_reset_password_rejects_reused_token(client, monkeypatch):
     sent = {}
-    monkeypatch.setattr(
-        service,
-        "send_email",
-        lambda to, subject, body: sent.update(body=body),
-    )
+
+    async def _capture(to, subject, body):
+        sent.update(body=body)
+
+    monkeypatch.setattr(service, "send_email_async", _capture)
 
     email = _unique_email()
     await client.post(

@@ -29,9 +29,29 @@ async def list_pending() -> list[Reservation]:
     )
 
 
+async def list_active_for_member_and_book(member_id: str, book_id: str) -> list[Reservation]:
+    return await prisma.reservation.find_many(
+        where={
+            "memberId": member_id,
+            "bookId": book_id,
+            "status": {"in": ["pending", "approved"]},
+        },
+        include=RESERVATION_INCLUDE,
+        order={"createdAt": "desc"},
+    )
+
+
 async def list_pending_for_book(book_id: str) -> list[Reservation]:
     return await prisma.reservation.find_many(
         where={"bookId": book_id, "status": "pending"},
+        order={"createdAt": "asc"},
+    )
+
+
+async def list_pending_for_books(book_ids: list[str]) -> list[Reservation]:
+    """Every pending request across several books at once, in queue order."""
+    return await prisma.reservation.find_many(
+        where={"bookId": {"in": book_ids}, "status": "pending"},
         order={"createdAt": "asc"},
     )
 

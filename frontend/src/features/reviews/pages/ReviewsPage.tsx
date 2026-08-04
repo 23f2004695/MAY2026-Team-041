@@ -1,7 +1,7 @@
 import { MessageSquare, MessageSquareOff, Star, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { toast } from 'sonner';
 
@@ -9,6 +9,7 @@ import { PageTitle, ReviewCard, StatisticCard } from '@/components/common';
 import { Button, Dialog, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { apiGet, getErrorMessage } from '@/lib/api';
+import { formatDate } from '@/lib/format';
 import { useAuth, type BookReviews, type Review } from '@/providers/AuthProvider';
 
 import type { Book } from '../../books/hooks/useBooks';
@@ -26,26 +27,16 @@ const EMPTY_BOOK_REVIEWS: BookReviews = {
   breakdown: [5, 4, 3, 2, 1].map((stars) => ({ stars, percent: 0 })),
 };
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
 export function ReviewsPage() {
   const { t } = useTranslation();
+  const { bookId: routeBookId } = useParams<{ bookId?: string }>();
   const { role, getBookReviews, getAllReviews, createReview, updateReview, deleteReview } =
     useAuth();
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
 
-  // ponytail: this page has always shown one hardcoded "featured" book (no bookId route
-  // param exists — /reviews is a plain sidebar destination, not book-specific). Wiring it
-  // to a real backend keeps that shape but picks a real book instead of a fake one: the
-  // first book in the catalog. Make this page take a real :bookId param if it ever needs
-  // to show reviews for more than one book.
+  // With no :bookId (the plain sidebar "Reviews" link), fall back to the first book in
+  // the catalog as a "featured" book — same behavior as before :bookId existed.
   const [featuredBook, setFeaturedBook] = useState<Book | null>(null);
   const [bookReviews, setBookReviews] = useState<BookReviews>(EMPTY_BOOK_REVIEWS);
   const [allReviews, setAllReviews] = useState<Review[]>([]);
@@ -61,8 +52,12 @@ export function ReviewsPage() {
       getAllReviews().then(setAllReviews).catch(() => setAllReviews([]));
       return;
     }
-    apiGet<{ items: Book[] }>('/books?page_size=1')
-      .then((data) => data.items[0] ?? null)
+
+    const bookPromise = routeBookId
+      ? apiGet<Book>(`/books/${routeBookId}`)
+      : apiGet<{ items: Book[] }>('/books?page_size=1').then((data) => data.items[0] ?? null);
+
+    bookPromise
       .then((book) => {
         setFeaturedBook(book);
         if (!book) return EMPTY_BOOK_REVIEWS;
@@ -71,7 +66,7 @@ export function ReviewsPage() {
       .then((data) => data && setBookReviews(data))
       .catch(() => setBookReviews(EMPTY_BOOK_REVIEWS));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isStaff]);
+  }, [isStaff, routeBookId]);
 
   const booksReviewed = useMemo(
     () => new Set(allReviews.map((review) => review.book_title)).size,

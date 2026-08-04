@@ -245,10 +245,11 @@ async def test_renew_child_subscription_creates_membership_payment(client):
         headers={"Authorization": f"Bearer {guardian_token}"},
     )
     print("\nRenew Subscription Response:", response.status_code, response.text)
-    assert response.status_code == 204  
+    assert response.status_code == 204
     payment = await prisma.payment.find_first(where={"userId": child.id, "planMonths": 1})
     assert payment is not None
-    assert payment.amount == 499
+    plan = await prisma.pricingplan.find_unique(where={"planId": "1m"})
+    assert payment.amount == plan.price
 
 
 async def test_book_seat_for_child(client):
@@ -285,6 +286,47 @@ async def test_seat_booking_for_child_rejects_unlinked_child(client):
     response = await client.post(
         f"/api/v1/guardian/children/{stranger.id}/seat-bookings",
         json={"seat_label": "A2", "date": tomorrow.isoformat(), "hour": 10},
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+
+    assert response.status_code == 403
+
+
+async def test_guardian_can_list_child_payments(client):
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+    guardian_token = await _login(client, guardian)
+
+    await client.post(
+        f"/api/v1/guardian/children/{child.id}/renew",
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+
+    response = await client.get(
+        f"/api/v1/guardian/children/{child.id}/payments",
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+
+    print("\nList Child Payments Response:", response.status_code, response.text)
+
+    assert response.status_code == 200
+    body = response.json()
+    plan = await prisma.pricingplan.find_unique(where={"planId": "1m"})
+    assert len(body) == 1
+    assert body[0]["label"] == f"1 Month — ₹{plan.price}"
+    assert body[0]["amount"] == plan.price
+
+
+async def test_listing_payments_for_unlinked_child_is_403(client):
+    guardian = await _make_user(Role.GUARDIAN)
+    stranger = await _make_user(Role.MEMBER)
+    guardian_token = await _login(client, guardian)
+
+    response = await client.get(
+        f"/api/v1/guardian/children/{stranger.id}/payments",
         headers={"Authorization": f"Bearer {guardian_token}"},
     )
 

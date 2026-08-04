@@ -97,7 +97,7 @@ async def test_list_members_forbidden_for_member_role(member_user):
 
 
 async def test_create_member_defaults_to_member_role(admin_user):
-    """Test Case 4: Create Member Success"""
+    """Test Case : Create Member Success"""
     email = _unique_email()
     async with _client_as(admin_user) as client:
         response = await client.post(

@@ -4,17 +4,13 @@ import { toast } from 'sonner';
 
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate } from '@/lib/format';
 import { type LoanRecord } from '@/providers/AuthProvider';
 
 export interface ActiveLoansProps {
   loans: LoanRecord[];
   onReturn: (id: string) => Promise<unknown>;
   onRemind: (id: string) => Promise<unknown>;
-}
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 export function ActiveLoans({ loans, onReturn, onRemind }: ActiveLoansProps) {
@@ -73,7 +69,7 @@ export function ActiveLoans({ loans, onReturn, onRemind }: ActiveLoansProps) {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {loan.status === 'overdue' && (
+                  {loan.status === 'overdue' && !loan.fine_paid && (
                     <>
                       <Badge variant="danger">
                         {t('managerDashboard.activeLoans.daysLate', { count: loan.days_late })}

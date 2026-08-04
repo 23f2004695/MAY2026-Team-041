@@ -107,7 +107,12 @@ async def list_members(
 
 
 async def list_payments(
-    *, search: str | None, page: int, page_size: int
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    start: datetime | None = None,
+    end: datetime | None = None,
 ) -> tuple[list[Payment], int]:
     where: dict = {}
     if search:
@@ -119,6 +124,8 @@ async def list_payments(
                 ]
             }
         }
+    if start is not None:
+        where["createdAt"] = {"gte": start, "lt": end}
 
     return await paginate(
         prisma.payment,

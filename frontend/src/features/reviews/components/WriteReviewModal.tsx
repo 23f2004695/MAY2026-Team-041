@@ -2,7 +2,8 @@ import { ImagePlus, Star, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Input, Modal } from '@/components/ui';
+import { ListRow } from '@/components/common';
+import { Button, Input, Modal, Textarea } from '@/components/ui';
 import { apiGet } from '@/lib/api';
 import { cn } from '@/lib/cn';
 
@@ -141,24 +142,22 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
         <div className="flex flex-col gap-1.5">
           <p className="text-sm font-medium text-foreground">{t('reviews.writeReviewModal.bookLabel')}</p>
           {selectedBook ? (
-            <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2">
-              <div>
-                <p className="text-sm font-medium text-foreground">{selectedBook.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {t('reviews.byAuthor', { author: selectedBook.author })}
-                </p>
-              </div>
-              {!isEditing && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedBook(null)}
-                  aria-label={t('reviews.writeReviewModal.changeBook')}
-                  className="rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                >
-                  <X className="size-4" />
-                </button>
-              )}
-            </div>
+            <ListRow
+              title={selectedBook.title}
+              subtitle={t('reviews.byAuthor', { author: selectedBook.author })}
+              action={
+                !isEditing && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedBook(null)}
+                    aria-label={t('reviews.writeReviewModal.changeBook')}
+                    className="rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  >
+                    <X className="size-4" />
+                  </button>
+                )
+              }
+            />
           ) : (
             <div className="relative flex flex-col gap-1.5">
               <Input
@@ -234,17 +233,14 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="review-comment" className="text-sm font-medium text-foreground">
-            {t('reviews.writeReviewModal.commentLabel')}
-          </label>
-          <textarea
+          <Textarea
             id="review-comment"
+            label={t('reviews.writeReviewModal.commentLabel')}
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             rows={4}
             maxLength={MAX_COMMENT_LENGTH}
             placeholder={t('reviews.writeReviewModal.commentPlaceholder')}
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
           <p className="text-right text-xs text-muted-foreground tabular-nums">
             {comment.length}/{MAX_COMMENT_LENGTH}

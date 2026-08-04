@@ -13,16 +13,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
+import { formatDate } from '@/lib/format';
 import { useAuth, type LoanRecord } from '@/providers/AuthProvider';
-
-function formatDate(iso: string | null) {
-  if (!iso) return null;
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 function StatusBadge({ status }: { status: LoanRecord['status'] }) {
   const { t } = useTranslation();
@@ -38,9 +30,17 @@ export function MyBorrowHistoryPage() {
   const [loans, setLoans] = useState<LoanRecord[]>([]);
 
   useEffect(() => {
+    let cancelled = false;
     getMyLoans()
-      .then(setLoans)
-      .catch(() => setLoans([]));
+      .then((data) => {
+        if (!cancelled) setLoans(data);
+      })
+      .catch(() => {
+        if (!cancelled) setLoans([]);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [getMyLoans]);
 
   return (

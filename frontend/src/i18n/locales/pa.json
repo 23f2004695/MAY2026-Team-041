@@ -25,6 +25,10 @@
     "errors": {
       "generic": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
     },
+    "export": {
+      "csv": "CSV ਐਕਸਪੋਰਟ ਕਰੋ",
+      "pdf": "PDF ਐਕਸਪੋਰਟ ਕਰੋ"
+    },
     "cards": {
       "event": {
         "registered": "ਰਜਿਸਟਰ ਕੀਤਾ",
@@ -33,7 +37,8 @@
       },
       "book": {
         "reserve": "ਰਿਜ਼ਰਵ ਕਰੋ",
-        "viewDetailsAria": "{{title}} ਲਈ ਵੇਰਵੇ ਵੇਖੋ"
+        "viewDetailsAria": "{{title}} ਲਈ ਵੇਰਵੇ ਵੇਖੋ",
+        "viewSummaryAria": "{{title}} ਦਾ ਸਾਰ ਵੇਖੋ"
       },
       "seat": {
         "labelWithStatus": "{{label}}: {{status}}",
@@ -417,8 +422,10 @@
       "pageTitle": "ਭੁਗਤਾਨ",
       "pageDescription": "ਸਾਰੇ ਮੈਂਬਰਾਂ ਦੇ ਸਾਰੇ ਦਰਜ ਭੁਗਤਾਨ।",
       "searchPlaceholder": "ਮੈਂਬਰ ਦੇ ਨਾਮ ਜਾਂ ਈਮੇਲ ਦੁਆਰਾ ਖੋਜੋ",
+      "monthFilter": "ਮਹੀਨੇ ਦੁਆਰਾ ਫਿਲਟਰ ਕਰੋ",
       "table": {
         "member": "ਮੈਂਬਰ",
+        "email": "ਈਮੇਲ",
         "amount": "ਰਾਸ਼ੀ",
         "label": "ਵੇਰਵਾ",
         "status": "ਸਥਿਤੀ",
@@ -583,8 +590,16 @@
         "title": "ਜੁਰਮਾਨਾ ਵੇਰਵੇ"
       },
       "viewFineDetails": "ਵੇਰਵੇ ਵੇਖੋ",
+      "viewPaymentHistory": "ਭੁਗਤਾਨ ਇਤਿਹਾਸ",
       "emptyTitle": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਬੱਚਾ ਲਿੰਕ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।",
       "emptyDescription": "ਆਪਣੇ ਬੱਚੇ ਨੂੰ ਕਹੋ ਕਿ ਉਹ ਆਪਣੀਆਂ ਸੈਟਿੰਗਾਂ ਤੋਂ ਤੁਹਾਡਾ ਈਮੇਲ ਲਿੰਕ ਕਰਨ।"
+    },
+    "paymentHistory": {
+      "title": "ਭੁਗਤਾਨ ਇਤਿਹਾਸ",
+      "empty": {
+        "title": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ",
+        "description": "ਇਸ ਬੱਚੇ ਲਈ ਕੀਤੇ ਭੁਗਤਾਨ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।"
+      }
     },
     "seatReservation": {
       "title": "ਆਪਣੇ ਬੱਚੇ ਲਈ ਸੀਟ ਬੁੱਕ ਕਰੋ",
@@ -1332,7 +1347,13 @@
       "searchPlaceholder": "ਸਿਰਲੇਖ ਜਾਂ ਲੇਖਕ ਦੁਆਰਾ ਖੋਜੋ…",
       "searchAriaLabel": "ਕਿਤਾਬਾਂ ਖੋਜੋ",
       "categoryAriaLabel": "ਸ਼੍ਰੇਣੀ ਦੁਆਰਾ ਫਿਲਟਰ ਕਰੋ",
-      "allCategories": "ਸਭ"
+      "allCategories": "ਸਭ",
+      "sortAriaLabel": "ਕਿਤਾਬਾਂ ਨੂੰ ਕ੍ਰਮਬੱਧ ਕਰੋ",
+      "sortOptions": {
+        "newest": "ਨਵੀਨਤਮ ਆਗਮਨ",
+        "rating": "ਸਭ ਤੋਂ ਵੱਧ ਰੇਟ ਕੀਤੀਆਂ",
+        "recommended": "ਤੁਹਾਡੇ ਲਈ ਸਿਫ਼ਾਰਸ਼ੀ"
+      }
     },
     "status": {
       "available": "ਉਪਲਬਧ",
@@ -1367,6 +1388,9 @@
         "title": "ਤੁਹਾਡੀ ਵਿਸ਼ਲਿਸਟ ਖਾਲੀ ਹੈ",
         "description": "ਕਿਸੇ ਵੀ ਕਿਤਾਬ ਨੂੰ ਇੱਥੇ ਸੰਭਾਲਣ ਲਈ ਦਿਲ 'ਤੇ ਟੈਪ ਕਰੋ।"
       }
+    },
+    "summary": {
+      "empty": "ਇਸ ਕਿਤਾਬ ਲਈ ਹਾਲੇ ਤੱਕ ਕੋਈ ਸਾਰ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
     }
   },
   "events": {
@@ -1661,6 +1685,7 @@
     "pageTitle": "ਕਿਤਾਬ ਸਮੀਖਿਆਵਾਂ",
     "byAuthor": "{{author}} ਦੁਆਰਾ",
     "writeReview": "ਸਮੀਖਿਆ ਲਿਖੋ",
+    "viewReviews": "ਸਮੀਖਿਆਵਾਂ ਵੇਖੋ",
     "writeReviewDisabledHint": "ਸਮੀਖਿਆਵਾਂ ਹਾਲੇ ਜਮ੍ਹਾਂ ਕਰਨ ਲਈ ਖੁੱਲ੍ਹੀਆਂ ਨਹੀਂ ਹਨ",
     "commentsHeading": "ਟਿੱਪਣੀਆਂ",
     "summary": {
@@ -1875,6 +1900,12 @@
       "empty": {
         "title": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਭੁਗਤਾਨ ਨਹੀਂ",
         "description": "ਤੁਹਾਡੇ ਦੁਆਰਾ ਕੀਤੇ ਭੁਗਤਾਨ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।"
+      },
+      "table": {
+        "label": "ਲੇਬਲ",
+        "amount": "ਰਕਮ",
+        "status": "ਸਥਿਤੀ",
+        "date": "ਮਿਤੀ"
       }
     }
   },

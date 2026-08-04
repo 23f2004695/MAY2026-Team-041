@@ -1,11 +1,11 @@
 import { BookMarked, BookOpen, CalendarCheck, Flame, Ticket } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate } from '@/lib/format';
 import type { DueBook } from '@/mocks/dashboard';
 import {
   useAuth,
@@ -20,14 +20,6 @@ import { BooksDueSoon } from '../components/BooksDueSoon';
 import { CurrentlyBorrowed } from '../components/CurrentlyBorrowed';
 import { MemberSubscription } from '../components/MemberSubscription';
 import { RecentNotifications, UpcomingEvents } from '../components/RecentActivity';
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 // Calendar-day difference (ignores time-of-day) so "3 days left" doesn't flicker
 // to "2 days left" a few hours before midnight.
@@ -62,34 +54,78 @@ export function MemberDashboard() {
   const [streak, setStreak] = useState<ReadingStreak>(EMPTY_STREAK);
 
   useEffect(() => {
-    getMembership().then(setMembership).catch(() => setMembership(null));
-    getMyLoans().then(setLoans).catch(() => setLoans([]));
-    getMyReservations().then(setReservations).catch(() => setReservations([]));
-    getMySeatBookings().then(setSeatBookings).catch(() => setSeatBookings([]));
-    getMyNotifications().then(setNotifications).catch(() => setNotifications([]));
-    getReadingStreak().then(setStreak).catch(() => setStreak(EMPTY_STREAK));
+    let cancelled = false;
+
+    getMembership().then((data) => {
+      if (!cancelled) setMembership(data);
+    }).catch(() => {
+      if (!cancelled) setMembership(null);
+    });
+    getMyLoans().then((data) => {
+      if (!cancelled) setLoans(data);
+    }).catch(() => {
+      if (!cancelled) setLoans([]);
+    });
+    getMyReservations().then((data) => {
+      if (!cancelled) setReservations(data);
+    }).catch(() => {
+      if (!cancelled) setReservations([]);
+    });
+    getMySeatBookings().then((data) => {
+      if (!cancelled) setSeatBookings(data);
+    }).catch(() => {
+      if (!cancelled) setSeatBookings([]);
+    });
+    getMyNotifications().then((data) => {
+      if (!cancelled) setNotifications(data);
+    }).catch(() => {
+      if (!cancelled) setNotifications([]);
+    });
+    getReadingStreak().then((data) => {
+      if (!cancelled) setStreak(data);
+    }).catch(() => {
+      if (!cancelled) setStreak(EMPTY_STREAK);
+    });
+
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const activeLoans = loans.filter((loan) => loan.status !== 'returned');
-  const currentlyBorrowed = activeLoans.map((loan) => ({
-    id: loan.id,
-    title: loan.book_title,
-    borrowedOn: formatDate(loan.borrowed_at),
-  }));
-  const booksDueSoon: DueBook[] = loans
-    .filter((loan) => loan.status === 'active')
-    .map((loan) => ({
-      id: loan.id,
-      title: loan.book_title,
-      dueDate: formatDate(loan.due_date),
-      daysLeft: daysUntil(loan.due_date),
-    }))
-    .sort((a, b) => a.daysLeft - b.daysLeft)
-    .slice(0, 5);
+  const activeLoans = useMemo(() => loans.filter((loan) => loan.status !== 'returned'), [loans]);
+  const currentlyBorrowed = useMemo(
+    () =>
+      activeLoans.map((loan) => ({
+        id: loan.id,
+        title: loan.book_title,
+        borrowedOn: formatDate(loan.borrowed_at),
+      })),
+    [activeLoans],
+  );
+  const booksDueSoon: DueBook[] = useMemo(
+    () =>
+      loans
+        .filter((loan) => loan.status === 'active')
+        .map((loan) => ({
+          id: loan.id,
+          title: loan.book_title,
+          dueDate: formatDate(loan.due_date),
+          daysLeft: daysUntil(loan.due_date),
+        }))
+        .sort((a, b) => a.daysLeft - b.daysLeft)
+        .slice(0, 5),
+    [loans],
+  );
 
-  const unpaidFines = loans.filter((loan) => loan.fine_amount > 0 && !loan.fine_paid);
-  const totalFine = unpaidFines.reduce((sum, loan) => sum + loan.fine_amount, 0);
+  const unpaidFines = useMemo(
+    () => loans.filter((loan) => loan.fine_amount > 0 && !loan.fine_paid),
+    [loans],
+  );
+  const totalFine = useMemo(
+    () => unpaidFines.reduce((sum, loan) => sum + loan.fine_amount, 0),
+    [unpaidFines],
+  );
 
   return (
     <div className="flex flex-col gap-6">

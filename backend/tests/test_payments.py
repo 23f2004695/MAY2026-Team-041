@@ -118,6 +118,8 @@ async def test_list_my_payments_requires_authentication(client):
 async def test_list_my_payments_returns_only_the_caller_s_own_payments(
     client, member_user, admin_user
 ):
+    """Test Case: Payment List Returns Only Own Payments"""
+
     member_headers = await _login(client, member_user)
     admin_headers = await _login(client, admin_user)
 
@@ -127,11 +129,10 @@ async def test_list_my_payments_returns_only_the_caller_s_own_payments(
     await client.post(
         "/api/v1/payments", json={"amount": 999, "label": "3 Months"}, headers=admin_headers
     )
-
     response = await client.get("/api/v1/payments/me", headers=member_headers)
-
-    assert response.status_code == 200
-    body = response.json()
+    print("\nList My Payments Response:", response.status_code, response.text)
+    assert response.status_code == 200 
+    body = response.json() 
     assert len(body) == 1
     assert body[0]["amount"] == 499
     assert body[0]["label"] == "1 Month"

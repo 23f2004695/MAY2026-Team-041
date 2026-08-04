@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { NoResults } from '@/components/feedback';
 import { Badge, type BadgeVariant, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { formatDate } from '@/lib/format';
 import type { BookRecordEntry, BookRecordType } from '@/providers/AuthProvider';
 
 const typeBadgeVariant: Record<BookRecordType, BadgeVariant> = {
@@ -15,10 +16,6 @@ const typeLabelKey: Record<BookRecordType, string> = {
   donated: 'itHead.bookRecords.types.donated',
   purchased: 'itHead.bookRecords.types.purchased',
 };
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
 
 export function BookRecords({ records }: { records: BookRecordEntry[] }) {
   const { t } = useTranslation();

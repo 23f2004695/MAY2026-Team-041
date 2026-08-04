@@ -1,5 +1,5 @@
 import { BookOpen, HandCoins, MessageSquare, RefreshCw } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -67,7 +67,10 @@ export function GuardianDashboardPage() {
 
   useEffect(refreshChildren, [getGuardianChildren]);
 
-  const childrenWithFines = realChildren.filter((child) => child.outstanding_fine > 0);
+  const childrenWithFines = useMemo(
+    () => realChildren.filter((child) => child.outstanding_fine > 0),
+    [realChildren],
+  );
 
   async function handlePayAllFines() {
     if (childrenWithFines.length === 0) {

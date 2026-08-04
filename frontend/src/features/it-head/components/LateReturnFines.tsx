@@ -4,16 +4,16 @@ import { toast } from 'sonner';
 import { NoResults } from '@/components/feedback';
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate } from '@/lib/format';
 import { useAuth, type LoanRecord } from '@/providers/AuthProvider';
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
 
 export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[]; onChanged: () => void }) {
   const { t } = useTranslation();
   const { sendFineReminder, markFinePaid } = useAuth();
+  // /loans/fines keeps every late-return row forever (fine_paid included) so the
+  // dashboard total can still be computed from it — this view is the "still owe
+  // money" queue though, so a paid fine has no reason to keep taking up a row here.
+  const unpaid = entries.filter((entry) => !entry.fine_paid);
 
   async function handleRemind(entry: LoanRecord) {
     try {
@@ -40,10 +40,10 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
         <CardTitle>{t('itHead.lateFines.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        {entries.length === 0 ? (
+        {unpaid.length === 0 ? (
           <NoResults title={t('itHead.lateFines.empty')} />
         ) : (
-          entries.map((entry) => (
+          unpaid.map((entry) => (
             <div
               key={entry.id}
               className="flex flex-col gap-2 rounded-lg border border-border p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
@@ -64,19 +64,13 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
                 <span className="font-medium text-foreground">
                   {formatCurrency(entry.fine_amount)}
                 </span>
-                <Badge variant={entry.fine_paid ? 'success' : 'warning'}>
-                  {t(`itHead.lateFines.status.${entry.fine_paid ? 'paid' : 'unpaid'}`)}
-                </Badge>
-                {!entry.fine_paid && (
-                  <>
-                    <Button size="sm" variant="outline" onClick={() => handleRemind(entry)}>
-                      {t('itHead.lateFines.sendReminder')}
-                    </Button>
-                    <Button size="sm" onClick={() => handleMarkPaid(entry)}>
-                      {t('itHead.lateFines.markPaid')}
-                    </Button>
-                  </>
-                )}
+                <Badge variant="warning">{t('itHead.lateFines.status.unpaid')}</Badge>
+                <Button size="sm" variant="outline" onClick={() => handleRemind(entry)}>
+                  {t('itHead.lateFines.sendReminder')}
+                </Button>
+                <Button size="sm" onClick={() => handleMarkPaid(entry)}>
+                  {t('itHead.lateFines.markPaid')}
+                </Button>
               </div>
             </div>
           ))

@@ -1,38 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// Real accounts seeded by backend/scripts/seed_dev_accounts.py — one per role, same
-// credentials the Login page's "Continue as <role>" buttons use. Run that script
-// against your backend before running this suite.
-const DEV_PASSWORD = 'DevPreview123!';
-const DEV_EMAIL_DOMAIN = 'devpreview.internal';
-
-const ROLE_LABEL = {
-  admin: 'Admin',
-  member: 'Member',
-  manager: 'Manager',
-  'it-head': 'IT Head',
-  guardian: 'Guardian',
-} as const;
-
-const ROLE_HOME = {
-  admin: '/admin',
-  member: '/dashboard',
-  manager: '/dashboard',
-  'it-head': '/it-head',
-  guardian: '/guardian',
-} as const;
-
-type Role = keyof typeof ROLE_LABEL;
-
-async function continueAsRole(page: Page, role: Role) {
-  await page.goto('/login');
-  await page.getByRole('button', { name: `Continue as ${ROLE_LABEL[role]}` }).click();
-  // login() is async and the click handler doesn't block on it — wait for the
-  // resulting redirect (and the localStorage session write behind it) to actually
-  // land before the caller does anything else, or a same-page goto() right after
-  // this can race ahead of the write and see a signed-out session.
-  await expect(page).toHaveURL(ROLE_HOME[role]);
-}
+import { continueAsRole, DEV_EMAIL_DOMAIN, DEV_PASSWORD, ROLE_HOME, ROLE_LABEL, type Role } from './helpers';
 
 function uniqueEmail(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.floor(Math.random() * 100000)}@example.com`;

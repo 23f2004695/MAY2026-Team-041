@@ -13,7 +13,7 @@
 
   --color-foreground: #0f172a;
   --color-muted: #475569;
-  --color-muted-foreground: #64748b;
+  --color-muted-foreground: #556277;
 
   --color-primary: #731c7b;
   --color-primary-foreground: #ffffff;
@@ -22,9 +22,9 @@
   --color-secondary: #f1f5f9;
   --color-secondary-foreground: #0f172a;
 
-  --color-success: #15803d;
+  --color-success: #166534;
   --color-success-foreground: #ffffff;
-  --color-warning: #b45309;
+  --color-warning: #92400e;
   --color-warning-foreground: #ffffff;
   --color-danger: #b91c1c;
   --color-danger-foreground: #ffffff;

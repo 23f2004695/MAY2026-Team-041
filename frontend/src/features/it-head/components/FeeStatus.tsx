@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { NoResults } from '@/components/feedback';
 import { Badge, type BadgeVariant, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate } from '@/lib/format';
 import type { FeeStatusEntryRecord } from '@/providers/AuthProvider';
 
 const statusBadgeVariant: Record<FeeStatusEntryRecord['status'], BadgeVariant> = {
@@ -10,10 +10,6 @@ const statusBadgeVariant: Record<FeeStatusEntryRecord['status'], BadgeVariant> =
   due: 'warning',
   overdue: 'danger',
 };
-
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
 
 export function FeeStatus({ entries }: { entries: FeeStatusEntryRecord[] }) {
   const { t } = useTranslation();

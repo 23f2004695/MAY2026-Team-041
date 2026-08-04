@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export function useLocalStorageState<T>(key: string, defaultValue: T) {
   const [value, setValue] = useState<T>(() => {
@@ -11,10 +11,15 @@ export function useLocalStorageState<T>(key: string, defaultValue: T) {
     }
   });
 
-  function set(next: T) {
-    setValue(next);
-    localStorage.setItem(key, JSON.stringify(next));
-  }
+  // Stable identity (useCallback, not a plain function) — callers that memoize around this
+  // setter (e.g. AuthProvider's action functions) can trust it never changes across renders.
+  const set = useCallback(
+    (next: T) => {
+      setValue(next);
+      localStorage.setItem(key, JSON.stringify(next));
+    },
+    [key],
+  );
 
   return [value, set] as const;
 }

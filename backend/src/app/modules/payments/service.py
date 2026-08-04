@@ -4,6 +4,7 @@ from prisma.models import User
 
 from app.core.config import get_settings
 from app.modules.coupons import service as coupons_service
+from app.modules.loans import service as loans_service
 from app.modules.notifications import service as notifications_service
 from app.modules.payments import repository
 from app.modules.payments.schemas import (
@@ -89,6 +90,10 @@ async def verify_and_record_razorpay_payment(
     payment = await repository.create_payment(
         user_id=user.id, amount=amount, label=label, plan_months=plan_months
     )
+    # Same rule as the direct create_payment endpoint — a verified payment with no plan
+    # behind it is a fine payment, so settle what it covers (see settle_fines_for_member).
+    if plan_months is None:
+        await loans_service.settle_fines_for_member(user.id, amount)
     await notifications_service.create_notification(
         user.id, "payment-received", f"Payment of ₹{amount} received for {label}."
     )

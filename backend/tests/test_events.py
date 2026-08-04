@@ -7,7 +7,7 @@ os.environ["APP_ENV"] = "test"
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 from app.core.config import get_settings
 from app.core.constants import Role
 from app.db.prisma import prisma
@@ -67,9 +67,22 @@ async def it_head_user():
     return await _make_user(Role.IT_HEAD)
 
 
+@pytest_asyncio.fixture
+async def admin_user():
+    return await _make_user(Role.ADMIN)
+
+
 def _client_as(user) -> AsyncClient:
     app = create_app()
     app.dependency_overrides[get_current_user] = lambda: user
+    # list/get endpoints resolve the viewer through get_optional_user, not
+    # get_current_user, so it needs its own override for "registered" to reflect them.
+    app.dependency_overrides[get_optional_user] = lambda: user
+    return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
+
+
+def _anon_client() -> AsyncClient:
+    app = create_app()
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
 
 
@@ -236,3 +249,215 @@ async def test_removing_a_non_registrant_is_404(member_user, it_head_user):
         )
 
     assert response.status_code == 404
+
+
+async def test_admin_can_create_an_event(admin_user):
+    body = await _create_event(admin_user)
+
+    assert body["title"] == "Test Event"
+
+
+async def test_admin_can_remove_a_registrant(manager_user, member_user, admin_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+
+    async with _client_as(admin_user) as client:
+        response = await client.delete(
+            f"/api/v1/events/{created['id']}/registrants/{member_user.id}"
+        )
+
+    assert response.status_code == 200
+    registrant_ids = {r["id"] for r in response.json()["registrants"]}
+    assert member_user.id not in registrant_ids
+
+
+async def test_list_events_is_public(manager_user):
+    await _create_event(manager_user)
+
+    async with _anon_client() as client:
+        response = await client.get("/api/v1/events")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert "items" in body and "total" in body
+    assert body["total"] >= 1
+    assert all(item["registered"] is False for item in body["items"])
+
+
+async def test_list_events_paginates(manager_user):
+    for _ in range(3):
+        await _create_event(manager_user)
+
+    async with _client_as(manager_user) as client:
+        response = await client.get("/api/v1/events", params={"page": 1, "page_size": 2})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert len(body["items"]) == 2
+    assert body["total"] >= 3
+
+
+async def test_get_event_reflects_viewer_registration(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+        response = await client.get(f"/api/v1/events/{created['id']}")
+
+    assert response.status_code == 200
+    assert response.json()["registered"] is True
+
+
+async def test_get_event_not_found():
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/events/{uuid.uuid4()}")
+
+    assert response.status_code == 404
+
+
+async def test_get_event_rejects_malformed_id(manager_user):
+    async with _client_as(manager_user) as client:
+        response = await client.get("/api/v1/events/not-a-uuid")
+
+    assert response.status_code == 422
+
+
+async def test_manager_can_delete_an_event(manager_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(manager_user) as client:
+        response = await client.delete(f"/api/v1/events/{created['id']}")
+
+    assert response.status_code == 204
+
+    async with _client_as(manager_user) as client:
+        refetched = await client.get(f"/api/v1/events/{created['id']}")
+    assert refetched.status_code == 404
+
+
+async def test_member_cannot_delete_an_event(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        response = await client.delete(f"/api/v1/events/{created['id']}")
+
+    assert response.status_code == 403
+
+
+async def test_deleting_a_nonexistent_event_is_404(manager_user):
+    async with _client_as(manager_user) as client:
+        response = await client.delete(f"/api/v1/events/{uuid.uuid4()}")
+
+    assert response.status_code == 404
+
+
+async def test_deleting_an_already_deleted_event_is_404(manager_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(manager_user) as client:
+        await client.delete(f"/api/v1/events/{created['id']}")
+        response = await client.delete(f"/api/v1/events/{created['id']}")
+
+    assert response.status_code == 404
+
+
+async def test_member_can_register_for_an_event(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        response = await client.post(f"/api/v1/events/{created['id']}/register")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["registered"] is True
+    assert body["attendees"] == 1
+    assert {r["id"] for r in body["registrants"]} == {member_user.id}
+
+
+async def test_registering_twice_is_a_conflict(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+        response = await client.post(f"/api/v1/events/{created['id']}/register")
+
+    assert response.status_code == 409
+
+
+async def test_registering_at_capacity_is_a_conflict(manager_user, member_user):
+    other_member = await _make_user(Role.MEMBER)
+    created = await _create_event(manager_user, capacity=1)
+
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+
+    async with _client_as(other_member) as client:
+        response = await client.post(f"/api/v1/events/{created['id']}/register")
+
+    assert response.status_code == 409
+
+
+async def test_registering_for_a_nonexistent_event_is_404(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.post(f"/api/v1/events/{uuid.uuid4()}/register")
+
+    assert response.status_code == 404
+
+
+async def test_registering_for_a_deleted_event_is_404(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(manager_user) as client:
+        await client.delete(f"/api/v1/events/{created['id']}")
+
+    async with _client_as(member_user) as client:
+        response = await client.post(f"/api/v1/events/{created['id']}/register")
+
+    assert response.status_code == 404
+
+
+async def test_member_can_unregister_from_an_event(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+        response = await client.delete(f"/api/v1/events/{created['id']}/register")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["registered"] is False
+    assert body["attendees"] == 0
+
+
+async def test_unregistering_when_not_registered_is_404(manager_user, member_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(member_user) as client:
+        response = await client.delete(f"/api/v1/events/{created['id']}/register")
+
+    assert response.status_code == 404
+
+
+async def test_unregistering_from_a_nonexistent_event_is_404(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.delete(f"/api/v1/events/{uuid.uuid4()}/register")
+
+    assert response.status_code == 404
+
+
+async def test_attendance_summary_reflects_new_registrations(manager_user, member_user):
+    async with _client_as(manager_user) as client:
+        baseline = await client.get("/api/v1/events/summary")
+
+    created = await _create_event(manager_user)
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+        response = await client.get("/api/v1/events/summary")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total_attendees"] == baseline.json()["total_attendees"] + 1
+    assert body["total_events_this_month"] >= baseline.json()["total_events_this_month"]
+    assert body["average_attendance_rate"] >= 0.0
