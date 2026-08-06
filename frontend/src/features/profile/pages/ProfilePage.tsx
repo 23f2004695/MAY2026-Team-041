@@ -15,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ProgressBar, StatisticCard } from '@/components/common';
+import { ExportButton, ProgressBar, StatisticCard } from '@/components/common';
 import { Badge, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
 import { guardianStats } from '@/mocks/guardian';
@@ -297,8 +297,26 @@ function MemberProfile() {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex-row items-center justify-between">
           <CardTitle>{t('profile.paymentHistory.title')}</CardTitle>
+          {payments.length > 0 && (
+            <ExportButton
+              filename="payment-history"
+              title={t('profile.paymentHistory.title')}
+              headers={[
+                t('profile.paymentHistory.table.label'),
+                t('profile.paymentHistory.table.amount'),
+                t('profile.paymentHistory.table.status'),
+                t('profile.paymentHistory.table.date'),
+              ]}
+              rows={payments.map((payment) => [
+                payment.label,
+                formatCurrency(payment.amount),
+                payment.status,
+                formatPaymentDate(payment.created_at),
+              ])}
+            />
+          )}
         </CardHeader>
         <CardContent>
           {payments.length === 0 ? (

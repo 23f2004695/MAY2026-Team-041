@@ -9,6 +9,7 @@ from app.core.constants import Role
 from app.modules.events import service
 from app.modules.events.schemas import (
     AttendanceSummary,
+    EventAnalytics,
     EventCreate,
     EventListResponse,
     EventOut,
@@ -19,6 +20,7 @@ router = APIRouter(prefix="/events", tags=["events"])
 
 manage_events = require_role(Role.ADMIN, Role.MANAGER)
 moderate_registrants = require_role(Role.ADMIN, Role.IT_HEAD)
+view_analytics = require_role(Role.ADMIN)
 
 
 @router.get("", response_model=EventListResponse)
@@ -43,6 +45,14 @@ async def get_event(
 ) -> EventOut:
     member_id = current_user.id if current_user else None
     return await service.get_event(str(event_id), member_id=member_id)
+
+
+@router.get("/{event_id}/analytics", response_model=EventAnalytics)
+async def get_event_analytics(
+    event_id: UUID,
+    _: Annotated[User, Depends(view_analytics)],
+) -> EventAnalytics:
+    return await service.get_event_analytics(str(event_id))
 
 
 @router.post("", response_model=EventOut, status_code=status.HTTP_201_CREATED)

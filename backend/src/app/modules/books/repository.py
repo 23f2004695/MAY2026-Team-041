@@ -1,22 +1,12 @@
 from datetime import UTC, datetime
 
-from prisma.models import Book
+from prisma.models import Book, Loan, Review
 
 from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 
-async def find_by_id(book_id: str) -> Book | None:
-    return await prisma.book.find_unique(where={"id": book_id})
-
-
-async def find_by_isbn(isbn: str) -> Book | None:
-    return await prisma.book.find_unique(where={"isbn": isbn})
-
-
-async def list_books(
-    *, search: str | None, category: str | None, page: int, page_size: int
-) -> tuple[list[Book], int]:
+def _list_where(search: str | None, category: str | None) -> dict:
     where: dict = {"deletedAt": None}
     if search:
         where["OR"] = [
@@ -26,14 +16,49 @@ async def list_books(
         ]
     if category and category.lower() != "all":
         where["category"] = category
+    return where
 
+
+async def find_by_id(book_id: str) -> Book | None:
+    return await prisma.book.find_unique(where={"id": book_id})
+
+
+async def list_by_ids(book_ids: list[str]) -> list[Book]:
+    if not book_ids:
+        return []
+    return await prisma.book.find_many(where={"id": {"in": book_ids}})
+
+
+async def list_ratings_for_books(book_ids: list[str]) -> list[Review]:
+    if not book_ids:
+        return []
+    return await prisma.review.find_many(where={"bookId": {"in": book_ids}})
+
+
+async def find_by_isbn(isbn: str) -> Book | None:
+    return await prisma.book.find_unique(where={"isbn": isbn})
+
+
+async def list_books(
+    *, search: str | None, category: str | None, page: int, page_size: int
+) -> tuple[list[Book], int]:
     return await paginate(
         prisma.book,
-        where=where,
+        where=_list_where(search, category),
         order={"createdAt": "desc"},
         skip=(page - 1) * page_size,
         take=page_size,
     )
+
+
+# Used by sort modes ("rating"/"recommended") that need every matching book scored
+# before they can be paginated, unlike the DB-level skip/take "newest" sort above.
+async def find_all_matching(search: str | None, category: str | None) -> list[Book]:
+    return await prisma.book.find_many(where=_list_where(search, category))
+
+
+async def list_loans_for_member(member_id: str) -> list[Loan]:
+    return await prisma.loan.find_many(where={"memberId": member_id}, include={"book": True})
 
 
 async def find_co_borrowed(book_id: str, *, limit: int) -> list[Book]:

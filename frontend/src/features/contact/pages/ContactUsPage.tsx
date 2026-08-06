@@ -23,9 +23,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Textarea,
 } from '@/components/ui';
 import { apiPost, getErrorMessage } from '@/lib/api';
-import { cn } from '@/lib/cn';
 import { isValidEmail } from '@/lib/email';
 
 import { LibraryMap } from '../components/LibraryMap';
@@ -298,28 +298,14 @@ export function ContactUsPage() {
                     error={errors.subject?.message ? t(errors.subject.message) : undefined}
                     {...register('subject')}
                   />
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor={messageFieldId} className="text-sm font-medium text-foreground">
-                      {t('contactUs.form.message')}
-                    </label>
-                    <textarea
-                      id={messageFieldId}
-                      rows={5}
-                      aria-invalid={Boolean(errors.message)}
-                      aria-describedby={errors.message ? `${messageFieldId}-error` : undefined}
-                      className={cn(
-                        'min-h-[12rem] w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground',
-                        'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-                        errors.message && 'border-danger focus-visible:ring-danger',
-                      )}
-                      {...register('message')}
-                    />
-                    {errors.message?.message && (
-                      <p id={`${messageFieldId}-error`} className="text-sm text-danger">
-                        {t(errors.message.message)}
-                      </p>
-                    )}
-                  </div>
+                  <Textarea
+                    id={messageFieldId}
+                    label={t('contactUs.form.message')}
+                    rows={5}
+                    className="min-h-[12rem]"
+                    error={errors.message?.message ? t(errors.message.message) : undefined}
+                    {...register('message')}
+                  />
                   <Button type="submit" isLoading={isSubmitting}>
                     {t('contactUs.form.submitButton')}
                   </Button>
@@ -340,9 +326,9 @@ export function ContactUsPage() {
                   <TableCaption>{t('contactUs.table.caption')}</TableCaption>
                   <TableHeader>
                     <TableRow className="bg-primary/10">
-                      <TableHead>{t('contactUs.table.category')}</TableHead>
-                      <TableHead>{t('contactUs.table.email')}</TableHead>
-                      <TableHead>{t('contactUs.table.phone')}</TableHead>
+                      <TableHead className="text-foreground">{t('contactUs.table.category')}</TableHead>
+                      <TableHead className="text-foreground">{t('contactUs.table.email')}</TableHead>
+                      <TableHead className="text-foreground">{t('contactUs.table.phone')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

@@ -5,6 +5,8 @@ import { Badge, Button, Drawer } from '@/components/ui';
 import type { Event } from '../pages/EventsPage';
 import { useAuth } from '@/providers/AuthProvider';
 
+import { EventAnalyticsPanel } from './EventAnalyticsPanel';
+
 export interface EventDetailsDrawerProps {
   event: Event | null;
   onClose: () => void;
@@ -23,10 +25,12 @@ export function EventDetailsDrawer({
   onEdit,
 }: EventDetailsDrawerProps) {
   const { t } = useTranslation();
-  const { role } = useAuth();
+  const { role, token } = useAuth();
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
   const canManage = role === 'admin' || role === 'manager';
+  const isAdmin = role === 'admin';
+  const hasHappened = event ? new Date(event.date).getTime() < new Date().getTime() : false;
 
   return (
     <Drawer
@@ -137,6 +141,10 @@ export function EventDetailsDrawer({
               </ul>
             )}
           </div>
+
+          {isAdmin && hasHappened && token && (
+            <EventAnalyticsPanel eventId={event.id} eventTitle={event.title} token={token} />
+          )}
         </div>
       )}
     </Drawer>

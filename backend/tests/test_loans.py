@@ -81,29 +81,43 @@ def _anon_client() -> AsyncClient:
 
 
 async def test_create_loan_requires_authentication():
+    """Test Case 1: Create Loan Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": str(uuid.uuid4()), "member_id": str(uuid.uuid4())}
         )
-    assert response.status_code == 401
+
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 401 
 
 
 async def test_member_cannot_create_a_loan(member_user, book):
+    """Test Case 2: Create Loan Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
         )
-    assert response.status_code == 403
+
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_it_head_can_create_a_loan(it_head_user, member_user, book):
+    """Test Case 8: Create Loan Success (as IT-Head)"""
+
     async with _client_as(it_head_user) as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
         )
 
-    assert response.status_code == 201
-    body = response.json()
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 201 
+    body = response.json() 
     assert body["book_title"] == book.title
     assert body["member_name"] == member_user.fullName
     assert body["status"] == "active"
@@ -112,14 +126,21 @@ async def test_it_head_can_create_a_loan(it_head_user, member_user, book):
 
 
 async def test_create_loan_for_missing_book_returns_404(it_head_user, member_user):
+    """Test Case 4: Create Loan Missing Book"""
+
     async with _client_as(it_head_user) as client:
         response = await client.post(
             "/api/v1/loans", json={"book_id": str(uuid.uuid4()), "member_id": member_user.id}
         )
-    assert response.status_code == 404
+
+    print("\nCreate Loan Response:", response.status_code, response.text)
+
+    assert response.status_code == 404 
 
 
 async def test_overdue_loan_appears_in_fines_with_computed_fine(it_head_user, member_user, book):
+    """Test Case 9: Overdue Loan Shows Computed Fine (₹50/day)"""
+
     overdue_loan = await prisma.loan.create(
         data={
             "bookId": book.id,
@@ -128,15 +149,14 @@ async def test_overdue_loan_appears_in_fines_with_computed_fine(it_head_user, me
             "createdById": it_head_user.id,
         }
     )
-
     async with _client_as(it_head_user) as client:
         response = await client.get("/api/v1/loans/fines")
-
-    assert response.status_code == 200
     entry = next(row for row in response.json() if row["id"] == overdue_loan.id)
-    assert entry["status"] == "overdue"
+    print("\nLoans Fines Response:", response.status_code, entry)
+    assert response.status_code == 200  
+    assert entry["status"] == "overdue" 
     assert entry["days_late"] == 5
-    assert entry["fine_amount"] == 250  # 5 days * FINE_PER_DAY (50)
+    assert entry["fine_amount"] == 250  
     assert entry["fine_paid"] is False
 
 
@@ -239,9 +259,11 @@ async def test_send_reminder_emails_the_borrower(it_head_user, member_user, book
         }
     )
     sent: list[tuple[str, str, str]] = []
-    monkeypatch.setattr(
-        loans_service, "send_email", lambda to, subject, body: sent.append((to, subject, body))
-    )
+
+    async def _capture(to, subject, body):
+        sent.append((to, subject, body))
+
+    monkeypatch.setattr(loans_service, "send_email_async", _capture)
 
     async with _client_as(it_head_user) as client:
         await client.post(f"/api/v1/loans/{loan.id}/remind")
@@ -289,3 +311,63 @@ async def test_due_soon_reminders_skip_loans_outside_the_window(
 
     assert due_soon.id in reminded_ids
     assert due_far_out.id not in reminded_ids
+
+
+async def test_due_soon_reminders_do_not_renudge_a_recently_reminded_loan(
+    it_head_user, member_user, book, monkeypatch
+):
+    """The sweep also runs on startup, so without a cooldown every restart re-emailed
+    everyone currently due soon (and piled up duplicate notifications)."""
+    from app.modules.loans import service as loans_service
+
+    loan = await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=1),
+            "createdById": it_head_user.id,
+        }
+    )
+    sent: list[str] = []
+
+    async def _capture(to, subject, body):
+        sent.append(to)
+
+    monkeypatch.setattr(loans_service, "send_email_async", _capture)
+
+    await loans_service.send_due_soon_reminders()
+    first_pass = len(sent)
+    await loans_service.send_due_soon_reminders()
+
+    assert first_pass >= 1
+    # Second sweep is a no-op for this loan — it was just reminded.
+    assert len(sent) == first_pass
+
+    refreshed = await prisma.loan.find_unique(where={"id": loan.id})
+    assert refreshed.lastRemindedAt is not None
+
+
+async def test_a_stale_reminder_lets_the_loan_be_nudged_again(
+    it_head_user, member_user, book, monkeypatch
+):
+    from app.modules.loans import service as loans_service
+
+    loan = await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=1),
+            "createdById": it_head_user.id,
+            "lastRemindedAt": datetime.now(UTC) - timedelta(days=2),
+        }
+    )
+    reminded_ids: list[str] = []
+
+    async def _fake_send_reminder(loan_id: str) -> None:
+        reminded_ids.append(loan_id)
+
+    monkeypatch.setattr(loans_service, "send_reminder", _fake_send_reminder)
+
+    await loans_service.send_due_soon_reminders()
+
+    assert loan.id in reminded_ids

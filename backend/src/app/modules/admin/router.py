@@ -75,17 +75,32 @@ async def send_announcement(
 async def list_admin_members(
     _: Annotated[User, Depends(manage_admin)],
     search: Annotated[str | None, Query(description="Match against full name or email")] = None,
+    role: Annotated[str | None, Query(description="Filter by role name")] = None,
+    status: Annotated[str | None, Query(pattern=r"^(active|inactive)$")] = None,
+    sort_by: Annotated[str, Query(pattern=r"^(name|joined|role)$")] = "joined",
+    sort_dir: Annotated[str, Query(pattern=r"^(asc|desc)$")] = "desc",
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> AdminMemberListOut:
-    return await service.list_members(search=search, page=page, page_size=page_size)
+    return await service.list_members(
+        search=search,
+        page=page,
+        page_size=page_size,
+        role=role,
+        status=status,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+    )
 
 
 @router.get("/payments", response_model=AdminPaymentListOut)
 async def list_admin_payments(
     _: Annotated[User, Depends(manage_admin)],
     search: Annotated[str | None, Query(description="Match against member name or email")] = None,
+    month: Annotated[str | None, Query(pattern=r"^\d{4}-\d{2}$")] = None,
     page: Annotated[int, Query(ge=1)] = 1,
-    page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+    # Upper bound raised beyond the usual 100 so the monthly-report export can
+    # pull a full month's rows in a single request instead of paging through it.
+    page_size: Annotated[int, Query(ge=1, le=1000)] = 20,
 ) -> AdminPaymentListOut:
-    return await service.list_payments(search=search, page=page, page_size=page_size)
+    return await service.list_payments(search=search, page=page, page_size=page_size, month=month)

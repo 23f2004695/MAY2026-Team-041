@@ -7,7 +7,7 @@ os.environ["APP_ENV"] = "test"
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_optional_user
 from app.core.config import get_settings
 from app.core.constants import Role
 from app.core.security import hash_password
@@ -80,6 +80,9 @@ async def member_user():
 def _client_as(user) -> AsyncClient:
     app = create_app()
     app.dependency_overrides[get_current_user] = lambda: user
+    # /books resolves the viewer through get_optional_user (for personalized sorting),
+    # not get_current_user, so it needs its own override to see this user too.
+    app.dependency_overrides[get_optional_user] = lambda: user
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
 
 
@@ -89,43 +92,63 @@ def _anon_client() -> AsyncClient:
 
 
 async def test_list_books_is_public():
+    """Test Case 1: List Books Success (public, no auth)"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/books")
 
-    assert response.status_code == 200
-    body = response.json()
-    assert "items" in body and "total" in body
+    print("\nList Books Response:", response.status_code, response.text)
 
+    assert response.status_code == 200 
+    body = response.json()
+    assert "items" in body and "total" in body  
 
 async def test_get_book_not_found():
+    """Test Case 2: Get Book Not Found"""
+
     async with _anon_client() as client:
         response = await client.get(f"/api/v1/books/{uuid.uuid4()}")
 
-    assert response.status_code == 404
+    print("\nGet Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 404  
 
 
 async def test_get_book_rejects_malformed_id():
+    """Test Case 3: Get Book Malformed ID"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/books/not-a-uuid")
 
-    assert response.status_code == 422
+    print("\nGet Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 422 
 
 
 async def test_create_book_requires_authentication():
+    """Test Case 4: Create Book Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.post("/api/v1/books", json=_book_payload())
 
-    assert response.status_code == 401
+    print("\nCreate Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 401 
 
 
 async def test_create_book_forbidden_for_member_role(member_user):
+    """Test Case 5: Create Book Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.post("/api/v1/books", json=_book_payload())
 
-    assert response.status_code == 403
+    print("\nCreate Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 403 
 
 
 async def test_create_book_success_as_librarian(librarian_user):
+    """Test Case 4: Create Book Success (as librarian)"""
     title = _unique_title()
     isbn = _unique_isbn()
     async with _client_as(librarian_user) as client:
@@ -139,9 +162,9 @@ async def test_create_book_success_as_librarian(librarian_user):
                 language="English",
             ),
         )
-
-    assert response.status_code == 201
-    body = response.json()
+    print("\nCreate Book Response:", response.status_code, response.text)
+    assert response.status_code == 201 
+    body = response.json() 
     assert body["title"] == title
     assert body["isbn"] == isbn
     assert body["published_year"] == 2020
@@ -151,35 +174,50 @@ async def test_create_book_success_as_librarian(librarian_user):
 
 
 async def test_create_book_duplicate_isbn_conflicts(librarian_user):
+    """Test Case 6: Create Book Duplicate ISBN"""
+
     isbn = _unique_isbn()
     async with _client_as(librarian_user) as client:
         first = await client.post("/api/v1/books", json=_book_payload(isbn=isbn))
         second = await client.post("/api/v1/books", json=_book_payload(isbn=isbn))
 
+    print("\nCreate Book Response:", second.status_code, second.text)
+
     assert first.status_code == 201
-    assert second.status_code == 409
+    assert second.status_code == 409 
 
 
 async def test_create_book_rejects_invalid_isbn(librarian_user):
+    """Test Case 8: Create Book Invalid ISBN"""
+
     async with _client_as(librarian_user) as client:
         response = await client.post("/api/v1/books", json=_book_payload(isbn="not-an-isbn"))
 
-    assert response.status_code == 422
+    print("\nCreate Book Response:", response.status_code, response.text)
 
+    assert response.status_code == 422 
+    
 
 async def test_create_book_rejects_future_published_year(librarian_user):
+    """Test Case 9: Create Book Future Published Year"""
+
     async with _client_as(librarian_user) as client:
         response = await client.post("/api/v1/books", json=_book_payload(published_year=3000))
 
-    assert response.status_code == 422
+    print("\nCreate Book Response:", response.status_code, response.text)
+
+    assert response.status_code == 422  
 
 
 async def test_create_book_requires_author_and_category(librarian_user):
+    """Test Case 10: Create Book Missing Author/Category"""
+
     async with _client_as(librarian_user) as client:
         response = await client.post("/api/v1/books", json={"title": _unique_title()})
 
-    assert response.status_code == 422
+    print("\nCreate Book Response:", response.status_code, response.text)
 
+    assert response.status_code == 422 
 
 async def test_create_book_available_when_copies_positive(librarian_user):
     async with _client_as(librarian_user) as client:
@@ -272,6 +310,8 @@ async def test_delete_book_forbidden_for_librarian(librarian_user):
 
 
 async def test_delete_book_success_as_admin(admin_user, librarian_user):
+    """Test Case 11: Delete Book Success (as admin)"""
+
     async with _client_as(librarian_user) as client:
         created = await client.post("/api/v1/books", json=_book_payload())
         book_id = created.json()["id"]
@@ -279,11 +319,13 @@ async def test_delete_book_success_as_admin(admin_user, librarian_user):
     async with _client_as(admin_user) as client:
         delete_response = await client.delete(f"/api/v1/books/{book_id}")
 
+    print("\nDelete Book Response:", delete_response.status_code, delete_response.text)
+
     async with _anon_client() as client:
         get_response = await client.get(f"/api/v1/books/{book_id}")
 
-    assert delete_response.status_code == 204
-    assert get_response.status_code == 404
+    assert delete_response.status_code == 204  
+    assert get_response.status_code == 404  
 
 
 async def test_related_books_not_found():
@@ -336,3 +378,156 @@ async def test_related_books_falls_back_to_category_without_loan_history():
     assert response.status_code == 200
     ids = [item["id"] for item in response.json()]
     assert same_category.id in ids
+
+
+async def test_book_without_reviews_has_no_rating(member_user):
+    book = await prisma.book.create(data=_book_payload())
+
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/books/{book.id}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["average_rating"] is None
+    assert body["review_count"] == 0
+
+
+async def test_get_book_includes_average_rating(member_user):
+    book = await prisma.book.create(data=_book_payload())
+    other_member = await _make_user(Role.MEMBER)
+    await prisma.review.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "rating": 5,
+            "comment": "Loved it",
+            "images": [],
+        }
+    )
+    await prisma.review.create(
+        data={
+            "bookId": book.id,
+            "memberId": other_member.id,
+            "rating": 3,
+            "comment": "It was fine",
+            "images": [],
+        }
+    )
+
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/books/{book.id}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["average_rating"] == 4.0
+    assert body["review_count"] == 2
+
+
+async def test_list_books_includes_average_rating(member_user):
+    book = await prisma.book.create(data=_book_payload())
+    await prisma.review.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "rating": 4,
+            "comment": "Good read",
+            "images": [],
+        }
+    )
+
+    async with _anon_client() as client:
+        response = await client.get("/api/v1/books", params={"search": book.title})
+
+    assert response.status_code == 200
+    items = response.json()["items"]
+    row = next(item for item in items if item["id"] == book.id)
+    assert row["average_rating"] == 4.0
+    assert row["review_count"] == 1
+
+
+async def test_sort_by_rating_orders_highest_first(member_user):
+    marker = f"{TEST_TITLE_MARKER}rating-{uuid.uuid4().hex[:6]}"
+    low = await prisma.book.create(data=_book_payload(title=f"{marker}-low"))
+    high = await prisma.book.create(data=_book_payload(title=f"{marker}-high"))
+    unrated = await prisma.book.create(data=_book_payload(title=f"{marker}-unrated"))
+    await prisma.review.create(
+        data={
+            "bookId": low.id,
+            "memberId": member_user.id,
+            "rating": 2,
+            "images": [],
+            "comment": "meh",
+        }
+    )
+    other_member = await _make_user(Role.MEMBER)
+    await prisma.review.create(
+        data={
+            "bookId": high.id,
+            "memberId": other_member.id,
+            "rating": 5,
+            "images": [],
+            "comment": "great",
+        }
+    )
+
+    async with _anon_client() as client:
+        response = await client.get(
+            "/api/v1/books", params={"search": marker, "sort": "rating", "page_size": 10}
+        )
+
+    assert response.status_code == 200
+    ids = [item["id"] for item in response.json()["items"]]
+    # Rated-highest first; the unrated book (no reviews) sorts behind both.
+    assert ids.index(high.id) < ids.index(low.id) < ids.index(unrated.id)
+
+
+async def test_sort_recommended_prioritizes_matching_category_and_excludes_borrowed(
+    member_user,
+):
+    marker = f"{TEST_TITLE_MARKER}rec-{uuid.uuid4().hex[:6]}"
+    borrowed = await prisma.book.create(
+        data=_book_payload(title=f"{marker}-borrowed", category="Science", author="Carl Sagan")
+    )
+    same_author = await prisma.book.create(
+        data=_book_payload(title=f"{marker}-same-author", category="Fiction", author="Carl Sagan")
+    )
+    same_category = await prisma.book.create(
+        data=_book_payload(title=f"{marker}-same-category", category="Science", author="Nobody")
+    )
+    unrelated = await prisma.book.create(
+        data=_book_payload(title=f"{marker}-unrelated", category="Poetry", author="Nobody")
+    )
+    await prisma.loan.create(
+        data={
+            "bookId": borrowed.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=7),
+            "createdById": member_user.id,
+        }
+    )
+
+    async with _client_as(member_user) as client:
+        response = await client.get(
+            "/api/v1/books", params={"search": marker, "sort": "recommended", "page_size": 10}
+        )
+
+    assert response.status_code == 200
+    ids = [item["id"] for item in response.json()["items"]]
+    # Already-borrowed book is excluded outright — "recommended" means something new.
+    assert borrowed.id not in ids
+    # Author match (weighted higher) outranks category match, which outranks no match.
+    assert ids.index(same_author.id) < ids.index(same_category.id) < ids.index(unrelated.id)
+
+
+async def test_sort_recommended_without_auth_falls_back_gracefully():
+    marker = f"{TEST_TITLE_MARKER}rec-anon-{uuid.uuid4().hex[:6]}"
+    await prisma.book.create(data=_book_payload(title=f"{marker}-a"))
+    await prisma.book.create(data=_book_payload(title=f"{marker}-b"))
+
+    async with _anon_client() as client:
+        response = await client.get(
+            "/api/v1/books", params={"search": marker, "sort": "recommended"}
+        )
+
+    assert response.status_code == 200
+    assert len(response.json()["items"]) == 2

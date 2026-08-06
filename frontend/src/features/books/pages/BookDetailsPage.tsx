@@ -1,5 +1,4 @@
 import { ArrowLeft, BookOpen, Heart } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -7,11 +6,11 @@ import { toast } from 'sonner';
 import { BookCard } from '@/components/common';
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { apiGet, getErrorMessage } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/providers/AuthProvider';
 
-import type { Book } from '../hooks/useBooks';
+import { useBookQuery, useRelatedBooksQuery } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
 
 export function BookDetailsPage() {
@@ -19,21 +18,9 @@ export function BookDetailsPage() {
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
   const { reserveBook } = useAuth();
-  const [book, setBook] = useState<Book | null>(null);
-  const [loadedFor, setLoadedFor] = useState<string | undefined>(undefined);
-  const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
+  const { data: book, isLoading, isError } = useBookQuery(bookId);
+  const { data: relatedBooks = [] } = useRelatedBooksQuery(bookId);
   const { isWishlisted, toggleWishlist } = useWishlist();
-
-  useEffect(() => {
-    if (!bookId) return;
-    apiGet<Book>(`/books/${bookId}`)
-      .then((data) => setBook(data))
-      .catch(() => setBook(null))
-      .finally(() => setLoadedFor(bookId));
-    apiGet<Book[]>(`/books/${bookId}/related`)
-      .then(setRelatedBooks)
-      .catch(() => setRelatedBooks([]));
-  }, [bookId]);
 
   async function handleReserve() {
     if (!book) return;
@@ -47,9 +34,9 @@ export function BookDetailsPage() {
     }
   }
 
-  if (bookId !== loadedFor) return null;
+  if (isLoading) return null;
 
-  if (!book) {
+  if (!book || isError) {
     return (
       <EmptyState
         title={t('books.details.notFound.title')}
@@ -124,10 +111,14 @@ export function BookDetailsPage() {
             {relatedBooks.map((related) => (
               <BookCard
                 key={related.id}
+                bookId={related.id}
                 title={related.title}
                 author={related.author}
                 category={related.category}
                 available={related.available}
+                averageRating={related.average_rating}
+                reviewCount={related.review_count}
+                description={related.description}
                 href={ROUTES.BOOK_DETAILS.replace(':bookId', related.id)}
                 isWishlisted={isWishlisted(related.id)}
                 onToggleWishlist={() => toggleWishlist(related.id)}

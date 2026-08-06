@@ -7,6 +7,7 @@ from app.api.deps import require_role
 from app.core.constants import Role
 from app.modules.guardian import service
 from app.modules.guardian.schemas import GuardianChildOut, GuardianLinkCreate
+from app.modules.payments.schemas import PaymentOut
 from app.modules.seat_booking.schemas import SeatBookingCreate, SeatBookingOut, SeatNotifyCreate
 
 router = APIRouter(prefix="/guardian", tags=["guardian"])
@@ -28,6 +29,13 @@ async def list_children(
     user: Annotated[User, Depends(as_guardian)],
 ) -> list[GuardianChildOut]:
     return await service.list_my_children(user.id)
+
+
+@router.get("/children/{child_id}/payments", response_model=list[PaymentOut])
+async def list_child_payments(
+    child_id: str, user: Annotated[User, Depends(as_guardian)]
+) -> list[PaymentOut]:
+    return await service.list_child_payments(user.id, child_id)
 
 
 @router.post("/children/{child_id}/pay-fines", status_code=status.HTTP_204_NO_CONTENT)

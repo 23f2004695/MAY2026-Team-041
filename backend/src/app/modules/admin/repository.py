@@ -84,7 +84,14 @@ async def list_member_ids() -> list[str]:
 
 
 async def list_members(
-    *, search: str | None, page: int, page_size: int
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    role: str | None = None,
+    status: str | None = None,
+    sort_by: str = "joined",
+    sort_dir: str = "desc",
 ) -> tuple[list[User], int]:
     # Unlike count_members/list_member_ids (which are strictly about the "member" role
     # for stats/announcements), this powers the admin's account-management table, so it
@@ -95,19 +102,38 @@ async def list_members(
             {"fullName": {"contains": search, "mode": "insensitive"}},
             {"email": {"contains": search, "mode": "insensitive"}},
         ]
+    if role:
+        where["role"] = {"name": role}
+    if status == "active":
+        where["isActive"] = True
+    elif status == "inactive":
+        where["isActive"] = False
+
+    direction = "desc" if sort_dir == "desc" else "asc"
+    if sort_by == "role":
+        order: dict = {"role": {"name": direction}}
+    elif sort_by == "name":
+        order = {"fullName": direction}
+    else:
+        order = {"createdAt": direction}
 
     return await paginate(
         prisma.user,
         where=where,
         include={"role": True},
-        order={"createdAt": "desc"},
+        order=order,
         skip=(page - 1) * page_size,
         take=page_size,
     )
 
 
 async def list_payments(
-    *, search: str | None, page: int, page_size: int
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    start: datetime | None = None,
+    end: datetime | None = None,
 ) -> tuple[list[Payment], int]:
     where: dict = {}
     if search:
@@ -119,6 +145,8 @@ async def list_payments(
                 ]
             }
         }
+    if start is not None:
+        where["createdAt"] = {"gte": start, "lt": end}
 
     return await paginate(
         prisma.payment,

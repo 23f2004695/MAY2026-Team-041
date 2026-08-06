@@ -14,10 +14,10 @@ from app.core.config import get_settings
 from app.db.prisma import prisma
 
 PLANS = [
-    {"planId": "1m", "months": 1, "price": 499, "savePercent": 0, "badge": None},
-    {"planId": "3m", "months": 3, "price": 1349, "savePercent": 10, "badge": "mostPopular"},
-    {"planId": "6m", "months": 6, "price": 2449, "savePercent": 18, "badge": None},
-    {"planId": "12m", "months": 12, "price": 4499, "savePercent": 25, "badge": "bestValue"},
+    {"planId": "1m", "months": 1, "price": 999, "savePercent": 0, "badge": None},
+    {"planId": "3m", "months": 3, "price": 2697, "savePercent": 10, "badge": "mostPopular"},
+    {"planId": "6m", "months": 6, "price": 4915, "savePercent": 18, "badge": None},
+    {"planId": "12m", "months": 12, "price": 8991, "savePercent": 25, "badge": "bestValue"},
 ]
 
 
