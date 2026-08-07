@@ -45,19 +45,30 @@ export function SeatReservationForChild({ children }: { children: GuardianChild[
       .catch(() => setSeats(null));
   }
 
+  // Refetches periodically, not just on mount — a mount-only fetch pins the schedule to
+  // whichever hour the card happened to open in, so bookings made elsewhere (and the
+  // wall clock crossing into the next hour) never appeared on an already-open card.
   useEffect(() => {
     let cancelled = false;
-    getSeatSchedule(toDateInputValue(now), now.getHours())
-      .then((schedule) => {
-        if (!cancelled) setSeats(schedule.seats);
-      })
-      .catch(() => {
-        if (!cancelled) setSeats(null);
-      });
+
+    function fetchSchedule() {
+      const current = new Date();
+      getSeatSchedule(toDateInputValue(current), current.getHours())
+        .then((schedule) => {
+          if (!cancelled) setSeats(schedule.seats);
+        })
+        .catch(() => {
+          if (!cancelled) setSeats(null);
+        });
+    }
+
+    fetchSchedule();
+    const interval = setInterval(fetchSchedule, 60_000);
+
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getSeatSchedule]);
 
   function toggleSeat(seatLabel: string) {

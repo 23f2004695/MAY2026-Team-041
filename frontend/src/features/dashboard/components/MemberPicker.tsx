@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { ListRow } from '@/components/common';
 import { Input } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
@@ -46,19 +47,19 @@ export function MemberPicker({
     <div className={cn('flex flex-col gap-1.5', className)}>
       <p className="text-sm font-medium text-foreground">{label}</p>
       {selectedMember ? (
-        <div className="flex items-center justify-between gap-2 rounded-md border border-border bg-surface px-3 py-2">
-          <div>
-            <p className="text-sm font-medium text-foreground">{selectedMember.full_name}</p>
-            <p className="text-xs text-muted-foreground">{selectedMember.email}</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => onSelect(null)}
-            className="text-xs font-medium text-primary hover:underline"
-          >
-            {changeLabel}
-          </button>
-        </div>
+        <ListRow
+          title={selectedMember.full_name}
+          subtitle={selectedMember.email}
+          action={
+            <button
+              type="button"
+              onClick={() => onSelect(null)}
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              {changeLabel}
+            </button>
+          }
+        />
       ) : (
         <div className="flex flex-col gap-1.5">
           <Input

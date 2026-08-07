@@ -3,16 +3,16 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { BookCard, PageHeader } from '@/components/common';
+import { BookCard, PageHeader, Pagination } from '@/components/common';
 import { NoResults } from '@/components/feedback';
-import { Badge, Button, Pagination } from '@/components/ui';
+import { Badge, Button } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { getErrorMessage } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
 
 import { BookFilters } from '../components/BookFilters';
 import { WishlistDrawer } from '../components/WishlistDrawer';
-import { useBooks, useBooksByIds } from '../hooks/useBooks';
+import { useBooks, useBooksByIds, type BookSort } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
 
 export function BooksListPage() {
@@ -20,10 +20,11 @@ export function BooksListPage() {
   const { reserveBook } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
+  const [sort, setSort] = useState<BookSort>('newest');
   const [page, setPage] = useState(1);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
-  const { items: pageBooks, totalPages, refresh } = useBooks(search, category, page);
+  const { items: pageBooks, total, totalPages, refresh } = useBooks(search, category, sort, page);
   const wishlistedBooks = useBooksByIds(wishlistIds);
 
   async function handleReserve(bookId: string, title: string) {
@@ -46,9 +47,15 @@ export function BooksListPage() {
     setPage(1);
   }
 
+  function updateSort(value: BookSort) {
+    setSort(value);
+    setPage(1);
+  }
+
   function clearFilters() {
     setSearch('');
     setCategory('All');
+    setSort('newest');
     setPage(1);
   }
 
@@ -74,6 +81,8 @@ export function BooksListPage() {
         onSearchChange={updateSearch}
         category={category}
         onCategoryChange={updateCategory}
+        sort={sort}
+        onSortChange={updateSort}
       />
 
       {pageBooks.length === 0 ? (
@@ -92,10 +101,14 @@ export function BooksListPage() {
           {pageBooks.map((book) => (
             <BookCard
               key={book.id}
+              bookId={book.id}
               title={book.title}
               author={book.author}
               category={book.category}
               available={book.available}
+              averageRating={book.average_rating}
+              reviewCount={book.review_count}
+              description={book.description}
               href={ROUTES.BOOK_DETAILS.replace(':bookId', book.id)}
               onReserve={() => handleReserve(book.id, book.title)}
               isWishlisted={isWishlisted(book.id)}
@@ -105,7 +118,13 @@ export function BooksListPage() {
         </div>
       )}
 
-      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={20}
+        onPageChange={setPage}
+      />
 
       <WishlistDrawer
         open={isWishlistOpen}

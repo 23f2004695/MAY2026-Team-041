@@ -1,4 +1,3 @@
-export * from './ChatbotWidget';
 export * from './Footer';
 export * from './header';
 export * from './LanguageSwitcher';

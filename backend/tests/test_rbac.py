@@ -75,22 +75,37 @@ def _anon_client() -> AsyncClient:
 
 @pytest.mark.parametrize("method,path,allowed_role,denied_role", ENDPOINTS, ids=ENDPOINT_IDS)
 async def test_requires_authentication(method, path, allowed_role, denied_role):
+    """Test Case 1: Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.request(method, path)
-    assert response.status_code == 401
+
+    print(f"\n{method} {path} Response:", response.status_code, response.text)
+
+    assert response.status_code == 401  
 
 
 @pytest.mark.parametrize("method,path,allowed_role,denied_role", ENDPOINTS, ids=ENDPOINT_IDS)
 async def test_rejects_the_wrong_role(method, path, allowed_role, denied_role):
+    """Test Case 2: Rejects the Wrong Role"""
+
     user = await _make_user(denied_role)
     async with _client_as(user) as client:
         response = await client.request(method, path)
-    assert response.status_code == 403
+
+    print(f"\n{method} {path} Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 @pytest.mark.parametrize("method,path,allowed_role,denied_role", ENDPOINTS, ids=ENDPOINT_IDS)
 async def test_allows_the_correct_role(method, path, allowed_role, denied_role):
+    """Test Case 3: Allows the Correct Role"""
+
     user = await _make_user(allowed_role)
     async with _client_as(user) as client:
         response = await client.request(method, path)
-    assert response.status_code not in (401, 403)
+
+    print(f"\n{method} {path} Response:", response.status_code, response.text)
+
+    assert response.status_code not in (401, 403) 

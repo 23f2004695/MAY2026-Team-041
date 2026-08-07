@@ -2,11 +2,10 @@ import { BookX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { PageHeader } from '@/components/common';
+import { PageHeader, Pagination } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import {
   Badge,
-  Pagination,
   SearchBar,
   Table,
   TableBody,
@@ -15,19 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
+import { formatDate } from '@/lib/format';
 import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 import { useAuth, type ManagerBookAvailability } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 20;
 const EMPTY_BOOK_LIST = { items: [] as ManagerBookAvailability[], total: 0 };
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 function StatusCell({ book }: { book: ManagerBookAvailability }) {
   const { t } = useTranslation();
@@ -124,7 +116,13 @@ export function ManagerBooksPage() {
             </TableBody>
           </Table>
 
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={total}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>

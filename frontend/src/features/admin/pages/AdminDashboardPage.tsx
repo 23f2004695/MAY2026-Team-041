@@ -11,10 +11,11 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
+import { PageHeader, Pagination, QuickActionsCard, StatisticCard, TableToolbar } from '@/components/common';
+import { usePagination } from '@/hooks';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
 import {
@@ -39,6 +40,7 @@ import { LogExpenseModal } from '../components/LogExpenseModal';
 import { PendingRequests } from '../components/PendingRequests';
 import { ReportModal, type ReportKey } from '../components/ReportModal';
 import { SeatOccupancySummary } from '../components/SeatOccupancySummary';
+import { StatTrendModal, type StatKey } from '../components/StatTrendModal';
 import { WaiveFineModal } from '../components/WaiveFineModal';
 
 // More spending is bad news even when the number itself goes up — invert the
@@ -68,6 +70,9 @@ export function AdminDashboardPage() {
   const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
   const [createEventOpen, setCreateEventOpen] = useState(false);
   const [activeReport, setActiveReport] = useState<ReportKey | null>(null);
+  const [activeStat, setActiveStat] = useState<StatKey | null>(null);
+  const [reportFilter, setReportFilter] = useState('all');
+  const [reportSort, setReportSort] = useState('name-asc');
 
   function refresh() {
     getAdminDashboard()
@@ -91,6 +96,30 @@ export function AdminDashboardPage() {
   useEffect(refreshBillingRequests, [getBillingRequests]);
   useEffect(refreshAuditLog, [getAuditLog]);
 
+  const visibleReports = useMemo(() => {
+    const reportEntries = REPORTS.filter((report) => {
+      if (reportFilter === 'all') return true;
+      if (reportFilter === 'financial') {
+        return ['revenueByPlan', 'profitAndLoss', 'expenseBreakdown'].includes(report.key);
+      }
+      if (reportFilter === 'membership') {
+        return report.key === 'membershipGrowth';
+      }
+      return true;
+    });
+
+    const sortedReports = [...reportEntries];
+    if (reportSort === 'name-desc') {
+      sortedReports.sort((a, b) => b.labelKey.localeCompare(a.labelKey));
+    } else {
+      sortedReports.sort((a, b) => a.labelKey.localeCompare(b.labelKey));
+    }
+
+    return sortedReports;
+  }, [reportFilter, reportSort]);
+
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(visibleReports, 5);
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={t('admin.pageTitle')} description={t('admin.pageDescription')} />
@@ -105,6 +134,8 @@ export function AdminDashboardPage() {
               label={t('admin.stats.revenueMtd')}
               value={formatCurrency(dashboard.stats.revenue_mtd)}
               trend={dashboard.stats.revenue_trend}
+              onClick={() => setActiveStat('revenueMtd')}
+              selected={activeStat === 'revenueMtd'}
             />
             <StatisticCard
               icon={TrendingDown}
@@ -114,18 +145,24 @@ export function AdminDashboardPage() {
                 ...dashboard.stats.expenses_trend,
                 sentiment: expenseSentiment(dashboard.stats.expenses_trend),
               }}
+              onClick={() => setActiveStat('expensesMtd')}
+              selected={activeStat === 'expensesMtd'}
             />
             <StatisticCard
               icon={Wallet}
               label={t('admin.stats.netProfitMtd')}
               value={formatCurrency(dashboard.stats.net_profit_mtd)}
               trend={dashboard.stats.net_profit_trend}
+              onClick={() => setActiveStat('netProfitMtd')}
+              selected={activeStat === 'netProfitMtd'}
             />
             <StatisticCard
               icon={Users}
               label={t('admin.stats.totalMembers')}
               value={String(dashboard.stats.total_members)}
               trend={dashboard.stats.total_members_trend}
+              onClick={() => setActiveStat('totalMembers')}
+              selected={activeStat === 'totalMembers'}
             />
           </div>
 
@@ -155,15 +192,61 @@ export function AdminDashboardPage() {
           <CardHeader>
             <CardTitle>{t('admin.reports.title')}</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {REPORTS.map((report) => (
-              <div key={report.key} className="flex items-center justify-between text-sm">
-                <span className="text-foreground">{t(report.labelKey)}</span>
-                <Button size="sm" variant="ghost" onClick={() => setActiveReport(report.key)}>
-                  {t('common.actions.viewReport')}
-                </Button>
-              </div>
-            ))}
+          <CardContent className="flex flex-col gap-3">
+            <TableToolbar
+              filters={[
+                {
+                  label: 'Category',
+                  value: reportFilter,
+                  onChange: (value) => {
+                    setReportFilter(value);
+                    setPage(1);
+                  },
+                  options: [
+                    { value: 'all', label: 'All' },
+                    { value: 'financial', label: 'Financial' },
+                    { value: 'membership', label: 'Membership' },
+                  ],
+                },
+              ]}
+              sort={{
+                label: 'Sort',
+                value: reportSort,
+                onChange: (value) => {
+                  setReportSort(value);
+                  setPage(1);
+                },
+                options: [
+                  { value: 'name-asc', label: 'Name A–Z' },
+                  { value: 'name-desc', label: 'Name Z–A' },
+                ],
+              }}
+              onReset={() => {
+                setReportFilter('all');
+                setReportSort('name-asc');
+                setPage(1);
+              }}
+              resetLabel={t('common.actions.reset')}
+            />
+
+            <div className="flex flex-col gap-2">
+              {paginatedItems.map((report) => (
+                <div key={report.key} className="flex items-center justify-between text-sm">
+                  <span className="text-foreground">{t(report.labelKey)}</span>
+                  <Button size="sm" variant="ghost" onClick={() => setActiveReport(report.key)}>
+                    {t('common.actions.viewReport')}
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={5}
+              onPageChange={setPage}
+            />
           </CardContent>
         </Card>
       </div>
@@ -209,6 +292,8 @@ export function AdminDashboardPage() {
       />
 
       <ReportModal reportKey={activeReport} onClose={() => setActiveReport(null)} />
+
+      <StatTrendModal statKey={activeStat} onClose={() => setActiveStat(null)} />
 
       <WaiveFineModal
         open={isWaiveFineOpen}

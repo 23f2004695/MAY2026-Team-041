@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
 
 os.environ["APP_ENV"] = "test"
 
@@ -241,3 +242,114 @@ async def test_second_in_line_eta_matches_the_active_loans_due_date(member_user,
     # First request gets the free copy now; second has to wait for the loan's due date.
     assert second.json()["queue_position"] == 2
     assert second.json()["eta_days"] == 14
+
+
+# --- One active reservation per member per book -------------------------------------
+# A member shouldn't be able to stack requests for the same book (two queue slots for
+# one reader), but once their copy is nearly due they can queue the next borrow.
+
+
+async def _approve(manager, reservation_id: str, *, duration_days: int = 10) -> None:
+    async with _client_as(manager) as client:
+        response = await client.post(
+            f"/api/v1/manager/reservations/{reservation_id}/approve",
+            json={"duration_days": duration_days},
+        )
+    assert response.status_code == 200
+
+
+async def test_reserving_the_same_book_twice_conflicts(member_user, librarian_user):
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async with _client_as(member_user) as client:
+        first = await client.post("/api/v1/reservations", json={"book_id": book_id})
+        second = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert first.status_code == 201
+    # 2 copies and none on loan, so availability isn't what's rejecting this.
+    assert second.status_code == 409
+    assert second.json()["detail"] == "You already have this book reserved or on loan"
+
+
+async def test_another_member_can_still_reserve_the_same_book(member_user, librarian_user):
+    """The limit is per member — it must not block the shared queue."""
+    book_id = await _create_book(librarian_user, total_copies=2)
+    other_member = await _make_user(Role.MEMBER)
+
+    async with _client_as(member_user) as client:
+        await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    async with _client_as(other_member) as client:
+        response = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert response.status_code == 201
+
+
+async def test_cannot_reserve_a_book_the_member_still_has_on_loan(member_user, librarian_user):
+    manager = await _make_user(Role.MANAGER)
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async with _client_as(member_user) as client:
+        created = await client.post("/api/v1/reservations", json={"book_id": book_id})
+    await _approve(manager, created.json()["id"], duration_days=10)
+
+    async with _client_as(member_user) as client:
+        response = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "You already have this book reserved or on loan"
+
+
+async def test_can_reserve_again_once_the_loan_is_near_its_due_date(member_user, librarian_user):
+    manager = await _make_user(Role.MANAGER)
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async with _client_as(member_user) as client:
+        created = await client.post("/api/v1/reservations", json={"book_id": book_id})
+    await _approve(manager, created.json()["id"], duration_days=10)
+
+    # Pull the due date inside the due-soon window the reminder job uses.
+    loan = await prisma.loan.find_first(
+        where={"memberId": member_user.id, "bookId": book_id, "returnedAt": None}
+    )
+    await prisma.loan.update(
+        where={"id": loan.id}, data={"dueDate": datetime.now(UTC) + timedelta(days=1)}
+    )
+
+    async with _client_as(member_user) as client:
+        response = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert response.status_code == 201
+
+
+async def test_can_reserve_again_after_returning_the_book(member_user, librarian_user):
+    """The reservation row stays "approved" after a return, so status alone must not block."""
+    manager = await _make_user(Role.MANAGER)
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async with _client_as(member_user) as client:
+        created = await client.post("/api/v1/reservations", json={"book_id": book_id})
+    await _approve(manager, created.json()["id"], duration_days=10)
+
+    loan = await prisma.loan.find_first(
+        where={"memberId": member_user.id, "bookId": book_id, "returnedAt": None}
+    )
+    async with _client_as(manager) as client:
+        returned = await client.post(f"/api/v1/loans/{loan.id}/return")
+    assert returned.status_code == 200
+
+    async with _client_as(member_user) as client:
+        response = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert response.status_code == 201
+
+
+async def test_cancelling_a_request_frees_the_member_to_reserve_again(member_user, librarian_user):
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async with _client_as(member_user) as client:
+        created = await client.post("/api/v1/reservations", json={"book_id": book_id})
+        await client.delete(f"/api/v1/reservations/{created.json()['id']}")
+        response = await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    assert response.status_code == 201

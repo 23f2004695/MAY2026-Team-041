@@ -2,7 +2,7 @@ import { ImagePlus, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Input, Modal } from '@/components/ui';
+import { Button, Input, Modal, Textarea } from '@/components/ui';
 
 export interface PostDraft {
   bookTitle: string;
@@ -87,17 +87,14 @@ export function CreatePostModal({ open, onClose, onSubmit, initialValues }: Crea
         />
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="post-content" className="text-sm font-medium text-foreground">
-            {t('community.createPostModal.contentLabel')}
-          </label>
-          <textarea
+          <Textarea
             id="post-content"
+            label={t('community.createPostModal.contentLabel')}
             value={content}
             onChange={(event) => setContent(event.target.value)}
             rows={4}
             maxLength={MAX_CONTENT_LENGTH}
             placeholder={t('community.createPostModal.contentPlaceholder')}
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
           <p className="text-right text-xs text-muted-foreground tabular-nums">
             {content.length}/{MAX_CONTENT_LENGTH}

@@ -67,6 +67,17 @@ def _recent_month_starts(count: int, now: datetime) -> list[datetime]:
     return starts
 
 
+def _parse_month_range(month: str) -> tuple[datetime, datetime]:
+    year, month_num = (int(part) for part in month.split("-"))
+    start = datetime(year, month_num, 1, tzinfo=UTC)
+    end = (
+        datetime(year + 1, 1, 1, tzinfo=UTC)
+        if month_num == 12
+        else datetime(year, month_num + 1, 1, tzinfo=UTC)
+    )
+    return start, end
+
+
 async def get_dashboard() -> AdminDashboardOut:
     now = datetime.now(UTC)
     this_month_start = _month_start(now)
@@ -273,8 +284,25 @@ async def send_announcement(admin_id: str, payload: AnnouncementCreate) -> Annou
     return AnnouncementOut(recipient_count=len(member_ids))
 
 
-async def list_members(*, search: str | None, page: int, page_size: int) -> AdminMemberListOut:
-    users, total = await repository.list_members(search=search, page=page, page_size=page_size)
+async def list_members(
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    role: str | None = None,
+    status: str | None = None,
+    sort_by: str = "joined",
+    sort_dir: str = "desc",
+) -> AdminMemberListOut:
+    users, total = await repository.list_members(
+        search=search,
+        page=page,
+        page_size=page_size,
+        role=role,
+        status=status,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+    )
     member_ids = [user.id for user in users]
 
     latest_payments = await repository.list_latest_payments(member_ids)
@@ -325,8 +353,13 @@ async def list_members(*, search: str | None, page: int, page_size: int) -> Admi
     return AdminMemberListOut(items=items, total=total, page=page, page_size=page_size)
 
 
-async def list_payments(*, search: str | None, page: int, page_size: int) -> AdminPaymentListOut:
-    payments, total = await repository.list_payments(search=search, page=page, page_size=page_size)
+async def list_payments(
+    *, search: str | None, page: int, page_size: int, month: str | None = None
+) -> AdminPaymentListOut:
+    start, end = _parse_month_range(month) if month else (None, None)
+    payments, total = await repository.list_payments(
+        search=search, page=page, page_size=page_size, start=start, end=end
+    )
 
     items = [
         AdminPaymentOut(

@@ -11,6 +11,7 @@ from app.modules.members.repository import list_reading_progress
 from app.modules.members.schemas import ReadingProgressOut
 from app.modules.notifications import service as notifications_service
 from app.modules.payments import repository as payments_repository
+from app.modules.payments.schemas import PaymentOut
 from app.modules.pricing_plans import repository as pricing_plans_repository
 from app.modules.seat_booking import service as seat_booking_service
 from app.modules.seat_booking.schemas import (
@@ -81,6 +82,12 @@ async def _child_out(child: User) -> GuardianChildOut:
 async def list_my_children(guardian_id: str) -> list[GuardianChildOut]:
     children = await repository.list_children(guardian_id)
     return [await _child_out(child) for child in children]
+
+
+async def list_child_payments(guardian_id: str, child_id: str) -> list[PaymentOut]:
+    child = await _find_child_or_403(guardian_id, child_id)
+    payments = await payments_repository.list_payments_for_user(child.id)
+    return [PaymentOut.from_prisma(payment) for payment in payments]
 
 
 async def pay_child_fines(guardian_id: str, child_id: str) -> None:

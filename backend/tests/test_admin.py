@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 os.environ["APP_ENV"] = "test"
 
@@ -86,15 +86,25 @@ async def _get_dashboard(user) -> dict:
 
 
 async def test_dashboard_requires_authentication():
+    """Test Case 1: Dashboard Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.get("/api/v1/admin/dashboard")
-    assert response.status_code == 401
+
+    print("\nDashboard Response:", response.status_code, response.text)
+
+    assert response.status_code == 401  
 
 
 async def test_dashboard_forbidden_for_member(member_user):
+    """Test Case 2: Dashboard Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.get("/api/v1/admin/dashboard")
-    assert response.status_code == 403
+
+    print("\nDashboard Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_dashboard_has_the_right_shape(admin_user):
@@ -147,11 +157,16 @@ async def test_fine_payment_increases_revenue_but_not_membership_fees(admin_user
 
 
 async def test_log_expense_requires_admin_role(member_user):
+    """Test Case 4: Log Expense Requires Admin Role"""
+
     async with _client_as(member_user) as client:
         response = await client.post(
             "/api/v1/admin/expenses", json={"category": "marketing", "amount": 50}
         )
-    assert response.status_code == 403
+
+    print("\nLog Expense Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_log_expense_increases_expenses_and_budget_spent(admin_user):
@@ -192,6 +207,8 @@ async def test_log_expense_rejects_unknown_category(admin_user):
 
 
 async def test_reports_require_admin_role(member_user):
+    """Test Case 3: Reports Require Admin Role"""
+
     async with _client_as(member_user) as client:
         for path in (
             "/api/v1/admin/reports/revenue-by-plan",
@@ -200,7 +217,10 @@ async def test_reports_require_admin_role(member_user):
             "/api/v1/admin/reports/membership-growth",
         ):
             response = await client.get(path)
-            assert response.status_code == 403
+
+            print(f"\n{path} Response:", response.status_code, response.text)
+
+            assert response.status_code == 403  
 
 
 async def test_revenue_by_plan_groups_membership_payments_by_label(admin_user, member_user):
@@ -287,15 +307,25 @@ async def test_membership_growth_counts_new_members_in_the_current_month(admin_u
 
 
 async def test_announcement_requires_authentication():
+    """Test Case 5: Announcement Requires Authentication"""
+
     async with _anon_client() as client:
         response = await client.post("/api/v1/admin/announcements", json={"message": "Hi"})
-    assert response.status_code == 401
+
+    print("\nAnnouncement Response:", response.status_code, response.text)
+
+    assert response.status_code == 401 
 
 
 async def test_member_cannot_send_an_announcement(member_user):
+    """Test Case 6: Announcement Forbidden (member role)"""
+
     async with _client_as(member_user) as client:
         response = await client.post("/api/v1/admin/announcements", json={"message": "Hi"})
-    assert response.status_code == 403
+
+    print("\nAnnouncement Response:", response.status_code, response.text)
+
+    assert response.status_code == 403  
 
 
 async def test_announcement_rejects_empty_message(admin_user):
@@ -519,3 +549,28 @@ async def test_list_payments_search_filters_by_member_email(admin_user, member_u
     assert all(member_user.email == item["member_email"] for item in body["items"])
     assert any(item["member_id"] == member_user.id for item in body["items"])
     assert not any(item["member_id"] == other_member.id for item in body["items"])
+
+
+async def test_list_payments_month_filter_excludes_other_months(admin_user, member_user):
+    async with _client_as(member_user) as client:
+        await client.post("/api/v1/payments", json={"amount": 70, "label": "This month"})
+        last_month = await client.post(
+            "/api/v1/payments", json={"amount": 80, "label": "Last month"}
+        )
+
+    now = datetime.now(UTC)
+    last_month_date = (now.replace(day=1) - timedelta(days=1)).replace(day=1)
+    await prisma.payment.update(
+        where={"id": last_month.json()["id"]}, data={"createdAt": last_month_date}
+    )
+
+    async with _client_as(admin_user) as client:
+        response = await client.get(
+            "/api/v1/admin/payments",
+            params={"month": now.strftime("%Y-%m"), "search": member_user.email},
+        )
+
+    body = response.json()
+    labels = {item["label"] for item in body["items"]}
+    assert "This month" in labels
+    assert "Last month" not in labels

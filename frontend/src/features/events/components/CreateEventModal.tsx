@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Checkbox, Input, Modal } from '@/components/ui';
+import { Button, Checkbox, Input, Modal, Textarea } from '@/components/ui';
 import { apiPost, apiPut, getErrorMessage } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -120,17 +120,14 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
           <Input name="title" value={form.title} onChange={handleChange} required placeholder="Event title" />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">Description</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Optional description"
-            rows={3}
-            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+        <Textarea
+          label="Description"
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Optional description"
+          rows={3}
+        />
 
         <div className="flex flex-col gap-1">
           <label className="text-sm font-medium text-foreground">Location</label>

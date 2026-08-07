@@ -8,6 +8,7 @@ from app.api.deps import get_current_user
 from app.core.constants import Role
 from app.db.prisma import prisma
 from app.modules.coupons import service as coupons_service
+from app.modules.loans import service as loans_service
 from app.modules.notifications import service as notifications_service
 from app.modules.payments import repository
 from app.modules.payments import service as payments_service
@@ -37,6 +38,12 @@ async def create_payment(
         label=payload.label,
         plan_months=payload.plan_months,
     )
+    # No plan attached means this isn't a membership purchase — the "Pay Fine" button is
+    # the only non-plan payment the UI creates, so put the money against the member's
+    # outstanding fines. Without this the loan stays finePaid=false and the fine keeps
+    # showing as owed everywhere after it's been paid.
+    if payload.plan_months is None:
+        await loans_service.settle_fines_for_member(user.id, amount)
     await notifications_service.create_notification(
         user.id, "payment-received", f"Payment of ₹{amount} received for {payload.label}."
     )

@@ -6,7 +6,10 @@ import { GuardianLayout } from '@/app/layouts/GuardianLayout';
 import { ITHeadLayout } from '@/app/layouts/ITHeadLayout';
 import { PublicLayout } from '@/app/layouts/PublicLayout';
 import { UserLayout } from '@/app/layouts/UserLayout';
-import { PageLoader } from '@/components/common';
+// Imported from its own path, not the '@/components/common' barrel — that barrel also
+// re-exports ExportButton, which statically pulls in jsPDF; going through it here (AppRouter
+// is eager, unlike every page it routes to) would drag jsPDF into the eager entry bundle too.
+import { PageLoader } from '@/components/common/PageLoader';
 import { ErrorState } from '@/components/feedback';
 import { ROUTES } from '@/constants/routes';
 import { NotFound } from '@/pages/NotFound';
@@ -187,6 +190,7 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.READING_PROGRESS), element: withSuspense(<ReadingProgressPage />) },
       { path: relative(ROUTES.LEADERBOARD), element: withSuspense(<LeaderboardPage />) },
       { path: relative(ROUTES.REVIEWS), element: withSuspense(<ReviewsPage />) },
+      { path: relative(`${ROUTES.REVIEWS}/:bookId`), element: withSuspense(<ReviewsPage />) },
       { path: relative(ROUTES.SUPPORT), element: withSuspense(<SupportPage />) },
       { path: relative(ROUTES.SETTINGS), element: withSuspense(<SettingsPage />) },
     ],
