@@ -18,9 +18,9 @@ export interface EditProfileModalProps {
 
 export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
   const { t } = useTranslation();
-  const { fullName, phone, avatarUrl, updateProfile } = useAuth();
+  const { fullName, phone, avatarUrl, role, updateProfile } = useAuth();
   const [selectedAvatar, setSelectedAvatar] = useState<string | undefined>(avatarUrl ?? undefined);
-  const presets = getAvatarPresets();
+  const presets = role ? getAvatarPresets(role) : [];
 
   const {
     register,

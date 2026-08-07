@@ -1,7 +1,10 @@
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+DEFAULT_JWT_SECRET = "dev-secret-change-me-32-bytes-minimum"
+MIN_JWT_SECRET_LENGTH = 32
 
 
 class Settings(BaseSettings):
@@ -13,9 +16,7 @@ class Settings(BaseSettings):
         validation_alias="DATABASE_URL",
     )
     backend_cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
-    jwt_secret: str = Field(
-        default="dev-secret-change-me-32-bytes-minimum", validation_alias="JWT_SECRET"
-    )
+    jwt_secret: str = Field(default=DEFAULT_JWT_SECRET, validation_alias="JWT_SECRET")
     jwt_algorithm: str = "HS256"
     google_client_id: str = Field(default="", validation_alias="GOOGLE_CLIENT_ID")
     # Left blank in dev — order creation 503s until test-mode keys from the Razorpay
@@ -42,6 +43,17 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @model_validator(mode="after")
+    def _check_jwt_secret_in_production(self) -> "Settings":
+        if self.app_env == "production" and (
+            self.jwt_secret == DEFAULT_JWT_SECRET or len(self.jwt_secret) < MIN_JWT_SECRET_LENGTH
+        ):
+            raise ValueError(
+                "JWT_SECRET must be set to a unique value of at least "
+                f"{MIN_JWT_SECRET_LENGTH} characters in production."
+            )
+        return self
 
 
 @lru_cache

@@ -20,7 +20,10 @@ def _list_where(search: str | None, category: str | None) -> dict:
 
 
 async def find_by_id(book_id: str) -> Book | None:
-    return await prisma.book.find_unique(where={"id": book_id})
+    book = await prisma.book.find_unique(where={"id": book_id})
+    if book is None or book.deletedAt is not None:
+        return None
+    return book
 
 
 async def list_by_ids(book_ids: list[str]) -> list[Book]:

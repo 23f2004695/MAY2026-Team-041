@@ -1,10 +1,17 @@
 from datetime import datetime
 
+from prisma import Prisma
 from prisma.models import Loan
 
 from app.db.prisma import prisma
 
 INCLUDE = {"book": True, "member": True}
+
+# The permanent loan-history view — grows forever, unlike list_active()/list_past_due()
+# below, which are deliberately left uncapped because they feed the due-soon reminder
+# sweep and the outstanding-fines total: truncating those would silently skip reminders
+# or undercount fines owed, not just shorten a list.
+LIST_LIMIT = 200
 
 
 async def create(*, book_id: str, member_id: str, due_date: datetime, created_by_id: str) -> Loan:
@@ -24,7 +31,12 @@ async def find_by_id(loan_id: str) -> Loan | None:
 
 
 async def list_all() -> list[Loan]:
-    return await prisma.loan.find_many(include=INCLUDE, order={"dueDate": "asc"})
+    # Ordered by due date ascending when this had no cap, harmless at the time — but
+    # capped, "oldest due date first" would show 200 loans from years ago and hide
+    # everything recent. Newest-first is what a capped history view actually needs.
+    return await prisma.loan.find_many(
+        include=INCLUDE, order={"borrowedAt": "desc"}, take=LIST_LIMIT
+    )
 
 
 async def list_past_due(*, now: datetime) -> list[Loan]:
@@ -48,8 +60,9 @@ async def list_active() -> list[Loan]:
     )
 
 
-async def list_for_member(member_id: str) -> list[Loan]:
-    return await prisma.loan.find_many(
+async def list_for_member(member_id: str, *, client: Prisma | None = None) -> list[Loan]:
+    db = client or prisma
+    return await db.loan.find_many(
         where={"memberId": member_id}, include=INCLUDE, order={"borrowedAt": "desc"}
     )
 
@@ -85,7 +98,8 @@ async def mark_reminded(loan_id: str, *, reminded_at: datetime) -> Loan:
     )
 
 
-async def mark_fine_paid(loan_id: str) -> Loan:
-    return await prisma.loan.update(
+async def mark_fine_paid(loan_id: str, *, client: Prisma | None = None) -> Loan:
+    db = client or prisma
+    return await db.loan.update(
         where={"id": loan_id}, data={"finePaid": True}, include=INCLUDE
     )

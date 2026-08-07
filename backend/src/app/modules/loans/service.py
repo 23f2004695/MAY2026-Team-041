@@ -2,6 +2,7 @@ import contextlib
 from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException, status
+from prisma import Prisma
 from prisma.errors import ForeignKeyViolationError
 
 from app.core.mail import send_email_async
@@ -47,9 +48,9 @@ async def list_all_loans() -> list[LoanOut]:
     return [LoanOut.from_prisma(row, now=now) for row in rows]
 
 
-async def list_my_loans(member_id: str) -> list[LoanOut]:
+async def list_my_loans(member_id: str, *, client: Prisma | None = None) -> list[LoanOut]:
     now = datetime.now(UTC)
-    rows = await repository.list_for_member(member_id)
+    rows = await repository.list_for_member(member_id, client=client)
     return [LoanOut.from_prisma(row, now=now) for row in rows]
 
 
@@ -67,7 +68,9 @@ async def sum_outstanding_fines() -> int:
     return sum(item.fine_amount for item in fines if not item.fine_paid)
 
 
-async def settle_fines_for_member(member_id: str, amount_paid: int) -> int:
+async def settle_fines_for_member(
+    member_id: str, amount_paid: int, *, client: Prisma | None = None
+) -> int:
     """Clear a member's late-return fines after they've paid, returning the count settled.
 
     Recording a payment used to leave finePaid untouched, so a member who paid their
@@ -76,7 +79,7 @@ async def settle_fines_for_member(member_id: str, amount_paid: int) -> int:
     while the amount paid still covers it — a short payment leaves the rest owed
     rather than wiping the whole balance.
     """
-    loans = await list_my_loans(member_id)
+    loans = await list_my_loans(member_id, client=client)
     unpaid = [loan for loan in loans if loan.fine_amount > 0 and not loan.fine_paid]
 
     remaining = amount_paid
@@ -85,7 +88,7 @@ async def settle_fines_for_member(member_id: str, amount_paid: int) -> int:
         if loan.fine_amount > remaining:
             continue
         remaining -= loan.fine_amount
-        await repository.mark_fine_paid(loan.id)
+        await repository.mark_fine_paid(loan.id, client=client)
         settled += 1
     return settled
 

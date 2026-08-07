@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { BookCard, PageHeader } from '@/components/common';
+import { BookCard, PageHeader, Pagination } from '@/components/common';
 import { NoResults } from '@/components/feedback';
-import { Badge, Button, Pagination } from '@/components/ui';
+import { Badge, Button } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { getErrorMessage } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
@@ -24,7 +24,7 @@ export function BooksListPage() {
   const [page, setPage] = useState(1);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
-  const { items: pageBooks, totalPages, refresh } = useBooks(search, category, sort, page);
+  const { items: pageBooks, total, totalPages, refresh } = useBooks(search, category, sort, page);
   const wishlistedBooks = useBooksByIds(wishlistIds);
 
   async function handleReserve(bookId: string, title: string) {
@@ -118,7 +118,13 @@ export function BooksListPage() {
         </div>
       )}
 
-      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={20}
+        onPageChange={setPage}
+      />
 
       <WishlistDrawer
         open={isWishlistOpen}

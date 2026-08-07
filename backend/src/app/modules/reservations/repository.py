@@ -6,6 +6,12 @@ from app.modules.loans import repository as loans_repository
 
 RESERVATION_INCLUDE = {"book": True, "loan": True}
 
+# Display-only lists (a member's own reservations, the manager's pending queue) — safe
+# to cap. list_pending_for_book()/list_pending_for_books() below are deliberately left
+# uncapped: they feed queue-position math, and truncating them would hand out wrong
+# positions/ETAs, not just a shorter list.
+LIST_LIMIT = 200
+
 
 async def find_by_id(reservation_id: str) -> Reservation | None:
     return await prisma.reservation.find_unique(
@@ -18,6 +24,7 @@ async def list_active_for_member(member_id: str) -> list[Reservation]:
         where={"memberId": member_id, "status": {"in": ["pending", "approved"]}},
         include=RESERVATION_INCLUDE,
         order={"createdAt": "desc"},
+        take=LIST_LIMIT,
     )
 
 
@@ -26,6 +33,7 @@ async def list_pending() -> list[Reservation]:
         where={"status": "pending"},
         include={"book": True, "member": True},
         order={"createdAt": "asc"},
+        take=LIST_LIMIT,
     )
 
 

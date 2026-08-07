@@ -2,11 +2,10 @@ import { BookX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { PageHeader } from '@/components/common';
+import { PageHeader, Pagination } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import {
   Badge,
-  Pagination,
   SearchBar,
   Table,
   TableBody,
@@ -117,7 +116,13 @@ export function ManagerBooksPage() {
             </TableBody>
           </Table>
 
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={total}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>

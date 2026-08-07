@@ -16,10 +16,19 @@ export interface ExportButtonProps {
   /** Either the rows to export directly, or a loader that fetches them on click
    * (e.g. a full month's data, independent of whatever page is currently on screen). */
   rows: ExportCell[][] | (() => Promise<ExportCell[][]>);
+  /** Optional lines (e.g. key metrics) printed above the table in both CSV and PDF exports. */
+  summaryLines?: string[];
   className?: string;
 }
 
-export function ExportButton({ filename, title, headers, rows, className }: ExportButtonProps) {
+export function ExportButton({
+  filename,
+  title,
+  headers,
+  rows,
+  summaryLines = [],
+  className,
+}: ExportButtonProps) {
   const { t } = useTranslation();
   const [loadingFormat, setLoadingFormat] = useState<'csv' | 'pdf' | null>(null);
 
@@ -32,9 +41,9 @@ export function ExportButton({ filename, title, headers, rows, className }: Expo
     try {
       const resolvedRows = await resolveRows();
       if (format === 'csv') {
-        downloadCsv(`${filename}.csv`, headers, resolvedRows);
+        downloadCsv(`${filename}.csv`, headers, resolvedRows, summaryLines);
       } else {
-        downloadPdf(`${filename}.pdf`, title, headers, resolvedRows);
+        downloadPdf(`${filename}.pdf`, title, headers, resolvedRows, summaryLines);
       }
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));

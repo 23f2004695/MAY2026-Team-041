@@ -26,8 +26,9 @@ async def _notify_staff(notification_type: str, message: str) -> None:
     staff = await prisma.user.find_many(
         where={"role": {"name": {"in": list(STAFF_ROLES)}}, "deletedAt": None}
     )
-    for member in staff:
-        await notifications_service.create_notification(member.id, notification_type, message)
+    await notifications_service.create_notifications(
+        [member.id for member in staff], notification_type, message
+    )
 
 
 async def create_ticket(user: User, payload: SupportTicketCreate) -> SupportTicketOut:

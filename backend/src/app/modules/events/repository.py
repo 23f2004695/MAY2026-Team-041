@@ -27,6 +27,15 @@ async def find_by_id(event_id: str) -> Event | None:
     return await prisma.event.find_unique(where={"id": event_id}, include=_INCLUDE)
 
 
+_ANALYTICS_INCLUDE = {
+    "registrations": {"include": {"member": {"include": {"role": True}}}},
+}
+
+
+async def find_by_id_for_analytics(event_id: str) -> Event | None:
+    return await prisma.event.find_unique(where={"id": event_id}, include=_ANALYTICS_INCLUDE)
+
+
 async def create_event(data: dict) -> Event:
     return await prisma.event.create(data=data, include=_INCLUDE)
 

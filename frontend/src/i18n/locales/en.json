@@ -256,6 +256,22 @@
       "empty": {
         "title": "No members found",
         "description": "Try a different search term."
+      },
+      "filters": {
+        "roleLabel": "Role",
+        "roleAll": "All roles",
+        "statusLabel": "Status",
+        "statusAll": "All statuses",
+        "statusActive": "Active",
+        "statusInactive": "Inactive"
+      },
+      "sort": {
+        "label": "Sort by",
+        "joinedDesc": "Newest joined",
+        "joinedAsc": "Oldest joined",
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)",
+        "roleAsc": "Role"
       }
     },
     "stats": {
@@ -1436,9 +1452,40 @@
       "noRegistrants": "No one has registered yet.",
       "removeRegistrant": "Remove"
     },
+    "analytics": {
+      "title": "Post-Event Analytics",
+      "totalRegistered": "Total Registered",
+      "fillRate": "Fill Rate",
+      "capacityFilled": "Capacity filled",
+      "byRole": "Registrants by Role",
+      "registrationTrend": "Registrations Over Time",
+      "registrants": "Registrants",
+      "noRegistrants": "No one registered for this event.",
+      "loadError": "Couldn't load analytics for this event.",
+      "exportTitle": "Post-Event Analytics — {{title}}",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "registeredAt": "Registered At"
+      }
+    },
     "empty": {
       "title": "No events scheduled",
       "description": "Check back soon — new community events are added regularly."
+    },
+    "filters": {
+      "timeLabel": "Show",
+      "timeAll": "All events",
+      "timeUpcoming": "Upcoming",
+      "timePast": "Past"
+    },
+    "sort": {
+      "label": "Sort by",
+      "dateAsc": "Date (soonest)",
+      "dateDesc": "Date (latest)",
+      "attendeesDesc": "Most attendees",
+      "attendeesAsc": "Fewest attendees"
     }
   },
   "reservations": {
@@ -1711,6 +1758,18 @@
         "totalReviews": "Total Reviews",
         "averageRating": "Average Rating",
         "booksReviewed": "Books Reviewed"
+      },
+      "filters": {
+        "ratingLabel": "Rating",
+        "ratingAll": "All ratings",
+        "ratingValue": "{{count}} stars"
+      },
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "ratingHigh": "Highest rating",
+        "ratingLow": "Lowest rating"
       }
     },
     "summary": {
@@ -1849,7 +1908,12 @@
       "resolutionHint": "This will be shown to the person who raised the ticket.",
       "submitResolution": "Mark Resolved",
       "emptyTitle": "No tickets here",
-      "emptyDescription": "Nothing matches this filter right now."
+      "emptyDescription": "Nothing matches this filter right now.",
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest first",
+        "oldest": "Oldest first"
+      }
     }
   },
   "profile": {

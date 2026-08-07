@@ -39,7 +39,7 @@ export function Input({ ref, id, className, label, error, hint, disabled, ...pro
         {...props}
       />
       {error ? (
-        <p id={errorId} className="text-sm text-danger">
+        <p id={errorId} role="alert" className="text-sm text-danger">
           {error}
         </p>
       ) : hint ? (

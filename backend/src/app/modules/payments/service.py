@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from prisma.models import User
 
 from app.core.config import get_settings
+from app.db.prisma import prisma
 from app.modules.coupons import service as coupons_service
 from app.modules.loans import service as loans_service
 from app.modules.notifications import service as notifications_service
@@ -87,14 +88,19 @@ async def verify_and_record_razorpay_payment(
     label = notes.get("label") or "Payment"
     plan_months = int(notes["plan_months"]) if notes.get("plan_months") else None
 
-    payment = await repository.create_payment(
-        user_id=user.id, amount=amount, label=label, plan_months=plan_months
-    )
-    # Same rule as the direct create_payment endpoint — a verified payment with no plan
-    # behind it is a fine payment, so settle what it covers (see settle_fines_for_member).
-    if plan_months is None:
-        await loans_service.settle_fines_for_member(user.id, amount)
-    await notifications_service.create_notification(
-        user.id, "payment-received", f"Payment of ₹{amount} received for {label}."
-    )
+    # Recording the payment, settling fines, and notifying are all DB writes derived
+    # from the same verified signature — one transaction so a crash partway through
+    # can't leave a payment recorded with its fines still marked unpaid.
+    async with prisma.tx() as tx:
+        payment = await repository.create_payment(
+            user_id=user.id, amount=amount, label=label, plan_months=plan_months, client=tx
+        )
+        # Same rule as the direct create_payment endpoint — a verified payment with no
+        # plan behind it is a fine payment, so settle what it covers (see
+        # settle_fines_for_member).
+        if plan_months is None:
+            await loans_service.settle_fines_for_member(user.id, amount, client=tx)
+        await notifications_service.create_notification(
+            user.id, "payment-received", f"Payment of ₹{amount} received for {label}.", client=tx
+        )
     return PaymentOut.from_prisma(payment)

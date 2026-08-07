@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from prisma import Prisma
 from prisma.models import User
 
 from app.modules.notifications import repository
@@ -26,6 +27,12 @@ async def mark_all_as_read(user: User) -> list[NotificationOut]:
     return await list_my_notifications(user)
 
 
-async def create_notification(user_id: str, type_: str, message: str) -> NotificationOut:
-    created = await repository.create(user_id, type_, message)
+async def create_notification(
+    user_id: str, type_: str, message: str, *, client: Prisma | None = None
+) -> NotificationOut:
+    created = await repository.create(user_id, type_, message, client=client)
     return NotificationOut.from_prisma(created)
+
+
+async def create_notifications(user_ids: list[str], type_: str, message: str) -> None:
+    await repository.create_many(user_ids, type_, message)

@@ -25,8 +25,9 @@ async def _notify_moderators(message: str) -> None:
     moderators = await prisma.user.find_many(
         where={"role": {"name": {"in": list(_MODERATOR_ROLES)}}, "deletedAt": None}
     )
-    for moderator in moderators:
-        await notifications_service.create_notification(moderator.id, "reported-comment", message)
+    await notifications_service.create_notifications(
+        [moderator.id for moderator in moderators], "reported-comment", message
+    )
 
 
 async def _ensure_not_banned(user: User) -> None:

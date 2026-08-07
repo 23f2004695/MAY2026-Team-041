@@ -25,8 +25,9 @@ _TYPE_LABELS = {"refund": "refund", "fee_waiver": "fee waiver"}
 
 async def _notify_admins(message: str) -> None:
     admins = await prisma.user.find_many(where={"role": {"name": Role.ADMIN}, "deletedAt": None})
-    for admin in admins:
-        await notifications_service.create_notification(admin.id, "pending-request", message)
+    await notifications_service.create_notifications(
+        [admin.id for admin in admins], "pending-request", message
+    )
 
 
 async def list_pending_requests() -> list[BillingRequestOut]:

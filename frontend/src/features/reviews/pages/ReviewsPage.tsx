@@ -5,16 +5,22 @@ import { Link, useParams } from 'react-router-dom';
 
 import { toast } from 'sonner';
 
-import { PageTitle, ReviewCard, StatisticCard } from '@/components/common';
-import { Button, Dialog, EmptyState } from '@/components/ui';
+import { PageTitle, Pagination, ReviewCard, StatisticCard } from '@/components/common';
+import { Button, Dialog, EmptyState, Select } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { apiGet, getErrorMessage } from '@/lib/api';
 import { formatDate } from '@/lib/format';
+import { usePagedList } from '@/lib/usePagedList';
 import { useAuth, type BookReviews, type Review } from '@/providers/AuthProvider';
 
 import type { Book } from '../../books/hooks/useBooks';
 import { RatingSummary } from '../components/RatingSummary';
 import { WriteReviewModal, type ReviewDraft } from '../components/WriteReviewModal';
+
+const REVIEWS_PAGE_SIZE = 10;
+
+type RatingFilter = 'all' | '1' | '2' | '3' | '4' | '5';
+type ReviewSort = 'newest' | 'oldest' | 'ratingHigh' | 'ratingLow';
 
 function bookLink(bookId: string) {
   return ROUTES.BOOK_DETAILS.replace(':bookId', bookId);
@@ -43,9 +49,41 @@ export function ReviewsPage() {
   const [isWriteReviewOpen, setIsWriteReviewOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [deletingReviewId, setDeletingReviewId] = useState<string | null>(null);
+  const [ratingFilter, setRatingFilter] = useState<RatingFilter>('all');
+  const [reviewSort, setReviewSort] = useState<ReviewSort>('newest');
 
   const reviews = isStaff ? allReviews : bookReviews.items;
   const deletingReview = reviews.find((review) => review.id === deletingReviewId) ?? null;
+
+  const visibleReviews = useMemo(() => {
+    if (!isStaff) return reviews;
+
+    const filtered =
+      ratingFilter === 'all'
+        ? reviews
+        : reviews.filter((review) => review.rating === Number(ratingFilter));
+
+    const sorted = [...filtered].sort((a, b) => {
+      switch (reviewSort) {
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'ratingHigh':
+          return b.rating - a.rating;
+        case 'ratingLow':
+          return a.rating - b.rating;
+        case 'newest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
+
+    return sorted;
+  }, [isStaff, reviews, ratingFilter, reviewSort]);
+
+  const { page, setPage, totalPages, pageItems: pagedReviews } = usePagedList(
+    visibleReviews,
+    REVIEWS_PAGE_SIZE,
+  );
 
   useEffect(() => {
     if (isStaff) {
@@ -178,8 +216,48 @@ export function ReviewsPage() {
       )}
 
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold text-foreground">{t('reviews.commentsHeading')}</h2>
-        {reviews.length === 0 ? (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <h2 className="text-lg font-semibold text-foreground">{t('reviews.commentsHeading')}</h2>
+
+          {isStaff && reviews.length > 0 && (
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Select
+                label={t('reviews.admin.filters.ratingLabel')}
+                value={ratingFilter}
+                onChange={(event) => {
+                  setRatingFilter(event.target.value as RatingFilter);
+                  setPage(1);
+                }}
+                className="w-full sm:w-40"
+                options={[
+                  { value: 'all', label: t('reviews.admin.filters.ratingAll') },
+                  ...[5, 4, 3, 2, 1].map((stars) => ({
+                    value: String(stars),
+                    label: t('reviews.admin.filters.ratingValue', { count: stars }),
+                  })),
+                ]}
+              />
+
+              <Select
+                label={t('reviews.admin.sort.label')}
+                value={reviewSort}
+                onChange={(event) => {
+                  setReviewSort(event.target.value as ReviewSort);
+                  setPage(1);
+                }}
+                className="w-full sm:w-44"
+                options={[
+                  { value: 'newest', label: t('reviews.admin.sort.newest') },
+                  { value: 'oldest', label: t('reviews.admin.sort.oldest') },
+                  { value: 'ratingHigh', label: t('reviews.admin.sort.ratingHigh') },
+                  { value: 'ratingLow', label: t('reviews.admin.sort.ratingLow') },
+                ]}
+              />
+            </div>
+          )}
+        </div>
+
+        {(isStaff ? visibleReviews : reviews).length === 0 ? (
           <EmptyState
             icon={MessageSquareOff}
             title={t('reviews.empty.title')}
@@ -187,7 +265,7 @@ export function ReviewsPage() {
           />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
-            {reviews.map((review) => (
+            {(isStaff ? pagedReviews : reviews).map((review) => (
               <ReviewCard
                 key={review.id}
                 name={review.reviewer_name}
@@ -212,6 +290,16 @@ export function ReviewsPage() {
               />
             ))}
           </div>
+        )}
+
+        {isStaff && visibleReviews.length > 0 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={visibleReviews.length}
+            pageSize={REVIEWS_PAGE_SIZE}
+            onPageChange={setPage}
+          />
         )}
       </div>
 

@@ -1,12 +1,17 @@
+from datetime import UTC, datetime
+
 from fastapi import HTTPException, status
 
 from app.modules.events import repository
 from app.modules.events.schemas import (
     AttendanceSummary,
+    EventAnalytics,
+    EventAnalyticsRegistrant,
     EventCreate,
     EventListResponse,
     EventOut,
     EventUpdate,
+    RoleBreakdown,
 )
 
 
@@ -111,6 +116,52 @@ async def unregister(event_id: str, member_id: str, *, viewer_id: str | None = N
     # viewer_id lets staff remove someone else's registration without the response's
     # `registered` flag flipping to reflect the removed member instead of themselves.
     return EventOut.from_prisma(updated, member_id=viewer_id or member_id)
+
+
+async def get_event_analytics(event_id: str) -> EventAnalytics:
+    event = await repository.find_by_id_for_analytics(event_id)
+    if event is None or event.deletedAt is not None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
+
+    if event.date > datetime.now(UTC):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Analytics are available once the event has taken place",
+        )
+
+    registrations = sorted(event.registrations or [], key=lambda r: r.createdAt)
+
+    role_counts: dict[str, int] = {}
+    registrants: list[EventAnalyticsRegistrant] = []
+    for r in registrations:
+        role_name = r.member.role.name if r.member.role else "unknown"
+        role_counts[role_name] = role_counts.get(role_name, 0) + 1
+        registrants.append(
+            EventAnalyticsRegistrant(
+                id=r.member.id,
+                full_name=r.member.fullName,
+                email=r.member.email,
+                role=role_name,
+                registered_at=r.createdAt,
+            )
+        )
+
+    total_registered = len(registrants)
+    fill_rate = total_registered / event.capacity if event.capacity > 0 else 0.0
+
+    return EventAnalytics(
+        event_id=event.id,
+        title=event.title,
+        date=event.date,
+        location=event.location,
+        capacity=event.capacity,
+        total_registered=total_registered,
+        fill_rate=round(fill_rate, 2),
+        registrants_by_role=[
+            RoleBreakdown(role=role, count=count) for role, count in sorted(role_counts.items())
+        ],
+        registrants=registrants,
+    )
 
 
 async def get_attendance_summary() -> AttendanceSummary:

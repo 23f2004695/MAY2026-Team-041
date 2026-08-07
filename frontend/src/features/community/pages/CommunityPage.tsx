@@ -1,10 +1,11 @@
-import { Bookmark, Flag, MessageCircle, Plus, UserX, Users } from 'lucide-react';
+import { Flag, MessageCircle, Plus, UserX, Users } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { StatisticCard, PageTitle } from '@/components/common';
+import { Pagination, StatisticCard, PageTitle, TableToolbar } from '@/components/common';
 import { Button, Dialog, EmptyState } from '@/components/ui';
+import { usePagination, useSortedItems } from '@/hooks';
 import { getErrorMessage } from '@/lib/api';
 import {
   useAuth,
@@ -77,6 +78,7 @@ export function CommunityPage() {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>('all');
+  const [sort, setSort] = useState<'newest' | 'oldest' | 'likes'>('newest');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
   const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
@@ -115,12 +117,28 @@ export function CommunityPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canModerate]);
 
-  const visiblePosts = useMemo(() => {
+  const filteredPosts = useMemo(() => {
     if (filter === 'saved') return posts.filter((post) => post.is_saved);
     if (filter === 'reported')
       return posts.filter((post) => post.reported || hasReportedComment(post.comments));
     return posts;
   }, [posts, filter]);
+
+  const sortedPosts = useSortedItems(filteredPosts, {
+    compare: (a, b) => {
+      switch (sort) {
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'likes':
+          return b.like_count - a.like_count;
+        case 'newest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    },
+  });
+
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(sortedPosts, 5);
   const deletingPost = posts.find((post) => post.id === deletingPostId) ?? null;
 
   const totalComments = useMemo(
@@ -362,37 +380,45 @@ export function CommunityPage() {
         </div>
       )}
 
-      <div className="flex gap-2" role="group" aria-label={t('community.filterAriaLabel')}>
-        <Button
-          variant={filter === 'all' ? 'primary' : 'outline'}
-          size="sm"
-          onClick={() => setFilter('all')}
-        >
-          {t('community.filters.all')}
-        </Button>
-        {!isStaff && (
-          <Button
-            variant={filter === 'saved' ? 'primary' : 'outline'}
-            size="sm"
-            leadingIcon={<Bookmark className="size-4" />}
-            onClick={() => setFilter('saved')}
-          >
-            {t('community.filters.saved')}
-          </Button>
-        )}
-        {isStaff && (
-          <Button
-            variant={filter === 'reported' ? 'primary' : 'outline'}
-            size="sm"
-            leadingIcon={<Flag className="size-4" />}
-            onClick={() => setFilter('reported')}
-          >
-            {t('community.filters.reported')}
-          </Button>
-        )}
-      </div>
+      <TableToolbar
+        filters={[
+          {
+            label: 'Filter',
+            value: filter,
+            onChange: (value) => {
+              setFilter(value as Filter);
+              setPage(1);
+            },
+            options: [
+              { value: 'all', label: t('community.filters.all') },
+              ...(!isStaff
+                ? [{ value: 'saved', label: t('community.filters.saved') }]
+                : [{ value: 'reported', label: t('community.filters.reported') }]),
+            ],
+          },
+        ]}
+        sort={{
+          label: 'Sort',
+          value: sort,
+          onChange: (value) => {
+            setSort(value as 'newest' | 'oldest' | 'likes');
+            setPage(1);
+          },
+          options: [
+            { value: 'newest', label: 'Newest' },
+            { value: 'oldest', label: 'Oldest' },
+            { value: 'likes', label: 'Most liked' },
+          ],
+        }}
+        onReset={() => {
+          setFilter('all');
+          setSort('newest');
+          setPage(1);
+        }}
+        resetLabel="Reset"
+      />
 
-      {!isLoading && visiblePosts.length === 0 ? (
+      {!isLoading && filteredPosts.length === 0 ? (
         <EmptyState
           icon={filter === 'reported' ? Flag : Users}
           title={t(
@@ -419,7 +445,7 @@ export function CommunityPage() {
         />
       ) : (
         <div className="flex flex-col gap-4">
-          {visiblePosts.map((post) => (
+          {paginatedItems.map((post) => (
             <PostCard
               key={post.id}
               post={post}
@@ -436,6 +462,16 @@ export function CommunityPage() {
               onReportComment={reportComment}
             />
           ))}
+
+          {totalItems > 0 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={5}
+              onPageChange={setPage}
+            />
+          )}
         </div>
       )}
 

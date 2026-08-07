@@ -1,0 +1,6203 @@
+openapi: 3.1.0
+info:
+  title: MAY2026 Team 041 API
+  version: 0.1.0
+paths:
+  /health/live:
+    get:
+      tags:
+      - health
+      summary: Live
+      operationId: live_health_live_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+                title: Response Live Health Live Get
+  /health/ready:
+    get:
+      tags:
+      - health
+      summary: Ready
+      operationId: ready_health_ready_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+                title: Response Ready Health Ready Get
+  /api/v1/auth/register:
+    post:
+      tags:
+      - auth
+      summary: Register
+      operationId: register_api_v1_auth_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/login:
+    post:
+      tags:
+      - auth
+      summary: Login
+      operationId: login_api_v1_auth_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/google:
+    post:
+      tags:
+      - auth
+      summary: Google
+      operationId: google_api_v1_auth_google_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/me:
+    delete:
+      tags:
+      - auth
+      summary: Delete Account
+      operationId: delete_account_api_v1_auth_me_delete
+      responses:
+        '204':
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - auth
+      summary: Update Profile
+      operationId: update_profile_api_v1_auth_me_patch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/auth/refresh:
+    post:
+      tags:
+      - auth
+      summary: Refresh
+      operationId: refresh_api_v1_auth_refresh_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/logout:
+    post:
+      tags:
+      - auth
+      summary: Logout
+      operationId: logout_api_v1_auth_logout_post
+      responses:
+        '204':
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+  /api/v1/auth/forgot-password:
+    post:
+      tags:
+      - auth
+      summary: Forgot Password
+      operationId: forgot_password_api_v1_auth_forgot_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/auth/reset-password:
+    post:
+      tags:
+      - auth
+      summary: Reset Password
+      operationId: reset_password_api_v1_auth_reset_password_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/members:
+    get:
+      tags:
+      - members
+      summary: List Members
+      operationId: list_members_api_v1_members_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Match against full name or email
+          title: Search
+        description: Match against full name or email
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Page Size
+      - name: role
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Exact role name match
+          title: Role
+        description: Exact role name match
+      - name: active_only
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Only include active accounts
+          default: false
+          title: Active Only
+        description: Only include active accounts
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - members
+      summary: Create Member
+      operationId: create_member_api_v1_members_post
+      security:
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/members/{member_id}:
+    put:
+      tags:
+      - members
+      summary: Update Member
+      operationId: update_member_api_v1_members__member_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: member_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Member Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/members/me/reading-progress:
+    get:
+      tags:
+      - members
+      summary: List My Reading Progress
+      operationId: list_my_reading_progress_api_v1_members_me_reading_progress_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReadingProgressOut'
+                type: array
+                title: Response List My Reading Progress Api V1 Members Me Reading
+                  Progress Get
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - members
+      summary: Record My Reading Progress
+      operationId: record_my_reading_progress_api_v1_members_me_reading_progress_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadingProgressUpsert'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingProgressOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/members/me/reading-goal:
+    get:
+      tags:
+      - members
+      summary: Get My Reading Goal
+      operationId: get_my_reading_goal_api_v1_members_me_reading_goal_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/ReadingGoalOut'
+                - type: 'null'
+                title: Response Get My Reading Goal Api V1 Members Me Reading Goal
+                  Get
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - members
+      summary: Set My Reading Goal
+      operationId: set_my_reading_goal_api_v1_members_me_reading_goal_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadingGoalUpsert'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingGoalOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/members/me/reading-streak:
+    get:
+      tags:
+      - members
+      summary: Get My Reading Streak
+      operationId: get_my_reading_streak_api_v1_members_me_reading_streak_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingStreakOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/books:
+    get:
+      tags:
+      - books
+      summary: List Books
+      operationId: list_books_api_v1_books_get
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Match against title, author, or description
+          title: Search
+        description: Match against title, author, or description
+      - name: category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Exact category match
+          title: Category
+        description: Exact category match
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Page Size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - books
+      summary: Create Book
+      operationId: create_book_api_v1_books_post
+      security:
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/books/{book_id}:
+    get:
+      tags:
+      - books
+      summary: Get Book
+      operationId: get_book_api_v1_books__book_id__get
+      parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Book Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - books
+      summary: Update Book
+      operationId: update_book_api_v1_books__book_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Book Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - books
+      summary: Delete Book
+      operationId: delete_book_api_v1_books__book_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Book Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/books/{book_id}/related:
+    get:
+      tags:
+      - books
+      summary: Get Related Books
+      operationId: get_related_books_api_v1_books__book_id__related_get
+      parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Book Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookOut'
+                title: Response Get Related Books Api V1 Books  Book Id  Related Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/book-records:
+    get:
+      tags:
+      - book-records
+      summary: List Records
+      operationId: list_records_api_v1_book_records_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BookRecordOut'
+                type: array
+                title: Response List Records Api V1 Book Records Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - book-records
+      summary: Create Record
+      operationId: create_record_api_v1_book_records_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookRecordCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookRecordOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/payments:
+    post:
+      tags:
+      - payments
+      summary: Create Payment
+      operationId: create_payment_api_v1_payments_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/payments/pay-at-library:
+    post:
+      tags:
+      - payments
+      summary: Pay At Library
+      operationId: pay_at_library_api_v1_payments_pay_at_library_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentCreate'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/payments/me:
+    get:
+      tags:
+      - payments
+      summary: List My Payments
+      operationId: list_my_payments_api_v1_payments_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PaymentOut'
+                type: array
+                title: Response List My Payments Api V1 Payments Me Get
+      security:
+      - HTTPBearer: []
+  /api/v1/payments/me/membership:
+    get:
+      tags:
+      - payments
+      summary: Get My Membership
+      operationId: get_my_membership_api_v1_payments_me_membership_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/MembershipOut'
+                - type: 'null'
+                title: Response Get My Membership Api V1 Payments Me Membership Get
+      security:
+      - HTTPBearer: []
+  /api/v1/guardian/links:
+    post:
+      tags:
+      - guardian
+      summary: Create Link
+      operationId: create_link_api_v1_guardian_links_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuardianLinkCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/guardian/children:
+    get:
+      tags:
+      - guardian
+      summary: List Children
+      operationId: list_children_api_v1_guardian_children_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GuardianChildOut'
+                type: array
+                title: Response List Children Api V1 Guardian Children Get
+      security:
+      - HTTPBearer: []
+  /api/v1/guardian/children/{child_id}/pay-fines:
+    post:
+      tags:
+      - guardian
+      summary: Pay Child Fines
+      operationId: pay_child_fines_api_v1_guardian_children__child_id__pay_fines_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: child_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Child Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/guardian/children/{child_id}/renew:
+    post:
+      tags:
+      - guardian
+      summary: Renew Child Subscription
+      operationId: renew_child_subscription_api_v1_guardian_children__child_id__renew_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: child_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Child Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/guardian/children/{child_id}/seat-bookings:
+    post:
+      tags:
+      - guardian
+      summary: Book Seat For Child
+      operationId: book_seat_for_child_api_v1_guardian_children__child_id__seat_bookings_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: child_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Child Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatBookingCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatBookingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/guardian/children/{child_id}/seat-notify:
+    post:
+      tags:
+      - guardian
+      summary: Request Seat Notify For Child
+      operationId: request_seat_notify_for_child_api_v1_guardian_children__child_id__seat_notify_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: child_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Child Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatNotifyCreate'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/manager/dashboard:
+    get:
+      tags:
+      - manager
+      summary: Get Dashboard
+      operationId: get_dashboard_api_v1_manager_dashboard_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagerDashboardStatsOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/manager/seat-bookings:
+    post:
+      tags:
+      - manager
+      summary: Book Seat For Member
+      operationId: book_seat_for_member_api_v1_manager_seat_bookings_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerSeatBookingCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatBookingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/manager/loans:
+    post:
+      tags:
+      - manager
+      summary: Issue Loan For Member
+      operationId: issue_loan_for_member_api_v1_manager_loans_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerLoanCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/manager/guardian-links:
+    post:
+      tags:
+      - manager
+      summary: Link Guardian
+      operationId: link_guardian_api_v1_manager_guardian_links_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerGuardianLinkCreate'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/manager/books:
+    get:
+      tags:
+      - manager
+      summary: List Book Availability
+      operationId: list_book_availability_api_v1_manager_books_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Match against title or author
+          title: Search
+        description: Match against title or author
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Page Size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagerBookListOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/manager/reservations/pending:
+    get:
+      tags:
+      - manager
+      summary: List Pending Reservations
+      operationId: list_pending_reservations_api_v1_manager_reservations_pending_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PendingReservationOut'
+                type: array
+                title: Response List Pending Reservations Api V1 Manager Reservations
+                  Pending Get
+      security:
+      - HTTPBearer: []
+  /api/v1/manager/reservations/{reservation_id}/approve:
+    post:
+      tags:
+      - manager
+      summary: Approve Reservation
+      operationId: approve_reservation_api_v1_manager_reservations__reservation_id__approve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: reservation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Reservation Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagerReservationDecision'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/manager/reservations/{reservation_id}/reject:
+    post:
+      tags:
+      - manager
+      summary: Reject Reservation
+      operationId: reject_reservation_api_v1_manager_reservations__reservation_id__reject_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: reservation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Reservation Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reservations/me:
+    get:
+      tags:
+      - reservations
+      summary: List My Reservations
+      operationId: list_my_reservations_api_v1_reservations_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReservationOut'
+                type: array
+                title: Response List My Reservations Api V1 Reservations Me Get
+      security:
+      - HTTPBearer: []
+  /api/v1/reservations:
+    post:
+      tags:
+      - reservations
+      summary: Create Reservation
+      operationId: create_reservation_api_v1_reservations_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/reservations/{reservation_id}:
+    delete:
+      tags:
+      - reservations
+      summary: Cancel Reservation
+      operationId: cancel_reservation_api_v1_reservations__reservation_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: reservation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Reservation Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/translate:
+    post:
+      tags:
+      - translate
+      summary: Translate
+      operationId: translate_api_v1_translate_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TranslateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/translate/batch:
+    post:
+      tags:
+      - translate
+      summary: Translate Batch
+      operationId: translate_batch_api_v1_translate_batch_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TranslateBatchRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslateBatchResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/posts:
+    get:
+      tags:
+      - community
+      summary: List Posts
+      operationId: list_posts_api_v1_community_posts_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PostOut'
+                type: array
+                title: Response List Posts Api V1 Community Posts Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - community
+      summary: Create Post
+      operationId: create_post_api_v1_community_posts_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/community/posts/{post_id}:
+    put:
+      tags:
+      - community
+      summary: Update Post
+      operationId: update_post_api_v1_community_posts__post_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Post Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - community
+      summary: Delete Post
+      operationId: delete_post_api_v1_community_posts__post_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Post Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/posts/{post_id}/like:
+    post:
+      tags:
+      - community
+      summary: Toggle Like
+      operationId: toggle_like_api_v1_community_posts__post_id__like_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Post Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/posts/{post_id}/save:
+    post:
+      tags:
+      - community
+      summary: Toggle Save
+      operationId: toggle_save_api_v1_community_posts__post_id__save_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Post Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/posts/{post_id}/report:
+    post:
+      tags:
+      - community
+      summary: Report Post
+      operationId: report_post_api_v1_community_posts__post_id__report_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Post Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/posts/{post_id}/comments:
+    post:
+      tags:
+      - community
+      summary: Add Comment
+      operationId: add_comment_api_v1_community_posts__post_id__comments_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: post_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Post Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/comments/{comment_id}:
+    delete:
+      tags:
+      - community
+      summary: Delete Comment
+      operationId: delete_comment_api_v1_community_comments__comment_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: comment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Comment Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/comments/{comment_id}/report:
+    post:
+      tags:
+      - community
+      summary: Report Comment
+      operationId: report_comment_api_v1_community_comments__comment_id__report_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: comment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Comment Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/community/banned-authors:
+    get:
+      tags:
+      - community
+      summary: List Banned Authors
+      operationId: list_banned_authors_api_v1_community_banned_authors_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BannedAuthorOut'
+                type: array
+                title: Response List Banned Authors Api V1 Community Banned Authors
+                  Get
+      security:
+      - HTTPBearer: []
+  /api/v1/community/banned-authors/{target_user_id}:
+    post:
+      tags:
+      - community
+      summary: Ban Author
+      operationId: ban_author_api_v1_community_banned_authors__target_user_id__post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: target_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Target User Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - community
+      summary: Unban Author
+      operationId: unban_author_api_v1_community_banned_authors__target_user_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: target_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Target User Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/contact:
+    post:
+      tags:
+      - contact
+      summary: Submit Contact Message
+      operationId: submit_contact_message_api_v1_contact_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactMessageCreate'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/seat-booking/availability:
+    get:
+      tags:
+      - seat-booking
+      summary: Get Availability Summary
+      operationId: get_availability_summary_api_v1_seat_booking_availability_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatAvailabilitySummary'
+  /api/v1/seat-booking/schedule:
+    get:
+      tags:
+      - seat-booking
+      summary: Get Schedule
+      operationId: get_schedule_api_v1_seat_booking_schedule_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+          title: Date
+      - name: hour
+        in: query
+        required: true
+        schema:
+          type: integer
+          maximum: 23
+          minimum: 0
+          title: Hour
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/seat-booking/me:
+    get:
+      tags:
+      - seat-booking
+      summary: List My Bookings
+      operationId: list_my_bookings_api_v1_seat_booking_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SeatBookingOut'
+                type: array
+                title: Response List My Bookings Api V1 Seat Booking Me Get
+      security:
+      - HTTPBearer: []
+  /api/v1/seat-booking:
+    post:
+      tags:
+      - seat-booking
+      summary: Book Seat
+      operationId: book_seat_api_v1_seat_booking_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatBookingCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatBookingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/seat-booking/{booking_id}:
+    delete:
+      tags:
+      - seat-booking
+      summary: Cancel Booking
+      operationId: cancel_booking_api_v1_seat_booking__booking_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: booking_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Booking Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/seat-booking/notify:
+    post:
+      tags:
+      - seat-booking
+      summary: Request Notify
+      operationId: request_notify_api_v1_seat_booking_notify_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatNotifyCreate'
+        required: true
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/notifications/me:
+    get:
+      tags:
+      - notifications
+      summary: List My Notifications
+      operationId: list_my_notifications_api_v1_notifications_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/NotificationOut'
+                type: array
+                title: Response List My Notifications Api V1 Notifications Me Get
+      security:
+      - HTTPBearer: []
+  /api/v1/notifications/{notification_id}/read:
+    post:
+      tags:
+      - notifications
+      summary: Mark As Read
+      operationId: mark_as_read_api_v1_notifications__notification_id__read_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: notification_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Notification Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/notifications/read-all:
+    post:
+      tags:
+      - notifications
+      summary: Mark All As Read
+      operationId: mark_all_as_read_api_v1_notifications_read_all_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/NotificationOut'
+                type: array
+                title: Response Mark All As Read Api V1 Notifications Read All Post
+      security:
+      - HTTPBearer: []
+  /api/v1/books/{book_id}/reviews:
+    get:
+      tags:
+      - reviews
+      summary: List Book Reviews
+      operationId: list_book_reviews_api_v1_books__book_id__reviews_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Book Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookReviewsOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - reviews
+      summary: Create Review
+      operationId: create_review_api_v1_books__book_id__reviews_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: book_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Book Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reviews:
+    get:
+      tags:
+      - reviews
+      summary: List All Reviews
+      operationId: list_all_reviews_api_v1_reviews_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ReviewOut'
+                type: array
+                title: Response List All Reviews Api V1 Reviews Get
+      security:
+      - HTTPBearer: []
+  /api/v1/reviews/{review_id}:
+    put:
+      tags:
+      - reviews
+      summary: Update Review
+      operationId: update_review_api_v1_reviews__review_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: review_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Review Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - reviews
+      summary: Delete Review
+      operationId: delete_review_api_v1_reviews__review_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: review_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Review Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/dashboard:
+    get:
+      tags:
+      - admin
+      summary: Get Dashboard
+      operationId: get_dashboard_api_v1_admin_dashboard_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboardOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/expenses:
+    post:
+      tags:
+      - admin
+      summary: Log Expense
+      operationId: log_expense_api_v1_admin_expenses_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/audit-log:
+    get:
+      tags:
+      - admin
+      summary: Get Audit Log
+      operationId: get_audit_log_api_v1_admin_audit_log_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AuditLogEntryOut'
+                type: array
+                title: Response Get Audit Log Api V1 Admin Audit Log Get
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/reports/revenue-by-plan:
+    get:
+      tags:
+      - admin
+      summary: Get Revenue By Plan
+      operationId: get_revenue_by_plan_api_v1_admin_reports_revenue_by_plan_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenueByPlanOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/reports/profit-and-loss:
+    get:
+      tags:
+      - admin
+      summary: Get Profit And Loss
+      operationId: get_profit_and_loss_api_v1_admin_reports_profit_and_loss_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfitAndLossOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/reports/expense-breakdown:
+    get:
+      tags:
+      - admin
+      summary: Get Expense Breakdown
+      operationId: get_expense_breakdown_api_v1_admin_reports_expense_breakdown_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseBreakdownOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/reports/membership-growth:
+    get:
+      tags:
+      - admin
+      summary: Get Membership Growth
+      operationId: get_membership_growth_api_v1_admin_reports_membership_growth_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipGrowthOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/announcements:
+    post:
+      tags:
+      - admin
+      summary: Send Announcement
+      operationId: send_announcement_api_v1_admin_announcements_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnnouncementOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/admin/members:
+    get:
+      tags:
+      - admin
+      summary: List Admin Members
+      operationId: list_admin_members_api_v1_admin_members_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Match against full name or email
+          title: Search
+        description: Match against full name or email
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Page Size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminMemberListOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/admin/payments:
+    get:
+      tags:
+      - admin
+      summary: List Admin Payments
+      operationId: list_admin_payments_api_v1_admin_payments_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Match against member name or email
+          title: Search
+        description: Match against member name or email
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Page Size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPaymentListOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/billing-requests:
+    get:
+      tags:
+      - billing-requests
+      summary: List Requests
+      operationId: list_requests_api_v1_billing_requests_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/BillingRequestOut'
+                type: array
+                title: Response List Requests Api V1 Billing Requests Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - billing-requests
+      summary: Create Request
+      operationId: create_request_api_v1_billing_requests_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingRequestCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/billing-requests/waive-fine:
+    post:
+      tags:
+      - billing-requests
+      summary: Waive Fine
+      operationId: waive_fine_api_v1_billing_requests_waive_fine_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WaiveFineRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/billing-requests/{request_id}/approve:
+    post:
+      tags:
+      - billing-requests
+      summary: Approve Request
+      operationId: approve_request_api_v1_billing_requests__request_id__approve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Request Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/billing-requests/{request_id}/reject:
+    post:
+      tags:
+      - billing-requests
+      summary: Reject Request
+      operationId: reject_request_api_v1_billing_requests__request_id__reject_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Request Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/pricing-plans:
+    get:
+      tags:
+      - pricing-plans
+      summary: List Plans
+      operationId: list_plans_api_v1_pricing_plans_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PricingPlanOut'
+                type: array
+                title: Response List Plans Api V1 Pricing Plans Get
+  /api/v1/pricing-plans/{plan_id}:
+    patch:
+      tags:
+      - pricing-plans
+      summary: Update Plan
+      operationId: update_plan_api_v1_pricing_plans__plan_id__patch
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: plan_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Plan Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PricingPlanUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingPlanOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/coupons:
+    get:
+      tags:
+      - coupons
+      summary: List Coupons
+      operationId: list_coupons_api_v1_coupons_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CouponOut'
+                type: array
+                title: Response List Coupons Api V1 Coupons Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - coupons
+      summary: Generate Coupon
+      operationId: generate_coupon_api_v1_coupons_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CouponCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/coupons/{code}/validate:
+    get:
+      tags:
+      - coupons
+      summary: Validate Coupon
+      operationId: validate_coupon_api_v1_coupons__code__validate_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Code
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponValidationOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/support-tickets:
+    post:
+      tags:
+      - support-tickets
+      summary: Create Ticket
+      operationId: create_ticket_api_v1_support_tickets_post
+      security:
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportTicketCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - support-tickets
+      summary: List Tickets
+      operationId: list_tickets_api_v1_support_tickets_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SupportTicketOut'
+                title: Response List Tickets Api V1 Support Tickets Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/support-tickets/me:
+    get:
+      tags:
+      - support-tickets
+      summary: List My Tickets
+      operationId: list_my_tickets_api_v1_support_tickets_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SupportTicketOut'
+                type: array
+                title: Response List My Tickets Api V1 Support Tickets Me Get
+      security:
+      - HTTPBearer: []
+  /api/v1/support-tickets/{ticket_id}/resolve:
+    post:
+      tags:
+      - support-tickets
+      summary: Resolve Ticket
+      operationId: resolve_ticket_api_v1_support_tickets__ticket_id__resolve_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Ticket Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportTicketResolve'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/support-tickets/{ticket_id}/confirm:
+    post:
+      tags:
+      - support-tickets
+      summary: Confirm Ticket
+      operationId: confirm_ticket_api_v1_support_tickets__ticket_id__confirm_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Ticket Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/support-tickets/{ticket_id}/reopen:
+    post:
+      tags:
+      - support-tickets
+      summary: Reopen Ticket
+      operationId: reopen_ticket_api_v1_support_tickets__ticket_id__reopen_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Ticket Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/events:
+    get:
+      tags:
+      - events
+      summary: List Events
+      operationId: list_events_api_v1_events_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 20
+          title: Page Size
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - events
+      summary: Create Event
+      operationId: create_event_api_v1_events_post
+      security:
+      - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreate'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/events/summary:
+    get:
+      tags:
+      - events
+      summary: Attendance Summary
+      operationId: attendance_summary_api_v1_events_summary_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendanceSummary'
+  /api/v1/events/{event_id}:
+    get:
+      tags:
+      - events
+      summary: Get Event
+      operationId: get_event_api_v1_events__event_id__get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Event Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - events
+      summary: Update Event
+      operationId: update_event_api_v1_events__event_id__put
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Event Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - events
+      summary: Delete Event
+      operationId: delete_event_api_v1_events__event_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Event Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/events/{event_id}/register:
+    post:
+      tags:
+      - events
+      summary: Register
+      operationId: register_api_v1_events__event_id__register_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Event Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - events
+      summary: Unregister
+      operationId: unregister_api_v1_events__event_id__register_delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Event Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/events/{event_id}/registrants/{member_id}:
+    delete:
+      tags:
+      - events
+      summary: Remove Registrant
+      operationId: remove_registrant_api_v1_events__event_id__registrants__member_id__delete
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Event Id
+      - name: member_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Member Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/chat:
+    post:
+      tags:
+      - chat
+      summary: Chat
+      operationId: chat_api_v1_chat_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/permission-requests:
+    get:
+      tags:
+      - permission-requests
+      summary: List Requests
+      operationId: list_requests_api_v1_permission_requests_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PermissionRequestOut'
+                type: array
+                title: Response List Requests Api V1 Permission Requests Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - permission-requests
+      summary: Create Request
+      operationId: create_request_api_v1_permission_requests_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionRequestCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/permission-requests/{request_id}/grant:
+    post:
+      tags:
+      - permission-requests
+      summary: Grant Request
+      operationId: grant_request_api_v1_permission_requests__request_id__grant_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Request Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/permission-requests/{request_id}/deny:
+    post:
+      tags:
+      - permission-requests
+      summary: Deny Request
+      operationId: deny_request_api_v1_permission_requests__request_id__deny_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Request Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionRequestOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/loans/me:
+    get:
+      tags:
+      - loans
+      summary: List My Loans
+      operationId: list_my_loans_api_v1_loans_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LoanOut'
+                type: array
+                title: Response List My Loans Api V1 Loans Me Get
+      security:
+      - HTTPBearer: []
+  /api/v1/loans/history:
+    get:
+      tags:
+      - loans
+      summary: List Loan History
+      operationId: list_loan_history_api_v1_loans_history_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LoanOut'
+                type: array
+                title: Response List Loan History Api V1 Loans History Get
+      security:
+      - HTTPBearer: []
+  /api/v1/loans:
+    get:
+      tags:
+      - loans
+      summary: List Active Loans
+      operationId: list_active_loans_api_v1_loans_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LoanOut'
+                type: array
+                title: Response List Active Loans Api V1 Loans Get
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - loans
+      summary: Create Loan
+      operationId: create_loan_api_v1_loans_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanCreate'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /api/v1/loans/fines:
+    get:
+      tags:
+      - loans
+      summary: List Fines
+      operationId: list_fines_api_v1_loans_fines_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LoanOut'
+                type: array
+                title: Response List Fines Api V1 Loans Fines Get
+      security:
+      - HTTPBearer: []
+  /api/v1/loans/{loan_id}/return:
+    post:
+      tags:
+      - loans
+      summary: Return Loan
+      operationId: return_loan_api_v1_loans__loan_id__return_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: loan_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Loan Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/loans/{loan_id}/mark-fine-paid:
+    post:
+      tags:
+      - loans
+      summary: Mark Fine Paid
+      operationId: mark_fine_paid_api_v1_loans__loan_id__mark_fine_paid_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: loan_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Loan Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/loans/{loan_id}/remind:
+    post:
+      tags:
+      - loans
+      summary: Send Reminder
+      operationId: send_reminder_api_v1_loans__loan_id__remind_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: loan_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Loan Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/it-head/dashboard:
+    get:
+      tags:
+      - it-head
+      summary: Get Dashboard
+      operationId: get_dashboard_api_v1_it_head_dashboard_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ITHeadDashboardOut'
+      security:
+      - HTTPBearer: []
+  /api/v1/leaderboard:
+    get:
+      tags:
+      - leaderboard
+      summary: Get Leaderboard
+      operationId: get_leaderboard_api_v1_leaderboard_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LeaderboardEntryOut'
+                type: array
+                title: Response Get Leaderboard Api V1 Leaderboard Get
+      security:
+      - HTTPBearer: []
+components:
+  schemas:
+    AdminDashboardOut:
+      properties:
+        stats:
+          $ref: '#/components/schemas/AdminStatsOut'
+        cash_flow:
+          items:
+            $ref: '#/components/schemas/RevenueSourceOut'
+          type: array
+          title: Cash Flow
+        budget:
+          items:
+            $ref: '#/components/schemas/BudgetCategoryOut'
+          type: array
+          title: Budget
+        seat_status:
+          $ref: '#/components/schemas/SeatStatusOut'
+        seat_occupancy:
+          items:
+            $ref: '#/components/schemas/SeatOccupancySlotOut'
+          type: array
+          title: Seat Occupancy
+      type: object
+      required:
+      - stats
+      - cash_flow
+      - budget
+      - seat_status
+      - seat_occupancy
+      title: AdminDashboardOut
+    AdminMemberListOut:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminMemberOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        page_size:
+          type: integer
+          title: Page Size
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - page_size
+      title: AdminMemberListOut
+    AdminMemberOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        full_name:
+          type: string
+          title: Full Name
+        email:
+          type: string
+          title: Email
+        role:
+          type: string
+          title: Role
+        is_active:
+          type: boolean
+          title: Is Active
+        joined_at:
+          type: string
+          format: date-time
+          title: Joined At
+        last_payment_amount:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Last Payment Amount
+        last_payment_label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Payment Label
+        last_payment_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Payment At
+        plan_label:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Plan Label
+        plan_expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Plan Expires At
+        plan_is_active:
+          type: boolean
+          title: Plan Is Active
+        books_reading:
+          type: integer
+          title: Books Reading
+        books_completed:
+          type: integer
+          title: Books Completed
+        reported:
+          type: boolean
+          title: Reported
+        event_registrations:
+          type: integer
+          title: Event Registrations
+      type: object
+      required:
+      - id
+      - full_name
+      - email
+      - role
+      - is_active
+      - joined_at
+      - last_payment_amount
+      - last_payment_label
+      - last_payment_at
+      - plan_label
+      - plan_expires_at
+      - plan_is_active
+      - books_reading
+      - books_completed
+      - reported
+      - event_registrations
+      title: AdminMemberOut
+    AdminPaymentListOut:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AdminPaymentOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        page_size:
+          type: integer
+          title: Page Size
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - page_size
+      title: AdminPaymentListOut
+    AdminPaymentOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        member_id:
+          type: string
+          title: Member Id
+        member_name:
+          type: string
+          title: Member Name
+        member_email:
+          type: string
+          title: Member Email
+        amount:
+          type: integer
+          title: Amount
+        label:
+          type: string
+          title: Label
+        status:
+          type: string
+          title: Status
+        plan_months:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Plan Months
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - member_id
+      - member_name
+      - member_email
+      - amount
+      - label
+      - status
+      - plan_months
+      - created_at
+      title: AdminPaymentOut
+    AdminStatsOut:
+      properties:
+        revenue_mtd:
+          type: integer
+          title: Revenue Mtd
+        revenue_trend:
+          $ref: '#/components/schemas/TrendOut'
+        expenses_mtd:
+          type: integer
+          title: Expenses Mtd
+        expenses_trend:
+          $ref: '#/components/schemas/TrendOut'
+        net_profit_mtd:
+          type: integer
+          title: Net Profit Mtd
+        net_profit_trend:
+          $ref: '#/components/schemas/TrendOut'
+        total_members:
+          type: integer
+          title: Total Members
+        total_members_trend:
+          $ref: '#/components/schemas/TrendOut'
+      type: object
+      required:
+      - revenue_mtd
+      - revenue_trend
+      - expenses_mtd
+      - expenses_trend
+      - net_profit_mtd
+      - net_profit_trend
+      - total_members
+      - total_members_trend
+      title: AdminStatsOut
+    AnnouncementCreate:
+      properties:
+        message:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Message
+      type: object
+      required:
+      - message
+      title: AnnouncementCreate
+    AnnouncementOut:
+      properties:
+        recipient_count:
+          type: integer
+          title: Recipient Count
+      type: object
+      required:
+      - recipient_count
+      title: AnnouncementOut
+    AttendanceSummary:
+      properties:
+        total_events_this_month:
+          type: integer
+          title: Total Events This Month
+        total_attendees:
+          type: integer
+          title: Total Attendees
+        average_attendance_rate:
+          type: number
+          title: Average Attendance Rate
+      type: object
+      required:
+      - total_events_this_month
+      - total_attendees
+      - average_attendance_rate
+      title: AttendanceSummary
+    AuditLogEntryOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        actor_id:
+          type: string
+          title: Actor Id
+        actor_name:
+          type: string
+          title: Actor Name
+        actor_role:
+          type: string
+          title: Actor Role
+        action:
+          type: string
+          title: Action
+        params:
+          additionalProperties: true
+          type: object
+          title: Params
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - actor_id
+      - actor_name
+      - actor_role
+      - action
+      - params
+      - created_at
+      title: AuditLogEntryOut
+    BannedAuthorOut:
+      properties:
+        user_id:
+          type: string
+          title: User Id
+        full_name:
+          type: string
+          title: Full Name
+      type: object
+      required:
+      - user_id
+      - full_name
+      title: BannedAuthorOut
+    BillingRequestCreate:
+      properties:
+        member_id:
+          type: string
+          title: Member Id
+        type:
+          type: string
+          enum:
+          - refund
+          - fee_waiver
+          title: Type
+        amount:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Reason
+      type: object
+      required:
+      - member_id
+      - type
+      - amount
+      - reason
+      title: BillingRequestCreate
+    BillingRequestOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          type: string
+          enum:
+          - refund
+          - fee_waiver
+          title: Type
+        amount:
+          type: integer
+          title: Amount
+        reason:
+          type: string
+          title: Reason
+        status:
+          type: string
+          title: Status
+        member_id:
+          type: string
+          title: Member Id
+        member_name:
+          type: string
+          title: Member Name
+        created_by_name:
+          type: string
+          title: Created By Name
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        decided_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Decided At
+      type: object
+      required:
+      - id
+      - type
+      - amount
+      - reason
+      - status
+      - member_id
+      - member_name
+      - created_by_name
+      - created_at
+      - decided_at
+      title: BillingRequestOut
+    BookCreate:
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Title
+        author:
+          type: string
+          maxLength: 150
+          minLength: 1
+          title: Author
+        category:
+          type: string
+          maxLength: 80
+          minLength: 1
+          title: Category
+        isbn:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Isbn
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        published_year:
+          anyOf:
+          - type: integer
+            maximum: 2027.0
+            minimum: 1450.0
+          - type: 'null'
+          title: Published Year
+        language:
+          anyOf:
+          - type: string
+            maxLength: 40
+          - type: 'null'
+          title: Language
+        cover_image_url:
+          anyOf:
+          - type: string
+            maxLength: 2048
+          - type: 'null'
+          title: Cover Image Url
+        total_copies:
+          type: integer
+          minimum: 0.0
+          title: Total Copies
+          default: 0
+      type: object
+      required:
+      - title
+      - author
+      - category
+      title: BookCreate
+    BookListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/BookOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        page_size:
+          type: integer
+          title: Page Size
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - page_size
+      title: BookListResponse
+    BookOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        author:
+          type: string
+          title: Author
+        category:
+          type: string
+          title: Category
+        isbn:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Isbn
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        published_year:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Published Year
+        language:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Language
+        cover_image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cover Image Url
+        total_copies:
+          type: integer
+          title: Total Copies
+        available:
+          type: boolean
+          title: Available
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - title
+      - author
+      - category
+      - isbn
+      - description
+      - published_year
+      - language
+      - cover_image_url
+      - total_copies
+      - available
+      - created_at
+      - updated_at
+      title: BookOut
+    BookRecordCreate:
+      properties:
+        book_id:
+          type: string
+          title: Book Id
+        type:
+          type: string
+          enum:
+          - lost
+          - donated
+          - purchased
+          title: Type
+        note:
+          anyOf:
+          - type: string
+            maxLength: 500
+          - type: 'null'
+          title: Note
+      type: object
+      required:
+      - book_id
+      - type
+      title: BookRecordCreate
+    BookRecordOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        book_id:
+          type: string
+          title: Book Id
+        book_title:
+          type: string
+          title: Book Title
+        type:
+          type: string
+          title: Type
+        note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Note
+        logged_by_name:
+          type: string
+          title: Logged By Name
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - book_id
+      - book_title
+      - type
+      - note
+      - logged_by_name
+      - created_at
+      title: BookRecordOut
+    BookReviewsOut:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ReviewOut'
+          type: array
+          title: Items
+        average_rating:
+          type: number
+          title: Average Rating
+        total_reviews:
+          type: integer
+          title: Total Reviews
+        breakdown:
+          items:
+            $ref: '#/components/schemas/RatingBreakdownEntry'
+          type: array
+          title: Breakdown
+      type: object
+      required:
+      - items
+      - average_rating
+      - total_reviews
+      - breakdown
+      title: BookReviewsOut
+    BookUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Title
+        author:
+          anyOf:
+          - type: string
+            maxLength: 150
+            minLength: 1
+          - type: 'null'
+          title: Author
+        category:
+          anyOf:
+          - type: string
+            maxLength: 80
+            minLength: 1
+          - type: 'null'
+          title: Category
+        isbn:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Isbn
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        published_year:
+          anyOf:
+          - type: integer
+            maximum: 2027.0
+            minimum: 1450.0
+          - type: 'null'
+          title: Published Year
+        language:
+          anyOf:
+          - type: string
+            maxLength: 40
+          - type: 'null'
+          title: Language
+        cover_image_url:
+          anyOf:
+          - type: string
+            maxLength: 2048
+          - type: 'null'
+          title: Cover Image Url
+        total_copies:
+          anyOf:
+          - type: integer
+            minimum: 0.0
+          - type: 'null'
+          title: Total Copies
+      type: object
+      title: BookUpdate
+    BudgetCategoryOut:
+      properties:
+        category:
+          $ref: '#/components/schemas/ExpenseCategory'
+        budgeted:
+          type: integer
+          title: Budgeted
+        spent:
+          type: integer
+          title: Spent
+      type: object
+      required:
+      - category
+      - budgeted
+      - spent
+      title: BudgetCategoryOut
+    ChatMessage:
+      properties:
+        role:
+          type: string
+          title: Role
+        content:
+          type: string
+          title: Content
+      type: object
+      required:
+      - role
+      - content
+      title: ChatMessage
+    ChatRequest:
+      properties:
+        message:
+          type: string
+          title: Message
+        history:
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+          type: array
+          title: History
+          default: []
+      type: object
+      required:
+      - message
+      title: ChatRequest
+    ChatResponse:
+      properties:
+        reply:
+          type: string
+          title: Reply
+        source:
+          type: string
+          title: Source
+      type: object
+      required:
+      - reply
+      - source
+      title: ChatResponse
+    CommentCreate:
+      properties:
+        content:
+          type: string
+          maxLength: 1000
+          minLength: 1
+          title: Content
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+      type: object
+      required:
+      - content
+      title: CommentCreate
+    CommentOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        author_id:
+          type: string
+          title: Author Id
+        author_name:
+          type: string
+          title: Author Name
+        author_avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Avatar Url
+        content:
+          type: string
+          title: Content
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        reported:
+          type: boolean
+          title: Reported
+        replies:
+          items:
+            $ref: '#/components/schemas/CommentOut'
+          type: array
+          title: Replies
+      type: object
+      required:
+      - id
+      - author_id
+      - author_name
+      - author_avatar_url
+      - content
+      - created_at
+      - reported
+      title: CommentOut
+    ContactMessageCreate:
+      properties:
+        name:
+          type: string
+          maxLength: 150
+          minLength: 1
+          title: Name
+        email:
+          type: string
+          format: email
+          title: Email
+        phone_number:
+          type: string
+          pattern: ^\+?[\d\s()-]{7,20}$
+          title: Phone Number
+        organization:
+          type: string
+          maxLength: 150
+          minLength: 1
+          title: Organization
+        subject:
+          type: string
+          maxLength: 200
+          minLength: 1
+          title: Subject
+        message:
+          type: string
+          maxLength: 5000
+          minLength: 10
+          title: Message
+      type: object
+      required:
+      - name
+      - email
+      - phone_number
+      - organization
+      - subject
+      - message
+      title: ContactMessageCreate
+    CouponCreate:
+      properties:
+        discount_percent:
+          type: integer
+          maximum: 100.0
+          exclusiveMinimum: 0.0
+          title: Discount Percent
+        max_uses:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Max Uses
+      type: object
+      required:
+      - discount_percent
+      - max_uses
+      title: CouponCreate
+    CouponOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        code:
+          type: string
+          title: Code
+        discount_percent:
+          type: integer
+          title: Discount Percent
+        max_uses:
+          type: integer
+          title: Max Uses
+        uses_count:
+          type: integer
+          title: Uses Count
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - code
+      - discount_percent
+      - max_uses
+      - uses_count
+      - created_at
+      title: CouponOut
+    CouponValidationOut:
+      properties:
+        code:
+          type: string
+          title: Code
+        discount_percent:
+          type: integer
+          title: Discount Percent
+      type: object
+      required:
+      - code
+      - discount_percent
+      title: CouponValidationOut
+    EventCreate:
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        location:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Location
+        date:
+          type: string
+          format: date-time
+          title: Date
+        capacity:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Capacity
+        manager_ids:
+          items:
+            type: string
+          type: array
+          title: Manager Ids
+      type: object
+      required:
+      - title
+      - location
+      - date
+      - capacity
+      title: EventCreate
+    EventListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/EventOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: EventListResponse
+    EventOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        location:
+          type: string
+          title: Location
+        date:
+          type: string
+          format: date-time
+          title: Date
+        capacity:
+          type: integer
+          title: Capacity
+        attendees:
+          type: integer
+          title: Attendees
+        registered:
+          type: boolean
+          title: Registered
+        registrants:
+          items:
+            $ref: '#/components/schemas/RegistrantOut'
+          type: array
+          title: Registrants
+        assigned_managers:
+          items:
+            $ref: '#/components/schemas/RegistrantOut'
+          type: array
+          title: Assigned Managers
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - title
+      - description
+      - location
+      - date
+      - capacity
+      - attendees
+      - registered
+      - registrants
+      - assigned_managers
+      - created_at
+      title: EventOut
+    EventUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        location:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Location
+        date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Date
+        capacity:
+          anyOf:
+          - type: integer
+            exclusiveMinimum: 0.0
+          - type: 'null'
+          title: Capacity
+        manager_ids:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Manager Ids
+      type: object
+      title: EventUpdate
+    ExpenseBreakdownItemOut:
+      properties:
+        category:
+          $ref: '#/components/schemas/ExpenseCategory'
+        amount:
+          type: integer
+          title: Amount
+        percent:
+          type: number
+          title: Percent
+      type: object
+      required:
+      - category
+      - amount
+      - percent
+      title: ExpenseBreakdownItemOut
+    ExpenseBreakdownOut:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ExpenseBreakdownItemOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: ExpenseBreakdownOut
+    ExpenseCategory:
+      type: string
+      enum:
+      - staffSalaries
+      - bookProcurement
+      - utilities
+      - marketing
+      title: ExpenseCategory
+    ExpenseCreate:
+      properties:
+        category:
+          $ref: '#/components/schemas/ExpenseCategory'
+        amount:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount
+      type: object
+      required:
+      - category
+      - amount
+      title: ExpenseCreate
+    ExpenseOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        category:
+          type: string
+          title: Category
+        amount:
+          type: integer
+          title: Amount
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - category
+      - amount
+      - created_at
+      title: ExpenseOut
+    FeeStatusEntryOut:
+      properties:
+        member_id:
+          type: string
+          title: Member Id
+        member_name:
+          type: string
+          title: Member Name
+        amount_due:
+          type: integer
+          title: Amount Due
+        status:
+          type: string
+          title: Status
+        due_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Due Date
+      type: object
+      required:
+      - member_id
+      - member_name
+      - amount_due
+      - status
+      - due_date
+      title: FeeStatusEntryOut
+    ForgotPasswordRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+      type: object
+      required:
+      - email
+      title: ForgotPasswordRequest
+    GoogleLoginRequest:
+      properties:
+        id_token:
+          type: string
+          title: Id Token
+      type: object
+      required:
+      - id_token
+      title: GoogleLoginRequest
+    GuardianChildOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        full_name:
+          type: string
+          title: Full Name
+        email:
+          type: string
+          title: Email
+        currently_reading:
+          items:
+            $ref: '#/components/schemas/ReadingProgressOut'
+          type: array
+          title: Currently Reading
+        completed:
+          items:
+            $ref: '#/components/schemas/ReadingProgressOut'
+          type: array
+          title: Completed
+        outstanding_fine:
+          type: integer
+          title: Outstanding Fine
+        fine_book_title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Fine Book Title
+        fine_due_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Fine Due Date
+        subscription_expires_on:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Subscription Expires On
+      type: object
+      required:
+      - id
+      - full_name
+      - email
+      - currently_reading
+      - completed
+      - outstanding_fine
+      - fine_book_title
+      - fine_due_date
+      - subscription_expires_on
+      title: GuardianChildOut
+    GuardianLinkCreate:
+      properties:
+        guardian_id:
+          type: string
+          title: Guardian Id
+        member_id:
+          type: string
+          title: Member Id
+      type: object
+      required:
+      - guardian_id
+      - member_id
+      title: GuardianLinkCreate
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ITHeadDashboardOut:
+      properties:
+        stats:
+          $ref: '#/components/schemas/ITHeadStatsOut'
+        fee_status:
+          items:
+            $ref: '#/components/schemas/FeeStatusEntryOut'
+          type: array
+          title: Fee Status
+      type: object
+      required:
+      - stats
+      - fee_status
+      title: ITHeadDashboardOut
+    ITHeadStatsOut:
+      properties:
+        active_members:
+          type: integer
+          title: Active Members
+        open_issues:
+          type: integer
+          title: Open Issues
+        pending_permissions:
+          type: integer
+          title: Pending Permissions
+        fees_outstanding:
+          type: integer
+          title: Fees Outstanding
+        late_fines_outstanding:
+          type: integer
+          title: Late Fines Outstanding
+      type: object
+      required:
+      - active_members
+      - open_issues
+      - pending_permissions
+      - fees_outstanding
+      - late_fines_outstanding
+      title: ITHeadStatsOut
+    LeaderboardEntryOut:
+      properties:
+        rank:
+          type: integer
+          title: Rank
+        member_id:
+          type: string
+          title: Member Id
+        full_name:
+          type: string
+          title: Full Name
+        books_completed:
+          type: integer
+          title: Books Completed
+        is_current_user:
+          type: boolean
+          title: Is Current User
+      type: object
+      required:
+      - rank
+      - member_id
+      - full_name
+      - books_completed
+      - is_current_user
+      title: LeaderboardEntryOut
+    LoanCreate:
+      properties:
+        book_id:
+          type: string
+          title: Book Id
+        member_id:
+          type: string
+          title: Member Id
+      type: object
+      required:
+      - book_id
+      - member_id
+      title: LoanCreate
+    LoanOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        book_id:
+          type: string
+          title: Book Id
+        book_title:
+          type: string
+          title: Book Title
+        member_id:
+          type: string
+          title: Member Id
+        member_name:
+          type: string
+          title: Member Name
+        borrowed_at:
+          type: string
+          format: date-time
+          title: Borrowed At
+        due_date:
+          type: string
+          format: date-time
+          title: Due Date
+        returned_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Returned At
+        days_late:
+          type: integer
+          title: Days Late
+        fine_amount:
+          type: integer
+          title: Fine Amount
+        fine_paid:
+          type: boolean
+          title: Fine Paid
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - id
+      - book_id
+      - book_title
+      - member_id
+      - member_name
+      - borrowed_at
+      - due_date
+      - returned_at
+      - days_late
+      - fine_amount
+      - fine_paid
+      - status
+      title: LoanOut
+    LoginRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - email
+      - password
+      title: LoginRequest
+    ManagerBookAvailabilityOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        author:
+          type: string
+          title: Author
+        category:
+          type: string
+          title: Category
+        total_copies:
+          type: integer
+          title: Total Copies
+        available_copies:
+          type: integer
+          title: Available Copies
+        is_available:
+          type: boolean
+          title: Is Available
+        expected_available_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expected Available At
+      type: object
+      required:
+      - id
+      - title
+      - author
+      - category
+      - total_copies
+      - available_copies
+      - is_available
+      - expected_available_at
+      title: ManagerBookAvailabilityOut
+    ManagerBookListOut:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ManagerBookAvailabilityOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        page_size:
+          type: integer
+          title: Page Size
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - page_size
+      title: ManagerBookListOut
+    ManagerDashboardStatsOut:
+      properties:
+        seats_booked_today:
+          type: integer
+          title: Seats Booked Today
+        books_issued_today:
+          type: integer
+          title: Books Issued Today
+        new_registrations_today:
+          type: integer
+          title: New Registrations Today
+        pending_tasks:
+          type: integer
+          title: Pending Tasks
+      type: object
+      required:
+      - seats_booked_today
+      - books_issued_today
+      - new_registrations_today
+      - pending_tasks
+      title: ManagerDashboardStatsOut
+    ManagerGuardianLinkCreate:
+      properties:
+        student_email:
+          type: string
+          format: email
+          title: Student Email
+        guardian_email:
+          type: string
+          format: email
+          title: Guardian Email
+      type: object
+      required:
+      - student_email
+      - guardian_email
+      title: ManagerGuardianLinkCreate
+    ManagerLoanCreate:
+      properties:
+        member_id:
+          type: string
+          title: Member Id
+        book_id:
+          type: string
+          title: Book Id
+        duration_days:
+          type: integer
+          enum:
+          - 3
+          - 5
+          - 7
+          - 10
+          title: Duration Days
+      type: object
+      required:
+      - member_id
+      - book_id
+      - duration_days
+      title: ManagerLoanCreate
+    ManagerReservationDecision:
+      properties:
+        duration_days:
+          type: integer
+          enum:
+          - 3
+          - 5
+          - 7
+          - 10
+          title: Duration Days
+      type: object
+      required:
+      - duration_days
+      title: ManagerReservationDecision
+    ManagerSeatBookingCreate:
+      properties:
+        member_id:
+          type: string
+          title: Member Id
+        seat_label:
+          type: string
+          title: Seat Label
+        date:
+          type: string
+          format: date
+          title: Date
+        hour:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Hour
+      type: object
+      required:
+      - member_id
+      - seat_label
+      - date
+      - hour
+      title: ManagerSeatBookingCreate
+    MemberCreate:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          minLength: 8
+          title: Password
+        full_name:
+          type: string
+          maxLength: 150
+          minLength: 1
+          title: Full Name
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Phone
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        role_name:
+          type: string
+          title: Role Name
+          description: Defaults to 'member'
+          default: member
+      type: object
+      required:
+      - email
+      - password
+      - full_name
+      title: MemberCreate
+    MemberListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/MemberOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        page:
+          type: integer
+          title: Page
+        page_size:
+          type: integer
+          title: Page Size
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - page_size
+      title: MemberListResponse
+    MemberOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        email:
+          type: string
+          title: Email
+        full_name:
+          type: string
+          title: Full Name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        role:
+          $ref: '#/components/schemas/RoleOut'
+        is_active:
+          type: boolean
+          title: Is Active
+        last_login_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Login At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - email
+      - full_name
+      - phone
+      - avatar_url
+      - role
+      - is_active
+      - last_login_at
+      - created_at
+      - updated_at
+      title: MemberOut
+    MemberUpdate:
+      properties:
+        full_name:
+          anyOf:
+          - type: string
+            maxLength: 150
+            minLength: 1
+          - type: 'null'
+          title: Full Name
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Phone
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+        is_active:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Active
+        role_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Role Name
+      type: object
+      title: MemberUpdate
+    MembershipGrowthMonthOut:
+      properties:
+        month:
+          type: string
+          title: Month
+        new_members:
+          type: integer
+          title: New Members
+        total_members:
+          type: integer
+          title: Total Members
+      type: object
+      required:
+      - month
+      - new_members
+      - total_members
+      title: MembershipGrowthMonthOut
+    MembershipGrowthOut:
+      properties:
+        months:
+          items:
+            $ref: '#/components/schemas/MembershipGrowthMonthOut'
+          type: array
+          title: Months
+      type: object
+      required:
+      - months
+      title: MembershipGrowthOut
+    MembershipOut:
+      properties:
+        plan_label:
+          type: string
+          title: Plan Label
+        purchased_at:
+          type: string
+          format: date-time
+          title: Purchased At
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        is_active:
+          type: boolean
+          title: Is Active
+      type: object
+      required:
+      - plan_label
+      - purchased_at
+      - expires_at
+      - is_active
+      title: MembershipOut
+    MonthlyFigureOut:
+      properties:
+        month:
+          type: string
+          title: Month
+        revenue:
+          type: integer
+          title: Revenue
+        expenses:
+          type: integer
+          title: Expenses
+        net_profit:
+          type: integer
+          title: Net Profit
+      type: object
+      required:
+      - month
+      - revenue
+      - expenses
+      - net_profit
+      title: MonthlyFigureOut
+    NotificationOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          type: string
+          title: Type
+        message:
+          type: string
+          title: Message
+        read:
+          type: boolean
+          title: Read
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - type
+      - message
+      - read
+      - created_at
+      title: NotificationOut
+    PaymentCreate:
+      properties:
+        amount:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount
+        label:
+          type: string
+          maxLength: 255
+          minLength: 1
+          title: Label
+        plan_months:
+          anyOf:
+          - type: integer
+            exclusiveMinimum: 0.0
+          - type: 'null'
+          title: Plan Months
+        coupon_code:
+          anyOf:
+          - type: string
+            maxLength: 20
+            minLength: 1
+          - type: 'null'
+          title: Coupon Code
+      type: object
+      required:
+      - amount
+      - label
+      title: PaymentCreate
+    PaymentOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        amount:
+          type: integer
+          title: Amount
+        label:
+          type: string
+          title: Label
+        status:
+          type: string
+          title: Status
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - amount
+      - label
+      - status
+      - created_at
+      title: PaymentOut
+    PendingReservationOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        book_id:
+          type: string
+          title: Book Id
+        book_title:
+          type: string
+          title: Book Title
+        member_id:
+          type: string
+          title: Member Id
+        member_name:
+          type: string
+          title: Member Name
+        member_email:
+          type: string
+          title: Member Email
+        requested_at:
+          type: string
+          format: date-time
+          title: Requested At
+      type: object
+      required:
+      - id
+      - book_id
+      - book_title
+      - member_id
+      - member_name
+      - member_email
+      - requested_at
+      title: PendingReservationOut
+    PermissionRequestCreate:
+      properties:
+        permission:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Permission
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Reason
+      type: object
+      required:
+      - permission
+      - reason
+      title: PermissionRequestCreate
+    PermissionRequestOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        permission:
+          type: string
+          title: Permission
+        reason:
+          type: string
+          title: Reason
+        status:
+          type: string
+          title: Status
+        requested_by_id:
+          type: string
+          title: Requested By Id
+        requested_by_name:
+          type: string
+          title: Requested By Name
+        decided_by_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Decided By Name
+        decided_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Decided At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - permission
+      - reason
+      - status
+      - requested_by_id
+      - requested_by_name
+      - decided_by_name
+      - decided_at
+      - created_at
+      title: PermissionRequestOut
+    PostCreate:
+      properties:
+        book_title:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Book Title
+        content:
+          type: string
+          maxLength: 2000
+          minLength: 1
+          title: Content
+        images:
+          items:
+            type: string
+          type: array
+          maxItems: 4
+          title: Images
+      type: object
+      required:
+      - content
+      title: PostCreate
+    PostOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        author_id:
+          type: string
+          title: Author Id
+        author_name:
+          type: string
+          title: Author Name
+        author_avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Author Avatar Url
+        book_title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Book Title
+        content:
+          type: string
+          title: Content
+        images:
+          items:
+            type: string
+          type: array
+          title: Images
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        like_count:
+          type: integer
+          title: Like Count
+        is_liked:
+          type: boolean
+          title: Is Liked
+        is_saved:
+          type: boolean
+          title: Is Saved
+        is_own:
+          type: boolean
+          title: Is Own
+        reported:
+          type: boolean
+          title: Reported
+        comments:
+          items:
+            $ref: '#/components/schemas/CommentOut'
+          type: array
+          title: Comments
+      type: object
+      required:
+      - id
+      - author_id
+      - author_name
+      - author_avatar_url
+      - book_title
+      - content
+      - images
+      - created_at
+      - like_count
+      - is_liked
+      - is_saved
+      - is_own
+      - reported
+      - comments
+      title: PostOut
+    PricingPlanOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        plan_id:
+          type: string
+          title: Plan Id
+        months:
+          type: integer
+          title: Months
+        price:
+          type: integer
+          title: Price
+        save_percent:
+          type: integer
+          title: Save Percent
+        badge:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Badge
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - plan_id
+      - months
+      - price
+      - save_percent
+      - badge
+      - updated_at
+      title: PricingPlanOut
+    PricingPlanUpdate:
+      properties:
+        price:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Price
+        save_percent:
+          type: integer
+          maximum: 100.0
+          minimum: 0.0
+          title: Save Percent
+      type: object
+      required:
+      - price
+      - save_percent
+      title: PricingPlanUpdate
+    ProfitAndLossOut:
+      properties:
+        months:
+          items:
+            $ref: '#/components/schemas/MonthlyFigureOut'
+          type: array
+          title: Months
+        total_revenue:
+          type: integer
+          title: Total Revenue
+        total_expenses:
+          type: integer
+          title: Total Expenses
+        total_net_profit:
+          type: integer
+          title: Total Net Profit
+      type: object
+      required:
+      - months
+      - total_revenue
+      - total_expenses
+      - total_net_profit
+      title: ProfitAndLossOut
+    RatingBreakdownEntry:
+      properties:
+        stars:
+          type: integer
+          title: Stars
+        percent:
+          type: number
+          title: Percent
+      type: object
+      required:
+      - stars
+      - percent
+      title: RatingBreakdownEntry
+    ReadingGoalOut:
+      properties:
+        yearly_goal:
+          type: integer
+          title: Yearly Goal
+        monthly_goal:
+          type: integer
+          title: Monthly Goal
+        books_completed_this_year:
+          type: integer
+          title: Books Completed This Year
+        books_completed_this_month:
+          type: integer
+          title: Books Completed This Month
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - yearly_goal
+      - monthly_goal
+      - books_completed_this_year
+      - books_completed_this_month
+      - updated_at
+      title: ReadingGoalOut
+    ReadingGoalUpsert:
+      properties:
+        yearly_goal:
+          type: integer
+          maximum: 1000.0
+          exclusiveMinimum: 0.0
+          title: Yearly Goal
+        monthly_goal:
+          type: integer
+          maximum: 1000.0
+          exclusiveMinimum: 0.0
+          title: Monthly Goal
+      type: object
+      required:
+      - yearly_goal
+      - monthly_goal
+      title: ReadingGoalUpsert
+    ReadingProgressOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        book_id:
+          type: string
+          title: Book Id
+        book_title:
+          type: string
+          title: Book Title
+        status:
+          type: string
+          title: Status
+        percent_complete:
+          type: integer
+          title: Percent Complete
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - book_id
+      - book_title
+      - status
+      - percent_complete
+      - updated_at
+      title: ReadingProgressOut
+    ReadingProgressUpsert:
+      properties:
+        book_id:
+          type: string
+          title: Book Id
+        status:
+          type: string
+          enum:
+          - reading
+          - completed
+          title: Status
+          default: reading
+        percent_complete:
+          type: integer
+          maximum: 100.0
+          minimum: 0.0
+          title: Percent Complete
+          default: 0
+      type: object
+      required:
+      - book_id
+      title: ReadingProgressUpsert
+    ReadingStreakOut:
+      properties:
+        current_streak_days:
+          type: integer
+          title: Current Streak Days
+        longest_streak_days:
+          type: integer
+          title: Longest Streak Days
+      type: object
+      required:
+      - current_streak_days
+      - longest_streak_days
+      title: ReadingStreakOut
+    RefreshRequest:
+      properties:
+        refresh_token:
+          type: string
+          title: Refresh Token
+      type: object
+      required:
+      - refresh_token
+      title: RefreshRequest
+    RegisterRequest:
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email
+        password:
+          type: string
+          minLength: 8
+          title: Password
+        full_name:
+          type: string
+          maxLength: 150
+          minLength: 1
+          title: Full Name
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Phone
+      type: object
+      required:
+      - email
+      - password
+      - full_name
+      title: RegisterRequest
+    RegistrantOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        full_name:
+          type: string
+          title: Full Name
+        email:
+          type: string
+          title: Email
+      type: object
+      required:
+      - id
+      - full_name
+      - email
+      title: RegistrantOut
+    ReservationCreate:
+      properties:
+        book_id:
+          type: string
+          title: Book Id
+      type: object
+      required:
+      - book_id
+      title: ReservationCreate
+    ReservationOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        book_id:
+          type: string
+          title: Book Id
+        book_title:
+          type: string
+          title: Book Title
+        status:
+          type: string
+          title: Status
+        due_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Due Date
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        queue_position:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Queue Position
+        eta_days:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Eta Days
+      type: object
+      required:
+      - id
+      - book_id
+      - book_title
+      - status
+      - due_date
+      - created_at
+      title: ReservationOut
+    ResetPasswordRequest:
+      properties:
+        token:
+          type: string
+          title: Token
+        password:
+          type: string
+          minLength: 8
+          title: Password
+      type: object
+      required:
+      - token
+      - password
+      title: ResetPasswordRequest
+    RevenueByPlanItemOut:
+      properties:
+        label:
+          type: string
+          title: Label
+        amount:
+          type: integer
+          title: Amount
+        count:
+          type: integer
+          title: Count
+      type: object
+      required:
+      - label
+      - amount
+      - count
+      title: RevenueByPlanItemOut
+    RevenueByPlanOut:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/RevenueByPlanItemOut'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: RevenueByPlanOut
+    RevenueSourceOut:
+      properties:
+        source:
+          type: string
+          title: Source
+        amount:
+          type: integer
+          title: Amount
+      type: object
+      required:
+      - source
+      - amount
+      title: RevenueSourceOut
+    ReviewCreate:
+      properties:
+        rating:
+          type: integer
+          maximum: 5.0
+          minimum: 1.0
+          title: Rating
+        comment:
+          type: string
+          maxLength: 2000
+          minLength: 1
+          title: Comment
+        images:
+          items:
+            type: string
+          type: array
+          maxItems: 4
+          title: Images
+      type: object
+      required:
+      - rating
+      - comment
+      title: ReviewCreate
+    ReviewOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        book_id:
+          type: string
+          title: Book Id
+        book_title:
+          type: string
+          title: Book Title
+        book_author:
+          type: string
+          title: Book Author
+        reviewer_id:
+          type: string
+          title: Reviewer Id
+        reviewer_name:
+          type: string
+          title: Reviewer Name
+        reviewer_avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reviewer Avatar Url
+        rating:
+          type: integer
+          title: Rating
+        comment:
+          type: string
+          title: Comment
+        images:
+          items:
+            type: string
+          type: array
+          title: Images
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        is_own:
+          type: boolean
+          title: Is Own
+      type: object
+      required:
+      - id
+      - book_id
+      - book_title
+      - book_author
+      - reviewer_id
+      - reviewer_name
+      - reviewer_avatar_url
+      - rating
+      - comment
+      - images
+      - created_at
+      - is_own
+      title: ReviewOut
+    ReviewUpdate:
+      properties:
+        rating:
+          type: integer
+          maximum: 5.0
+          minimum: 1.0
+          title: Rating
+        comment:
+          type: string
+          maxLength: 2000
+          minLength: 1
+          title: Comment
+        images:
+          items:
+            type: string
+          type: array
+          maxItems: 4
+          title: Images
+      type: object
+      required:
+      - rating
+      - comment
+      title: ReviewUpdate
+    RoleOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - id
+      - name
+      title: RoleOut
+    ScheduleOut:
+      properties:
+        date:
+          type: string
+          format: date
+          title: Date
+        hour:
+          type: integer
+          title: Hour
+        seats:
+          items:
+            $ref: '#/components/schemas/SeatSlotOut'
+          type: array
+          title: Seats
+      type: object
+      required:
+      - date
+      - hour
+      - seats
+      title: ScheduleOut
+    SeatAvailabilitySummary:
+      properties:
+        available:
+          type: integer
+          title: Available
+        booked:
+          type: integer
+          title: Booked
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - available
+      - booked
+      - total
+      title: SeatAvailabilitySummary
+    SeatBookingCreate:
+      properties:
+        seat_label:
+          type: string
+          title: Seat Label
+        date:
+          type: string
+          format: date
+          title: Date
+        hour:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Hour
+      type: object
+      required:
+      - seat_label
+      - date
+      - hour
+      title: SeatBookingCreate
+    SeatBookingOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        seat_label:
+          type: string
+          title: Seat Label
+        date:
+          type: string
+          format: date
+          title: Date
+        hour:
+          type: integer
+          title: Hour
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - seat_label
+      - date
+      - hour
+      - created_at
+      title: SeatBookingOut
+    SeatNotifyCreate:
+      properties:
+        seat_label:
+          type: string
+          title: Seat Label
+        date:
+          type: string
+          format: date
+          title: Date
+        hour:
+          type: integer
+          maximum: 23.0
+          minimum: 0.0
+          title: Hour
+      type: object
+      required:
+      - seat_label
+      - date
+      - hour
+      title: SeatNotifyCreate
+    SeatOccupancySlotOut:
+      properties:
+        hour:
+          type: integer
+          title: Hour
+        percent_filled:
+          type: integer
+          title: Percent Filled
+      type: object
+      required:
+      - hour
+      - percent_filled
+      title: SeatOccupancySlotOut
+    SeatSlotOut:
+      properties:
+        seat_label:
+          type: string
+          title: Seat Label
+        status:
+          type: string
+          title: Status
+        booking_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Booking Id
+      type: object
+      required:
+      - seat_label
+      - status
+      title: SeatSlotOut
+    SeatStatusOut:
+      properties:
+        available:
+          type: integer
+          title: Available
+        booked:
+          type: integer
+          title: Booked
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - available
+      - booked
+      - total
+      title: SeatStatusOut
+    SupportTicketCreate:
+      properties:
+        category:
+          $ref: '#/components/schemas/TicketCategory'
+        description:
+          type: string
+          maxLength: 500
+          minLength: 10
+          title: Description
+      type: object
+      required:
+      - category
+      - description
+      title: SupportTicketCreate
+    SupportTicketOut:
+      properties:
+        id:
+          type: string
+          title: Id
+        category:
+          type: string
+          title: Category
+        description:
+          type: string
+          title: Description
+        status:
+          type: string
+          title: Status
+        raised_by_id:
+          type: string
+          title: Raised By Id
+        raised_by_name:
+          type: string
+          title: Raised By Name
+        raised_by_role:
+          type: string
+          title: Raised By Role
+        resolution_note:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resolution Note
+        resolved_by_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resolved By Name
+        resolved_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Resolved At
+        closed_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Closed At
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - category
+      - description
+      - status
+      - raised_by_id
+      - raised_by_name
+      - raised_by_role
+      - resolution_note
+      - resolved_by_name
+      - resolved_at
+      - closed_at
+      - created_at
+      - updated_at
+      title: SupportTicketOut
+    SupportTicketResolve:
+      properties:
+        resolution_note:
+          type: string
+          maxLength: 1000
+          minLength: 1
+          title: Resolution Note
+      type: object
+      required:
+      - resolution_note
+      title: SupportTicketResolve
+    TicketCategory:
+      type: string
+      enum:
+      - book_reservation
+      - payment
+      - seat_booking
+      - harassment
+      - offline_library
+      - attendance
+      - other
+      title: TicketCategory
+    TokenResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        refresh_token:
+          type: string
+          title: Refresh Token
+        token_type:
+          type: string
+          title: Token Type
+          default: bearer
+        user:
+          $ref: '#/components/schemas/MemberOut'
+        is_new_user:
+          type: boolean
+          title: Is New User
+          default: false
+      type: object
+      required:
+      - access_token
+      - refresh_token
+      - user
+      title: TokenResponse
+    TranslateBatchRequest:
+      properties:
+        texts:
+          items:
+            type: string
+          type: array
+          maxItems: 2000
+          minItems: 1
+          title: Texts
+        target_lang:
+          type: string
+          maxLength: 10
+          minLength: 2
+          title: Target Lang
+        source_lang:
+          type: string
+          title: Source Lang
+          default: auto
+      type: object
+      required:
+      - texts
+      - target_lang
+      title: TranslateBatchRequest
+    TranslateBatchResponse:
+      properties:
+        translated:
+          items:
+            type: string
+          type: array
+          title: Translated
+      type: object
+      required:
+      - translated
+      title: TranslateBatchResponse
+    TranslateRequest:
+      properties:
+        text:
+          type: string
+          maxLength: 5000
+          minLength: 1
+          title: Text
+        target_lang:
+          type: string
+          maxLength: 10
+          minLength: 2
+          title: Target Lang
+        source_lang:
+          type: string
+          title: Source Lang
+          default: auto
+      type: object
+      required:
+      - text
+      - target_lang
+      title: TranslateRequest
+    TranslateResponse:
+      properties:
+        translated:
+          type: string
+          title: Translated
+      type: object
+      required:
+      - translated
+      title: TranslateResponse
+    TrendOut:
+      properties:
+        direction:
+          type: string
+          title: Direction
+        percent:
+          type: integer
+          title: Percent
+      type: object
+      required:
+      - direction
+      - percent
+      title: TrendOut
+    UpdateProfileRequest:
+      properties:
+        full_name:
+          anyOf:
+          - type: string
+            maxLength: 150
+            minLength: 1
+          - type: 'null'
+          title: Full Name
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          title: Phone
+        password:
+          anyOf:
+          - type: string
+            minLength: 8
+          - type: 'null'
+          title: Password
+        avatar_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Avatar Url
+      type: object
+      title: UpdateProfileRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    WaiveFineRequest:
+      properties:
+        member_id:
+          type: string
+          title: Member Id
+        amount:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Amount
+        reason:
+          type: string
+          maxLength: 500
+          minLength: 1
+          title: Reason
+      type: object
+      required:
+      - member_id
+      - amount
+      - reason
+      title: WaiveFineRequest
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

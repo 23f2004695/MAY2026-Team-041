@@ -304,10 +304,18 @@ export interface AdminMemberListResponse {
   page_size: number;
 }
 
+export type AdminMemberStatusFilter = 'active' | 'inactive';
+export type AdminMemberSortBy = 'name' | 'joined' | 'role';
+export type SortDirection = 'asc' | 'desc';
+
 export interface AdminMemberQuery {
   search?: string;
   page?: number;
   page_size?: number;
+  role?: Role;
+  status?: AdminMemberStatusFilter;
+  sort_by?: AdminMemberSortBy;
+  sort_dir?: SortDirection;
 }
 
 export interface AdminPaymentRecord {
@@ -1223,8 +1231,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const params = new URLSearchParams({
       page: String(query.page ?? 1),
       page_size: String(query.page_size ?? 20),
+      sort_by: query.sort_by ?? 'joined',
+      sort_dir: query.sort_dir ?? 'desc',
     });
     if (query.search?.trim()) params.set('search', query.search.trim());
+    if (query.role) params.set('role', query.role);
+    if (query.status) params.set('status', query.status);
     return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, stateRef.current.token);
   }
 

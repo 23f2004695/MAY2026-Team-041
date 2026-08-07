@@ -273,8 +273,7 @@ async def get_membership_growth() -> MembershipGrowthOut:
 
 async def send_announcement(admin_id: str, payload: AnnouncementCreate) -> AnnouncementOut:
     member_ids = await repository.list_member_ids()
-    for member_id in member_ids:
-        await notifications_service.create_notification(member_id, "announcement", payload.message)
+    await notifications_service.create_notifications(member_ids, "announcement", payload.message)
 
     await audit_log_service.record(
         actor_id=admin_id,
@@ -284,8 +283,25 @@ async def send_announcement(admin_id: str, payload: AnnouncementCreate) -> Annou
     return AnnouncementOut(recipient_count=len(member_ids))
 
 
-async def list_members(*, search: str | None, page: int, page_size: int) -> AdminMemberListOut:
-    users, total = await repository.list_members(search=search, page=page, page_size=page_size)
+async def list_members(
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    role: str | None = None,
+    status: str | None = None,
+    sort_by: str = "joined",
+    sort_dir: str = "desc",
+) -> AdminMemberListOut:
+    users, total = await repository.list_members(
+        search=search,
+        page=page,
+        page_size=page_size,
+        role=role,
+        status=status,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+    )
     member_ids = [user.id for user in users]
 
     latest_payments = await repository.list_latest_payments(member_ids)

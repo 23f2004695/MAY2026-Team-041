@@ -11,12 +11,17 @@ POST_INCLUDE = {
     "comments": {"include": {"author": True}, "order_by": {"createdAt": "asc"}},
 }
 
+# The community feed grows forever and each row pulls in author/likes/saves/comments —
+# the most expensive uncapped list in the app before this cap.
+LIST_LIMIT = 200
+
 
 async def list_posts() -> list[CommunityPost]:
     return await prisma.communitypost.find_many(
         where={"deletedAt": None},
         include=POST_INCLUDE,
         order={"createdAt": "desc"},
+        take=LIST_LIMIT,
     )
 
 

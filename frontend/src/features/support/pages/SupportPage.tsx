@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { PageHeader } from '@/components/common';
-import { Button } from '@/components/ui';
+import { PageHeader, Pagination, TableToolbar } from '@/components/common';
+import { Button, Select } from '@/components/ui';
+import { usePagination, useSortedItems } from '@/hooks';
 import { getErrorMessage } from '@/lib/api';
 import { useAuth, type SupportTicketRecord, type SupportTicketStatus } from '@/providers/AuthProvider';
 
@@ -13,18 +14,39 @@ import { RaiseTicketModal } from '../components/RaiseTicketModal';
 import { StaffTicketQueue } from '../components/StaffTicketQueue';
 
 const STAFF_FILTERS: (SupportTicketStatus | 'all')[] = ['all', 'open', 'resolved', 'closed'];
+const TICKETS_PAGE_SIZE = 10;
+type TicketSort = 'newest' | 'oldest';
 
 function RaiserView({ role }: { role: 'member' | 'guardian' }) {
   const { t } = useTranslation();
   const { getMySupportTickets, confirmSupportTicket, reopenSupportTicket } = useAuth();
   const [tickets, setTickets] = useState<SupportTicketRecord[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<SupportTicketStatus | 'all'>('all');
+  const [sort, setSort] = useState<'newest' | 'oldest'>('newest');
 
   function refresh() {
     getMySupportTickets().then(setTickets).catch(() => setTickets([]));
   }
 
   useEffect(refresh, [getMySupportTickets]);
+
+  const filteredTickets = useMemo(
+    () =>
+      statusFilter === 'all'
+        ? tickets
+        : tickets.filter((ticket) => ticket.status === statusFilter),
+    [statusFilter, tickets],
+  );
+
+  const sortedTickets = useSortedItems(filteredTickets, {
+    compare: (a, b) => {
+      const delta = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      return sort === 'newest' ? -delta : delta;
+    },
+  });
+
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(sortedTickets, 5);
 
   async function handleConfirm(ticketId: string) {
     try {
@@ -46,6 +68,12 @@ function RaiserView({ role }: { role: 'member' | 'guardian' }) {
     }
   }
 
+  function resetFilters() {
+    setStatusFilter('all');
+    setSort('newest');
+    setPage(1);
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -54,9 +82,55 @@ function RaiserView({ role }: { role: 'member' | 'guardian' }) {
         actions={<Button onClick={() => setModalOpen(true)}>{t('support.raiseButton')}</Button>}
       />
 
+      <TableToolbar
+        filters={[
+          {
+            label: 'Status',
+            value: statusFilter,
+            onChange: (value) => {
+              setStatusFilter(value as SupportTicketStatus | 'all');
+              setPage(1);
+            },
+            options: [
+              { value: 'all', label: 'All' },
+              { value: 'open', label: 'Open' },
+              { value: 'resolved', label: 'Resolved' },
+              { value: 'closed', label: 'Closed' },
+            ],
+          },
+        ]}
+        sort={{
+          label: 'Sort',
+          value: sort,
+          onChange: (value) => {
+            setSort(value as 'newest' | 'oldest');
+            setPage(1);
+          },
+          options: [
+            { value: 'newest', label: 'Newest' },
+            { value: 'oldest', label: 'Oldest' },
+          ],
+        }}
+        onReset={resetFilters}
+        resetLabel="Reset"
+      />
+
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-foreground">{t('support.history.title')}</h2>
-        <MyTicketsList tickets={tickets} onConfirm={handleConfirm} onReopen={handleReopen} />
+        {filteredTickets.length === 0 ? (
+          <div className="text-sm text-muted-foreground">No matching tickets found.</div>
+        ) : (
+          <>
+            <MyTicketsList tickets={paginatedItems} onConfirm={handleConfirm} onReopen={handleReopen} />
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={5}
+              onPageChange={setPage}
+            />
+          </>
+        )}
       </div>
 
       <RaiseTicketModal
@@ -77,6 +151,7 @@ function StaffView() {
   const { getStaffSupportTickets, resolveSupportTicket } = useAuth();
   const [tickets, setTickets] = useState<SupportTicketRecord[]>([]);
   const [filter, setFilter] = useState<(typeof STAFF_FILTERS)[number]>('open');
+  const [sort, setSort] = useState<TicketSort>('newest');
 
   function refresh() {
     getStaffSupportTickets(filter === 'all' ? undefined : filter)
@@ -85,6 +160,18 @@ function StaffView() {
   }
 
   useEffect(refresh, [getStaffSupportTickets, filter]);
+
+  const sortedTickets = useSortedItems(tickets, {
+    compare: (a, b) => {
+      const diff = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      return sort === 'newest' ? -diff : diff;
+    },
+  });
+
+  const { page, setPage, totalPages, paginatedItems: pagedTickets, totalItems } = usePagination(
+    sortedTickets,
+    TICKETS_PAGE_SIZE,
+  );
 
   async function handleResolve(ticketId: string, resolutionNote: string) {
     try {
@@ -100,20 +187,49 @@ function StaffView() {
     <div className="flex flex-col gap-6">
       <PageHeader title={t('support.staff.title')} description={t('support.staff.description')} />
 
-      <div className="flex gap-2" role="group" aria-label={t('support.staff.filterAriaLabel')}>
-        {STAFF_FILTERS.map((value) => (
-          <Button
-            key={value}
-            size="sm"
-            variant={filter === value ? 'primary' : 'outline'}
-            onClick={() => setFilter(value)}
-          >
-            {t(`support.staff.filters.${value}`)}
-          </Button>
-        ))}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex gap-2" role="group" aria-label={t('support.staff.filterAriaLabel')}>
+          {STAFF_FILTERS.map((value) => (
+            <Button
+              key={value}
+              size="sm"
+              variant={filter === value ? 'primary' : 'outline'}
+              onClick={() => {
+                setFilter(value);
+                setPage(1);
+              }}
+            >
+              {t(`support.staff.filters.${value}`)}
+            </Button>
+          ))}
+        </div>
+
+        <Select
+          label={t('support.staff.sort.label')}
+          value={sort}
+          onChange={(event) => {
+            setSort(event.target.value as TicketSort);
+            setPage(1);
+          }}
+          className="w-full sm:w-44"
+          options={[
+            { value: 'newest', label: t('support.staff.sort.newest') },
+            { value: 'oldest', label: t('support.staff.sort.oldest') },
+          ]}
+        />
       </div>
 
-      <StaffTicketQueue tickets={tickets} onResolve={handleResolve} />
+      <StaffTicketQueue tickets={pagedTickets} onResolve={handleResolve} />
+
+      {sortedTickets.length > 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={TICKETS_PAGE_SIZE}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }
