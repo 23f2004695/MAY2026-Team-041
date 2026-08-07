@@ -174,8 +174,13 @@ async def test_pay_child_fines_clears_overdue_loan_and_pays(client):
     book = await prisma.book.create(
         data={"title": "Guardian Test Book Fines", "author": "A", "category": "Fiction"})
     loan = await prisma.loan.create(
-        data={"bookId": book.id,"memberId": child.id,"dueDate": datetime.now(UTC) - timedelta(days=3),
-            "createdById": admin.id,})
+        data={
+            "bookId": book.id,
+            "memberId": child.id,
+            "dueDate": datetime.now(UTC) - timedelta(days=3),
+            "createdById": admin.id,
+        }
+    )
     guardian_token = await _login(client, guardian)
     children_before = await client.get(
         "/api/v1/guardian/children", headers={"Authorization": f"Bearer {guardian_token}"})

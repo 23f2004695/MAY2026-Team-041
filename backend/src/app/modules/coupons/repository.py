@@ -2,7 +2,6 @@ from prisma.models import Coupon
 
 from app.db.prisma import prisma
 
-
 LIST_LIMIT = 200
 
 
