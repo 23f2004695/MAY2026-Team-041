@@ -106,3 +106,9 @@ async def mark_fine_paid(loan_id: str, *, client: Prisma | None = None) -> Loan:
     return await db.loan.update(
         where={"id": loan_id}, data={"finePaid": True}, include=INCLUDE
     )
+
+
+async def mark_fines_paid(loan_ids: list[str], *, client: Prisma | None = None) -> int:
+    db = client or prisma
+    result = await db.loan.update_many(where={"id": {"in": loan_ids}}, data={"finePaid": True})
+    return result

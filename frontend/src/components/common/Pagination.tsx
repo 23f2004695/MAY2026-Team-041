@@ -38,57 +38,72 @@ export function Pagination({
   currentPage,
   totalPages,
   onPageChange,
+  totalItems,
+  pageSize,
   className,
 }: CommonPaginationProps) {
   if (totalPages <= 1) return null;
 
+  const rangeStart = totalItems && pageSize ? (currentPage - 1) * pageSize + 1 : null;
+  const rangeEnd = totalItems && pageSize ? Math.min(currentPage * pageSize, totalItems) : null;
+
   return (
     <nav
       aria-label="Pagination"
-      className={cn('flex items-center justify-center gap-2', className)}
-    >
-      <button
-        type="button"
-        aria-label="Previous page"
-        disabled={currentPage <= 1}
-        onClick={() => onPageChange(currentPage - 1)}
-        className="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
-      >
-        <ChevronLeft className="size-4" />
-      </button>
-
-      {getPageNumbers(currentPage, totalPages).map((page, index) =>
-        page === 'ellipsis' ? (
-          <span key={`ellipsis-${index}`} className="px-1 text-sm text-muted-foreground">
-            …
-          </span>
-        ) : (
-          <button
-            key={page}
-            type="button"
-            aria-current={page === currentPage ? 'page' : undefined}
-            onClick={() => onPageChange(page)}
-            className={cn(
-              'inline-flex size-9 items-center justify-center rounded-xl text-sm font-medium transition-colors',
-              page === currentPage
-                ? 'bg-primary text-primary-foreground shadow-sm'
-                : 'text-foreground hover:bg-muted/70',
-            )}
-          >
-            {page}
-          </button>
-        ),
+      className={cn(
+        'flex flex-col items-center justify-center gap-2 sm:flex-row sm:justify-between',
+        className,
       )}
+    >
+      {rangeStart !== null && rangeEnd !== null && (
+        <span className="text-xs text-muted-foreground">
+          Showing {rangeStart}–{rangeEnd} of {totalItems}
+        </span>
+      )}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          aria-label="Previous page"
+          disabled={currentPage <= 1}
+          onClick={() => onPageChange(currentPage - 1)}
+          className="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+        >
+          <ChevronLeft className="size-4" />
+        </button>
 
-      <button
-        type="button"
-        aria-label="Next page"
-        disabled={currentPage >= totalPages}
-        onClick={() => onPageChange(currentPage + 1)}
-        className="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
-      >
-        <ChevronRight className="size-4" />
-      </button>
+        {getPageNumbers(currentPage, totalPages).map((page, index) =>
+          page === 'ellipsis' ? (
+            <span key={`ellipsis-${index}`} className="px-1 text-sm text-muted-foreground">
+              …
+            </span>
+          ) : (
+            <button
+              key={page}
+              type="button"
+              aria-current={page === currentPage ? 'page' : undefined}
+              onClick={() => onPageChange(page)}
+              className={cn(
+                'inline-flex size-9 items-center justify-center rounded-xl text-sm font-medium transition-colors',
+                page === currentPage
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-foreground hover:bg-muted/70',
+              )}
+            >
+              {page}
+            </button>
+          ),
+        )}
+
+        <button
+          type="button"
+          aria-label="Next page"
+          disabled={currentPage >= totalPages}
+          onClick={() => onPageChange(currentPage + 1)}
+          className="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+        >
+          <ChevronRight className="size-4" />
+        </button>
+      </div>
     </nav>
   );
 }

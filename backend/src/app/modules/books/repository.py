@@ -29,7 +29,7 @@ async def find_by_id(book_id: str) -> Book | None:
 async def list_by_ids(book_ids: list[str]) -> list[Book]:
     if not book_ids:
         return []
-    return await prisma.book.find_many(where={"id": {"in": book_ids}})
+    return await prisma.book.find_many(where={"id": {"in": book_ids}, "deletedAt": None})
 
 
 async def list_ratings_for_books(book_ids: list[str]) -> list[Review]:

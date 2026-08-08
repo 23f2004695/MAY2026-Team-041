@@ -19,6 +19,24 @@ import { useLocalStorageState } from '@/lib/useLocalStorageState';
 // keep working — the types now live in features/reviews/types.ts.
 export type { BookReviews, RatingBreakdownEntry, Review, ReviewPayload };
 
+// The "simple list" views (payments, community feed, loan history, audit log) want every
+// row, not a UI page at a time — but the backend only ever returns one page. This walks
+// pages until they're exhausted instead of requesting a single large page and silently
+// dropping anything past it.
+async function fetchAllPages<T>(path: string, token: string, pageSize = 200): Promise<T[]> {
+  const items: T[] = [];
+  const separator = path.includes('?') ? '&' : '?';
+  for (let page = 1; ; page += 1) {
+    const res = await apiGet<{ items: T[]; total: number }>(
+      `${path}${separator}page=${page}&page_size=${pageSize}`,
+      token,
+    );
+    items.push(...res.items);
+    if (items.length >= res.total || res.items.length < pageSize) break;
+  }
+  return items;
+}
+
 export type Role = 'admin' | 'member' | 'manager' | 'it-head' | 'guardian' | 'librarian';
 
 export interface RegisterPayload {
@@ -974,13 +992,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getMyPayments(): Promise<PaymentRecord[]> {
     if (!stateRef.current.token) return [];
-    // The backend now paginates this — page_size mirrors its old hard cap so this
-    // still returns "everything" for the simple list view that's the only consumer.
-    const res = await apiGet<{ items: PaymentRecord[] }>(
-      '/payments/me?page_size=200',
-      stateRef.current.token,
-    );
-    return res.items;
+    return fetchAllPages<PaymentRecord>('/payments/me', stateRef.current.token);
   }
 
   async function getGuardianChildren(): Promise<GuardianChild[]> {
@@ -1065,13 +1077,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getCommunityPosts(): Promise<CommunityPost[]> {
     if (!stateRef.current.token) return [];
-    // The backend now paginates this — page_size mirrors its old hard cap so this
-    // still returns "everything" for the simple feed view that's the only consumer.
-    const res = await apiGet<{ items: CommunityPost[] }>(
-      '/community/posts?page_size=200',
-      stateRef.current.token,
-    );
-    return res.items;
+    return fetchAllPages<CommunityPost>('/community/posts', stateRef.current.token);
   }
 
   async function createCommunityPost(payload: CommunityPostPayload): Promise<CommunityPost> {
@@ -1215,13 +1221,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getAuditLog(): Promise<AuditLogEntry[]> {
     if (!stateRef.current.token) return [];
-    // page_size matches the old hardcoded limit=20 — unchanged behavior for the
-    // simple "recent activity" view that's the only consumer today.
-    const res = await apiGet<{ items: AuditLogEntry[] }>(
-      '/admin/audit-log?page_size=20',
-      stateRef.current.token,
-    );
-    return res.items;
+    return fetchAllPages<AuditLogEntry>('/admin/audit-log', stateRef.current.token);
   }
 
   async function getRevenueByPlanReport(): Promise<RevenueByPlanReport> {
@@ -1382,13 +1382,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getLoanHistory(): Promise<LoanRecord[]> {
     if (!stateRef.current.token) return [];
-    // The backend now paginates this — page_size mirrors its old hard cap so this
-    // still returns "everything" for the simple list view that's the only consumer.
-    const res = await apiGet<{ items: LoanRecord[] }>(
-      '/loans/history?page_size=200',
-      stateRef.current.token,
-    );
-    return res.items;
+    return fetchAllPages<LoanRecord>('/loans/history', stateRef.current.token);
   }
 
   async function getMyLoans(): Promise<LoanRecord[]> {
@@ -1553,12 +1547,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function refreshAccessToken(): Promise<string | null> {
-    if (!state.refreshToken) return null;
+    if (!stateRef.current.refreshToken) return null;
     try {
       const data = await apiPost<TokenResponse>('/auth/refresh', {
-        refresh_token: state.refreshToken,
+        refresh_token: stateRef.current.refreshToken,
       });
-      applySession(data, state.needsProfileCompletion, state.postAuthRedirect);
+      applySession(data, stateRef.current.needsProfileCompletion, stateRef.current.postAuthRedirect);
       return data.access_token;
     } catch {
       setState(SIGNED_OUT);
@@ -1566,13 +1560,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Re-registers whenever the tokens change so the handler api.ts calls always closes
-  // over the current refreshToken, not a stale one from an earlier render.
+  // Registered once — refreshAccessToken reads stateRef.current (like every function
+  // above), so it never goes stale and doesn't need to re-register on state changes.
   useEffect(() => {
     registerRefreshHandler(refreshAccessToken);
     return () => registerRefreshHandler(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.token, state.refreshToken]);
+  }, []);
 
   function logout() {
     if (stateRef.current.token) {
