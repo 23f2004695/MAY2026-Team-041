@@ -609,7 +609,11 @@ async def test_delete_account_blocked_by_outstanding_loan(client):
     access_token = register_response.json()["access_token"]
     user = await prisma.user.find_unique(where={"email": email})
     book = await prisma.book.create(
-        data={"title": f"Auth Test Book {uuid.uuid4().hex[:8]}", "author": "A", "category": "Fiction"}
+        data={
+            "title": f"Auth Test Book {uuid.uuid4().hex[:8]}",
+            "author": "A",
+            "category": "Fiction",
+        }
     )
     loan = await prisma.loan.create(
         data={

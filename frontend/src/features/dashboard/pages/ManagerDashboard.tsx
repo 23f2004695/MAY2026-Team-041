@@ -7,7 +7,7 @@ import {
   ReceiptText,
   UserPlus,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
@@ -15,13 +15,13 @@ import { CreateEventModal } from '@/features/events/components/CreateEventModal'
 import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
   useAuth,
-  type AppNotificationRecord,
   type LoanDurationDays,
   type LoanRecord,
   type ManagerDashboardStats,
   type PendingReservationRequest,
 } from '@/providers/AuthProvider';
 
+import { useNotificationsQuery } from '../../notifications/hooks/useNotificationsQuery';
 import { ActiveLoans } from '../components/ActiveLoans';
 import { AddGuardianCard } from '../components/AddGuardianCard';
 import { BookSeatForMemberModal } from '../components/BookSeatForMemberModal';
@@ -54,13 +54,18 @@ export function ManagerDashboard() {
     getActiveLoans,
     returnLoan,
     sendFineReminder,
-    getMyNotifications,
     markNotificationRead,
   } = useAuth();
+  // Shared with the notification bell/panel — the pending-payment queue is just a
+  // filtered view of the same list, so it reuses that cache instead of refetching.
+  const { notifications, refetch: refetchNotifications } = useNotificationsQuery();
+  const pendingPayments = useMemo(
+    () => notifications.filter((n) => n.type === 'payment-pending' && !n.read),
+    [notifications],
+  );
   const [stats, setStats] = useState<ManagerDashboardStats | null>(null);
   const [pendingReservations, setPendingReservations] = useState<PendingReservationRequest[]>([]);
   const [activeLoans, setActiveLoans] = useState<LoanRecord[]>([]);
-  const [pendingPayments, setPendingPayments] = useState<AppNotificationRecord[]>([]);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isBookSeatOpen, setIsBookSeatOpen] = useState(false);
   const [isIssueBookOpen, setIsIssueBookOpen] = useState(false);
@@ -87,11 +92,7 @@ export function ManagerDashboard() {
   }
 
   function refreshPendingPayments() {
-    getMyNotifications()
-      .then((notifications) =>
-        setPendingPayments(notifications.filter((n) => n.type === 'payment-pending' && !n.read)),
-      )
-      .catch(() => setPendingPayments([]));
+    refetchNotifications();
   }
 
   // refreshStats/refreshPendingReservations/refreshActiveLoans/refreshPendingPayments above
@@ -139,22 +140,6 @@ export function ManagerDashboard() {
       cancelled = true;
     };
   }, [getActiveLoans]);
-
-  useEffect(() => {
-    let cancelled = false;
-    getMyNotifications()
-      .then((notifications) => {
-        if (!cancelled) {
-          setPendingPayments(notifications.filter((n) => n.type === 'payment-pending' && !n.read));
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setPendingPayments([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [getMyNotifications]);
 
   async function handleMarkPaymentPaid(notificationId: string) {
     await markNotificationRead(notificationId);
@@ -231,7 +216,11 @@ export function ManagerDashboard() {
       <ActiveLoans loans={activeLoans} onReturn={handleReturnLoan} onRemind={sendFineReminder} />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <WalkInAssistance requests={NO_WALK_INS} />
+        <WalkInAssistance
+          requests={NO_WALK_INS}
+          onBookSeat={() => setIsBookSeatOpen(true)}
+          onIssueBook={() => setIsIssueBookOpen(true)}
+        />
         <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
       </div>
 

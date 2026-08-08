@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Pagination, TableToolbar } from '@/components/common';
+import { Pagination } from '@/components/common';
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { usePagination } from '@/hooks';
 import { comingSoonToast } from '@/lib/comingSoonToast';
@@ -9,33 +8,19 @@ import type { WalkInRequest } from '@/mocks/manager';
 
 export interface WalkInAssistanceProps {
   requests: WalkInRequest[];
+  onBookSeat?: () => void;
+  onIssueBook?: () => void;
 }
 
 // Front-desk queue: members who show up without an online seat/book
 // reservation. The manager takes their email and completes it for them.
-export function WalkInAssistance({ requests }: WalkInAssistanceProps) {
+export function WalkInAssistance({ requests, onBookSeat, onIssueBook }: WalkInAssistanceProps) {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState('all');
-  const [sortValue, setSortValue] = useState('newest');
+  const sortedRequests = [...requests].sort(
+    (a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime(),
+  );
 
-  const filteredRequests = useMemo(() => {
-    const items = [...requests].filter((request) => {
-      if (filter === 'all') return true;
-      return request.type === filter;
-    });
-
-    switch (sortValue) {
-      case 'name':
-        return items.sort((a, b) => a.memberName.localeCompare(b.memberName));
-      case 'oldest':
-        return items.sort((a, b) => new Date(a.requestedAt).getTime() - new Date(b.requestedAt).getTime());
-      case 'newest':
-      default:
-        return items.sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
-    }
-  }, [requests, filter, sortValue]);
-
-  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(filteredRequests, 5);
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(sortedRequests, 5);
 
   function handleAction(request: WalkInRequest) {
     const toastKey = request.type === 'seat' ? 'bookSeatToast' : 'issueBookToast';
@@ -48,46 +33,24 @@ export function WalkInAssistance({ requests }: WalkInAssistanceProps) {
         <CardTitle>{t('managerDashboard.walkIns.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <TableToolbar
-          filters={[
-            {
-              label: 'Type',
-              value: filter,
-              onChange: (value) => {
-                setFilter(value);
-                setPage(1);
-              },
-              options: [
-                { value: 'all', label: 'All' },
-                { value: 'seat', label: 'Seat' },
-                { value: 'book', label: 'Book' },
-              ],
-            },
-          ]}
-          sort={{
-            label: 'Sort',
-            value: sortValue,
-            onChange: (value) => {
-              setSortValue(value);
-              setPage(1);
-            },
-            options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
-              { value: 'name', label: 'Member Name' },
-            ],
-          }}
-          onReset={() => {
-            setFilter('all');
-            setSortValue('newest');
-            setPage(1);
-          }}
-          resetLabel={t('common.actions.reset')}
-        />
-        {filteredRequests.length === 0 ? (
+        {sortedRequests.length === 0 ? (
           <EmptyState
             title={t('managerDashboard.walkIns.emptyTitle')}
             description={t('managerDashboard.walkIns.emptyDescription')}
+            action={
+              onBookSeat && (
+                <Button size="sm" onClick={onBookSeat}>
+                  {t('managerDashboard.walkIns.bookSeat')}
+                </Button>
+              )
+            }
+            secondaryAction={
+              onIssueBook && (
+                <Button size="sm" variant="outline" onClick={onIssueBook}>
+                  {t('managerDashboard.walkIns.issueBook')}
+                </Button>
+              )
+            }
           />
         ) : (
           <>

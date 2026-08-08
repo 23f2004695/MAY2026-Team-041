@@ -9,6 +9,10 @@ INCLUDE = {
     "resolvedBy": {"include": {"role": True}},
 }
 
+# list_all() defaults to every ticket ever raised, resolved or not — a permanent
+# history, unlike billing/permission requests' self-limiting "pending only" queues.
+LIST_LIMIT = 200
+
 
 async def create(*, raised_by_id: str, category: str, description: str) -> SupportTicket:
     return await prisma.supportticket.create(
@@ -23,7 +27,10 @@ async def find_by_id(ticket_id: str) -> SupportTicket | None:
 
 async def list_for_raiser(raised_by_id: str) -> list[SupportTicket]:
     return await prisma.supportticket.find_many(
-        where={"raisedById": raised_by_id}, include=INCLUDE, order={"createdAt": "desc"}
+        where={"raisedById": raised_by_id},
+        include=INCLUDE,
+        order={"createdAt": "desc"},
+        take=LIST_LIMIT,
     )
 
 
@@ -32,7 +39,7 @@ async def list_all(*, status: str | None) -> list[SupportTicket]:
     if status is not None:
         where["status"] = status
     return await prisma.supportticket.find_many(
-        where=where, include=INCLUDE, order={"createdAt": "desc"}
+        where=where, include=INCLUDE, order={"createdAt": "desc"}, take=LIST_LIMIT
     )
 
 

@@ -6,10 +6,14 @@ from app.db.prisma import prisma
 
 INCLUDE = {"member": True, "createdBy": True}
 
+# Self-limiting in practice — approved/rejected requests leave this filter — but capped
+# anyway rather than trusting that a growing backlog never outpaces it.
+LIST_LIMIT = 200
+
 
 async def list_pending() -> list[BillingRequest]:
     return await prisma.billingrequest.find_many(
-        where={"status": "pending"}, include=INCLUDE, order={"createdAt": "asc"}
+        where={"status": "pending"}, include=INCLUDE, order={"createdAt": "asc"}, take=LIST_LIMIT
     )
 
 

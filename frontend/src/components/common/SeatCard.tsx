@@ -1,4 +1,4 @@
-import { Armchair } from 'lucide-react';
+import { Armchair, Clock, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/cn';
@@ -19,9 +19,18 @@ const statusClasses: Record<SeatStatus, string> = {
   occupied: 'border-danger/30 bg-danger/10 text-danger',
 };
 
+// Distinct icon shapes per status — color alone (statusClasses above) isn't a reliable
+// status cue for colorblind users, so each status also gets its own icon.
+const statusIcons: Record<SeatStatus, typeof Armchair> = {
+  available: Armchair,
+  reserved: Clock,
+  occupied: X,
+};
+
 export function SeatCard({ label, status, className, selected, onSelect }: SeatCardProps) {
   const { t } = useTranslation();
   const statusText = t(`landing.seatAvailability.${status}`);
+  const StatusIcon = statusIcons[status];
 
   const classes = cn(
     'flex flex-col items-center gap-1 rounded-md border p-2 text-xs font-medium',
@@ -36,7 +45,7 @@ export function SeatCard({ label, status, className, selected, onSelect }: SeatC
         title={t('common.cards.seat.labelWithStatus', { label, status: statusText })}
         className={classes}
       >
-        <Armchair className="size-4" />
+        <StatusIcon className="size-4" />
         {label}
       </div>
     );
@@ -50,7 +59,7 @@ export function SeatCard({ label, status, className, selected, onSelect }: SeatC
       onClick={onSelect}
       className={cn(classes, !selected && 'hover:opacity-80')}
     >
-      <Armchair className="size-4" />
+      <StatusIcon className="size-4" />
       {label}
     </button>
   );

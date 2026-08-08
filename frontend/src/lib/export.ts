@@ -1,6 +1,3 @@
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
-
 export type ExportCell = string | number;
 
 function triggerDownload(blob: Blob, filename: string): void {
@@ -32,13 +29,19 @@ export function downloadCsv(
   triggerDownload(blob, filename);
 }
 
-export function downloadPdf(
+// ponytail: jspdf + jspdf-autotable are ~400kb and only needed once someone actually
+// clicks "export PDF" — loaded on demand so they stay out of the initial bundle.
+export async function downloadPdf(
   filename: string,
   title: string,
   headers: string[],
   rows: ExportCell[][],
   summaryLines: string[] = [],
-): void {
+): Promise<void> {
+  const [{ jsPDF }, { default: autoTable }] = await Promise.all([
+    import('jspdf'),
+    import('jspdf-autotable'),
+  ]);
   const doc = new jsPDF();
   doc.text(title, 14, 16);
 

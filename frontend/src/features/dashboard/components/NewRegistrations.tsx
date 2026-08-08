@@ -1,36 +1,24 @@
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Pagination, TableToolbar } from '@/components/common';
+import { Pagination } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { usePagination } from '@/hooks';
 import type { RegistrationRequest } from '@/mocks/manager';
 
 export interface NewRegistrationsProps {
   requests: RegistrationRequest[];
-  /** Opens the register-member form pre-filled with this request's name/email. */
-  onRegister: (request: RegistrationRequest) => void;
+  /** Opens the register-member form, pre-filled with this request's name/email if given. */
+  onRegister: (request?: RegistrationRequest) => void;
 }
 
 // New visitors who want to sign up as members on the spot.
 export function NewRegistrations({ requests, onRegister }: NewRegistrationsProps) {
   const { t } = useTranslation();
-  const [sortValue, setSortValue] = useState('newest');
+  const sortedRequests = [...requests].sort(
+    (a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime(),
+  );
 
-  const filteredRequests = useMemo(() => {
-    const items = [...requests];
-    switch (sortValue) {
-      case 'name':
-        return items.sort((a, b) => a.name.localeCompare(b.name));
-      case 'oldest':
-        return items.sort((a, b) => new Date(a.requestedAt).getTime() - new Date(b.requestedAt).getTime());
-      case 'newest':
-      default:
-        return items.sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
-    }
-  }, [requests, sortValue]);
-
-  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(filteredRequests, 5);
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(sortedRequests, 5);
 
   return (
     <Card>
@@ -38,30 +26,15 @@ export function NewRegistrations({ requests, onRegister }: NewRegistrationsProps
         <CardTitle>{t('managerDashboard.registrations.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <TableToolbar
-          sort={{
-            label: 'Sort',
-            value: sortValue,
-            onChange: (value) => {
-              setSortValue(value);
-              setPage(1);
-            },
-            options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
-              { value: 'name', label: 'Name A–Z' },
-            ],
-          }}
-          onReset={() => {
-            setSortValue('newest');
-            setPage(1);
-          }}
-          resetLabel={t('common.actions.reset')}
-        />
-        {filteredRequests.length === 0 ? (
+        {sortedRequests.length === 0 ? (
           <EmptyState
             title={t('managerDashboard.registrations.emptyTitle')}
             description={t('managerDashboard.registrations.emptyDescription')}
+            action={
+              <Button size="sm" onClick={() => onRegister()}>
+                {t('managerDashboard.registrations.register')}
+              </Button>
+            }
           />
         ) : (
           <>

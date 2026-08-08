@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
 from prisma.models import SupportTicket, User
 
-from app.db.prisma import prisma
 from app.modules.notifications import service as notifications_service
 from app.modules.support_tickets import repository
 from app.modules.support_tickets.constants import CATEGORIES_BY_ROLE, STAFF_ROLES
@@ -23,11 +22,7 @@ _CATEGORY_LABELS = {
 
 
 async def _notify_staff(notification_type: str, message: str) -> None:
-    staff = await prisma.user.find_many(
-        where={"role": {"name": {"in": list(STAFF_ROLES)}}, "deletedAt": None}
-    )
-    for member in staff:
-        await notifications_service.create_notification(member.id, notification_type, message)
+    await notifications_service.notify_roles(STAFF_ROLES, notification_type, message)
 
 
 async def create_ticket(user: User, payload: SupportTicketCreate) -> SupportTicketOut:

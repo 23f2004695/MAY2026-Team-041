@@ -117,14 +117,13 @@ async def cancel_booking(user: User, booking_id: str) -> None:
     waiting = await repository.find_notify_requests_for_slot(
         booking.seatLabel, booking_date, booking.hour
     )
-    for request in waiting:
-        await notifications_service.create_notification(
-            request.memberId,
+    if waiting:
+        await notifications_service.create_notifications(
+            [request.memberId for request in waiting],
             "seat-available",
             f"Seat {booking.seatLabel} is now available on "
             f"{booking_date.isoformat()} at {booking.hour:02d}:00.",
         )
-    if waiting:
         await repository.delete_notify_requests([request.id for request in waiting])
 
 

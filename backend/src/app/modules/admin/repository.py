@@ -52,6 +52,27 @@ async def count_seat_bookings(*, date: datetime, hour: int) -> int:
     return await prisma.seatbooking.count(where={"date": date, "hour": hour})
 
 
+# The dashboard needs one figure per opening hour. Asking per hour was a dozen round
+# trips for one day's bookings — fetch the day once and bucket it here instead, the
+# same fetch-then-aggregate shape sum_expenses above already uses.
+async def count_seat_bookings_by_hour(*, date: datetime) -> dict[int, int]:
+    bookings = await prisma.seatbooking.find_many(where={"date": date})
+    counts: dict[int, int] = {}
+    for booking in bookings:
+        counts[booking.hour] = counts.get(booking.hour, 0) + 1
+    return counts
+
+
+# Same idea for the budget panel: one scan of the month's expenses, bucketed by
+# category, rather than one filtered scan per category.
+async def sum_expenses_by_category(*, start: datetime) -> dict[str, int]:
+    expenses = await prisma.expense.find_many(where={"createdAt": {"gte": start}})
+    totals: dict[str, int] = {}
+    for expense in expenses:
+        totals[expense.category] = totals.get(expense.category, 0) + expense.amount
+    return totals
+
+
 async def list_plan_payments() -> list[Payment]:
     return await prisma.payment.find_many(
         where={"status": "success", "planMonths": {"not": None}}

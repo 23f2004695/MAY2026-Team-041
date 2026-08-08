@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://app:app@localhost:5432/app
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: app
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        working-directory: backend
+        run: uv sync
+
+      - name: Generate Prisma client
+        working-directory: backend
+        run: uv run prisma generate --schema prisma/schema.prisma
+
+      - name: Apply migrations
+        working-directory: backend
+        run: uv run prisma migrate deploy --schema prisma/schema.prisma
+
+      - name: Lint
+        working-directory: backend
+        run: uv run ruff check .
+
+      # Not blocking yet — 144 pre-existing errors (mostly Prisma's generated types
+      # being stricter than the plain-dict style used throughout the codebase, plus a
+      # handful of real null-safety gaps) need triaging before this can fail the build.
+      # Visible on every PR regardless; flip continue-on-error off once that's done.
+      - name: Type check
+        working-directory: backend
+        run: uv run mypy src
+        continue-on-error: true
+
+      - name: Test
+        working-directory: backend
+        run: uv run pytest
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Type-check and build
+        working-directory: frontend
+        run: npm run build
+
+      - name: Test
+        working-directory: frontend
+        run: npm run test

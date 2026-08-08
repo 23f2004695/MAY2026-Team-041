@@ -50,10 +50,3 @@ export function useTranslateText(text: string, targetLang: string) {
 
   return { translated, loading: !skip && loading };
 }
-
-/** One-off translate call, e.g. for translating a batch of strings outside of render. */
-export function translateText(text: string, targetLang: string): Promise<string> {
-  return apiPost<TranslateResponse>('/translate', { text, target_lang: targetLang }).then(
-    (data) => data.translated,
-  );
-}

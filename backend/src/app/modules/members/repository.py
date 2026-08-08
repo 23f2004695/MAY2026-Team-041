@@ -9,10 +9,6 @@ MEMBER_INCLUDE = {"role": True}
 READING_PROGRESS_INCLUDE = {"book": True}
 
 
-async def get_role_by_name(name: str) -> Role | None:
-    return await prisma.role.find_unique(where={"name": name})
-
-
 async def upsert_role(name: str) -> Role:
     return await prisma.role.upsert(
         where={"name": name},

@@ -1,12 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
 
 from app.api.deps import get_current_user, require_role
 from app.core.constants import Role
 from app.modules.loans import service
-from app.modules.loans.schemas import LoanCreate, LoanOut
+from app.modules.loans.schemas import LoanCreate, LoanListResponse, LoanOut
 
 router = APIRouter(prefix="/loans", tags=["loans"])
 
@@ -18,9 +18,13 @@ async def list_my_loans(user: Annotated[User, Depends(get_current_user)]) -> lis
     return await service.list_my_loans(user.id)
 
 
-@router.get("/history", response_model=list[LoanOut])
-async def list_loan_history(_: Annotated[User, Depends(manage_loans)]) -> list[LoanOut]:
-    return await service.list_all_loans()
+@router.get("/history", response_model=LoanListResponse)
+async def list_loan_history(
+    _: Annotated[User, Depends(manage_loans)],
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=200)] = 20,
+) -> LoanListResponse:
+    return await service.list_all_loans(page=page, page_size=page_size)
 
 
 @router.post("", response_model=LoanOut, status_code=status.HTTP_201_CREATED)

@@ -16,6 +16,9 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortValue, setSortValue] = useState('amount');
 
+  // /loans/fines keeps every late-return row forever (fine_paid included) so the
+  // dashboard total can still be computed from it — this view is the "still owe
+  // money" queue though, so a paid fine has no reason to keep taking up a row here.
   const unpaid = useMemo(() => {
     const items = [...entries].filter((entry) => !entry.fine_paid);
     const filtered = items.filter((entry) => {

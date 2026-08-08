@@ -89,6 +89,18 @@ const CHART_WIDTH = 300;
 const CHART_HEIGHT = 72;
 const CHART_PADDING = 6;
 
+// A plain helper, not inlined in the component: react-hooks/immutability flags any
+// reassignment inside a component body (the React Compiler can't prove a mutable
+// accumulator stays safe under speculative re-execution), even one scoped fresh to
+// each render like this. Outside the component, the same running-sum loop is fine.
+function cumulativeCounts(days: string[], dayBuckets: Map<string, number>): number[] {
+  let cumulative = 0;
+  return days.map((day) => {
+    cumulative += dayBuckets.get(day) ?? 0;
+    return cumulative;
+  });
+}
+
 export function RegistrationTrendChart({ registeredAtDates, label }: RegistrationTrendChartProps) {
   const dayBuckets = new Map<string, number>();
   for (const iso of registeredAtDates) {
@@ -100,11 +112,7 @@ export function RegistrationTrendChart({ registeredAtDates, label }: Registratio
   // A single-day cluster of registrations doesn't tell a "trend" story.
   if (days.length < 2) return null;
 
-  let cumulative = 0;
-  const points = days.map((day) => {
-    cumulative += dayBuckets.get(day) ?? 0;
-    return cumulative;
-  });
+  const points = cumulativeCounts(days, dayBuckets);
   const maxCount = points[points.length - 1] || 1;
 
   const coords = points.map((count, i) => {

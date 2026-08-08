@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from prisma.models import CommunityBan, CommunityComment, CommunityPost
 
+from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 POST_INCLUDE = {
@@ -12,11 +13,14 @@ POST_INCLUDE = {
 }
 
 
-async def list_posts() -> list[CommunityPost]:
-    return await prisma.communitypost.find_many(
+async def list_posts(*, page: int, page_size: int) -> tuple[list[CommunityPost], int]:
+    return await paginate(
+        prisma.communitypost,
         where={"deletedAt": None},
-        include=POST_INCLUDE,
         order={"createdAt": "desc"},
+        skip=(page - 1) * page_size,
+        take=page_size,
+        include=POST_INCLUDE,
     )
 
 

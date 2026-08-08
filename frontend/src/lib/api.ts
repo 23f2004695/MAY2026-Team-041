@@ -59,8 +59,12 @@ async function apiRequest<T>(
       const newToken = await refreshHandler();
       if (newToken) return apiRequest<T>(method, path, body, newToken, true);
     }
-    const detail = await response.json().catch(() => null);
-    throw new ApiError(response.status, detail?.detail ?? 'Request failed');
+    const errorBody = await response.json().catch(() => null);
+    const raw = errorBody?.detail;
+    // detail is a string for a plain HTTPException, an array of {msg, ...} for FastAPI's
+    // 422 validation errors — stringifying the array is what used to show up in toasts.
+    const message = typeof raw === 'string' ? raw : Array.isArray(raw) ? raw[0]?.msg : null;
+    throw new ApiError(response.status, message ?? 'Request failed');
   }
 
   if (response.status === 204) return undefined as T;

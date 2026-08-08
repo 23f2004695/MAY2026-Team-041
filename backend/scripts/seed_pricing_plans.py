@@ -2,6 +2,12 @@
 Payment page read prices from (see pricing_plans module). Rows are never created or
 deleted through the API — admins only ever adjust price/save_percent on existing rows.
 
+The baseline rows now also ship as a migration (see
+prisma/migrations/20260808000000_seed_pricing_plans), so every environment that runs
+`prisma migrate deploy` has them regardless of whether this script is ever run. This
+script remains useful for resetting months/badge back to defaults on an existing
+database without touching admin-edited price/save_percent.
+
 Run from backend/: `uv run python scripts/seed_pricing_plans.py`
 Safe to re-run — upserts by plan_id, so it only resets months/badge back to defaults
 (price/savePercent edits made via the admin UI are intentionally left untouched).

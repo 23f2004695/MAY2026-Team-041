@@ -86,6 +86,13 @@ def _build_comment_tree(comments: list) -> list[CommentOut]:
     return roots
 
 
+class PostListResponse(BaseModel):
+    items: list[PostOut]
+    total: int
+    page: int
+    page_size: int
+
+
 class BannedAuthorOut(BaseModel):
     user_id: str
     full_name: str

@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
+from app.core.rate_limit import limiter
 from app.modules.auth import service
 from app.modules.auth.schemas import (
     ForgotPasswordRequest,
@@ -20,12 +21,14 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
-async def register(payload: RegisterRequest) -> TokenResponse:
+@limiter.limit("5/minute")
+async def register(request: Request, payload: RegisterRequest) -> TokenResponse:
     return await service.register(payload)
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(payload: LoginRequest) -> TokenResponse:
+@limiter.limit("5/minute")
+async def login(request: Request, payload: LoginRequest) -> TokenResponse:
     return await service.login(payload)
 
 
@@ -58,7 +61,8 @@ async def delete_account(user: Annotated[User, Depends(get_current_user)]) -> No
 
 
 @router.post("/forgot-password", status_code=status.HTTP_204_NO_CONTENT)
-async def forgot_password(payload: ForgotPasswordRequest) -> None:
+@limiter.limit("3/minute")
+async def forgot_password(request: Request, payload: ForgotPasswordRequest) -> None:
     await service.forgot_password(payload)
 
 
