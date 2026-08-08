@@ -28,6 +28,13 @@ class PaymentOut(BaseModel):
         )
 
 
+class PaymentListResponse(BaseModel):
+    items: list[PaymentOut]
+    total: int
+    page: int
+    page_size: int
+
+
 class MembershipOut(BaseModel):
     plan_label: str
     purchased_at: datetime

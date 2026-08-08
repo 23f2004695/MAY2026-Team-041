@@ -20,7 +20,7 @@ from app.modules.admin.schemas import (
     RevenueByPlanOut,
 )
 from app.modules.audit_log import service as audit_log_service
-from app.modules.audit_log.schemas import AuditLogEntryOut
+from app.modules.audit_log.schemas import AuditLogListResponse
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -39,9 +39,13 @@ async def log_expense(
     return await service.log_expense(user.id, payload)
 
 
-@router.get("/audit-log", response_model=list[AuditLogEntryOut])
-async def get_audit_log(_: Annotated[User, Depends(manage_admin)]) -> list[AuditLogEntryOut]:
-    return await audit_log_service.list_entries(limit=20)
+@router.get("/audit-log", response_model=AuditLogListResponse)
+async def get_audit_log(
+    _: Annotated[User, Depends(manage_admin)],
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=200)] = 20,
+) -> AuditLogListResponse:
+    return await audit_log_service.list_entries(page=page, page_size=page_size)
 
 
 @router.get("/reports/revenue-by-plan", response_model=RevenueByPlanOut)

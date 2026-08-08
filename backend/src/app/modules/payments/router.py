@@ -1,12 +1,11 @@
 from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
 from app.core.constants import Role
-from app.db.prisma import prisma
 from app.modules.coupons import service as coupons_service
 from app.modules.loans import service as loans_service
 from app.modules.notifications import service as notifications_service
@@ -15,6 +14,7 @@ from app.modules.payments import service as payments_service
 from app.modules.payments.schemas import (
     MembershipOut,
     PaymentCreate,
+    PaymentListResponse,
     PaymentOut,
     RazorpayOrderOut,
     RazorpayVerifyRequest,
@@ -55,12 +55,8 @@ async def pay_at_library(
     payload: PaymentCreate,
     user: Annotated[User, Depends(get_current_user)],
 ) -> None:
-    managers = await prisma.user.find_many(
-        where={"role": {"name": Role.MANAGER}, "deletedAt": None}
-    )
     message = f"{user.fullName} wants to pay ₹{payload.amount} in cash for {payload.label}."
-    for manager in managers:
-        await notifications_service.create_notification(manager.id, "payment-pending", message)
+    await notifications_service.notify_roles([Role.MANAGER], "payment-pending", message)
 
 
 @router.post(
@@ -81,12 +77,21 @@ async def verify_razorpay_payment(
     return await payments_service.verify_and_record_razorpay_payment(user, payload)
 
 
-@router.get("/me", response_model=list[PaymentOut])
+@router.get("/me", response_model=PaymentListResponse)
 async def list_my_payments(
     user: Annotated[User, Depends(get_current_user)],
-) -> list[PaymentOut]:
-    payments = await repository.list_payments_for_user(user.id)
-    return [PaymentOut.from_prisma(payment) for payment in payments]
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=200)] = 20,
+) -> PaymentListResponse:
+    payments, total = await repository.list_payments_for_user(
+        user.id, page=page, page_size=page_size
+    )
+    return PaymentListResponse(
+        items=[PaymentOut.from_prisma(payment) for payment in payments],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 @router.get("/me/membership", response_model=MembershipOut | None)

@@ -2,7 +2,6 @@ from fastapi import HTTPException, status
 from prisma.errors import ForeignKeyViolationError
 
 from app.core.constants import Role
-from app.db.prisma import prisma
 from app.modules.audit_log import service as audit_log_service
 from app.modules.audit_log.constants import AuditAction
 from app.modules.billing_requests import repository
@@ -24,10 +23,7 @@ _TYPE_LABELS = {"refund": "refund", "fee_waiver": "fee waiver"}
 
 
 async def _notify_admins(message: str) -> None:
-    admins = await prisma.user.find_many(where={"role": {"name": Role.ADMIN}, "deletedAt": None})
-    await notifications_service.create_notifications(
-        [admin.id for admin in admins], "pending-request", message
-    )
+    await notifications_service.notify_roles([Role.ADMIN], "pending-request", message)
 
 
 async def list_pending_requests() -> list[BillingRequestOut]:

@@ -105,6 +105,13 @@ model Payment {
   planMonths Int?     @map("plan_months")
   createdAt  DateTime @default(now()) @map("created_at")
 
+  // Only set for gateway-verified payments (razorpay/verify), never for the direct
+  // /payments or pay-at-library paths. Unique so a retried verify call — same
+  // still-valid signature, same payment ID — can't record the same money twice;
+  // Postgres treats multiple NULLs as distinct, so the other two paths are unaffected.
+  razorpayPaymentId String? @unique @map("razorpay_payment_id") @db.VarChar(64)
+  razorpayOrderId   String? @map("razorpay_order_id") @db.VarChar(64)
+
   @@index([userId, createdAt])
   @@map("payments")
 }

@@ -3,15 +3,10 @@ from datetime import datetime
 from prisma import Prisma
 from prisma.models import Loan
 
+from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 INCLUDE = {"book": True, "member": True}
-
-# The permanent loan-history view — grows forever, unlike list_active()/list_past_due()
-# below, which are deliberately left uncapped because they feed the due-soon reminder
-# sweep and the outstanding-fines total: truncating those would silently skip reminders
-# or undercount fines owed, not just shorten a list.
-LIST_LIMIT = 200
 
 
 async def create(*, book_id: str, member_id: str, due_date: datetime, created_by_id: str) -> Loan:
@@ -30,15 +25,23 @@ async def find_by_id(loan_id: str) -> Loan | None:
     return await prisma.loan.find_unique(where={"id": loan_id}, include=INCLUDE)
 
 
-async def list_all() -> list[Loan]:
-    # Ordered by due date ascending when this had no cap, harmless at the time — but
-    # capped, "oldest due date first" would show 200 loans from years ago and hide
-    # everything recent. Newest-first is what a capped history view actually needs.
-    return await prisma.loan.find_many(
-        include=INCLUDE, order={"borrowedAt": "desc"}, take=LIST_LIMIT
+async def list_all(*, page: int, page_size: int) -> tuple[list[Loan], int]:
+    # Newest-first: a paginated history view wants recent activity on page 1, not the
+    # oldest loan ever made.
+    return await paginate(
+        prisma.loan,
+        where={},
+        order={"borrowedAt": "desc"},
+        skip=(page - 1) * page_size,
+        take=page_size,
+        include=INCLUDE,
     )
 
 
+# list_past_due()/list_active() below stay unpaginated on purpose — they feed the
+# due-soon reminder sweep and the outstanding-fines total, not a browsable page. A
+# skip/take here would silently skip reminders or undercount fines owed past whatever
+# page happened to load, instead of just shortening a list.
 async def list_past_due(*, now: datetime) -> list[Loan]:
     """Loans whose due date has passed — the only ones that can carry a fine.
 

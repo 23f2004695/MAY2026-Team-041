@@ -2,12 +2,12 @@ from fastapi import HTTPException, status
 from prisma.models import User
 
 from app.core.constants import Role
-from app.db.prisma import prisma
 from app.modules.community import repository
 from app.modules.community.schemas import (
     BannedAuthorOut,
     CommentCreate,
     PostCreate,
+    PostListResponse,
     PostOut,
 )
 from app.modules.notifications import service as notifications_service
@@ -22,12 +22,7 @@ def _role(user: User) -> str:
 
 
 async def _notify_moderators(message: str) -> None:
-    moderators = await prisma.user.find_many(
-        where={"role": {"name": {"in": list(_MODERATOR_ROLES)}}, "deletedAt": None}
-    )
-    await notifications_service.create_notifications(
-        [moderator.id for moderator in moderators], "reported-comment", message
-    )
+    await notifications_service.notify_roles(_MODERATOR_ROLES, "reported-comment", message)
 
 
 async def _ensure_not_banned(user: User) -> None:
@@ -46,9 +41,14 @@ def _post_data(payload: PostCreate) -> dict:
     return {"bookTitle": payload.book_title, "content": payload.content, "images": payload.images}
 
 
-async def list_posts(user: User) -> list[PostOut]:
-    posts = await repository.list_posts()
-    return [PostOut.from_prisma(post, current_user_id=user.id) for post in posts]
+async def list_posts(user: User, *, page: int, page_size: int) -> PostListResponse:
+    posts, total = await repository.list_posts(page=page, page_size=page_size)
+    return PostListResponse(
+        items=[PostOut.from_prisma(post, current_user_id=user.id) for post in posts],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 async def create_post(user: User, payload: PostCreate) -> PostOut:

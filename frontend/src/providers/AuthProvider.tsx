@@ -974,7 +974,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getMyPayments(): Promise<PaymentRecord[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<PaymentRecord[]>('/payments/me', stateRef.current.token);
+    // The backend now paginates this — page_size mirrors its old hard cap so this
+    // still returns "everything" for the simple list view that's the only consumer.
+    const res = await apiGet<{ items: PaymentRecord[] }>(
+      '/payments/me?page_size=200',
+      stateRef.current.token,
+    );
+    return res.items;
   }
 
   async function getGuardianChildren(): Promise<GuardianChild[]> {
@@ -1059,7 +1065,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getCommunityPosts(): Promise<CommunityPost[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<CommunityPost[]>('/community/posts', stateRef.current.token);
+    // The backend now paginates this — page_size mirrors its old hard cap so this
+    // still returns "everything" for the simple feed view that's the only consumer.
+    const res = await apiGet<{ items: CommunityPost[] }>(
+      '/community/posts?page_size=200',
+      stateRef.current.token,
+    );
+    return res.items;
   }
 
   async function createCommunityPost(payload: CommunityPostPayload): Promise<CommunityPost> {
@@ -1203,7 +1215,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getAuditLog(): Promise<AuditLogEntry[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<AuditLogEntry[]>('/admin/audit-log', stateRef.current.token);
+    // page_size matches the old hardcoded limit=20 — unchanged behavior for the
+    // simple "recent activity" view that's the only consumer today.
+    const res = await apiGet<{ items: AuditLogEntry[] }>(
+      '/admin/audit-log?page_size=20',
+      stateRef.current.token,
+    );
+    return res.items;
   }
 
   async function getRevenueByPlanReport(): Promise<RevenueByPlanReport> {
@@ -1364,7 +1382,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getLoanHistory(): Promise<LoanRecord[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<LoanRecord[]>('/loans/history', stateRef.current.token);
+    // The backend now paginates this — page_size mirrors its old hard cap so this
+    // still returns "everything" for the simple list view that's the only consumer.
+    const res = await apiGet<{ items: LoanRecord[] }>(
+      '/loans/history?page_size=200',
+      stateRef.current.token,
+    );
+    return res.items;
   }
 
   async function getMyLoans(): Promise<LoanRecord[]> {
@@ -1480,12 +1504,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function grantPermissionRequest(id: string): Promise<PermissionRequestRecord> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/grant`, undefined, stateRef.current.token);
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/approve`, undefined, stateRef.current.token);
   }
 
   async function denyPermissionRequest(id: string): Promise<PermissionRequestRecord> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/deny`, undefined, stateRef.current.token);
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/reject`, undefined, stateRef.current.token);
   }
 
   async function createLoan(payload: LoanPayload): Promise<LoanRecord> {

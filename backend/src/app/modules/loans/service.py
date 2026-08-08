@@ -13,7 +13,7 @@ from app.modules.loans.constants import (
     REMIND_COOLDOWN_HOURS,
     REMINDER_WINDOW_DAYS,
 )
-from app.modules.loans.schemas import LoanCreate, LoanOut
+from app.modules.loans.schemas import LoanCreate, LoanListResponse, LoanOut
 from app.modules.notifications import service as notifications_service
 
 
@@ -42,10 +42,15 @@ async def list_active_loans() -> list[LoanOut]:
     return [LoanOut.from_prisma(row, now=now) for row in rows]
 
 
-async def list_all_loans() -> list[LoanOut]:
+async def list_all_loans(*, page: int, page_size: int) -> LoanListResponse:
     now = datetime.now(UTC)
-    rows = await repository.list_all()
-    return [LoanOut.from_prisma(row, now=now) for row in rows]
+    rows, total = await repository.list_all(page=page, page_size=page_size)
+    return LoanListResponse(
+        items=[LoanOut.from_prisma(row, now=now) for row in rows],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 async def list_my_loans(member_id: str, *, client: Prisma | None = None) -> list[LoanOut]:

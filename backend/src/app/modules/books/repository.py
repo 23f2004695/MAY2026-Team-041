@@ -38,10 +38,6 @@ async def list_ratings_for_books(book_ids: list[str]) -> list[Review]:
     return await prisma.review.find_many(where={"bookId": {"in": book_ids}})
 
 
-async def find_by_isbn(isbn: str) -> Book | None:
-    return await prisma.book.find_unique(where={"isbn": isbn})
-
-
 async def list_books(
     *, search: str | None, category: str | None, page: int, page_size: int
 ) -> tuple[list[Book], int]:

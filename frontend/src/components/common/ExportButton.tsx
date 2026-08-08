@@ -43,7 +43,7 @@ export function ExportButton({
       if (format === 'csv') {
         downloadCsv(`${filename}.csv`, headers, resolvedRows, summaryLines);
       } else {
-        downloadPdf(`${filename}.pdf`, title, headers, resolvedRows, summaryLines);
+        await downloadPdf(`${filename}.pdf`, title, headers, resolvedRows, summaryLines);
       }
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));

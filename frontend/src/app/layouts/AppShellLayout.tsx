@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, ScrollRestoration } from 'react-router-dom';
 
 import { Footer, Sidebar, TopBar } from '@/components/layout';
 import type { NavItem } from '@/constants/navigation';
@@ -10,6 +10,9 @@ export interface AppShellLayoutProps {
 export function AppShellLayout({ items }: AppShellLayoutProps) {
   return (
     <div className="flex min-h-screen">
+      {/* Router doesn't reset scroll on navigation by default, so moving between pages kept
+          the previous page's offset. Renders nothing; also restores position on back/forward. */}
+      <ScrollRestoration />
       <aside className="hidden w-60 shrink-0 border-r border-border bg-surface md:block">
         <Sidebar items={items} />
       </aside>

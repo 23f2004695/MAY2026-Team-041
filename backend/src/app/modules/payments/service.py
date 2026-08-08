@@ -1,5 +1,6 @@
 import razorpay
 from fastapi import HTTPException, status
+from prisma.errors import UniqueViolationError
 from prisma.models import User
 
 from app.core.config import get_settings
@@ -75,6 +76,21 @@ async def verify_and_record_razorpay_payment(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Payment verification failed"
         ) from exc
 
+    # A signature stays valid for the same order/payment/signature triple, so a network
+    # retry or a double-submit re-verifies successfully every time. Short-circuit here
+    # so a retry returns the payment already on record instead of billing and
+    # notifying the member a second time. Ownership is re-checked the same as the
+    # fresh-order path below — a razorpay_payment_id is gateway-assigned and globally
+    # unique in practice, but nothing stops a caller from guessing/replaying one that
+    # belongs to someone else, and this must not hand back another member's payment.
+    existing = await repository.find_by_razorpay_payment_id(payload.razorpay_payment_id)
+    if existing is not None:
+        if existing.userId != user.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="This order does not belong to you"
+            )
+        return PaymentOut.from_prisma(existing)
+
     # The order's amount/label/member_id come back from Razorpay's own record of what
     # was created server-side — never re-trusted from the client at this step.
     order = client.order.fetch(payload.razorpay_order_id)
@@ -91,16 +107,36 @@ async def verify_and_record_razorpay_payment(
     # Recording the payment, settling fines, and notifying are all DB writes derived
     # from the same verified signature — one transaction so a crash partway through
     # can't leave a payment recorded with its fines still marked unpaid.
-    async with prisma.tx() as tx:
-        payment = await repository.create_payment(
-            user_id=user.id, amount=amount, label=label, plan_months=plan_months, client=tx
-        )
-        # Same rule as the direct create_payment endpoint — a verified payment with no
-        # plan behind it is a fine payment, so settle what it covers (see
-        # settle_fines_for_member).
-        if plan_months is None:
-            await loans_service.settle_fines_for_member(user.id, amount, client=tx)
-        await notifications_service.create_notification(
-            user.id, "payment-received", f"Payment of ₹{amount} received for {label}.", client=tx
-        )
+    try:
+        async with prisma.tx() as tx:
+            payment = await repository.create_payment(
+                user_id=user.id,
+                amount=amount,
+                label=label,
+                plan_months=plan_months,
+                razorpay_payment_id=payload.razorpay_payment_id,
+                razorpay_order_id=payload.razorpay_order_id,
+                client=tx,
+            )
+            # Same rule as the direct create_payment endpoint — a verified payment
+            # with no plan behind it is a fine payment, so settle what it covers (see
+            # settle_fines_for_member).
+            if plan_months is None:
+                await loans_service.settle_fines_for_member(user.id, amount, client=tx)
+            await notifications_service.create_notification(
+                user.id,
+                "payment-received",
+                f"Payment of ₹{amount} received for {label}.",
+                client=tx,
+            )
+    except UniqueViolationError:
+        # Lost a race against a concurrent retry of the same verify call — the other
+        # request already recorded this payment between our pre-check above and this
+        # insert. Return what it recorded rather than surfacing a 500 for something
+        # that already succeeded.
+        recorded = await repository.find_by_razorpay_payment_id(payload.razorpay_payment_id)
+        if recorded is None:
+            raise
+        return PaymentOut.from_prisma(recorded)
+
     return PaymentOut.from_prisma(payment)

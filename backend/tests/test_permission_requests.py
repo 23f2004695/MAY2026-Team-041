@@ -139,6 +139,26 @@ async def test_it_head_can_deny_a_request(it_head_user, manager_user):
     assert response.json()["status"] == "denied"
 
 
+async def test_approve_reject_are_the_canonical_verbs_grant_deny_alias_them(
+    it_head_user, manager_user
+):
+    approved = await _file_request(manager_user)
+    rejected = await _file_request(manager_user)
+
+    async with _client_as(it_head_user) as client:
+        approve_response = await client.post(
+            f"/api/v1/permission-requests/{approved['id']}/approve"
+        )
+        reject_response = await client.post(
+            f"/api/v1/permission-requests/{rejected['id']}/reject"
+        )
+
+    assert approve_response.status_code == 200
+    assert approve_response.json()["status"] == "granted"
+    assert reject_response.status_code == 200
+    assert reject_response.json()["status"] == "denied"
+
+
 async def test_granting_removes_it_from_the_pending_list(it_head_user, manager_user):
     created = await _file_request(manager_user)
 

@@ -9,13 +9,14 @@ import { formatCurrency, formatDate } from '@/lib/format';
 import type { DueBook } from '@/mocks/dashboard';
 import {
   useAuth,
-  type AppNotificationRecord,
   type LoanRecord,
   type Membership,
   type ReadingStreak,
   type Reservation,
   type SeatBookingRecord,
 } from '@/providers/AuthProvider';
+
+import { useNotificationsQuery } from '../../notifications/hooks/useNotificationsQuery';
 import { BooksDueSoon } from '../components/BooksDueSoon';
 import { CurrentlyBorrowed } from '../components/CurrentlyBorrowed';
 import { MemberSubscription } from '../components/MemberSubscription';
@@ -42,15 +43,17 @@ export function MemberDashboard() {
     getMyLoans,
     getMyReservations,
     getMySeatBookings,
-    getMyNotifications,
     getReadingStreak,
   } = useAuth();
+
+  // Shared with the notification bell and panel — this page no longer refetches a list
+  // the bell already has cached.
+  const { notifications } = useNotificationsQuery();
 
   const [membership, setMembership] = useState<Membership | null>(null);
   const [loans, setLoans] = useState<LoanRecord[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [seatBookings, setSeatBookings] = useState<SeatBookingRecord[]>([]);
-  const [notifications, setNotifications] = useState<AppNotificationRecord[]>([]);
   const [streak, setStreak] = useState<ReadingStreak>(EMPTY_STREAK);
 
   useEffect(() => {
@@ -75,11 +78,6 @@ export function MemberDashboard() {
       if (!cancelled) setSeatBookings(data);
     }).catch(() => {
       if (!cancelled) setSeatBookings([]);
-    });
-    getMyNotifications().then((data) => {
-      if (!cancelled) setNotifications(data);
-    }).catch(() => {
-      if (!cancelled) setNotifications([]);
     });
     getReadingStreak().then((data) => {
       if (!cancelled) setStreak(data);

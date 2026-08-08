@@ -1,3 +1,4 @@
+import asyncio
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 
@@ -83,49 +84,60 @@ async def get_dashboard() -> AdminDashboardOut:
     this_month_start = _month_start(now)
     last_month_start = _previous_month_start(now)
 
-    revenue_mtd = await repository.sum_payments(start=this_month_start)
-    revenue_last_month = await repository.sum_payments(start=last_month_start, end=this_month_start)
-    membership_fees = await repository.sum_payments(start=this_month_start, has_plan=True)
-    fines_collected = await repository.sum_payments(start=this_month_start, has_plan=False)
-
-    expenses_mtd = await repository.sum_expenses(start=this_month_start)
-    expenses_last_month = await repository.sum_expenses(
-        start=last_month_start, end=this_month_start
-    )
-
-    net_profit_mtd = revenue_mtd - expenses_mtd
-    net_profit_last_month = revenue_last_month - expenses_last_month
-
-    total_members = await repository.count_members()
-    total_members_last_month = await repository.count_members(created_before=this_month_start)
-
-    budget = [
-        BudgetCategoryOut(
-            category=category,
-            budgeted=budgeted,
-            spent=await repository.sum_expenses(start=this_month_start, category=category.value),
-        )
-        for category, budgeted in EXPENSE_BUDGETS.items()
-    ]
-
     today = now.date()
     yesterday = today - timedelta(days=1)
     today_midnight = datetime(today.year, today.month, today.day, tzinfo=UTC)
     yesterday_midnight = datetime(yesterday.year, yesterday.month, yesterday.day, tzinfo=UTC)
 
-    booked_this_hour = await repository.count_seat_bookings(date=today_midnight, hour=now.hour)
+    # These are independent, so they run concurrently rather than as ~11 sequential round
+    # trips. Kept to a fixed handful on purpose: an earlier version also fanned out one
+    # query per budget category and per opening hour, and those ~25 at once exhausted the
+    # connection pool. The two _by_ helpers below each collapse a fan-out into one query.
+    (
+        revenue_mtd,
+        revenue_last_month,
+        membership_fees,
+        fines_collected,
+        expenses_mtd,
+        expenses_last_month,
+        total_members,
+        total_members_last_month,
+        booked_this_hour,
+        spend_by_category,
+        bookings_by_hour,
+    ) = await asyncio.gather(
+        repository.sum_payments(start=this_month_start),
+        repository.sum_payments(start=last_month_start, end=this_month_start),
+        repository.sum_payments(start=this_month_start, has_plan=True),
+        repository.sum_payments(start=this_month_start, has_plan=False),
+        repository.sum_expenses(start=this_month_start),
+        repository.sum_expenses(start=last_month_start, end=this_month_start),
+        repository.count_members(),
+        repository.count_members(created_before=this_month_start),
+        repository.count_seat_bookings(date=today_midnight, hour=now.hour),
+        repository.sum_expenses_by_category(start=this_month_start),
+        repository.count_seat_bookings_by_hour(date=yesterday_midnight),
+    )
+
+    net_profit_mtd = revenue_mtd - expenses_mtd
+    net_profit_last_month = revenue_last_month - expenses_last_month
+
+    budget = [
+        BudgetCategoryOut(
+            category=category,
+            budgeted=budgeted,
+            spent=spend_by_category.get(category.value, 0),
+        )
+        for category, budgeted in EXPENSE_BUDGETS.items()
+    ]
+
     seat_status = SeatStatusOut(
         available=TOTAL_SEATS - booked_this_hour, booked=booked_this_hour, total=TOTAL_SEATS
     )
 
     seat_occupancy = [
         SeatOccupancySlotOut(
-            hour=hour,
-            percent_filled=round(
-                await repository.count_seat_bookings(date=yesterday_midnight, hour=hour)
-                / TOTAL_SEATS
-                * 100
-            ),
+            hour=hour, percent_filled=round(bookings_by_hour.get(hour, 0) / TOTAL_SEATS * 100)
         )
         for hour in OPEN_HOURS
     ]

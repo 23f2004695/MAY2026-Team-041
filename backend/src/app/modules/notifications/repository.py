@@ -35,6 +35,13 @@ async def create_many(user_ids: list[str], type_: str, message: str) -> None:
     )
 
 
+async def list_active_user_ids_with_roles(role_names: list[str]) -> list[str]:
+    users = await prisma.user.find_many(
+        where={"role": {"name": {"in": role_names}}, "deletedAt": None}
+    )
+    return [user.id for user in users]
+
+
 async def mark_read(notification_id: str) -> Notification:
     return await prisma.notification.update(where={"id": notification_id}, data={"read": True})
 

@@ -1,6 +1,7 @@
 from prisma import Prisma
 from prisma.models import Payment
 
+from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 
@@ -10,6 +11,8 @@ async def create_payment(
     amount: int,
     label: str,
     plan_months: int | None = None,
+    razorpay_payment_id: str | None = None,
+    razorpay_order_id: str | None = None,
     client: Prisma | None = None,
 ) -> Payment:
     db = client or prisma
@@ -19,8 +22,17 @@ async def create_payment(
             "amount": amount,
             "label": label,
             "planMonths": plan_months,
+            "razorpayPaymentId": razorpay_payment_id,
+            "razorpayOrderId": razorpay_order_id,
         },
     )
+
+
+async def find_by_razorpay_payment_id(
+    razorpay_payment_id: str, *, client: Prisma | None = None
+) -> Payment | None:
+    db = client or prisma
+    return await db.payment.find_unique(where={"razorpayPaymentId": razorpay_payment_id})
 
 
 async def find_latest_membership_payment(user_id: str) -> Payment | None:
@@ -30,13 +42,13 @@ async def find_latest_membership_payment(user_id: str) -> Payment | None:
     )
 
 
-# A user's payment history grows without bound over time — cap what a single request
-# can return rather than hydrating every payment they've ever made. Display-only (no
-# business logic sums or iterates this list), so the cap is safe.
-LIST_LIMIT = 200
-
-
-async def list_payments_for_user(user_id: str) -> list[Payment]:
-    return await prisma.payment.find_many(
-        where={"userId": user_id}, order={"createdAt": "desc"}, take=LIST_LIMIT
+async def list_payments_for_user(
+    user_id: str, *, page: int, page_size: int
+) -> tuple[list[Payment], int]:
+    return await paginate(
+        prisma.payment,
+        where={"userId": user_id},
+        order={"createdAt": "desc"},
+        skip=(page - 1) * page_size,
+        take=page_size,
     )
