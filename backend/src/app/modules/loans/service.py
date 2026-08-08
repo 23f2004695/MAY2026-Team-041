@@ -1,4 +1,4 @@
-import contextlib
+import logging
 from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException, status
@@ -15,6 +15,8 @@ from app.modules.loans.constants import (
 )
 from app.modules.loans.schemas import LoanCreate, LoanListResponse, LoanOut
 from app.modules.notifications import service as notifications_service
+
+logger = logging.getLogger(__name__)
 
 
 async def create_loan(
@@ -88,14 +90,16 @@ async def settle_fines_for_member(
     unpaid = [loan for loan in loans if loan.fine_amount > 0 and not loan.fine_paid]
 
     remaining = amount_paid
-    settled = 0
+    to_settle: list[str] = []
     for loan in sorted(unpaid, key=lambda item: item.due_date):
         if loan.fine_amount > remaining:
-            continue
+            break
         remaining -= loan.fine_amount
-        await repository.mark_fine_paid(loan.id, client=client)
-        settled += 1
-    return settled
+        to_settle.append(loan.id)
+
+    if to_settle:
+        await repository.mark_fines_paid(to_settle, client=client)
+    return len(to_settle)
 
 
 async def return_loan(loan_id: str) -> LoanOut:
@@ -162,7 +166,9 @@ async def send_due_soon_reminders() -> None:
         if loan.lastRemindedAt is not None and loan.lastRemindedAt > remind_cutoff:
             continue
         # Per-loan, so one unreachable mailbox (or a provider rate limit) doesn't abort
-        # the sweep and leave everyone after it un-nudged — the caller only suppresses
-        # errors at the whole-sweep level.
-        with contextlib.suppress(Exception):
+        # the sweep and leave everyone after it un-nudged — but still logged, so a
+        # member stuck failing every sweep is discoverable instead of silent forever.
+        try:
             await send_reminder(loan.id)
+        except Exception:
+            logger.exception("send_reminder failed for loan %s", loan.id)

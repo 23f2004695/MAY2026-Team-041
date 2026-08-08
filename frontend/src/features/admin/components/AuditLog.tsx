@@ -76,7 +76,7 @@ export function AuditLog({ entries }: { entries: AuditLogEntry[] }) {
     const items = [...entries].filter((entry) => {
       if (filter === 'all') return true;
       if (filter === 'credits') {
-        return ['expenseApproved', 'pricingPlanUpdated'].includes(entry.action);
+        return ['pricingPlanUpdated'].includes(entry.action);
       }
       if (filter === 'debits') {
         return ['expenseApproved'].includes(entry.action);

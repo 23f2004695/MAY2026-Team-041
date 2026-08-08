@@ -25,14 +25,17 @@ const medalColor: Record<number, string> = {
   3: 'text-danger',
 };
 
-type LeaderboardPeriod = 'all' | 'weekly' | 'monthly' | 'yearly';
+// There's no per-period data on LeaderboardEntry (no weekly/monthly/yearly scores),
+// only an overall rank — so this is a rank cutoff, not a time window. Naming it
+// "Weekly"/"Monthly"/"Yearly" would promise a feature that doesn't exist.
+type LeaderboardView = 'top50' | 'all';
 type LeaderboardSort = 'scoreHigh' | 'scoreLow' | 'nameAsc' | 'nameDesc';
 
 export function LeaderboardPage() {
   const { t } = useTranslation();
   const { getLeaderboard } = useAuth();
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [periodFilter, setPeriodFilter] = useState<LeaderboardPeriod>('monthly');
+  const [view, setView] = useState<LeaderboardView>('top50');
   const [sort, setSort] = useState<LeaderboardSort>('scoreHigh');
 
   useEffect(() => {
@@ -41,10 +44,8 @@ export function LeaderboardPage() {
 
   const filteredEntries = useMemo(
     () =>
-      periodFilter === 'all'
-        ? entries
-        : entries.filter((entry) => entry.rank <= 50 || entry.is_current_user),
-    [entries, periodFilter],
+      view === 'all' ? entries : entries.filter((entry) => entry.rank <= 50 || entry.is_current_user),
+    [entries, view],
   );
 
   const sortConfig = useMemo(
@@ -74,7 +75,7 @@ export function LeaderboardPage() {
   );
 
   function resetFilters() {
-    setPeriodFilter('monthly');
+    setView('top50');
     setSort('scoreHigh');
     setPage(1);
   }
@@ -97,17 +98,15 @@ export function LeaderboardPage() {
           <TableToolbar
             filters={[
               {
-                label: 'Period',
-                value: periodFilter,
+                label: 'Show',
+                value: view,
                 onChange: (value) => {
-                  setPeriodFilter(value as LeaderboardPeriod);
+                  setView(value as LeaderboardView);
                   setPage(1);
                 },
                 options: [
-                  { value: 'all', label: 'All' },
-                  { value: 'weekly', label: 'Weekly' },
-                  { value: 'monthly', label: 'Monthly' },
-                  { value: 'yearly', label: 'Yearly' },
+                  { value: 'top50', label: 'Top 50' },
+                  { value: 'all', label: 'Everyone' },
                 ],
               },
             ]}

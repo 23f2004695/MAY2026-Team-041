@@ -24,7 +24,9 @@ export function ActiveLoans({ loans, onReturn, onRemind }: ActiveLoansProps) {
   const filteredLoans = useMemo(() => {
     const items = [...loans].filter((loan) => {
       if (statusFilter === 'all') return true;
-      if (statusFilter === 'due-today') return loan.status === 'active';
+      if (statusFilter === 'due-today') {
+        return loan.status === 'active' && new Date(loan.due_date).toDateString() === new Date().toDateString();
+      }
       if (statusFilter === 'overdue') return loan.status === 'overdue';
       if (statusFilter === 'active') return loan.status === 'active';
       return true;
