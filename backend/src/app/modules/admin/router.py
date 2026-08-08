@@ -99,7 +99,10 @@ async def list_admin_members(
 
 @router.get("/payments", response_model=AdminPaymentListOut)
 async def list_admin_payments(
+    _: Annotated[User, Depends(manage_admin)],
+    search: Annotated[str | None, Query(description="Match against member name or email")] = None,
     month: Annotated[str | None, Query(pattern=r"^\d{4}-(0[1-9]|1[0-2])$")] = None,
+    page: Annotated[int, Query(ge=1)] = 1,
     # Upper bound raised beyond the usual 100 so the monthly-report export can
     # pull a full month's rows in a single request instead of paging through it.
     page_size: Annotated[int, Query(ge=1, le=1000)] = 20,
