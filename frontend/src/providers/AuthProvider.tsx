@@ -203,6 +203,9 @@ export interface SeatSlot {
   seat_label: string;
   status: SeatSlotStatus;
   booking_id: string | null;
+  // Populated when status === 'reserved' or 'booked_by_me' — the avatar of whoever
+  // holds that seat (someone else, or you), shown in place of a plain color swatch.
+  booked_by_avatar_url: string | null;
 }
 
 export interface SeatSchedule {

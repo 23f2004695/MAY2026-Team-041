@@ -1042,7 +1042,8 @@
         "button": "सभी स्थान देखें"
       },
       "booked": "बुक की गई",
-      "bookedSub": "अभी आरक्षित"
+      "bookedSub": "अभी आरक्षित",
+      "mine": "आपकी सीट"
     },
     "readingChallenge": {
       "eyebrow": "उपलब्धियाँ",
@@ -1463,6 +1464,9 @@
   "seatBooking": {
     "pageTitle": "सीट बुकिंग",
     "pageDescription": "एक शांत अध्ययन सीट आरक्षित करें",
+    "pickTimeTitle": "समय चुनें · {{date}}",
+    "selectedSlot": "{{date}} · {{hour}} के लिए सीटें दिखाई जा रही हैं।",
+    "changeTime": "समय बदलें",
     "confirmToast": "सीट {{seatId}} बुक की जा रही है",
     "bookingSummary": {
       "title": "बुकिंग सारांश",
@@ -1477,9 +1481,12 @@
       "notifyToast": "जब सीट {{seatId}} उपलब्ध होगी, हम आपको सूचित करेंगे",
       "reservedByOther": "सीट {{seatId}} इस समय स्लॉट के लिए आरक्षित है",
       "slotLabel": "सीट {{seatId}} · {{date}} · {{hour}}",
-      "yourBookings": "आपकी आगामी बुकिंग"
+      "yourBookings": "आपकी आगामी बुकिंग",
+      "slotDurationCountdown": "हर बुकिंग 1 घंटे के लिए होती है — यह सीट {{minutes}} मिनट में फिर से उपलब्ध होगी।",
+      "slotDurationFixed": "हर बुकिंग 1 घंटे के लिए होती है — यह सीट {{endHour}} बजे फिर से उपलब्ध होगी।"
     },
-    "today": "आज"
+    "today": "आज",
+    "dateSliderAriaLabel": "एक तारीख़ चुनें"
   },
   "readingProgress": {
     "pageTitle": "पठन प्रगति",

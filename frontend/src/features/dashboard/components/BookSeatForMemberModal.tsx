@@ -178,6 +178,7 @@ export function BookSeatForMemberModal({ open, onClose, onBooked }: BookSeatForM
                       key={label}
                       label={label}
                       status={visualStatus}
+                      avatarUrl={seat?.booked_by_avatar_url}
                       selected={selectedSeatLabel === label}
                       onSelect={visualStatus === 'available' ? () => setSelectedSeatLabel(label) : undefined}
                     />

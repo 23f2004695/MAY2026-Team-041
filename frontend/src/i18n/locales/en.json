@@ -1082,7 +1082,8 @@
         "button": "Explore All Spaces"
       },
       "booked": "Booked",
-      "bookedSub": "Reserved right now"
+      "bookedSub": "Reserved right now",
+      "mine": "Your seat"
     },
     "readingChallenge": {
       "eyebrow": "Achievements",
@@ -1530,6 +1531,9 @@
     "pageTitle": "Seat Booking",
     "pageDescription": "Reserve a quiet study seat",
     "today": "Today",
+    "pickTimeTitle": "Pick a time · {{date}}",
+    "selectedSlot": "Showing seats for {{date}} · {{hour}}.",
+    "changeTime": "Change time",
     "confirmToast": "Booking seat {{seatId}}",
     "bookingSummary": {
       "title": "Booking Summary",
@@ -1543,8 +1547,11 @@
       "alreadyBookedThisSlot": "You already have a different seat booked for this time slot — cancel it first to switch.",
       "notifyButton": "Notify Me When Available",
       "notifySet": "We'll notify you when this seat frees up",
-      "notifyToast": "We'll notify you when seat {{seatId}} is available"
-    }
+      "notifyToast": "We'll notify you when seat {{seatId}} is available",
+      "slotDurationCountdown": "Each booking is for 1 hour — this seat will be available again in {{minutes}} min.",
+      "slotDurationFixed": "Each booking is for 1 hour — this seat will be available again at {{endHour}}."
+    },
+    "dateSliderAriaLabel": "Choose a date"
   },
   "readingProgress": {
     "pageTitle": "Reading Progress",
