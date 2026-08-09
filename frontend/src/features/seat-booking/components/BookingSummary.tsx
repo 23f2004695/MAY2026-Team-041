@@ -1,4 +1,4 @@
-import { Bell, BellRing } from 'lucide-react';
+import { Bell, BellRing, Clock3 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
@@ -8,6 +8,10 @@ export interface BookingSummaryProps {
   selectedSeat: SeatSlot | null;
   dateLabel: string;
   hourLabel: string;
+  /** Label for when the currently selected 1-hour slot ends, e.g. "5 PM". */
+  slotEndHourLabel: string;
+  /** Minutes left in the slot if it's happening right now, else null (future slot). */
+  minutesUntilFree: number | null;
   isNotified: boolean;
   /** True when you already hold a different seat in this exact date/hour slot. */
   hasOtherBookingThisSlot: boolean;
@@ -28,6 +32,8 @@ export function BookingSummary({
   selectedSeat,
   dateLabel,
   hourLabel,
+  slotEndHourLabel,
+  minutesUntilFree,
   isNotified,
   hasOtherBookingThisSlot,
   isBusy,
@@ -73,6 +79,17 @@ export function BookingSummary({
           <div className="rounded-md bg-primary/10 p-3 text-sm font-medium text-primary">
             {t('seatBooking.bookingSummary.bookedByYou', { seatId: selectedSeat.seat_label })}
           </div>
+        )}
+
+        {(isTaken || isMine) && selectedSeat && (
+          <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
+            <Clock3 className="mt-0.5 size-3.5 shrink-0" />
+            {minutesUntilFree !== null
+              ? t('seatBooking.bookingSummary.slotDurationCountdown', {
+                  minutes: minutesUntilFree,
+                })
+              : t('seatBooking.bookingSummary.slotDurationFixed', { endHour: slotEndHourLabel })}
+          </p>
         )}
 
         {isAvailable && hasOtherBookingThisSlot && (

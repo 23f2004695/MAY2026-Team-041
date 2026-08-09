@@ -1042,7 +1042,8 @@
         "button": "ਸਾਰੀਆਂ ਥਾਵਾਂ ਦੀ ਪੜਚੋਲ ਕਰੋ"
       },
       "booked": "ਬੁੱਕ ਕੀਤੀ ਗਈ",
-      "bookedSub": "ਹੁਣੇ ਰਿਜ਼ਰਵ"
+      "bookedSub": "ਹੁਣੇ ਰਿਜ਼ਰਵ",
+      "mine": "ਤੁਹਾਡੀ ਸੀਟ"
     },
     "readingChallenge": {
       "eyebrow": "ਪ੍ਰਾਪਤੀਆਂ",
@@ -1463,6 +1464,9 @@
   "seatBooking": {
     "pageTitle": "ਸੀਟ ਬੁਕਿੰਗ",
     "pageDescription": "ਇੱਕ ਸ਼ਾਂਤ ਸਟੱਡੀ ਸੀਟ ਰਿਜ਼ਰਵ ਕਰੋ",
+    "pickTimeTitle": "ਸਮਾਂ ਚੁਣੋ · {{date}}",
+    "selectedSlot": "{{date}} · {{hour}} ਲਈ ਸੀਟਾਂ ਦਿਖਾਈਆਂ ਜਾ ਰਹੀਆਂ ਹਨ।",
+    "changeTime": "ਸਮਾਂ ਬਦਲੋ",
     "confirmToast": "ਸੀਟ {{seatId}} ਬੁੱਕ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
     "bookingSummary": {
       "title": "ਬੁਕਿੰਗ ਸੰਖੇਪ",
@@ -1477,9 +1481,12 @@
       "notifyToast": "ਜਦੋਂ ਸੀਟ {{seatId}} ਉਪਲਬਧ ਹੋਵੇਗੀ, ਅਸੀਂ ਤੁਹਾਨੂੰ ਸੂਚਿਤ ਕਰਾਂਗੇ",
       "reservedByOther": "ਸੀਟ {{seatId}} ਇਸ ਸਮਾਂ ਸਲਾਟ ਲਈ ਰਿਜ਼ਰਵ ਹੈ",
       "slotLabel": "ਸੀਟ {{seatId}} · {{date}} · {{hour}}",
-      "yourBookings": "ਤੁਹਾਡੀਆਂ ਆਉਣ ਵਾਲੀਆਂ ਬੁਕਿੰਗਾਂ"
+      "yourBookings": "ਤੁਹਾਡੀਆਂ ਆਉਣ ਵਾਲੀਆਂ ਬੁਕਿੰਗਾਂ",
+      "slotDurationCountdown": "ਹਰ ਬੁਕਿੰਗ 1 ਘੰਟੇ ਲਈ ਹੁੰਦੀ ਹੈ — ਇਹ ਸੀਟ {{minutes}} ਮਿੰਟਾਂ ਵਿੱਚ ਦੁਬਾਰਾ ਉਪਲਬਧ ਹੋਵੇਗੀ।",
+      "slotDurationFixed": "ਹਰ ਬੁਕਿੰਗ 1 ਘੰਟੇ ਲਈ ਹੁੰਦੀ ਹੈ — ਇਹ ਸੀਟ {{endHour}} ਵਜੇ ਦੁਬਾਰਾ ਉਪਲਬਧ ਹੋਵੇਗੀ।"
     },
-    "today": "ਅੱਜ"
+    "today": "ਅੱਜ",
+    "dateSliderAriaLabel": "ਇੱਕ ਮਿਤੀ ਚੁਣੋ"
   },
   "readingProgress": {
     "pageTitle": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",

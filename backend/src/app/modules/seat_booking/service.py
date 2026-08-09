@@ -62,10 +62,21 @@ async def get_schedule(user: User, target_date: date_type, hour: int) -> Schedul
             slots.append(SeatSlotOut(seat_label=label, status="available"))
         elif booking.memberId == user.id:
             slots.append(
-                SeatSlotOut(seat_label=label, status="booked_by_me", booking_id=booking.id)
+                SeatSlotOut(
+                    seat_label=label,
+                    status="booked_by_me",
+                    booking_id=booking.id,
+                    booked_by_avatar_url=user.avatarUrl,
+                )
             )
         else:
-            slots.append(SeatSlotOut(seat_label=label, status="reserved"))
+            slots.append(
+                SeatSlotOut(
+                    seat_label=label,
+                    status="reserved",
+                    booked_by_avatar_url=booking.member.avatarUrl,
+                )
+            )
 
     return ScheduleOut(date=target_date, hour=hour, seats=slots)
 
