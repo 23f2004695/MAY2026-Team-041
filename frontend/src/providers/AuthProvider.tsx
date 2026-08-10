@@ -161,6 +161,7 @@ export interface PostComment {
   content: string;
   created_at: string;
   reported: boolean;
+  reported_by_me?: boolean;
   replies: PostComment[];
 }
 
@@ -178,6 +179,7 @@ export interface CommunityPost {
   is_saved: boolean;
   is_own: boolean;
   reported: boolean;
+  reported_by_me?: boolean;
   comments: PostComment[];
 }
 
@@ -715,6 +717,12 @@ export interface ManagerBookListResponse {
 
 export interface ManagerBookQuery {
   search?: string;
+  /** Exact category match, or 'all' / omitted for no filter. */
+  category?: string;
+  /** 'available' | 'unavailable' | 'all' (default: no filter). */
+  status?: string;
+  /** 'title_asc' | 'title_desc' | 'copies_asc' | 'copies_desc'. */
+  sort?: string;
   page?: number;
   page_size?: number;
 }
@@ -1397,6 +1405,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     const params = new URLSearchParams();
     if (query.search) params.set('search', query.search);
+    if (query.category) params.set('category', query.category);
+    if (query.status) params.set('status', query.status);
+    if (query.sort) params.set('sort', query.sort);
     if (query.page) params.set('page', String(query.page));
     if (query.page_size) params.set('page_size', String(query.page_size));
     return apiGet<ManagerBookListResponse>(`/manager/books?${params}`, stateRef.current.token);

@@ -1,4 +1,3 @@
-import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -54,13 +53,6 @@ export function Community() {
                         {t(`landing.community.items.${item.id}.description`)}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      aria-label={t('landing.community.exploreAria', { title })}
-                      className="mt-auto flex size-8 items-center justify-center rounded-full bg-secondary text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-                    >
-                      <ArrowRight className="size-4" />
-                    </button>
                   </Card>
                 </motion.div>
               );

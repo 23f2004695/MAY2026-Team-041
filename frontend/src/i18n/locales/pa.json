@@ -20,7 +20,8 @@
       "approve": "ਮਨਜ਼ੂਰ ਕਰੋ",
       "manage": "ਪ੍ਰਬੰਧਿਤ ਕਰੋ",
       "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ",
-      "cancel": "ਰੱਦ ਕਰੋ"
+      "cancel": "ਰੱਦ ਕਰੋ",
+      "reset": "ਰੀਸੈੱਟ ਕਰੋ"
     },
     "errors": {
       "generic": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
@@ -32,8 +33,10 @@
     "cards": {
       "event": {
         "registered": "ਰਜਿਸਟਰ ਕੀਤਾ",
-        "open": "ਖੁੱਲ੍ਹਾ",
-        "viewDetails": "ਵੇਰਵੇ ਵੇਖੋ"
+        "viewDetails": "ਵੇਰਵੇ ਵੇਖੋ",
+        "ongoing": "ਜਾਰੀ ਹੈ",
+        "closed": "ਬੰਦ",
+        "upcoming": "ਆਗਾਮੀ"
       },
       "book": {
         "reserve": "ਰਿਜ਼ਰਵ ਕਰੋ",
@@ -659,6 +662,26 @@
       "seatBookings": "ਸੀਟ ਬੁਕਿੰਗਾਂ",
       "readingPoints": "ਰੀਡਿੰਗ ਪੁਆਇੰਟ"
     },
+    "statModal": {
+      "booksBorrowed": {
+        "emptyTitle": "ਕੋਈ ਕਿਤਾਬ ਉਧਾਰ ਨਹੀਂ ਲਈ ਗਈ",
+        "emptyDescription": "ਤੁਹਾਡੇ ਵੱਲੋਂ ਲਈਆਂ ਕਿਤਾਬਾਂ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।"
+      },
+      "booksReserved": {
+        "emptyTitle": "ਕੋਈ ਸਰਗਰਮ ਰਿਜ਼ਰਵੇਸ਼ਨ ਨਹੀਂ",
+        "emptyDescription": "ਤੁਹਾਡੇ ਵੱਲੋਂ ਰਿਜ਼ਰਵ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ ਉਡੀਕ ਦੌਰਾਨ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।"
+      },
+      "seatBookings": {
+        "emptyTitle": "ਕੋਈ ਸੀਟ ਬੁਕਿੰਗ ਨਹੀਂ",
+        "emptyDescription": "ਤੁਹਾਡੇ ਵੱਲੋਂ ਬੁੱਕ ਕੀਤੀਆਂ ਸੀਟਾਂ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।",
+        "seatLabel": "ਸੀਟ {{seat}}",
+        "pastNote": "{{count}} ਪੁਰਾਣੀ ਬੁਕਿੰਗ ਇੱਥੇ ਨਹੀਂ ਦਿਖਾਈ ਗਈ — ਸੀਟ ਬੁਕਿੰਗ ਸਿਰਫ਼ ਅੱਜ ਅਤੇ ਅਗਲੇ 2 ਦਿਨਾਂ ਲਈ ਉਪਲਬਧ ਹੈ।"
+      },
+      "readingStreak": {
+        "longest": "ਸਭ ਤੋਂ ਲੰਬੀ ਲੜੀ: {{count}} ਦਿਨ",
+        "viewProgress": "ਰੀਡਿੰਗ ਪ੍ਰਗਤੀ ਵੇਖੋ"
+      }
+    },
     "booksDueSoon": {
       "title": "ਜਲਦੀ ਵਾਪਸ ਕਰਨ ਵਾਲੀਆਂ ਕਿਤਾਬਾਂ",
       "emptyTitle": "ਜਲਦੀ ਵਾਪਸ ਕਰਨ ਵਾਲਾ ਕੁਝ ਨਹੀਂ",
@@ -700,6 +723,24 @@
       "booksIssuedToday": "ਅੱਜ ਜਾਰੀ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
       "newRegistrationsToday": "ਅੱਜ ਦੀਆਂ ਨਵੀਆਂ ਰਜਿਸਟ੍ਰੇਸ਼ਨਾਂ",
       "pendingTasks": "ਬਕਾਇਆ ਕੰਮ"
+    },
+    "statModal": {
+      "seatsBookedToday": {
+        "description": "ਅੱਜ ਕਾਊਂਟਰ 'ਤੇ ਬੁੱਕ ਕੀਤੀਆਂ ਵਾਕ-ਇਨ ਸੀਟਾਂ। ਇੱਥੋਂ ਕਿਸੇ ਮੈਂਬਰ ਲਈ ਇੱਕ ਹੋਰ ਸੀਟ ਬੁੱਕ ਕਰੋ।"
+      },
+      "booksIssuedToday": {
+        "emptyTitle": "ਅੱਜ ਹਾਲੇ ਤੱਕ ਕੋਈ ਕਿਤਾਬ ਜਾਰੀ ਨਹੀਂ ਹੋਈ",
+        "emptyDescription": "ਅੱਜ ਕਾਊਂਟਰ 'ਤੇ ਮੈਂਬਰਾਂ ਨੂੰ ਜਾਰੀ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੀਆਂ।",
+        "returnedNote": "ਅੱਜ ਜਾਰੀ ਕੀਤੀਆਂ {{count}} ਹੋਰ ਕਿਤਾਬਾਂ ਪਹਿਲਾਂ ਹੀ ਵਾਪਸ ਆ ਚੁੱਕੀਆਂ ਹਨ ਅਤੇ ਹੁਣ ਸਰਗਰਮ ਵਜੋਂ ਨਹੀਂ ਦਿਖਦੀਆਂ।"
+      },
+      "newRegistrationsToday": {
+        "description": "ਅੱਜ ਕਾਊਂਟਰ 'ਤੇ ਰਜਿਸਟਰ ਕੀਤੇ ਨਵੇਂ ਮੈਂਬਰ। ਇੱਥੋਂ ਕਿਸੇ ਹੋਰ ਵਾਕ-ਇਨ ਨੂੰ ਰਜਿਸਟਰ ਕਰੋ।"
+      },
+      "pendingTasks": {
+        "total": "ਕੁੱਲ ਬਕਾਇਆ ਕੰਮ",
+        "other": "ਹੋਰ ਬਕਾਇਆ ਆਈਟਮਾਂ",
+        "otherHint": "ਇਸ ਵਿੱਚ ਖੁੱਲ੍ਹੇ ਸਹਾਇਤਾ ਟਿਕਟ ਅਤੇ ਐਡਮਿਨ ਦੀ ਮਨਜ਼ੂਰੀ ਦੀ ਉਡੀਕ ਕਰ ਰਹੀਆਂ ਬਿਲਿੰਗ ਬੇਨਤੀਆਂ ਸ਼ਾਮਲ ਹਨ।"
+      }
     },
     "walkIns": {
       "title": "ਵਾਕ-ਇਨ ਸਹਾਇਤਾ",
@@ -831,6 +872,21 @@
         "member": "ਮੈਂਬਰ",
         "returned": "ਵਾਪਸ ਕੀਤੀ ਗਈ",
         "status": "ਸਥਿਤੀ"
+      },
+      "searchPlaceholder": "ਕਿਤਾਬ ਜਾਂ ਮੈਂਬਰ ਦੁਆਰਾ ਖੋਜੋ",
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "all": "ਸਾਰੇ",
+        "active": "ਸਰਗਰਮ",
+        "overdue": "ਦੇਰੀ ਵਾਲਾ",
+        "returned": "ਵਾਪਸ ਕੀਤਾ ਗਿਆ"
+      },
+      "sort": {
+        "label": "ਕ੍ਰਮਬੱਧ ਕਰੋ",
+        "newest": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldest": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ",
+        "dueSoonest": "ਜਲਦੀ ਦੇਣਾ",
+        "dueLatest": "ਦੇਰ ਨਾਲ ਦੇਣਾ"
       }
     },
     "issueBookModal": {

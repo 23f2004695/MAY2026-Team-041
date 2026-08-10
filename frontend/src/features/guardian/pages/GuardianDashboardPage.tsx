@@ -15,8 +15,16 @@ import { useAuth, type GuardianChild } from '@/providers/AuthProvider';
 
 import { BorrowedBooksByChild } from '../components/BorrowedBooksByChild';
 import { ChildrenPresence } from '../components/ChildrenPresence';
+import { GuardianStatModal, type GuardianStatKey } from '../components/GuardianStatModal';
 import { SeatReservationForChild } from '../components/SeatReservationForChild';
 import { SubscriptionAndFines } from '../components/SubscriptionAndFines';
+
+const STAT_KEY_MAP: Record<string, GuardianStatKey> = {
+  'guardian.stats.linkedChildren': 'linkedChildren',
+  'guardian.stats.currentlyInLibrary': 'currentlyInLibrary',
+  'guardian.stats.booksBorrowed': 'booksBorrowed',
+  'guardian.stats.totalDues': 'totalDues',
+};
 
 // ponytail: child identity always comes from the real GuardianLink/ReadingProgress
 // tables now (getGuardianChildren) — GuardianChild has no presence/loan/fine fields
@@ -60,6 +68,7 @@ export function GuardianDashboardPage() {
   const { getGuardianChildren, payChildFines, renewChildSubscription } = useAuth();
   const [realChildren, setRealChildren] = useState<GuardianChild[]>([]);
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
+  const [activeStat, setActiveStat] = useState<GuardianStatKey | null>(null);
 
   function refreshChildren() {
     getGuardianChildren().then(setRealChildren).catch(() => setRealChildren([]));
@@ -107,18 +116,23 @@ export function GuardianDashboardPage() {
       <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {guardianStats.map((stat) => (
-          <StatisticCard
-            key={stat.labelKey}
-            icon={stat.icon}
-            label={t(stat.labelKey)}
-            value={
-              stat.labelKey === 'guardian.stats.linkedChildren'
-                ? String(realChildren.length)
-                : stat.value
-            }
-          />
-        ))}
+        {guardianStats.map((stat) => {
+          const statKey = STAT_KEY_MAP[stat.labelKey];
+          return (
+            <StatisticCard
+              key={stat.labelKey}
+              icon={stat.icon}
+              label={t(stat.labelKey)}
+              value={
+                stat.labelKey === 'guardian.stats.linkedChildren'
+                  ? String(realChildren.length)
+                  : stat.value
+              }
+              onClick={() => setActiveStat(statKey)}
+              selected={activeStat === statKey}
+            />
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -158,6 +172,21 @@ export function GuardianDashboardPage() {
         onClose={() => setTicketModalOpen(false)}
         categories={GUARDIAN_CATEGORIES}
         onCreated={() => toast.success(t('support.toasts.created'))}
+      />
+
+      <GuardianStatModal
+        statKey={activeStat}
+        onClose={() => setActiveStat(null)}
+        childrenList={realChildren}
+        onPayFine={async (childId) => {
+          try {
+            await payChildFines(childId);
+            toast.success(t('guardian.quickActions.toasts.payingAllFines'));
+            refreshChildren();
+          } catch (err) {
+            toast.error(getErrorMessage(err, t('common.errors.generic')));
+          }
+        }}
       />
     </div>
   );

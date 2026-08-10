@@ -22,7 +22,8 @@
       "approve": "Approve",
       "manage": "Manage",
       "viewReport": "View report",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "reset": "Reset"
     },
     "errors": {
       "generic": "Something went wrong. Please try again."
@@ -34,8 +35,10 @@
     "cards": {
       "event": {
         "registered": "Registered",
-        "open": "Open",
-        "viewDetails": "View details"
+        "viewDetails": "View details",
+        "ongoing": "Ongoing",
+        "closed": "Closed",
+        "upcoming": "Upcoming"
       },
       "book": {
         "reserve": "Reserve",
@@ -677,6 +680,26 @@
       "seatBookings": "Seat Bookings",
       "readingPoints": "Reading Points"
     },
+    "statModal": {
+      "booksBorrowed": {
+        "emptyTitle": "No books borrowed",
+        "emptyDescription": "Books you've checked out will show up here."
+      },
+      "booksReserved": {
+        "emptyTitle": "No active reservations",
+        "emptyDescription": "Books you reserve will show up here while you wait."
+      },
+      "seatBookings": {
+        "emptyTitle": "No seat bookings",
+        "emptyDescription": "Seats you book will show up here.",
+        "seatLabel": "Seat {{seat}}",
+        "pastNote": "{{count}} earlier booking(s) aren't shown — seat booking only covers today and the next 2 days."
+      },
+      "readingStreak": {
+        "longest": "Longest streak: {{count}} day(s)",
+        "viewProgress": "View Reading Progress"
+      }
+    },
     "booksDueSoon": {
       "title": "Books Due Soon",
       "emptyTitle": "Nothing due soon",
@@ -718,6 +741,24 @@
       "booksIssuedToday": "Books Issued Today",
       "newRegistrationsToday": "New Registrations Today",
       "pendingTasks": "Pending Tasks"
+    },
+    "statModal": {
+      "seatsBookedToday": {
+        "description": "Walk-in seats booked at the counter today. Book another one for a member from here."
+      },
+      "booksIssuedToday": {
+        "emptyTitle": "No books issued yet today",
+        "emptyDescription": "Books issued to members at the counter today will show up here.",
+        "returnedNote": "{{count}} more issued today already came back and no longer show as active."
+      },
+      "newRegistrationsToday": {
+        "description": "New members registered at the counter today. Register another walk-in from here."
+      },
+      "pendingTasks": {
+        "total": "Total pending tasks",
+        "other": "Other pending items",
+        "otherHint": "Includes open support tickets and billing requests awaiting admin approval."
+      }
     },
     "walkIns": {
       "title": "Walk-In Assistance",
@@ -854,6 +895,24 @@
       "pageTitle": "Books",
       "pageDescription": "Check which books are on the shelf right now and when a checked-out copy is due back.",
       "searchPlaceholder": "Search by title or author",
+      "filters": {
+        "categoryLabel": "Category",
+        "allCategories": "All",
+        "statusLabel": "Status",
+        "statusOptions": {
+          "all": "All",
+          "available": "Available",
+          "unavailable": "Unavailable (Return Date Known)",
+          "unavailable_no_date": "Unavailable (No Return Date)"
+        },
+        "sortLabel": "Sort",
+        "sortOptions": {
+          "title_asc": "Title (A-Z)",
+          "title_desc": "Title (Z-A)",
+          "copies_desc": "Most Copies Available",
+          "copies_asc": "Fewest Copies Available"
+        }
+      },
       "table": {
         "title": "Book",
         "category": "Category",
@@ -892,6 +951,21 @@
       "empty": {
         "title": "No loan history",
         "description": "Loans will show up here once books are issued to members."
+      },
+      "searchPlaceholder": "Search by book or member",
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All",
+        "active": "Active",
+        "overdue": "Overdue",
+        "returned": "Returned"
+      },
+      "sort": {
+        "label": "Sort",
+        "newest": "Newest First",
+        "oldest": "Oldest First",
+        "dueSoonest": "Due Soonest",
+        "dueLatest": "Due Latest"
       }
     }
   },
@@ -1464,6 +1538,7 @@
       "noRegistrants": "No one registered for this event.",
       "loadError": "Couldn't load analytics for this event.",
       "exportTitle": "Post-Event Analytics — {{title}}",
+      "exportCharts": "Export Charts (PDF)",
       "table": {
         "name": "Name",
         "email": "Email",
@@ -1541,7 +1616,8 @@
       "selectPrompt": "Select an available seat to continue.",
       "confirmButton": "Confirm Booking",
       "cancelButton": "Cancel Booking",
-      "yourBookings": "Your upcoming bookings",
+      "yourBookings": "Your bookings",
+      "bookingInProgress": "In progress · until {{endHour}}",
       "reservedByOther": "Seat {{seatId}} is reserved for this time slot",
       "bookedByYou": "You've booked seat {{seatId}} for this time slot",
       "alreadyBookedThisSlot": "You already have a different seat booked for this time slot — cancel it first to switch.",
@@ -1645,6 +1721,7 @@
       "replyPlaceholder": "Write a reply...",
       "sendReply": "Send reply",
       "reportedBadge": "Reported",
+      "reportedCommentBadge": "Comment reported",
       "removeComment": "Remove",
       "banAria": "Ban {{author}}",
       "bannedBadge": "Banned",

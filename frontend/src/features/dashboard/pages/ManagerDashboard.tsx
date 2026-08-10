@@ -27,6 +27,7 @@ import { AddGuardianCard } from '../components/AddGuardianCard';
 import { BookSeatForMemberModal } from '../components/BookSeatForMemberModal';
 import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
 import { IssueBookForMemberModal } from '../components/IssueBookForMemberModal';
+import { ManagerStatModal, type ManagerStatKey } from '../components/ManagerStatModal';
 import { NewRegistrations } from '../components/NewRegistrations';
 import { PendingPayments } from '../components/PendingPayments';
 import { PendingReservations } from '../components/PendingReservations';
@@ -72,6 +73,7 @@ export function ManagerDashboard() {
   const [createEventOpen, setCreateEventOpen] = useState(false);
   const [isBillingRequestOpen, setIsBillingRequestOpen] = useState(false);
   const [isRequestPermissionOpen, setIsRequestPermissionOpen] = useState(false);
+  const [activeStat, setActiveStat] = useState<ManagerStatKey | null>(null);
 
   function refreshStats() {
     getManagerDashboard()
@@ -164,7 +166,7 @@ export function ManagerDashboard() {
     refreshActiveLoans();
   }
 
-  const statCards = [
+  const statCards: { key: ManagerStatKey; icon: typeof Armchair; value: number | undefined }[] = [
     {
       key: 'seatsBookedToday',
       icon: Armchair,
@@ -203,6 +205,8 @@ export function ManagerDashboard() {
             icon={stat.icon}
             label={t(`managerDashboard.stats.${stat.key}`)}
             value={stat.value === undefined ? '—' : String(stat.value)}
+            onClick={stats ? () => setActiveStat(stat.key) : undefined}
+            selected={activeStat === stat.key}
           />
         ))}
       </div>
@@ -261,6 +265,18 @@ export function ManagerDashboard() {
             onClick: () => setIsRequestPermissionOpen(true),
           },
         ]}
+      />
+
+      <ManagerStatModal
+        statKey={activeStat}
+        onClose={() => setActiveStat(null)}
+        stats={stats}
+        activeLoans={activeLoans}
+        pendingReservations={pendingReservations}
+        pendingPaymentsCount={pendingPayments.length}
+        onBookSeat={() => setIsBookSeatOpen(true)}
+        onIssueBook={() => setIsIssueBookOpen(true)}
+        onRegisterMember={() => setIsRegisterOpen(true)}
       />
 
       <RequestPermissionModal

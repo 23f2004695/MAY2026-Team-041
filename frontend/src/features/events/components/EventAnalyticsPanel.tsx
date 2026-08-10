@@ -43,6 +43,20 @@ export interface EventAnalyticsPanelProps {
   token: string;
 }
 
+function formatRegistrationDate(registeredAt: string | null | undefined): string {
+  if (!registeredAt) return '';
+  try {
+    const date = new Date(registeredAt);
+    if (isNaN(date.getTime())) return String(registeredAt);
+    return date.toLocaleString('en-IN', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  } catch {
+    return String(registeredAt);
+  }
+}
+
 export function EventAnalyticsPanel({ eventId, eventTitle, token }: EventAnalyticsPanelProps) {
   const { t } = useTranslation();
   const [analytics, setAnalytics] = useState<EventAnalytics | null>(null);
@@ -107,22 +121,27 @@ export function EventAnalyticsPanel({ eventId, eventTitle, token }: EventAnalyti
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-md border border-border-muted bg-secondary/40 p-3 sm:flex-row sm:items-center">
-            <FillRateDonut
-              percent={analytics.fill_rate * 100}
-              registered={analytics.total_registered}
-              capacity={analytics.capacity}
-              label={t('events.analytics.capacityFilled')}
+          <div className="flex flex-col gap-4 bg-surface p-1">
+            <div className="flex flex-col gap-4 rounded-md border border-border-muted bg-secondary/40 p-3 sm:flex-row sm:items-center">
+              <FillRateDonut
+                percent={analytics.fill_rate * 100}
+                registered={analytics.total_registered}
+                capacity={analytics.capacity}
+                label={t('events.analytics.capacityFilled')}
+              />
+              <RoleBreakdownBars
+                data={analytics.registrants_by_role}
+                label={t('events.analytics.byRole')}
+              />
+            </div>
+
+            <RegistrationTrendChart
+              registeredAtDates={(analytics.registrants || []).map((r) => r.registered_at)}
+              label={t('events.analytics.registrationTrend')}
             />
-            <RoleBreakdownBars data={analytics.registrants_by_role} label={t('events.analytics.byRole')} />
           </div>
 
-          <RegistrationTrendChart
-            registeredAtDates={analytics.registrants.map((r) => r.registered_at)}
-            label={t('events.analytics.registrationTrend')}
-          />
-
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {t('events.analytics.registrants')}
             </p>
@@ -135,35 +154,19 @@ export function EventAnalyticsPanel({ eventId, eventTitle, token }: EventAnalyti
                 t('events.analytics.table.role'),
                 t('events.analytics.table.registeredAt'),
               ]}
-              rows={analytics.registrants.map((r) => [
-                r.full_name,
-                r.email,
-                r.role,
-                new Date(r.registered_at).toLocaleString('en-IN', {
-                  dateStyle: 'medium',
-                  timeStyle: 'short',
-                }),
+              rows={(analytics.registrants || []).map((r) => [
+                r?.full_name ?? '',
+                r?.email ?? '',
+                r?.role ?? '',
+                formatRegistrationDate(r?.registered_at),
               ])}
               summaryLines={[
-                `${t('events.analytics.totalRegistered')}: ${analytics.total_registered} / ${analytics.capacity}`,
-                `${t('events.analytics.fillRate')}: ${Math.round(analytics.fill_rate * 100)}%`,
-                ...analytics.registrants_by_role.map((rb) => `${rb.role}: ${rb.count}`),
+                `${t('events.analytics.totalRegistered')}: ${analytics.total_registered ?? 0} / ${analytics.capacity ?? 0}`,
+                `${t('events.analytics.fillRate')}: ${Math.round((analytics.fill_rate ?? 0) * 100)}%`,
+                ...(analytics.registrants_by_role || []).map((rb) => `${rb?.role ?? ''}: ${rb?.count ?? 0}`),
               ]}
             />
           </div>
-
-          {analytics.registrants.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t('events.analytics.noRegistrants')}</p>
-          ) : (
-            <ul className="flex max-h-48 flex-col gap-1.5 overflow-y-auto">
-              {analytics.registrants.map((r) => (
-                <li key={r.id} className="flex items-center justify-between text-sm">
-                  <span className="text-foreground">{r.full_name}</span>
-                  <span className="text-xs text-muted-foreground">{r.role}</span>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
       )}
     </div>
