@@ -3,7 +3,6 @@ from datetime import datetime
 from prisma.models import Book, Loan
 
 from app.core.constants import Role
-from app.db.pagination import paginate
 from app.db.prisma import prisma
 
 
@@ -37,21 +36,24 @@ async def count_open_support_tickets() -> int:
     return await prisma.supportticket.count(where={"status": "open"})
 
 
-async def list_books(*, search: str | None, page: int, page_size: int) -> tuple[list[Book], int]:
+def _list_where(search: str | None, category: str | None) -> dict:
     where: dict = {"deletedAt": None}
     if search:
         where["OR"] = [
             {"title": {"contains": search, "mode": "insensitive"}},
             {"author": {"contains": search, "mode": "insensitive"}},
         ]
+    if category and category.lower() != "all":
+        where["category"] = category
+    return where
 
-    return await paginate(
-        prisma.book,
-        where=where,
-        order={"title": "asc"},
-        skip=(page - 1) * page_size,
-        take=page_size,
-    )
+
+# Returns every matching book, unpaginated. Availability (and therefore the
+# "available"/"unavailable" status filter and any copies-based sort) can only be computed
+# after joining active loans in the service layer, so pagination has to happen there too —
+# a DB-level skip/take here would slice the wrong rows once a status filter is applied.
+async def list_books(*, search: str | None, category: str | None) -> list[Book]:
+    return await prisma.book.find_many(where=_list_where(search, category), order={"title": "asc"})
 
 
 async def list_active_loans_for_books(book_ids: list[str]) -> list[Loan]:

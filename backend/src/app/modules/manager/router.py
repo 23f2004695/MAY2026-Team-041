@@ -58,10 +58,25 @@ async def link_guardian(
 async def list_book_availability(
     _: Annotated[User, Depends(manage)],
     search: Annotated[str | None, Query(description="Match against title or author")] = None,
+    category: Annotated[str | None, Query(description="Exact category match, or 'all'")] = None,
+    status: Annotated[
+        str | None,
+        Query(description="'available', 'unavailable', 'unavailable_no_date', or 'all'"),
+    ] = None,
+    sort: Annotated[
+        str, Query(description="title_asc | title_desc | copies_asc | copies_desc")
+    ] = "title_asc",
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> ManagerBookListOut:
-    return await service.list_book_availability(search=search, page=page, page_size=page_size)
+    return await service.list_book_availability(
+        search=search,
+        category=category,
+        status=status,
+        sort=sort,
+        page=page,
+        page_size=page_size,
+    )
 
 
 @router.get("/reservations/pending", response_model=list[PendingReservationOut])

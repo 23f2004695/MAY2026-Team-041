@@ -28,6 +28,20 @@ function formatBookingHour(hour: number): string {
   return `${displayHour} ${period}`;
 }
 
+function toDateInputValue(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// A booking is "in progress" (rather than simply "upcoming") when its 1-hour
+// slot has started but not yet ended — e.g. an 8 PM booking checked at 8:54 PM.
+function isBookingInProgress(date: string, hour: number): boolean {
+  const now = new Date();
+  return date === toDateInputValue(now) && hour === now.getHours();
+}
+
 export function BookingSummary({
   selectedSeat,
   dateLabel,
@@ -137,24 +151,32 @@ export function BookingSummary({
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               {t('seatBooking.bookingSummary.yourBookings')}
             </p>
-            {myBookings.map((booking) => (
-              <div
-                key={booking.id}
-                className="flex items-center justify-between gap-2 rounded-md bg-secondary/40 px-3 py-2 text-sm"
-              >
-                <span className="text-foreground">
-                  {booking.seat_label} · {booking.date} · {formatBookingHour(booking.hour)}
-                </span>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  disabled={isBusy}
-                  onClick={() => onCancelBooking(booking.id)}
+            {myBookings.map((booking) => {
+              const inProgress = isBookingInProgress(booking.date, booking.hour);
+              return (
+                <div
+                  key={booking.id}
+                  className="flex items-center justify-between gap-2 rounded-md bg-secondary/40 px-3 py-2 text-sm"
                 >
-                  {t('seatBooking.bookingSummary.cancelButton')}
-                </Button>
-              </div>
-            ))}
+                  <span className="text-foreground">
+                    {booking.seat_label} · {booking.date} ·{' '}
+                    {inProgress
+                      ? t('seatBooking.bookingSummary.bookingInProgress', {
+                          endHour: formatBookingHour((booking.hour + 1) % 24),
+                        })
+                      : formatBookingHour(booking.hour)}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={isBusy}
+                    onClick={() => onCancelBooking(booking.id)}
+                  >
+                    {t('seatBooking.bookingSummary.cancelButton')}
+                  </Button>
+                </div>
+              );
+            })}
           </div>
         )}
       </CardContent>

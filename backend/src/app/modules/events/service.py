@@ -107,6 +107,12 @@ async def unregister(event_id: str, member_id: str, *, viewer_id: str | None = N
     if event is None or event.deletedAt is not None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
 
+    if event.date <= datetime.now(UTC):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot modify registrations for closed events",
+        )
+
     existing = await repository.find_registration(event_id, member_id)
     if not existing:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not registered")

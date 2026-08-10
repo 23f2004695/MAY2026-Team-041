@@ -9,7 +9,8 @@ POST_INCLUDE = {
     "author": True,
     "likes": True,
     "saves": True,
-    "comments": {"include": {"author": True}, "order_by": {"createdAt": "asc"}},
+    "reports": True,
+    "comments": {"include": {"author": True, "reports": True}, "order_by": {"createdAt": "asc"}},
 }
 
 
@@ -49,8 +50,16 @@ async def soft_delete_post(post_id: str) -> None:
     await prisma.communitypost.update(where={"id": post_id}, data={"deletedAt": datetime.now(UTC)})
 
 
-async def set_post_reported(post_id: str, reported: bool) -> CommunityPost:
-    return await update_post(post_id, {"reported": reported})
+async def set_post_reported(post_id: str, user_id: str) -> CommunityPost:
+    existing = await prisma.communitypostreport.find_unique(
+        where={"postId_userId": {"postId": post_id, "userId": user_id}}
+    )
+    if not existing:
+        await prisma.communitypostreport.create(data={"postId": post_id, "userId": user_id})
+    await prisma.communitypost.update(where={"id": post_id}, data={"reported": True})
+    post = await find_post(post_id)
+    assert post is not None
+    return post
 
 
 async def toggle_like(post_id: str, user_id: str) -> CommunityPost:
@@ -103,8 +112,13 @@ async def delete_comment(comment_id: str) -> None:
     await prisma.communitycomment.delete(where={"id": comment_id})
 
 
-async def set_comment_reported(comment_id: str, reported: bool) -> None:
-    await prisma.communitycomment.update(where={"id": comment_id}, data={"reported": reported})
+async def set_comment_reported(comment_id: str, user_id: str) -> None:
+    existing = await prisma.communitycommentreport.find_unique(
+        where={"commentId_userId": {"commentId": comment_id, "userId": user_id}}
+    )
+    if not existing:
+        await prisma.communitycommentreport.create(data={"commentId": comment_id, "userId": user_id})
+    await prisma.communitycomment.update(where={"id": comment_id}, data={"reported": True})
 
 
 async def find_ban(user_id: str) -> CommunityBan | None:

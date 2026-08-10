@@ -9,7 +9,10 @@ from app.db.prisma import prisma
 # Swap for prisma.readingprogress.group_by(...) if this table gets large.
 async def list_completed_counts(limit: int) -> list[tuple[str, int]]:
     rows = await prisma.readingprogress.find_many(
-        where={"status": "completed", "member": {"role": {"name": Role.MEMBER}}}
+        where={
+            "OR": [{"status": "completed"}, {"percentComplete": 100}],
+            "member": {"role": {"name": Role.MEMBER}, "deletedAt": None},
+        }
     )
     return Counter(row.memberId for row in rows).most_common(limit)
 

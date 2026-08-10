@@ -132,10 +132,30 @@ async def reject_reservation(reservation_id: str) -> ReservationOut:
     return ReservationOut.from_prisma(updated)
 
 
+def _sort_book_items(
+    items: list[ManagerBookAvailabilityOut], sort: str
+) -> list[ManagerBookAvailabilityOut]:
+    if sort == "title_desc":
+        return sorted(items, key=lambda item: item.title.lower(), reverse=True)
+    if sort == "copies_asc":
+        return sorted(items, key=lambda item: item.available_copies)
+    if sort == "copies_desc":
+        return sorted(items, key=lambda item: item.available_copies, reverse=True)
+    # "title_asc" and any unrecognized value fall back to the default the list already
+    # arrives in from the repository (title ascending).
+    return items
+
+
 async def list_book_availability(
-    *, search: str | None, page: int, page_size: int
+    *,
+    search: str | None,
+    category: str | None,
+    status: str | None,
+    sort: str,
+    page: int,
+    page_size: int,
 ) -> ManagerBookListOut:
-    books, total = await repository.list_books(search=search, page=page, page_size=page_size)
+    books = await repository.list_books(search=search, category=category)
     active_loans = await repository.list_active_loans_for_books([book.id for book in books])
 
     loaned_out_count: dict[str, int] = {}
@@ -164,4 +184,30 @@ async def list_book_availability(
             )
         )
 
-    return ManagerBookListOut(items=items, total=total, page=page, page_size=page_size)
+    # Availability is derived from active loans, not a column on Book, so this filter
+    # can only be applied here — after the join above — rather than in the repository query.
+    # "unavailable" here means "unavailable with a known due date"; "unavailable_no_date"
+    # is the subset with no active loan on record at all (e.g. zero total copies) — the
+    # cases most likely to need a manager's attention rather than just a wait.
+    normalized_status = (status or "all").lower()
+    if normalized_status == "available":
+        items = [item for item in items if item.is_available]
+    elif normalized_status == "unavailable":
+        items = [
+            item
+            for item in items
+            if not item.is_available and item.expected_available_at is not None
+        ]
+    elif normalized_status == "unavailable_no_date":
+        items = [
+            item
+            for item in items
+            if not item.is_available and item.expected_available_at is None
+        ]
+
+    items = _sort_book_items(items, sort)
+
+    total = len(items)
+    start = (page - 1) * page_size
+    page_items = items[start : start + page_size]
+    return ManagerBookListOut(items=page_items, total=total, page=page, page_size=page_size)

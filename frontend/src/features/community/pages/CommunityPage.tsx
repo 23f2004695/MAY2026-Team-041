@@ -118,11 +118,14 @@ export function CommunityPage() {
   }, [canModerate]);
 
   const filteredPosts = useMemo(() => {
-    if (filter === 'saved') return posts.filter((post) => post.is_saved);
+    // If a member reported a post themselves, hide it from their feed.
+    // Other members will still see it (marked as [Reported]), and staff see all posts.
+    const basePosts = !isStaff ? posts.filter((post) => !post.reported_by_me) : posts;
+    if (filter === 'saved') return basePosts.filter((post) => post.is_saved);
     if (filter === 'reported')
-      return posts.filter((post) => post.reported || hasReportedComment(post.comments));
-    return posts;
-  }, [posts, filter]);
+      return basePosts.filter((post) => post.reported || hasReportedComment(post.comments));
+    return basePosts;
+  }, [posts, filter, isStaff]);
 
   const sortedPosts = useSortedItems(filteredPosts, {
     compare: (a, b) => {
@@ -450,6 +453,7 @@ export function CommunityPage() {
               key={post.id}
               post={post}
               isBanned={bannedAuthors.some((author) => author.user_id === post.author_id)}
+              hasReportedComment={hasReportedComment(post.comments)}
               onToggleLike={toggleLike}
               onToggleSave={toggleSave}
               onAddComment={addComment}

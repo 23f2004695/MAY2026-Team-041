@@ -38,27 +38,51 @@ export async function downloadPdf(
   rows: ExportCell[][],
   summaryLines: string[] = [],
 ): Promise<void> {
-  const [{ jsPDF }, { default: autoTable }] = await Promise.all([
+  const [jsPDFModule, autoTableModule] = await Promise.all([
     import('jspdf'),
     import('jspdf-autotable'),
   ]);
+
+  const jsPDF = jsPDFModule.jsPDF || jsPDFModule.default || (jsPDFModule as any);
+  const autoTable =
+    typeof autoTableModule.default === 'function'
+      ? autoTableModule.default
+      : typeof (autoTableModule as any).autoTable === 'function'
+      ? (autoTableModule as any).autoTable
+      : typeof autoTableModule === 'function'
+      ? autoTableModule
+      : null;
+
   const doc = new jsPDF();
-  doc.text(title, 14, 16);
+  doc.text(String(title || ''), 14, 16);
 
   let startY = 22;
-  if (summaryLines.length > 0) {
+  if (summaryLines && summaryLines.length > 0) {
     doc.setFontSize(10);
     summaryLines.forEach((line, i) => {
-      doc.text(line, 14, startY + i * 5);
+      doc.text(String(line ?? ''), 14, startY + i * 5);
     });
     doc.setFontSize(12);
     startY += summaryLines.length * 5 + 4;
   }
 
-  autoTable(doc, {
-    head: [headers],
-    body: rows.map((row) => row.map(String)),
-    startY,
-  });
+  const safeRows = (rows || []).map((row) =>
+    (row || []).map((cell) => (cell == null ? '' : String(cell))),
+  );
+
+  if (typeof autoTable === 'function') {
+    autoTable(doc, {
+      head: [headers || []],
+      body: safeRows,
+      startY,
+    });
+  } else if (typeof (doc as any).autoTable === 'function') {
+    (doc as any).autoTable({
+      head: [headers || []],
+      body: safeRows,
+      startY,
+    });
+  }
+
   doc.save(filename);
 }

@@ -86,12 +86,14 @@ async def test_leaderboard_ranks_by_completed_books_and_flags_current_user():
     top_reader = await _make_user(Role.MEMBER)
     other_reader = await _make_user(Role.MEMBER)
     non_member = await _make_user(Role.GUARDIAN)
-    books = [await _make_book() for _ in range(3)]
+    top_books = [await _make_book() for _ in range(15)]
+    other_books = [await _make_book() for _ in range(12)]
 
-    for book in books:
+    for book in top_books:
         await _complete(top_reader.id, book.id)
-    await _complete(other_reader.id, books[0].id)
-    await _complete(non_member.id, books[0].id)  # not a member — must be excluded
+    for book in other_books:
+        await _complete(other_reader.id, book.id)
+    await _complete(non_member.id, top_books[0].id)  # not a member — must be excluded
 
     async with _client_as(other_reader) as client:
         response = await client.get("/api/v1/leaderboard")
@@ -103,9 +105,9 @@ async def test_leaderboard_ranks_by_completed_books_and_flags_current_user():
     assert ids.index(top_reader.id) < ids.index(other_reader.id)
 
     top_entry = next(e for e in body if e["member_id"] == top_reader.id)
-    assert top_entry["books_completed"] == 3
+    assert top_entry["books_completed"] == 15
     assert top_entry["is_current_user"] is False
 
     own_entry = next(e for e in body if e["member_id"] == other_reader.id)
-    assert own_entry["books_completed"] == 1
+    assert own_entry["books_completed"] == 12
     assert own_entry["is_current_user"] is True
