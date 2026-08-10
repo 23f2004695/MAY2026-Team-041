@@ -6,6 +6,7 @@ import { PageHeader, Pagination, TableToolbar } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import {
   Badge,
+  SearchBar,
   Table,
   TableBody,
   TableCell,
@@ -33,6 +34,7 @@ export function ManagerBorrowHistoryPage() {
   const { t } = useTranslation();
   const { getLoanHistory } = useAuth();
   const [loans, setLoans] = useState<LoanRecord[]>([]);
+  const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<LoanStatusFilter>('all');
   const [sort, setSort] = useState<LoanSort>('newest');
 
@@ -50,11 +52,17 @@ export function ManagerBorrowHistoryPage() {
     };
   }, [getLoanHistory]);
 
-  const filteredLoans = useMemo(
-    () =>
-      statusFilter === 'all' ? loans : loans.filter((loan) => loan.status === statusFilter),
-    [loans, statusFilter],
-  );
+  const filteredLoans = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return loans.filter((loan) => {
+      const matchesStatus = statusFilter === 'all' || loan.status === statusFilter;
+      const matchesSearch =
+        query.length === 0 ||
+        loan.book_title.toLowerCase().includes(query) ||
+        loan.member_name.toLowerCase().includes(query);
+      return matchesStatus && matchesSearch;
+    });
+  }, [loans, search, statusFilter]);
 
   const sortedLoans = useSortedItems(filteredLoans, {
     compare: (a, b) => {
@@ -77,11 +85,29 @@ export function ManagerBorrowHistoryPage() {
     PAGE_SIZE,
   );
 
+  function updateSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
+
+  function updateStatusFilter(value: string) {
+    setStatusFilter(value as LoanStatusFilter);
+    setPage(1);
+  }
+
+  function updateSort(value: string) {
+    setSort(value as LoanSort);
+    setPage(1);
+  }
+
   function resetFilters() {
+    setSearch('');
     setStatusFilter('all');
     setSort('newest');
     setPage(1);
   }
+
+  const hasActiveFilters = search.trim().length > 0 || statusFilter !== 'all' || sort !== 'newest';
 
   return (
     <div className="flex flex-col gap-6">
@@ -90,102 +116,101 @@ export function ManagerBorrowHistoryPage() {
         description={t('managerDashboard.borrowHistory.pageDescription')}
       />
 
-      {loans.length === 0 ? (
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <SearchBar
+          value={search}
+          onChange={updateSearch}
+          placeholder={t('managerDashboard.borrowHistory.searchPlaceholder')}
+          className="max-w-sm"
+        />
+
+        <TableToolbar
+          filters={[
+            {
+              label: t('managerDashboard.borrowHistory.filters.statusLabel'),
+              value: statusFilter,
+              onChange: updateStatusFilter,
+              options: [
+                { value: 'all', label: t('managerDashboard.borrowHistory.filters.all') },
+                { value: 'active', label: t('managerDashboard.borrowHistory.filters.active') },
+                { value: 'overdue', label: t('managerDashboard.borrowHistory.filters.overdue') },
+                { value: 'returned', label: t('managerDashboard.borrowHistory.filters.returned') },
+              ],
+            },
+          ]}
+          sort={{
+            label: t('managerDashboard.borrowHistory.sort.label'),
+            value: sort,
+            onChange: updateSort,
+            options: [
+              { value: 'newest', label: t('managerDashboard.borrowHistory.sort.newest') },
+              { value: 'oldest', label: t('managerDashboard.borrowHistory.sort.oldest') },
+              { value: 'dueSoonest', label: t('managerDashboard.borrowHistory.sort.dueSoonest') },
+              { value: 'dueLatest', label: t('managerDashboard.borrowHistory.sort.dueLatest') },
+            ],
+          }}
+          onReset={resetFilters}
+          resetLabel={t('common.actions.reset')}
+        />
+      </div>
+
+      {filteredLoans.length === 0 ? (
         <NoResults
           icon={History}
           title={t('managerDashboard.borrowHistory.empty.title')}
           description={t('managerDashboard.borrowHistory.empty.description')}
+          action={
+            hasActiveFilters ? (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="text-sm font-medium text-primary"
+              >
+                {t('common.actions.reset')}
+              </button>
+            ) : undefined
+          }
         />
       ) : (
         <>
-          <TableToolbar
-            filters={[
-              {
-                label: t('managerDashboard.borrowHistory.filters.statusLabel'),
-                value: statusFilter,
-                onChange: (value) => {
-                  setStatusFilter(value as LoanStatusFilter);
-                  setPage(1);
-                },
-                options: [
-                  { value: 'all', label: t('managerDashboard.borrowHistory.filters.all') },
-                  { value: 'active', label: t('managerDashboard.borrowHistory.filters.active') },
-                  { value: 'overdue', label: t('managerDashboard.borrowHistory.filters.overdue') },
-                  { value: 'returned', label: t('managerDashboard.borrowHistory.filters.returned') },
-                ],
-              },
-            ]}
-            sort={{
-              label: t('managerDashboard.borrowHistory.sort.label'),
-              value: sort,
-              onChange: (value) => {
-                setSort(value as LoanSort);
-                setPage(1);
-              },
-              options: [
-                { value: 'newest', label: t('managerDashboard.borrowHistory.sort.newest') },
-                { value: 'oldest', label: t('managerDashboard.borrowHistory.sort.oldest') },
-                { value: 'dueSoonest', label: t('managerDashboard.borrowHistory.sort.dueSoonest') },
-                { value: 'dueLatest', label: t('managerDashboard.borrowHistory.sort.dueLatest') },
-              ],
-            }}
-            onReset={resetFilters}
-            resetLabel="Reset"
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('managerDashboard.borrowHistory.table.book')}</TableHead>
+                <TableHead>{t('managerDashboard.borrowHistory.table.member')}</TableHead>
+                <TableHead>{t('managerDashboard.borrowHistory.table.borrowed')}</TableHead>
+                <TableHead>{t('managerDashboard.borrowHistory.table.due')}</TableHead>
+                <TableHead>{t('managerDashboard.borrowHistory.table.returned')}</TableHead>
+                <TableHead>{t('managerDashboard.borrowHistory.table.status')}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedItems.map((loan) => (
+                <TableRow key={loan.id}>
+                  <TableCell>
+                    <p className="font-medium text-foreground">{loan.book_title}</p>
+                  </TableCell>
+                  <TableCell>{loan.member_name}</TableCell>
+                  <TableCell>{formatDate(loan.borrowed_at)}</TableCell>
+                  <TableCell>{formatDate(loan.due_date)}</TableCell>
+                  <TableCell>
+                    {formatDate(loan.returned_at) ?? t('managerDashboard.borrowHistory.notReturned')}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={loan.status} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
           />
-
-          {filteredLoans.length === 0 ? (
-            <NoResults
-              icon={History}
-              title={t('managerDashboard.borrowHistory.empty.title')}
-              description={t('managerDashboard.borrowHistory.empty.description')}
-              action={
-                <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary">
-                  Reset
-                </button>
-              }
-            />
-          ) : (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('managerDashboard.borrowHistory.table.book')}</TableHead>
-                    <TableHead>{t('managerDashboard.borrowHistory.table.member')}</TableHead>
-                    <TableHead>{t('managerDashboard.borrowHistory.table.borrowed')}</TableHead>
-                    <TableHead>{t('managerDashboard.borrowHistory.table.due')}</TableHead>
-                    <TableHead>{t('managerDashboard.borrowHistory.table.returned')}</TableHead>
-                    <TableHead>{t('managerDashboard.borrowHistory.table.status')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedItems.map((loan) => (
-                    <TableRow key={loan.id}>
-                      <TableCell>
-                        <p className="font-medium text-foreground">{loan.book_title}</p>
-                      </TableCell>
-                      <TableCell>{loan.member_name}</TableCell>
-                      <TableCell>{formatDate(loan.borrowed_at)}</TableCell>
-                      <TableCell>{formatDate(loan.due_date)}</TableCell>
-                      <TableCell>
-                        {formatDate(loan.returned_at) ?? t('managerDashboard.borrowHistory.notReturned')}
-                      </TableCell>
-                      <TableCell>
-                        <StatusBadge status={loan.status} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                pageSize={PAGE_SIZE}
-                onPageChange={setPage}
-              />
-            </>
-          )}
         </>
       )}
     </div>

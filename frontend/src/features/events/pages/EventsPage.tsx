@@ -45,6 +45,26 @@ interface AttendanceSummary {
   average_attendance_rate: number;
 }
 
+function getEventStatus(eventDate: string, now: number): 'ongoing' | 'upcoming' | 'closed' {
+  const start = new Date(eventDate).getTime();
+  const nowDate = new Date(now);
+  const startDate = new Date(start);
+  const isSameDay =
+    startDate.getFullYear() === nowDate.getFullYear() &&
+    startDate.getMonth() === nowDate.getMonth() &&
+    startDate.getDate() === nowDate.getDate();
+
+  if (isSameDay && start <= now) return 'ongoing';
+  if (start > now) return 'upcoming';
+  return 'closed';
+}
+
+const STATUS_PRIORITY: Record<'ongoing' | 'upcoming' | 'closed', number> = {
+  ongoing: 0,
+  upcoming: 1,
+  closed: 2,
+};
+
 export function EventsPage() {
   const { t } = useTranslation();
   const { token, role } = useAuth();
@@ -113,6 +133,10 @@ export function EventsPage() {
     });
 
     return [...filtered].sort((a, b) => {
+      const statusDiff =
+        STATUS_PRIORITY[getEventStatus(a.date, now)] - STATUS_PRIORITY[getEventStatus(b.date, now)];
+      if (statusDiff !== 0) return statusDiff;
+
       switch (eventSort) {
         case 'dateDesc':
           return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -234,6 +258,7 @@ export function EventsPage() {
                     attendees={event.attendees}
                     capacity={event.capacity}
                     registered={event.registered}
+                    status={getEventStatus(event.date, now)}
                     onViewDetails={() => setActiveEventId(event.id)}
                   />
                 ))}
@@ -274,4 +299,3 @@ export function EventsPage() {
     </div>
   );
 }
-

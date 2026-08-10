@@ -22,7 +22,7 @@ def _role(user: User) -> str:
 
 
 async def _notify_moderators(message: str) -> None:
-    await notifications_service.notify_roles(_MODERATOR_ROLES, "reported-comment", message)
+    await notifications_service.notify_roles(_STAFF_ROLES, "reported-comment", message)
 
 
 async def _ensure_not_banned(user: User) -> None:
@@ -97,7 +97,7 @@ async def report_post(user: User, post_id: str) -> PostOut:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "You cannot report posts")
     if post.authorId == user.id:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "You cannot report your own post")
-    updated = await repository.set_post_reported(post_id, True)
+    updated = await repository.set_post_reported(post_id, user.id)
     await _notify_moderators(f"{user.fullName} reported a post by {post.author.fullName}.")
     return PostOut.from_prisma(updated, current_user_id=user.id)
 
@@ -140,7 +140,7 @@ async def report_comment(user: User, comment_id: str) -> None:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "You cannot report comments")
     if comment.authorId == user.id:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "You cannot report your own comment")
-    await repository.set_comment_reported(comment_id, True)
+    await repository.set_comment_reported(comment_id, user.id)
     await _notify_moderators(f"{user.fullName} reported a comment.")
 
 

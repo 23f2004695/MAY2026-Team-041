@@ -73,8 +73,10 @@ export function SeatBookingPage() {
   // "change time" action: choosing a specific hour within the already-selected date.
   const [slotModalDate, setSlotModalDate] = useState<string | null>(null);
 
+  // ISO "YYYY-MM-DD" strings compare lexicographically, so a plain `<` check
+  // correctly catches any date before today, not just today's elapsed hours.
   const isHourPast = (hour: number, date: string = selectedDate) =>
-    date === todayValue && hour < new Date().getHours();
+    date < todayValue || (date === todayValue && hour < new Date().getHours());
   // If the raw selection is a hour that's since slipped into the past for "Today"
   // (e.g. picked while browsing tomorrow, then switched back), fall back to the
   // current hour rather than fetching/booking a slot the backend will reject anyway.
@@ -104,6 +106,11 @@ export function SeatBookingPage() {
   const hasOtherBookingThisSlot =
     selectedSeat?.status !== 'booked_by_me' &&
     myBookings.some((booking) => booking.date === selectedDate && booking.hour === effectiveHour);
+
+  // The API returns every booking the member has ever made, including slots whose
+  // hour has already elapsed today (or an earlier date entirely). "Your upcoming
+  // bookings" should only ever show slots that haven't ended yet.
+  const upcomingMyBookings = myBookings.filter((booking) => !isHourPast(booking.hour, booking.date));
 
   // Selection deliberately persists across date/hour changes — flipping through
   // slots to see when a specific seat frees up is a reasonable thing to want.
@@ -274,7 +281,7 @@ export function SeatBookingPage() {
           isNotified={isNotified}
           hasOtherBookingThisSlot={hasOtherBookingThisSlot}
           isBusy={isBusy}
-          myBookings={myBookings}
+          myBookings={upcomingMyBookings}
           onConfirm={confirmBooking}
           onCancelBooking={cancelBooking}
           onRequestNotify={requestNotify}

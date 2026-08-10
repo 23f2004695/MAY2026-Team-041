@@ -47,14 +47,20 @@ export function UpcomingEvents({ events }: { events: DashboardEvent[] }) {
         <CardTitle>{t('dashboard.upcomingEvents.title')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="flex flex-col gap-3">
-          {events.map((event) => (
-            <li key={event.id} className="flex items-center justify-between text-sm">
-              <span className="text-foreground">{event.title}</span>
-              <span className="text-muted-foreground">{event.date}</span>
-            </li>
-          ))}
-        </ul>
+        {events.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t('dashboard.upcomingEvents.noEvents', { defaultValue: 'No upcoming events.' })}
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {events.map((event) => (
+              <li key={event.id} className="flex items-center justify-between text-sm">
+                <span className="text-foreground font-medium">{event.title}</span>
+                <span className="text-xs text-muted-foreground">{event.date}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

@@ -20,7 +20,8 @@
       "approve": "स्वीकृत करें",
       "manage": "प्रबंधित करें",
       "viewReport": "रिपोर्ट देखें",
-      "cancel": "रद्द करें"
+      "cancel": "रद्द करें",
+      "reset": "रीसेट करें"
     },
     "errors": {
       "generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
@@ -32,8 +33,10 @@
     "cards": {
       "event": {
         "registered": "पंजीकृत",
-        "open": "खुला",
-        "viewDetails": "विवरण देखें"
+        "viewDetails": "विवरण देखें",
+        "ongoing": "जारी है",
+        "closed": "बंद",
+        "upcoming": "आगामी"
       },
       "book": {
         "reserve": "आरक्षित करें",
@@ -659,6 +662,26 @@
       "seatBookings": "सीट बुकिंग",
       "readingPoints": "पठन अंक"
     },
+    "statModal": {
+      "booksBorrowed": {
+        "emptyTitle": "कोई पुस्तक उधार नहीं ली गई",
+        "emptyDescription": "आपके द्वारा जारी करवाई गई पुस्तकें यहाँ दिखाई देंगी।"
+      },
+      "booksReserved": {
+        "emptyTitle": "कोई सक्रिय आरक्षण नहीं",
+        "emptyDescription": "आपके द्वारा आरक्षित पुस्तकें प्रतीक्षा के दौरान यहाँ दिखाई देंगी।"
+      },
+      "seatBookings": {
+        "emptyTitle": "कोई सीट बुकिंग नहीं",
+        "emptyDescription": "आपके द्वारा बुक की गई सीटें यहाँ दिखाई देंगी।",
+        "seatLabel": "सीट {{seat}}",
+        "pastNote": "{{count}} पुरानी बुकिंग यहाँ नहीं दिखाई गई — सीट बुकिंग केवल आज और अगले 2 दिनों के लिए उपलब्ध है।"
+      },
+      "readingStreak": {
+        "longest": "सबसे लंबी लकीर: {{count}} दिन",
+        "viewProgress": "पठन प्रगति देखें"
+      }
+    },
     "booksDueSoon": {
       "title": "जल्द वापसी देय पुस्तकें",
       "emptyTitle": "अभी कुछ भी देय नहीं",
@@ -700,6 +723,24 @@
       "booksIssuedToday": "आज जारी की गई पुस्तकें",
       "newRegistrationsToday": "आज के नए पंजीकरण",
       "pendingTasks": "लंबित कार्य"
+    },
+    "statModal": {
+      "seatsBookedToday": {
+        "description": "आज काउंटर पर बुक की गई वॉक-इन सीटें। यहाँ से किसी सदस्य के लिए एक और सीट बुक करें।"
+      },
+      "booksIssuedToday": {
+        "emptyTitle": "आज अभी तक कोई पुस्तक जारी नहीं हुई",
+        "emptyDescription": "आज काउंटर पर सदस्यों को जारी की गई पुस्तकें यहाँ दिखाई देंगी।",
+        "returnedNote": "आज जारी की गई {{count}} और पुस्तकें पहले ही वापस आ चुकी हैं और अब सक्रिय के रूप में नहीं दिखतीं।"
+      },
+      "newRegistrationsToday": {
+        "description": "आज काउंटर पर पंजीकृत किए गए नए सदस्य। यहाँ से किसी और वॉक-इन को पंजीकृत करें।"
+      },
+      "pendingTasks": {
+        "total": "कुल लंबित कार्य",
+        "other": "अन्य लंबित मामले",
+        "otherHint": "इसमें खुले सहायता टिकट और एडमिन की मंज़ूरी की प्रतीक्षा कर रहे बिलिंग अनुरोध शामिल हैं।"
+      }
     },
     "walkIns": {
       "title": "वॉक-इन सहायता",
@@ -831,6 +872,21 @@
         "member": "सदस्य",
         "returned": "वापस की गई",
         "status": "स्थिति"
+      },
+      "searchPlaceholder": "पुस्तक या सदस्य द्वारा खोजें",
+      "filters": {
+        "statusLabel": "स्थिति",
+        "all": "सभी",
+        "active": "सक्रिय",
+        "overdue": "विलंबित",
+        "returned": "वापस की गई"
+      },
+      "sort": {
+        "label": "क्रमबद्ध करें",
+        "newest": "नवीनतम पहले",
+        "oldest": "सबसे पुराना पहले",
+        "dueSoonest": "जल्द देय",
+        "dueLatest": "देर से देय"
       }
     },
     "issueBookModal": {

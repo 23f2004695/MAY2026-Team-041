@@ -27,10 +27,10 @@ export function EventDetailsDrawer({
   const { t } = useTranslation();
   const { role, token } = useAuth();
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
-  const canModerate = role === 'admin' || role === 'it-head';
+  const hasHappened = event ? new Date(event.date).getTime() < new Date().getTime() : false;
+  const canModerate = (role === 'admin' || role === 'it-head') && !hasHappened;
   const canManage = role === 'admin' || role === 'manager';
   const isAdmin = role === 'admin';
-  const hasHappened = event ? new Date(event.date).getTime() < new Date().getTime() : false;
 
   return (
     <Drawer

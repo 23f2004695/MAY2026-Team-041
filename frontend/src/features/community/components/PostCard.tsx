@@ -8,9 +8,20 @@ import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import type { CommunityPost, PostComment } from '@/providers/AuthProvider';
 import { useAuth } from '@/providers/AuthProvider';
 
+// If a member reported a comment themselves, hide it from their view.
+// Other members will still see it (marked as [Reported]), and staff see all comments.
+function hideSelfReportedComments(comments: PostComment[]): PostComment[] {
+  return comments
+    .filter((comment) => !comment.reported_by_me)
+    .map((comment) => ({ ...comment, replies: hideSelfReportedComments(comment.replies) }));
+}
+
 export interface PostCardProps {
   post: CommunityPost;
   isBanned: boolean;
+  /** True when the post itself wasn't reported but one of its comments was —
+   * used to flag the card and auto-expand comments so staff can find it. */
+  hasReportedComment: boolean;
   onToggleLike: (postId: string) => void;
   onToggleSave: (postId: string) => void;
   onAddComment: (postId: string, content: string) => void;
@@ -138,6 +149,7 @@ function CommentRow({
 export const PostCard = memo(function PostCard({
   post,
   isBanned,
+  hasReportedComment,
   onToggleLike,
   onToggleSave,
   onAddComment,
@@ -154,7 +166,20 @@ export const PostCard = memo(function PostCard({
   const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
   const canReport = role === 'member' || role === 'manager';
-  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const isMember = role === 'member';
+  // Members never see reported comments (or their replies) at all — strip them
+  // before anything downstream (count, list, auto-expand) touches the thread.
+  const visibleComments = isStaff ? post.comments : hideSelfReportedComments(post.comments);
+  // Only staff get the "something here was reported" signal — a member can't
+  // see the reported comment anyway, so the badge/auto-open would just be noise.
+  const flagReportedComment = hasReportedComment && !isMember;
+  // null means "no manual choice yet" — comments default open whenever this post
+  // has a reported comment (even one reported later, since the list polls every
+  // 30s), so staff land on the flagged comment instead of a card that looks clean
+  // until they think to expand it. Once the user toggles it themselves, that
+  // explicit choice wins until the reported-comment state changes again.
+  const [manualCommentsOpen, setManualCommentsOpen] = useState<boolean | null>(null);
+  const isCommentsOpen = manualCommentsOpen ?? flagReportedComment;
   const [commentDraft, setCommentDraft] = useState('');
 
   function handleAddComment(event: React.FormEvent) {
@@ -174,6 +199,9 @@ export const PostCard = memo(function PostCard({
             <p className="text-sm font-semibold text-foreground">{post.author_name}</p>
             {isBanned && <Badge variant="danger">{t('community.post.bannedBadge')}</Badge>}
             {post.reported && <Badge variant="danger">{t('community.post.reportedBadge')}</Badge>}
+            {!post.reported && flagReportedComment && (
+              <Badge variant="danger">{t('community.post.reportedCommentBadge')}</Badge>
+            )}
           </div>
           <p className="text-xs text-muted-foreground">{formatRelativeTime(post.created_at)}</p>
         </div>
@@ -252,13 +280,13 @@ export const PostCard = memo(function PostCard({
 
           <button
             type="button"
-            onClick={() => setIsCommentsOpen((open) => !open)}
+            onClick={() => setManualCommentsOpen(!isCommentsOpen)}
             aria-expanded={isCommentsOpen}
             aria-label={t('community.post.commentAria')}
             className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary"
           >
             <MessageCircle className="size-4" />
-            {post.comments.length}
+            {visibleComments.length}
           </button>
 
           {!isStaff && (
@@ -279,7 +307,7 @@ export const PostCard = memo(function PostCard({
 
         {isCommentsOpen && (
           <div className="flex flex-col gap-3 border-t border-border pt-3">
-            {post.comments.map((comment) => (
+            {visibleComments.map((comment) => (
               <CommentRow
                 key={comment.id}
                 comment={comment}
