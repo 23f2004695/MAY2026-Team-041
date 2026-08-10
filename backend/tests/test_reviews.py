@@ -281,9 +281,17 @@ async def test_list_all_reviews_visible_to_manager(member_user, manager_user, li
 async def test_list_my_reviews(member_user, librarian_user):
     book_id = await _create_book(librarian_user)
     async with _client_as(member_user) as client:
-        await client.post(f"/api/v1/books/{book_id}/reviews", json={"rating": 4, "comment": "My review text"})
+        await client.post(
+            f"/api/v1/books/{book_id}/reviews",
+            json={"rating": 4, "comment": "My review text"},
+        )
         response = await client.get("/api/v1/reviews/me")
 
     assert response.status_code == 200
     items = response.json()
-    assert any(item["book_id"] == book_id and item["rating"] == 4 and item["comment"] == "My review text" for item in items)
+    assert any(
+        item["book_id"] == book_id
+        and item["rating"] == 4
+        and item["comment"] == "My review text"
+        for item in items
+    )
