@@ -18,18 +18,39 @@ export interface FillRateDonutProps {
 
 export function FillRateDonut({ percent, registered, capacity, label }: FillRateDonutProps) {
   const clamped = Math.min(100, Math.max(0, percent));
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (clamped / 100) * circumference;
 
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className="relative flex size-28 shrink-0 items-center justify-center rounded-full"
-        style={{
-          background: `conic-gradient(var(--color-primary) ${clamped * 3.6}deg, var(--color-secondary) 0deg)`,
-        }}
+        className="relative flex size-28 shrink-0 items-center justify-center"
         role="img"
         aria-label={`${label}: ${Math.round(clamped)}%`}
       >
-        <div className="flex size-[4.5rem] flex-col items-center justify-center rounded-full bg-surface">
+        <svg className="size-full -rotate-90" viewBox="0 0 100 100">
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            stroke="var(--color-secondary)"
+            strokeWidth="10"
+            fill="transparent"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            stroke="var(--color-primary)"
+            strokeWidth="10"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            fill="transparent"
+          />
+        </svg>
+        <div className="absolute flex flex-col items-center justify-center">
           <span className="text-lg font-semibold text-foreground">{Math.round(clamped)}%</span>
           <span className="text-[10px] text-muted-foreground">
             {registered}/{capacity}

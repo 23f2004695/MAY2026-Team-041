@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui';
+import { cn } from '@/lib/cn';
 import { getErrorMessage } from '@/lib/api';
 import { downloadCsv, downloadPdf, type ExportCell } from '@/lib/export';
 
@@ -46,6 +47,7 @@ export function ExportButton({
         await downloadPdf(`${filename}.pdf`, title, headers, resolvedRows, summaryLines);
       }
     } catch (err) {
+      console.error('[Export error]:', err);
       toast.error(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setLoadingFormat(null);
@@ -53,7 +55,7 @@ export function ExportButton({
   }
 
   return (
-    <div className={className}>
+    <div className={cn('flex flex-wrap items-center gap-2', className)}>
       <Button
         variant="outline"
         size="sm"
@@ -71,7 +73,6 @@ export function ExportButton({
         isLoading={loadingFormat === 'pdf'}
         disabled={loadingFormat !== null && loadingFormat !== 'pdf'}
         onClick={() => handleExport('pdf')}
-        className="ml-2"
       >
         {t('common.export.pdf')}
       </Button>
