@@ -202,7 +202,7 @@
     "payAtLibraryDescription": "Skip online payment — visit the counter and pay the manager in cash.",
     "contactManager": "Notify the Manager",
     "payAtLibraryToast": "The manager has been notified — pay in cash at the counter",
-    "renewingCurrentPlan": "Renewing your current plan.",
+    "renewingCurrentPlan": "Upgrading your current plan.",
     "changePlan": "Change plan",
     "secureNotice": "Payments are processed securely",
     "coupon": {
@@ -326,7 +326,7 @@
     "pendingRequests": {
       "title": "Membership & Billing Requests",
       "types": {
-        "membershipRenewal": "Membership Renewal",
+        "membershipRenewal": "Membership Upgrade",
         "refundRequest": "Refund Request",
         "feeWaiverRequest": "Fee Waiver Request"
       },
@@ -596,9 +596,9 @@
       "noSubscription": "No active subscription",
       "fineOwed": "Fine owed: {{amount}}",
       "noFine": "No outstanding fine",
-      "renew": "Renew",
+      "renew": "Upgrade",
       "payFine": "Pay Fine",
-      "renewToast": "Renewing {{name}}'s subscription",
+      "renewToast": "Upgrading {{name}}'s subscription",
       "payFineToast": "Paying {{amount}} fine for {{name}}",
       "viewFineDetails": "View Details",
       "viewPaymentHistory": "Payment History",
@@ -636,10 +636,10 @@
     },
     "quickActions": {
       "payAllFines": "Pay All Fines",
-      "renewSubscription": "Renew Subscription",
+      "renewSubscription": "Upgrade Subscription",
       "toasts": {
         "payingAllFines": "Paying all outstanding fines",
-        "renewingSubscription": "Renewing subscription"
+        "renewingSubscription": "Upgrading subscription"
       },
       "contactStaff": "Contact Staff"
     }
@@ -658,9 +658,9 @@
       "noPlan": "You don't have an active plan yet",
       "fineOwed": "Fine owed: {{amount}}",
       "noFine": "No outstanding fine",
-      "renew": "Renew",
+      "renew": "Upgrade",
       "viewPlans": "View Plans",
-      "renewalPaymentLabel": "{{plan}} — Renewal",
+      "renewalPaymentLabel": "{{plan}} — Upgrade",
       "payFine": "Pay Fine",
       "viewFineDetails": "View Details",
       "fineDetails": {
@@ -721,7 +721,8 @@
       "title": "Quick Actions",
       "browseBooks": "Browse Books",
       "bookASeat": "Book a Seat",
-      "viewReservations": "View Reservations"
+      "viewReservations": "View Reservations",
+      "writeReview": "Write Library Review"
     },
     "notifications": {
       "title": "Recent Notifications",
@@ -972,6 +973,20 @@
   "myLoans": {
     "pageTitle": "My Borrow History",
     "pageDescription": "Books you've borrowed, with dates.",
+    "filters": {
+      "statusLabel": "Status",
+      "all": "All statuses",
+      "active": "Active",
+      "overdue": "Overdue",
+      "returned": "Returned"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "dueSoonest": "Due soonest",
+      "dueLatest": "Due latest"
+    },
     "table": {
       "book": "Book",
       "borrowed": "Borrowed",
@@ -990,6 +1005,7 @@
       "description": "Books you borrow will show up here with their dates."
     }
   },
+
   "landing": {
     "hero": {
       "badge": "Community Reading Club & Library Platform",
@@ -1820,6 +1836,13 @@
       "linked": "Linked",
       "unlink": "Unlink"
     },
+    "changePassword": {
+      "title": "Change Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "updateButton": "Update password",
+      "successToast": "Password updated successfully"
+    },
     "account": {
       "title": "Account",
       "logOut": "Log out",
@@ -1836,6 +1859,44 @@
     "writeReview": "Write a Review",
     "viewReviews": "View Reviews",
     "commentsHeading": "Comments",
+    "libraryReviewCard": {
+      "title": "Rate Your Library Experience",
+      "existingTitle": "Your Library Review",
+      "description": "Share your thoughts about our platform! Your review will be featured in 'What Our Members Say' on our homepage.",
+      "button": "Leave a Review",
+      "editButton": "Edit Review"
+    },
+    "libraryReviewModal": {
+      "title": "Rate & Review Our Library",
+      "description": "Share your experience with our community! Approved reviews are featured in 'What Our Members Say' on the homepage.",
+      "ratingLabel": "Overall Rating",
+      "reviewLabel": "Your Review",
+      "placeholder": "What do you love most about our library, collection, seat reservations, or atmosphere?",
+      "submitButton": "Submit Review",
+      "errorMinLength": "Please write a review of at least 5 characters.",
+      "successToast": "Thank you for reviewing our library! Your review will appear on the homepage."
+    },
+    "member": {
+      "ratedBooksHeading": "My Rated Books",
+      "writtenReviewsHeading": "My Reviews",
+      "noRatings": "No books rated yet.",
+      "noWrittenReviews": "You haven't written any reviews yet.",
+      "searchPlaceholder": "Search rated books by title...",
+      "table": {
+        "book": "Book",
+        "author": "Author",
+        "rating": "My Rating"
+      },
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest first",
+        "titleAsc": "Title (A–Z)",
+        "titleDesc": "Title (Z–A)",
+        "ratingHigh": "Highest rating",
+        "ratingLow": "Lowest rating"
+      }
+    },
+
     "admin": {
       "pageDescription": "Reviews across the whole catalog",
       "stats": {
