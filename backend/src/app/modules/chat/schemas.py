@@ -8,9 +8,8 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
-    history: list[ChatMessage] = []
 
 
 class ChatResponse(BaseModel):
     reply: str
-    source: str  # "rag" | "tag" | "llm"
+    source: str  # "rag" | "tag" | "llm" | "error"

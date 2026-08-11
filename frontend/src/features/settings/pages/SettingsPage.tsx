@@ -315,7 +315,6 @@ export function SettingsPage() {
 
           {!hasStaffAccount && (
             <div className="flex flex-col gap-2 rounded-md border border-danger/30 bg-danger/5 p-4">
-              <p className="text-sm font-medium text-danger">{t('settings.account.dangerZone')}</p>
               <p className="text-sm text-muted-foreground">
                 {t('settings.account.deleteAccountHint')}
               </p>
@@ -329,6 +328,8 @@ export function SettingsPage() {
               </Button>
             </div>
           )}
+
+
         </CardContent>
       </Card>
     </div>

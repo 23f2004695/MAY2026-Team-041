@@ -22,8 +22,22 @@ class Settings(BaseSettings):
     # dashboard (Settings > API Keys) are set. key_secret never leaves the backend.
     razorpay_key_id: str = Field(default="", validation_alias="RAZORPAY_KEY_ID")
     razorpay_key_secret: str = Field(default="", validation_alias="RAZORPAY_KEY_SECRET")
+    # Redis (chat history)
+    redis_url: str = Field(default="redis://localhost:6379/0", validation_alias="REDIS_URL")
+    chat_history_ttl_seconds: int = Field(default=3600, validation_alias="CHAT_HISTORY_TTL_SECONDS")
+    chat_history_max_turns: int = Field(default=5, validation_alias="CHAT_HISTORY_MAX_TURNS")
     openai_api_key: str = Field(default="", validation_alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", validation_alias="OPENAI_MODEL")
+    # LLM backend: "openai" | "bedrock" | "ollama"
+    llm_mode: str = Field(default="openai", validation_alias="LLM_MODE")
+    # AWS Bedrock
+    aws_region: str = Field(default="us-east-1", validation_alias="AWS_REGION")
+    aws_access_key_id: str = Field(default="", validation_alias="AWS_ACCESS_KEY_ID")
+    aws_secret_access_key: str = Field(default="", validation_alias="AWS_SECRET_ACCESS_KEY")
+    bedrock_model_id: str = Field(default="amazon.nova-lite-v1:0", validation_alias="BEDROCK_MODEL_ID")
+    # Ollama
+    ollama_base_url: str = Field(default="http://localhost:11434", validation_alias="OLLAMA_BASE_URL")
+    ollama_model: str = Field(default="llama3.2:3b", validation_alias="OLLAMA_MODEL")
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
     reset_token_expire_minutes: int = 30
