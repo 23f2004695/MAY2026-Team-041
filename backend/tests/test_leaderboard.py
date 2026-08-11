@@ -1,10 +1,12 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
 
 os.environ["APP_ENV"] = "test"
 
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from prisma.types import BookWhereInput, UserWhereInput
 
 from app.core.config import get_settings
 from app.core.constants import Role
@@ -59,10 +61,13 @@ async def _complete(member_id: str, book_id: str):
 async def _db_connection():
     await prisma.connect()
     yield
-    domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
-    await prisma.readingprogress.delete_many(where={"member": domain_filter})
-    await prisma.user.delete_many(where=domain_filter)
-    await prisma.book.delete_many(where={"title": {"startswith": TEST_TITLE_MARKER}})
+    book_filter: BookWhereInput = {"title": {"startswith": TEST_TITLE_MARKER}}
+    user_filter: UserWhereInput = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
+    await prisma.loan.delete_many(where={"book": book_filter})  # type: ignore
+    await prisma.review.delete_many(where={"book": book_filter})  # type: ignore
+    await prisma.readingprogress.delete_many(where={"book": book_filter})  # type: ignore
+    await prisma.user.delete_many(where=user_filter)
+    await prisma.book.delete_many(where=book_filter)
     await prisma.disconnect()
 
 
@@ -82,30 +87,64 @@ async def test_leaderboard_requires_authentication():
     assert response.status_code == 401
 
 
-async def test_leaderboard_ranks_by_completed_books_and_flags_current_user():
-    top_reader = await _make_user(Role.MEMBER)
-    other_reader = await _make_user(Role.MEMBER)
+async def test_leaderboard_ranks_by_score_and_flags_current_user():
+    top_participant = await _make_user(Role.MEMBER)
+    book_heavy_reader = await _make_user(Role.MEMBER)
     non_member = await _make_user(Role.GUARDIAN)
-    books = [await _make_book() for _ in range(3)]
+    books = [await _make_book() for _ in range(10)]
 
-    for book in books:
-        await _complete(top_reader.id, book.id)
-    await _complete(other_reader.id, books[0].id)
+    # book_heavy_reader completes 9 books (900 pts)
+    for i in range(9):
+        await _complete(book_heavy_reader.id, books[i].id)
+
+    # top_participant completes 8 books (800 pts) + 5 reviews (125 pts)
+    # + 3 on-time returns (45 pts) = 970 pts
+    for i in range(8):
+        await _complete(top_participant.id, books[i].id)
+    for i in range(5):
+        await prisma.review.create(
+            data={
+                "memberId": top_participant.id,
+                "bookId": books[i].id,
+                "rating": 5,
+                "comment": "Great book!",
+            }
+        )
+    now = datetime.now(UTC)
+    for i in range(3):
+        await prisma.loan.create(
+            data={
+                "memberId": top_participant.id,
+                "bookId": books[i].id,
+                "createdById": top_participant.id,
+                "borrowedAt": now - timedelta(days=5),
+                "dueDate": now + timedelta(days=5),
+                "returnedAt": now - timedelta(days=1),
+            }
+        )
+
     await _complete(non_member.id, books[0].id)  # not a member — must be excluded
 
-    async with _client_as(other_reader) as client:
+    async with _client_as(book_heavy_reader) as client:
         response = await client.get("/api/v1/leaderboard")
 
     assert response.status_code == 200
     body = response.json()
     ids = [entry["member_id"] for entry in body]
     assert non_member.id not in ids
-    assert ids.index(top_reader.id) < ids.index(other_reader.id)
 
-    top_entry = next(e for e in body if e["member_id"] == top_reader.id)
-    assert top_entry["books_completed"] == 3
+    # top_participant (970 pts) ranks above book_heavy_reader (900 pts)
+    assert ids.index(top_participant.id) < ids.index(book_heavy_reader.id)
+
+    top_entry = next(e for e in body if e["member_id"] == top_participant.id)
+    assert top_entry["books_completed"] == 8
+    assert top_entry["reviews_count"] == 5
+    assert top_entry["score"] == 970
+    assert top_entry["rank"] == 1
+    assert "reading_champion" in top_entry["badges"]
     assert top_entry["is_current_user"] is False
 
-    own_entry = next(e for e in body if e["member_id"] == other_reader.id)
-    assert own_entry["books_completed"] == 1
+    own_entry = next(e for e in body if e["member_id"] == book_heavy_reader.id)
+    assert own_entry["books_completed"] == 9
+    assert own_entry["score"] == 900
     assert own_entry["is_current_user"] is True

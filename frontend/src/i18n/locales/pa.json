@@ -1587,14 +1587,40 @@
   },
   "leaderboard": {
     "pageTitle": "ਲੀਡਰਬੋਰਡ",
-    "pageDescription": "ਇਸ ਮਹੀਨੇ ਕਮਿਊਨਿਟੀ ਦੇ ਟਾਪ ਪਾਠਕ",
+    "pageDescription": "ਕਮਿਊਨਿਟੀ ਪੜ੍ਹਾਈ ਅਤੇ ਭਾਗੀਦਾਰੀ ਲੀਡਰਬੋਰਡ",
     "table": {
       "rank": "ਰੈਂਕ",
-      "reader": "ਪਾਠਕ",
-      "points": "ਪੁਆਇੰਟ",
+      "reader": "ਮੈਂਬਰ",
+      "score": "ਸਕੋਰ",
       "badges": "ਬੈਜ",
-      "hoursRead": "ਪੜ੍ਹਨ ਦੇ ਘੰਟੇ",
-      "booksCompleted": "ਪੂਰੀਆਂ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ"
+      "points": "ਪੁਆਇੰਟ",
+      "booksCompleted": "ਪੂਰੀਆਂ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
+      "reviews": "ਸਮੀਖਿਆਵਾਂ",
+      "streak": "ਸਟ੍ਰੀਕ"
+    },
+    "badges": {
+      "bookworm": "ਬੁੱਕਵਰਮ (Bookworm)",
+      "bookwormDesc": "10 ਕਿਤਾਬਾਂ ਪੂਰੀਆਂ ਕੀਤੀਆਂ",
+      "7_day_streak": "7-ਦਿਨ ਸਟ੍ਰੀਕ",
+      "7_day_streakDesc": "ਲਗਾਤਾਰ 7 ਦਿਨ ਪੜ੍ਹਿਆ",
+      "top_reviewer": "ਟਾਪ ਰਿਵਿਊਅਰ",
+      "top_reviewerDesc": "10 ਸਮੀਖਿਆਵਾਂ ਲਿਖੀਆਂ",
+      "perfect_returner": "ਸਮੇਂ ਸਿਰ ਵਾਪਸੀ",
+      "perfect_returnerDesc": "10 ਕਿਤਾਬਾਂ ਸਮੇਂ ਸਿਰ ਮੋੜੀਆਂ",
+      "reading_champion": "ਰੀਡਿੰਗ ਚੈਂਪੀਅਨ",
+      "reading_championDesc": "#1 ਮਹੀਨਾਵਾਰ ਸਕੋਰ",
+      "community_star": "ਕਮਿਊਨਿਟੀ ਸਟਾਰ",
+      "community_starDesc": "5 ਲਾਇਬ੍ਰੇਰੀ ਈਵੈਂਟਾਂ ਵਿੱਚ ਹਿੱਸਾ ਲਿਆ"
+    },
+    "rules": {
+      "title": "ਪੁਆਇੰਟ ਅਤੇ ਬੈਜ ਕਿਵੇਂ ਕੰਮ ਕਰਦੇ ਹਨ",
+      "subtitle": "ਲੀਡਰਬੋਰਡ ਪੂਰੀਆਂ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ, ਸਮੀਖਿਆਵਾਂ, ਈਵੈਂਟਾਂ, ਸਟ੍ਰੀਕਸ ਅਤੇ ਸਮੇਂ ਸਿਰ ਵਾਪਸੀ 'ਤੇ ਪੁਆਇੰਟ ਦਿੰਦਾ ਹੈ।",
+      "completeBook": "ਕਿਤਾਬ ਪੂਰੀ ਕਰੋ (+100 ਪੁਆਇੰਟ)",
+      "writeReview": "ਸਮੀਖਿਆ ਲਿਖੋ (+25 ਪੁਆਇੰਟ)",
+      "attendEvent": "ਲਾਇਬ੍ਰੇਰੀ ਈਵੈਂਟ (+30 ਪੁਆਇੰਟ)",
+      "onTimeReturn": "ਸਮੇਂ ਸਿਰ ਵਾਪਸੀ (+15 ਪੁਆਇੰਟ)",
+      "streakBonus": "7-ਦਿਨ ਸਟ੍ਰੀਕ (+50 ਪੁਆਇੰਟ)",
+      "lateReturn": "ਦੇਰੀ ਨਾਲ ਵਾਪਸੀ ਜ਼ੁਰਮਾਨਾ (-10 ਪੁਆਇੰਟ)"
     },
     "hoursSuffix": "{{hours}} ਘੰਟੇ"
   },

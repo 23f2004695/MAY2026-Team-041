@@ -1687,14 +1687,40 @@
   },
   "leaderboard": {
     "pageTitle": "Leaderboard",
-    "pageDescription": "Top readers in the community",
+    "pageDescription": "Community reading & participation leaderboard",
     "table": {
       "rank": "Rank",
-      "reader": "Reader",
-      "points": "Points",
+      "reader": "Member",
+      "score": "Score",
       "badges": "Badges",
-      "hoursRead": "Hours Read",
-      "booksCompleted": "Books Completed"
+      "points": "Points",
+      "booksCompleted": "Books Completed",
+      "reviews": "Reviews",
+      "streak": "Streak"
+    },
+    "badges": {
+      "bookworm": "Bookworm",
+      "bookwormDesc": "10 books completed",
+      "7_day_streak": "7-Day Streak",
+      "7_day_streakDesc": "Read for 7 consecutive days",
+      "top_reviewer": "Top Reviewer",
+      "top_reviewerDesc": "10 reviews written",
+      "perfect_returner": "Perfect Returner",
+      "perfect_returnerDesc": "10 books returned on time",
+      "reading_champion": "Reading Champion",
+      "reading_championDesc": "#1 monthly score",
+      "community_star": "Community Star",
+      "community_starDesc": "5 library events attended"
+    },
+    "rules": {
+      "title": "How Points & Badges Work",
+      "subtitle": "Leaderboard rewards overall participation across books completed, reviews, events, streaks, and timely returns.",
+      "completeBook": "Complete a book (+100 pts)",
+      "writeReview": "Write a book review (+25 pts)",
+      "attendEvent": "Library event (+30 pts)",
+      "onTimeReturn": "On-time return (+15 pts)",
+      "streakBonus": "7-day streak (+50 pts)",
+      "lateReturn": "Late return penalty (-10 pts)"
     },
     "hoursSuffix": "{{hours}}h"
   },

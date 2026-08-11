@@ -1,6 +1,7 @@
 import asyncio
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
+from typing import cast
 
 from app.modules.admin import repository
 from app.modules.admin.constants import EXPENSE_BUDGETS, OPEN_HOURS, ExpenseCategory
@@ -80,11 +81,12 @@ def _parse_month_range(month: str) -> tuple[datetime, datetime]:
 
 
 async def get_dashboard() -> AdminDashboardOut:
-    now = datetime.now(UTC)
-    this_month_start = _month_start(now)
-    last_month_start = _previous_month_start(now)
+    utc_now = datetime.now(UTC)
+    local_now = datetime.now().astimezone()
+    this_month_start = _month_start(utc_now)
+    last_month_start = _previous_month_start(utc_now)
 
-    today = now.date()
+    today = local_now.date()
     yesterday = today - timedelta(days=1)
     today_midnight = datetime(today.year, today.month, today.day, tzinfo=UTC)
     yesterday_midnight = datetime(yesterday.year, yesterday.month, yesterday.day, tzinfo=UTC)
@@ -93,19 +95,7 @@ async def get_dashboard() -> AdminDashboardOut:
     # trips. Kept to a fixed handful on purpose: an earlier version also fanned out one
     # query per budget category and per opening hour, and those ~25 at once exhausted the
     # connection pool. The two _by_ helpers below each collapse a fan-out into one query.
-    (
-        revenue_mtd,
-        revenue_last_month,
-        membership_fees,
-        fines_collected,
-        expenses_mtd,
-        expenses_last_month,
-        total_members,
-        total_members_last_month,
-        booked_this_hour,
-        spend_by_category,
-        bookings_by_hour,
-    ) = await asyncio.gather(
+    results = await asyncio.gather(
         repository.sum_payments(start=this_month_start),
         repository.sum_payments(start=last_month_start, end=this_month_start),
         repository.sum_payments(start=this_month_start, has_plan=True),
@@ -114,10 +104,21 @@ async def get_dashboard() -> AdminDashboardOut:
         repository.sum_expenses(start=last_month_start, end=this_month_start),
         repository.count_members(),
         repository.count_members(created_before=this_month_start),
-        repository.count_seat_bookings(date=today_midnight, hour=now.hour),
+        repository.count_seat_bookings(date=today_midnight, hour=local_now.hour),
         repository.sum_expenses_by_category(start=this_month_start),
         repository.count_seat_bookings_by_hour(date=yesterday_midnight),
     )
+    revenue_mtd = cast(int, results[0])
+    revenue_last_month = cast(int, results[1])
+    membership_fees = cast(int, results[2])
+    fines_collected = cast(int, results[3])
+    expenses_mtd = cast(int, results[4])
+    expenses_last_month = cast(int, results[5])
+    total_members = cast(int, results[6])
+    total_members_last_month = cast(int, results[7])
+    booked_this_hour = cast(int, results[8])
+    spend_by_category = cast(dict[str, int], results[9])
+    bookings_by_hour = cast(dict[int, int], results[10])
 
     net_profit_mtd = revenue_mtd - expenses_mtd
     net_profit_last_month = revenue_last_month - expenses_last_month
@@ -334,7 +335,7 @@ async def list_members(
             # ponytail: same 30-days/month approximation as payments/router.py's
             # get_my_membership — no real membership/plan model exists yet.
             plan_expires_at = plan_payment.createdAt + timedelta(
-                days=30 * plan_payment.planMonths
+                days=30 * (plan_payment.planMonths or 1)
             )
             plan_is_active = plan_expires_at > now
 
@@ -345,7 +346,7 @@ async def list_members(
                 id=user.id,
                 full_name=user.fullName,
                 email=user.email,
-                role=user.role.name,
+                role=user.role.name if user.role else "member",
                 is_active=user.isActive,
                 joined_at=user.createdAt,
                 last_payment_amount=last_payment.amount if last_payment else None,
@@ -376,8 +377,8 @@ async def list_payments(
         AdminPaymentOut(
             id=payment.id,
             member_id=payment.userId,
-            member_name=payment.user.fullName,
-            member_email=payment.user.email,
+            member_name=payment.user.fullName if payment.user else "Unknown Member",
+            member_email=payment.user.email if payment.user else "",
             amount=payment.amount,
             label=payment.label,
             status=payment.status,
