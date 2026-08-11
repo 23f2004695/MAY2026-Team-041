@@ -1,21 +1,41 @@
-from collections import Counter
+from prisma.models import EventRegistration, Loan, LoginActivity, ReadingProgress, Review, User
 
 from app.core.constants import Role
 from app.db.prisma import prisma
 
 
-# ponytail: counts in Python rather than a DB group_by — no other module in this
-# codebase uses group_by yet, and the row count (completed reading entries) is small.
-# Swap for prisma.readingprogress.group_by(...) if this table gets large.
-async def list_completed_counts(limit: int | None = None) -> list[tuple[str, int]]:
-    rows = await prisma.readingprogress.find_many(
+async def list_member_users() -> list[User]:
+    return await prisma.user.find_many(
+        where={"role": {"name": Role.MEMBER}, "deletedAt": None}
+    )
+
+
+async def list_completed_progress() -> list[ReadingProgress]:
+    return await prisma.readingprogress.find_many(
         where={"status": "completed", "member": {"role": {"name": Role.MEMBER}}}
     )
-    return Counter(row.memberId for row in rows).most_common(limit)
 
 
-async def list_member_names(member_ids: list[str]) -> dict[str, str]:
-    if not member_ids:
-        return {}
-    users = await prisma.user.find_many(where={"id": {"in": member_ids}})
-    return {user.id: user.fullName for user in users}
+async def list_reviews() -> list[Review]:
+    return await prisma.review.find_many(
+        where={"member": {"role": {"name": Role.MEMBER}}}
+    )
+
+
+async def list_event_registrations() -> list[EventRegistration]:
+    return await prisma.eventregistration.find_many(
+        where={"member": {"role": {"name": Role.MEMBER}}}
+    )
+
+
+async def list_returned_loans() -> list[Loan]:
+    return await prisma.loan.find_many(
+        where={"returnedAt": {"not": None}, "member": {"role": {"name": Role.MEMBER}}}
+    )
+
+
+async def list_login_activities() -> list[LoginActivity]:
+    return await prisma.loginactivity.find_many(
+        where={"member": {"role": {"name": Role.MEMBER}}}
+    )
+

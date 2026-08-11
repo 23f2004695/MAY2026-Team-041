@@ -1587,14 +1587,40 @@
   },
   "leaderboard": {
     "pageTitle": "लीडरबोर्ड",
-    "pageDescription": "इस महीने कम्युनिटी के शीर्ष पाठक",
+    "pageDescription": "कम्युनिटी पठन एवं भागीदारी लीडरबोर्ड",
     "table": {
       "rank": "रैंक",
-      "reader": "पाठक",
-      "points": "अंक",
+      "reader": "सदस्य",
+      "score": "स्कोर",
       "badges": "बैज",
-      "hoursRead": "पढ़े गए घंटे",
-      "booksCompleted": "पूरी की गई पुस्तकें"
+      "points": "अंक",
+      "booksCompleted": "पूरी की गई पुस्तकें",
+      "reviews": "समीक्षाएं",
+      "streak": "स्ट्रिक"
+    },
+    "badges": {
+      "bookworm": "किताबी कीड़ा (Bookworm)",
+      "bookwormDesc": "10 पुस्तकें पूरी कीं",
+      "7_day_streak": "7-दिन स्ट्रिक",
+      "7_day_streakDesc": "लगातार 7 दिन तक पढ़ा",
+      "top_reviewer": "शीर्ष समीक्षक",
+      "top_reviewerDesc": "10 पुस्तकें समीक्षाएं लिखीं",
+      "perfect_returner": "समय पर वापसी",
+      "perfect_returnerDesc": "10 पुस्तकें समय पर लौटाईं",
+      "reading_champion": "रीडिंग चैंपियन",
+      "reading_championDesc": "महीने का #1 स्कोर",
+      "community_star": "कम्युनिटी स्टार",
+      "community_starDesc": "5 लाइब्रेरी इवेंट्स में भाग लिया"
+    },
+    "rules": {
+      "title": "अंक और बैज कैसे काम करते हैं",
+      "subtitle": "लीडरबोर्ड पूरी की गई पुस्तकों, समीक्षाओं, इवेंट्स, स्ट्रिक्स और समय पर वापसी पर अंक देता है।",
+      "completeBook": "पुस्तक पूरी करें (+100 अंक)",
+      "writeReview": "समीक्षा लिखें (+25 अंक)",
+      "attendEvent": "लाइब्रेरी इवेंट (+30 अंक)",
+      "onTimeReturn": "समय पर वापसी (+15 अंक)",
+      "streakBonus": "7-दिन स्ट्रिक (+50 अंक)",
+      "lateReturn": "देर से वापसी दंड (-10 अंक)"
     },
     "hoursSuffix": "{{hours}} घं."
   },
