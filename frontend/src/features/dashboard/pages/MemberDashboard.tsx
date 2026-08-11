@@ -1,10 +1,12 @@
-import { BookMarked, BookOpen, CalendarCheck, Flame, Ticket } from 'lucide-react';
+import { BookMarked, BookOpen, CalendarCheck, Flame, Star, Ticket } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
+import { LeaveLibraryReviewModal } from '@/features/reviews/components/LeaveLibraryReviewModal';
+import { LibraryReviewCard } from '@/features/reviews/components/LibraryReviewCard';
 import { apiGet } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/format';
 import type { DueBook } from '@/mocks/dashboard';
@@ -66,6 +68,7 @@ export function MemberDashboard() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [streak, setStreak] = useState<ReadingStreak>(EMPTY_STREAK);
   const [activeStat, setActiveStat] = useState<MemberStatKey | null>(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -218,6 +221,8 @@ export function MemberDashboard() {
         <UpcomingEvents events={upcomingEvents} />
       </div>
 
+      <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} />
+
       <QuickActionsCard
         title={t('dashboard.quickActions.title')}
         actions={[
@@ -236,7 +241,17 @@ export function MemberDashboard() {
             icon: Ticket,
             onClick: () => navigate(ROUTES.RESERVATIONS),
           },
+          {
+            label: t('dashboard.quickActions.writeReview', 'Write Library Review'),
+            icon: Star,
+            onClick: () => setIsReviewModalOpen(true),
+          },
         ]}
+      />
+
+      <LeaveLibraryReviewModal
+        open={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
       />
 
       <MemberStatModal

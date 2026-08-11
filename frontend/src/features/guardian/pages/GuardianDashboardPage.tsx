@@ -1,4 +1,4 @@
-import { BookOpen, HandCoins, MessageSquare, RefreshCw } from 'lucide-react';
+import { BookOpen, HandCoins, MessageSquare, RefreshCw, Star } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { toast } from 'sonner';
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
+import { LeaveLibraryReviewModal } from '@/features/reviews/components/LeaveLibraryReviewModal';
+import { LibraryReviewCard } from '@/features/reviews/components/LibraryReviewCard';
 import { RaiseTicketModal } from '@/features/support/components/RaiseTicketModal';
 import { GUARDIAN_CATEGORIES } from '@/features/support/constants';
 import { getErrorMessage } from '@/lib/api';
@@ -69,6 +71,7 @@ export function GuardianDashboardPage() {
   const [realChildren, setRealChildren] = useState<GuardianChild[]>([]);
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [activeStat, setActiveStat] = useState<GuardianStatKey | null>(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   function refreshChildren() {
     getGuardianChildren().then(setRealChildren).catch(() => setRealChildren([]));
@@ -147,6 +150,8 @@ export function GuardianDashboardPage() {
 
       <ChildrenReadingProgress realChildren={realChildren} />
 
+      <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} />
+
       <QuickActionsCard
         actions={[
           {
@@ -164,7 +169,17 @@ export function GuardianDashboardPage() {
             icon: MessageSquare,
             onClick: () => setTicketModalOpen(true),
           },
+          {
+            label: t('dashboard.quickActions.writeReview', 'Write Library Review'),
+            icon: Star,
+            onClick: () => setIsReviewModalOpen(true),
+          },
         ]}
+      />
+
+      <LeaveLibraryReviewModal
+        open={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
       />
 
       <RaiseTicketModal

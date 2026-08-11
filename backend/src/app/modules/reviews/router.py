@@ -29,9 +29,15 @@ async def create_review(
     return await service.create_review(book_id, user.id, payload)
 
 
+@router.get("/reviews/me", response_model=list[ReviewOut])
+async def list_my_reviews(user: Annotated[User, Depends(get_current_user)]) -> list[ReviewOut]:
+    return await service.get_my_reviews(user.id)
+
+
 @router.get("/reviews", response_model=list[ReviewOut])
 async def list_all_reviews(user: Annotated[User, Depends(view_all_reviews)]) -> list[ReviewOut]:
     return await service.get_all_reviews(viewer_id=user.id)
+
 
 
 @router.put("/reviews/{review_id}", response_model=ReviewOut)

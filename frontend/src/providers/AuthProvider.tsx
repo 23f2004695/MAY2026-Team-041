@@ -803,6 +803,7 @@ interface AuthContextValue extends AuthState {
   updateReview: (reviewId: string, payload: ReviewPayload) => Promise<Review>;
   deleteReview: (reviewId: string) => Promise<void>;
   getAllReviews: () => Promise<Review[]>;
+  getMyReviews: () => Promise<Review[]>;
   getAdminDashboard: () => Promise<AdminDashboard>;
   logExpense: (payload: ExpensePayload) => Promise<void>;
   getAuditLog: () => Promise<AuditLogEntry[]>;
@@ -1218,6 +1219,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getAllReviews(): Promise<Review[]> {
     return reviewsApi.getAllReviews(stateRef.current.token);
+  }
+
+  async function getMyReviews(): Promise<Review[]> {
+    return reviewsApi.getMyReviews(stateRef.current.token);
   }
 
   async function getAdminDashboard(): Promise<AdminDashboard> {
@@ -1649,6 +1654,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updateReview,
       deleteReview,
       getAllReviews,
+      getMyReviews,
       getAdminDashboard,
       logExpense,
       getAuditLog,

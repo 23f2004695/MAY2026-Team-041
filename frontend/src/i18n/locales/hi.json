@@ -618,10 +618,10 @@
     },
     "quickActions": {
       "payAllFines": "सभी जुर्माने भरें",
-      "renewSubscription": "सदस्यता नवीनीकृत करें",
+      "renewSubscription": "सदस्यता अपग्रेड करें",
       "toasts": {
         "payingAllFines": "सभी बकाया जुर्माने भरे जा रहे हैं",
-        "renewingSubscription": "सदस्यता नवीनीकृत की जा रही है"
+        "renewingSubscription": "सदस्यता अपग्रेड की जा रही है"
       },
       "contactStaff": "लाइब्रेरियन से संपर्क करें"
     }
@@ -640,7 +640,7 @@
       "noPlan": "आपके पास अभी तक कोई सक्रिय योजना नहीं है",
       "fineOwed": "बकाया जुर्माना: {{amount}}",
       "noFine": "कोई बकाया जुर्माना नहीं",
-      "renew": "नवीनीकरण करें",
+      "renew": "अपग्रेड करें",
       "viewPlans": "योजनाएँ देखें",
       "payFine": "जुर्माना भरें",
       "fineDetails": {
@@ -653,7 +653,7 @@
         },
         "title": "जुर्माना विवरण"
       },
-      "renewalPaymentLabel": "{{plan}} — नवीनीकरण",
+      "renewalPaymentLabel": "{{plan}} — अपग्रेड",
       "viewFineDetails": "विवरण देखें"
     },
     "stats": {
@@ -703,7 +703,8 @@
       "title": "त्वरित कार्रवाई",
       "browseBooks": "पुस्तकें ब्राउज़ करें",
       "bookASeat": "सीट बुक करें",
-      "viewReservations": "आरक्षण देखें"
+      "viewReservations": "आरक्षण देखें",
+      "writeReview": "लाइब्रेरी समीक्षा लिखें"
     },
     "notifications": {
       "title": "हाल की सूचनाएँ",
@@ -1720,10 +1721,15 @@
       "emailLabel": "अभिभावक का ईमेल",
       "emailPlaceholder": "guardian@example.com",
       "invalidEmail": "एक मान्य ईमेल पता दर्ज करें।",
-      "linkButton": "अभिभावक लिंक करें",
-      "linked": "लिंक किया गया",
-      "title": "अभिभावक",
-      "unlink": "अनलिंक करें"
+      "unlink": "अनलिंक",
+      "linked": "लिंक किया गया"
+    },
+    "changePassword": {
+      "title": "पासवर्ड बदलें",
+      "newPassword": "नया पासवर्ड",
+      "confirmPassword": "नए पासवर्ड की पुष्टि करें",
+      "updateButton": "पासवर्ड अपडेट करें",
+      "successToast": "पासवर्ड सफलतापूर्वक अपडेट किया गया"
     },
     "itHeadPreferences": {
       "items": {
@@ -1749,8 +1755,45 @@
     "byAuthor": "लेखक {{author}}",
     "writeReview": "समीक्षा लिखें",
     "viewReviews": "समीक्षाएं देखें",
-    "writeReviewDisabledHint": "समीक्षाएँ अभी सबमिशन के लिए खुली नहीं हैं",
     "commentsHeading": "टिप्पणियाँ",
+    "libraryReviewCard": {
+      "title": "अपने लाइब्रेरी अनुभव को रेट करें",
+      "existingTitle": "आपकी लाइब्रेरी समीक्षा",
+      "description": "हमारे प्लेटफ़ॉर्म के बारे में अपने विचार साझा करें! आपकी समीक्षा हमारे होमपेज पर 'हमारे सदस्य क्या कहते हैं' में प्रदर्शित की जाएगी।",
+      "button": "समीक्षा लिखें",
+      "editButton": "समीक्षा संपादित करें"
+    },
+    "libraryReviewModal": {
+      "title": "हमारी लाइब्रेरी को रेट और रिव्यू करें",
+      "description": "हमारे समुदाय के साथ अपना अनुभव साझा करें! स्वीकृत समीक्षाएँ होमपेज पर प्रदर्शित की जाती हैं।",
+      "ratingLabel": "समग्र रेटिंग",
+      "reviewLabel": "आपकी समीक्षा",
+      "placeholder": "आपको हमारी लाइब्रेरी, संग्रह, सीट आरक्षण या माहौल के बारे में सबसे अच्छा क्या लगता है?",
+      "submitButton": "समीक्षा जमा करें",
+      "errorMinLength": "कृपया कम से कम 5 अक्षरों की समीक्षा लिखें।",
+      "successToast": "हमारी लाइब्रेरी की समीक्षा करने के लिए धन्यवाद! आपकी समीक्षा होमपेज पर दिखाई देगी।"
+    },
+    "member": {
+      "ratedBooksHeading": "मेरी रेट की गई पुस्तकें",
+      "writtenReviewsHeading": "मेरी समीक्षाएँ",
+      "noRatings": "अभी तक किसी पुस्तक को रेटिंग नहीं दी गई है।",
+      "noWrittenReviews": "आपने अभी तक कोई समीक्षा नहीं लिखी है।",
+      "searchPlaceholder": "शीर्षक से पुस्तकें खोजें...",
+      "table": {
+        "book": "पुस्तक",
+        "author": "लेखक",
+        "rating": "मेरी रेटिंग"
+      },
+      "sort": {
+        "label": "क्रमानुसार रखें",
+        "newest": "नवीनतम पहले",
+        "titleAsc": "शीर्षक (A–Z)",
+        "titleDesc": "शीर्षक (Z–A)",
+        "ratingHigh": "उच्चतम रेटिंग",
+        "ratingLow": "न्यूनतम रेटिंग"
+      }
+    },
+
     "summary": {
       "totalReviews_one": "{{count}} समीक्षा",
       "totalReviews_other": "{{count}} समीक्षाएँ",
@@ -2251,6 +2294,20 @@
       "description": "आपकी उधार ली गई पुस्तकें उनकी तारीख़ों के साथ यहाँ दिखाई देंगी।",
       "title": "अभी तक कोई पुस्तक उधार नहीं ली गई"
     },
+    "filters": {
+      "statusLabel": "स्थिति",
+      "all": "सभी स्थितियाँ",
+      "active": "सक्रिय",
+      "overdue": "विलंबित",
+      "returned": "वापस की गई"
+    },
+    "sort": {
+      "label": "क्रमानुसार रखें",
+      "newest": "नवीनतम पहले",
+      "oldest": "पुराना पहले",
+      "dueSoonest": "जल्द ही देय",
+      "dueLatest": "नवीनतम देय"
+    },
     "notReturned": "वापस नहीं की गई",
     "pageDescription": "आपने जो पुस्तकें उधार ली हैं, उनकी तारीख़ों के साथ।",
     "pageTitle": "मेरा उधार इतिहास",
@@ -2267,4 +2324,5 @@
       "status": "स्थिति"
     }
   }
+
 }

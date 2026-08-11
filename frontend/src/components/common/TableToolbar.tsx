@@ -66,10 +66,11 @@ export function TableToolbar({
           aria-label={resetLabel}
           title={resetLabel}
           onClick={onReset}
-          className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         >
           <RotateCcw className="size-4" />
         </button>
+
       )}
     </div>
   );

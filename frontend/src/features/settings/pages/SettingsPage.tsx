@@ -1,4 +1,6 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -18,6 +20,7 @@ import {
 import { ROUTES } from '@/constants/routes';
 import { LANGUAGES } from '@/i18n/languages';
 import { getErrorMessage } from '@/lib/api';
+import { changePasswordSchema, type ChangePasswordFormValues } from '@/lib/authSchema';
 import { isValidEmail } from '@/lib/email';
 import { useAuth, type Role } from '@/providers/AuthProvider';
 import { useLanguage } from '@/providers/LanguageProvider';
@@ -140,7 +143,7 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { role, fullName, email, logout, deleteAccount } = useAuth();
+  const { role, fullName, email, logout, deleteAccount, updateProfile } = useAuth();
   const hasStaffAccount = role === 'admin' || role === 'manager' || role === 'it-head';
   const [togglePrefs, setTogglePrefs] = useState(
     () => (role && preferencesByRole[role]) ?? initialNotificationPrefs,
@@ -148,6 +151,29 @@ export function SettingsPage() {
   const [guardianEmail, setGuardianEmail] = useState<string | null>(null);
   const [guardianEmailInput, setGuardianEmailInput] = useState('');
   const [guardianEmailError, setGuardianEmailError] = useState<string | undefined>();
+
+  const {
+    register: registerPassword,
+    handleSubmit: handlePasswordSubmit,
+    reset: resetPasswordForm,
+    formState: { errors: passwordErrors, isSubmitting: isSubmittingPassword },
+  } = useForm<ChangePasswordFormValues>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: {
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  async function onChangePasswordSubmit(values: ChangePasswordFormValues) {
+    try {
+      await updateProfile({ password: values.password });
+      toast.success(t('settings.changePassword.successToast', 'Password updated successfully'));
+      resetPasswordForm();
+    } catch (err) {
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    }
+  }
 
   function handleLinkGuardian(event: React.FormEvent) {
     event.preventDefault();
@@ -248,6 +274,45 @@ export function SettingsPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('settings.changePassword.title')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={handlePasswordSubmit(onChangePasswordSubmit)}
+            className="flex max-w-md flex-col gap-4"
+            noValidate
+          >
+            <Input
+              label={t('settings.changePassword.newPassword')}
+              type="password"
+              autoComplete="new-password"
+              error={
+                passwordErrors.password?.message
+                  ? t(passwordErrors.password.message)
+                  : undefined
+              }
+              {...registerPassword('password')}
+            />
+            <Input
+              label={t('settings.changePassword.confirmPassword')}
+              type="password"
+              autoComplete="new-password"
+              error={
+                passwordErrors.confirmPassword?.message
+                  ? t(passwordErrors.confirmPassword.message)
+                  : undefined
+              }
+              {...registerPassword('confirmPassword')}
+            />
+            <Button type="submit" isLoading={isSubmittingPassword} className="w-fit">
+              {t('settings.changePassword.updateButton')}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
       {role === 'member' && (
         <Card>
           <CardHeader>
@@ -279,7 +344,7 @@ export function SettingsPage() {
                   value={guardianEmailInput}
                   onChange={(event) => setGuardianEmailInput(event.target.value)}
                   error={guardianEmailError}
-                  className="flex-1"
+                  containerClassName="w-full sm:w-80"
                 />
                 <Button type="submit" className="w-fit">
                   {t('settings.guardianLink.linkButton')}
@@ -315,7 +380,6 @@ export function SettingsPage() {
 
           {!hasStaffAccount && (
             <div className="flex flex-col gap-2 rounded-md border border-danger/30 bg-danger/5 p-4">
-              <p className="text-sm font-medium text-danger">{t('settings.account.dangerZone')}</p>
               <p className="text-sm text-muted-foreground">
                 {t('settings.account.deleteAccountHint')}
               </p>

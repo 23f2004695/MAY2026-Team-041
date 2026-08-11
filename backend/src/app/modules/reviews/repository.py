@@ -15,6 +15,13 @@ async def list_for_book(book_id: str) -> list[Review]:
     )
 
 
+async def list_for_member(member_id: str) -> list[Review]:
+    return await prisma.review.find_many(
+        where={"memberId": member_id}, include=REVIEW_INCLUDE, order={"createdAt": "desc"}
+    )
+
+
+
 async def list_all() -> list[Review]:
     return await prisma.review.find_many(
         include=REVIEW_INCLUDE, order={"createdAt": "desc"}, take=LIST_LIMIT
