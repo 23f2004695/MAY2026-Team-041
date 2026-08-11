@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bot, RotateCcw, Send, X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +26,6 @@ export function ChatbotWidget() {
     handleKeyDown,
     showOptions,
     showBackButton,
-    sourceLabel,
     scrollRef,
   } = useChatbotConversation();
   const [open, setOpen] = useState(false);
@@ -105,21 +105,32 @@ export function ChatbotWidget() {
                       </span>
                     )}
                     <div className={cn('flex max-w-[78%] flex-col gap-1', msg.from === 'user' && 'items-end')}>
-                      <p
+                      <div
                         className={cn(
-                          'whitespace-pre-line rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm',
+                          'rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm',
                           msg.from === 'bot'
                             ? 'rounded-bl-sm bg-secondary text-foreground'
                             : 'rounded-br-sm bg-primary text-primary-foreground',
                         )}
                       >
-                        {msg.text}
-                      </p>
-                      {msg.source && msg.from === 'bot' && sourceLabel[msg.source] && (
-                        <span className="px-1 text-[10px] text-muted-foreground">
-                          {sourceLabel[msg.source]}
-                        </span>
-                      )}
+                        {msg.from === 'bot' ? (
+                          <ReactMarkdown
+                            components={{
+                              p: ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
+                              ul: ({ children }) => <ul className="ml-4 list-disc space-y-0.5">{children}</ul>,
+                              ol: ({ children }) => <ol className="ml-4 list-decimal space-y-0.5">{children}</ol>,
+                              li: ({ children }) => <li>{children}</li>,
+                              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                              code: ({ children }) => <code className="rounded bg-black/10 px-1 font-mono text-xs">{children}</code>,
+                            }}
+                          >
+                            {msg.text}
+                          </ReactMarkdown>
+                        ) : (
+                          msg.text
+                        )}
+                      </div>
+
                     </div>
                   </motion.div>
                 ))}

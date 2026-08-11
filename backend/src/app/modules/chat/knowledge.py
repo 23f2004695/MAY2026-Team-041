@@ -128,8 +128,21 @@ RAG_KNOWLEDGE: list[dict] = [
 ]
 
 
+import re
+
+# Patterns that indicate the user wants to DO something (action intent),
+# not ask HOW to do it. RAG is skipped for these so the LLM handles them.
+_ACTION_INTENT = re.compile(
+    r"^(reserve|borrow|book|cancel|return|register for|unregister from|raise)\s+.{3,}",
+    re.IGNORECASE,
+)
+
+
 def find_rag_answer(query: str) -> str | None:
     """Return the best matching RAG answer, or None if no match is confident enough."""
+    # Skip RAG for action commands — let the LLM+tools handle them.
+    if _ACTION_INTENT.match(query.strip()):
+        return None
     q = query.lower()
     for entry in RAG_KNOWLEDGE:
         if any(kw in q for kw in entry["keywords"]):

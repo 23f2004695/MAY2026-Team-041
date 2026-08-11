@@ -74,6 +74,23 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         os.environ.setdefault("DATABASE_URL", settings.database_url)
         await prisma.connect()
         reminder_task = asyncio.create_task(_due_soon_reminder_loop())
+
+    # ── Startup config summary ────────────────────────────────────────────
+    llm_detail = {
+        "bedrock": f"bedrock ({settings.bedrock_model_id}, region={settings.aws_region})",
+        "ollama": f"ollama ({settings.ollama_model} @ {settings.ollama_base_url})",
+        "openai": f"openai ({settings.openai_model})",
+    }.get(settings.llm_mode.lower(), settings.llm_mode)
+    print(f"""
+╔══════════════════════════════════════════════════════╗
+║              MAY2026 Team 041 — API                  ║
+╠══════════════════════════════════════════════════════╣
+║  DB   : {settings.database_url.split('@')[-1]:<44}║
+║  LLM  : {llm_detail:<44}║
+║  Redis: {settings.redis_url:<44}║
+║  Env  : {settings.app_env:<44}║
+╚══════════════════════════════════════════════════════╝
+""")
     yield
     if reminder_task is not None:
         reminder_task.cancel()

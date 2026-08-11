@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { apiPost, getErrorMessage } from '@/lib/api';
+import { apiDelete, apiPost, getErrorMessage } from '@/lib/api';
 import { CONVERSATION_TREE, type TreeNode } from '@/lib/chatbot';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -15,11 +15,6 @@ export interface ChatMessage {
 interface ChatApiResponse {
   reply: string;
   source: 'rag' | 'tag' | 'llm' | 'error';
-}
-
-interface HistoryEntry {
-  role: 'user' | 'assistant';
-  content: string;
 }
 
 // Role-specific quick-action chips shown after login
@@ -69,7 +64,7 @@ export function useChatbotConversation() {
   const { isAuthenticated, role, token } = useAuth();
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [chipsUsed, setChipsUsed] = useState(false);
 
   // Landing (unauthenticated) state — tree navigation
   const [currentNode, setCurrentNode] = useState<TreeNode>(CONVERSATION_TREE['root']);
@@ -85,6 +80,7 @@ export function useChatbotConversation() {
   // greeting/root text stuck in the old language until the next auth-state change.
   useEffect(() => {
     const greeting = t('chatbot.greeting');
+    setChipsUsed(false);
     if (isAuthenticated && role) {
       const chips = ROLE_CHIPS[role] ?? ROLE_CHIPS['member'];
       setMessages([
@@ -108,7 +104,6 @@ export function useChatbotConversation() {
       ]);
       setCurrentNode(CONVERSATION_TREE['root']);
     }
-    setHistory([]);
   }, [isAuthenticated, role, t]);
 
   useEffect(() => {
@@ -118,15 +113,14 @@ export function useChatbotConversation() {
   // ── Authenticated: send to LLM backend ───────────────────────────────────
   async function sendToLLM(text: string) {
     if (!token || !text.trim()) return;
+    setChipsUsed(true);
     const userMsg: ChatMessage = { id: crypto.randomUUID(), from: 'user', text };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
-    const newHistory: HistoryEntry[] = [...history, { role: 'user', content: text }];
-
     try {
-      const res = await apiPost<ChatApiResponse>('/chat', { message: text, history }, token);
+      const res = await apiPost<ChatApiResponse>('/chat', { message: text }, token);
       const botMsg: ChatMessage = {
         id: crypto.randomUUID(),
         from: 'bot',
@@ -134,7 +128,6 @@ export function useChatbotConversation() {
         source: res.source,
       };
       setMessages((prev) => [...prev, botMsg]);
-      setHistory([...newHistory, { role: 'assistant', content: res.reply }]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -153,6 +146,7 @@ export function useChatbotConversation() {
   // ── Unauthenticated: tree navigation ─────────────────────────────────────
   function selectTreeOption(label: string, nextId: string) {
     if (isAuthenticated) {
+      setChipsUsed(true);
       void sendToLLM(label);
       return;
     }
@@ -189,8 +183,12 @@ export function useChatbotConversation() {
       ]);
       setCurrentNode(CONVERSATION_TREE['root']);
     }
-    setHistory([]);
     setInput('');
+    setChipsUsed(false);
+    // clear server-side Redis history
+    if (token) {
+      void apiDelete('/chat/history', token).catch(() => null);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -200,7 +198,7 @@ export function useChatbotConversation() {
     }
   }
 
-  const showOptions = !loading && currentNode.options && currentNode.options.length > 0;
+  const showOptions = !chipsUsed && !loading && currentNode.options && currentNode.options.length > 0;
   const showBackButton =
     !isAuthenticated && !loading && (!currentNode.options || currentNode.options.length === 0);
 
@@ -218,7 +216,6 @@ export function useChatbotConversation() {
     handleKeyDown,
     showOptions,
     showBackButton,
-    sourceLabel: SOURCE_LABEL,
     scrollRef,
   };
 }
