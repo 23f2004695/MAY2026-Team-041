@@ -19,6 +19,24 @@ import { useLocalStorageState } from '@/lib/useLocalStorageState';
 // keep working — the types now live in features/reviews/types.ts.
 export type { BookReviews, RatingBreakdownEntry, Review, ReviewPayload };
 
+// The "simple list" views (payments, community feed, loan history, audit log) want every
+// row, not a UI page at a time — but the backend only ever returns one page. This walks
+// pages until they're exhausted instead of requesting a single large page and silently
+// dropping anything past it.
+async function fetchAllPages<T>(path: string, token: string, pageSize = 200): Promise<T[]> {
+  const items: T[] = [];
+  const separator = path.includes('?') ? '&' : '?';
+  for (let page = 1; ; page += 1) {
+    const res = await apiGet<{ items: T[]; total: number }>(
+      `${path}${separator}page=${page}&page_size=${pageSize}`,
+      token,
+    );
+    items.push(...res.items);
+    if (items.length >= res.total || res.items.length < pageSize) break;
+  }
+  return items;
+}
+
 export type Role = 'admin' | 'member' | 'manager' | 'it-head' | 'guardian' | 'librarian';
 
 export interface RegisterPayload {
@@ -143,6 +161,7 @@ export interface PostComment {
   content: string;
   created_at: string;
   reported: boolean;
+  reported_by_me?: boolean;
   replies: PostComment[];
 }
 
@@ -160,6 +179,7 @@ export interface CommunityPost {
   is_saved: boolean;
   is_own: boolean;
   reported: boolean;
+  reported_by_me?: boolean;
   comments: PostComment[];
 }
 
@@ -185,6 +205,9 @@ export interface SeatSlot {
   seat_label: string;
   status: SeatSlotStatus;
   booking_id: string | null;
+  // Populated when status === 'reserved' or 'booked_by_me' — the avatar of whoever
+  // holds that seat (someone else, or you), shown in place of a plain color swatch.
+  booked_by_avatar_url: string | null;
 }
 
 export interface SeatSchedule {
@@ -304,10 +327,18 @@ export interface AdminMemberListResponse {
   page_size: number;
 }
 
+export type AdminMemberStatusFilter = 'active' | 'inactive';
+export type AdminMemberSortBy = 'name' | 'joined' | 'role';
+export type SortDirection = 'asc' | 'desc';
+
 export interface AdminMemberQuery {
   search?: string;
   page?: number;
   page_size?: number;
+  role?: Role;
+  status?: AdminMemberStatusFilter;
+  sort_by?: AdminMemberSortBy;
+  sort_dir?: SortDirection;
 }
 
 export interface AdminPaymentRecord {
@@ -686,6 +717,12 @@ export interface ManagerBookListResponse {
 
 export interface ManagerBookQuery {
   search?: string;
+  /** Exact category match, or 'all' / omitted for no filter. */
+  category?: string;
+  /** 'available' | 'unavailable' | 'all' (default: no filter). */
+  status?: string;
+  /** 'title_asc' | 'title_desc' | 'copies_asc' | 'copies_desc'. */
+  sort?: string;
   page?: number;
   page_size?: number;
 }
@@ -766,6 +803,7 @@ interface AuthContextValue extends AuthState {
   updateReview: (reviewId: string, payload: ReviewPayload) => Promise<Review>;
   deleteReview: (reviewId: string) => Promise<void>;
   getAllReviews: () => Promise<Review[]>;
+  getMyReviews: () => Promise<Review[]>;
   getAdminDashboard: () => Promise<AdminDashboard>;
   logExpense: (payload: ExpensePayload) => Promise<void>;
   getAuditLog: () => Promise<AuditLogEntry[]>;
@@ -966,7 +1004,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getMyPayments(): Promise<PaymentRecord[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<PaymentRecord[]>('/payments/me', stateRef.current.token);
+    return fetchAllPages<PaymentRecord>('/payments/me', stateRef.current.token);
   }
 
   async function getGuardianChildren(): Promise<GuardianChild[]> {
@@ -1051,7 +1089,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getCommunityPosts(): Promise<CommunityPost[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<CommunityPost[]>('/community/posts', stateRef.current.token);
+    return fetchAllPages<CommunityPost>('/community/posts', stateRef.current.token);
   }
 
   async function createCommunityPost(payload: CommunityPostPayload): Promise<CommunityPost> {
@@ -1183,6 +1221,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return reviewsApi.getAllReviews(stateRef.current.token);
   }
 
+  async function getMyReviews(): Promise<Review[]> {
+    return reviewsApi.getMyReviews(stateRef.current.token);
+  }
+
   async function getAdminDashboard(): Promise<AdminDashboard> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiGet<AdminDashboard>('/admin/dashboard', stateRef.current.token);
@@ -1195,7 +1237,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getAuditLog(): Promise<AuditLogEntry[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<AuditLogEntry[]>('/admin/audit-log', stateRef.current.token);
+    return fetchAllPages<AuditLogEntry>('/admin/audit-log', stateRef.current.token);
   }
 
   async function getRevenueByPlanReport(): Promise<RevenueByPlanReport> {
@@ -1223,8 +1265,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const params = new URLSearchParams({
       page: String(query.page ?? 1),
       page_size: String(query.page_size ?? 20),
+      sort_by: query.sort_by ?? 'joined',
+      sort_dir: query.sort_dir ?? 'desc',
     });
     if (query.search?.trim()) params.set('search', query.search.trim());
+    if (query.role) params.set('role', query.role);
+    if (query.status) params.set('status', query.status);
     return apiGet<AdminMemberListResponse>(`/admin/members?${params}`, stateRef.current.token);
   }
 
@@ -1352,7 +1398,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function getLoanHistory(): Promise<LoanRecord[]> {
     if (!stateRef.current.token) return [];
-    return apiGet<LoanRecord[]>('/loans/history', stateRef.current.token);
+    return fetchAllPages<LoanRecord>('/loans/history', stateRef.current.token);
   }
 
   async function getMyLoans(): Promise<LoanRecord[]> {
@@ -1364,6 +1410,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     const params = new URLSearchParams();
     if (query.search) params.set('search', query.search);
+    if (query.category) params.set('category', query.category);
+    if (query.status) params.set('status', query.status);
+    if (query.sort) params.set('sort', query.sort);
     if (query.page) params.set('page', String(query.page));
     if (query.page_size) params.set('page_size', String(query.page_size));
     return apiGet<ManagerBookListResponse>(`/manager/books?${params}`, stateRef.current.token);
@@ -1468,12 +1517,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function grantPermissionRequest(id: string): Promise<PermissionRequestRecord> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/grant`, undefined, stateRef.current.token);
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/approve`, undefined, stateRef.current.token);
   }
 
   async function denyPermissionRequest(id: string): Promise<PermissionRequestRecord> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
-    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/deny`, undefined, stateRef.current.token);
+    return apiPost<PermissionRequestRecord>(`/permission-requests/${id}/reject`, undefined, stateRef.current.token);
   }
 
   async function createLoan(payload: LoanPayload): Promise<LoanRecord> {
@@ -1517,12 +1566,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function refreshAccessToken(): Promise<string | null> {
-    if (!state.refreshToken) return null;
+    if (!stateRef.current.refreshToken) return null;
     try {
       const data = await apiPost<TokenResponse>('/auth/refresh', {
-        refresh_token: state.refreshToken,
+        refresh_token: stateRef.current.refreshToken,
       });
-      applySession(data, state.needsProfileCompletion, state.postAuthRedirect);
+      applySession(data, stateRef.current.needsProfileCompletion, stateRef.current.postAuthRedirect);
       return data.access_token;
     } catch {
       setState(SIGNED_OUT);
@@ -1530,13 +1579,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Re-registers whenever the tokens change so the handler api.ts calls always closes
-  // over the current refreshToken, not a stale one from an earlier render.
+  // Registered once — refreshAccessToken reads stateRef.current (like every function
+  // above), so it never goes stale and doesn't need to re-register on state changes.
   useEffect(() => {
     registerRefreshHandler(refreshAccessToken);
     return () => registerRefreshHandler(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.token, state.refreshToken]);
+  }, []);
 
   function logout() {
     if (stateRef.current.token) {
@@ -1605,6 +1654,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updateReview,
       deleteReview,
       getAllReviews,
+      getMyReviews,
       getAdminDashboard,
       logExpense,
       getAuditLog,

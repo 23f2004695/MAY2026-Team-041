@@ -86,7 +86,11 @@ async def list_my_children(guardian_id: str) -> list[GuardianChildOut]:
 
 async def list_child_payments(guardian_id: str, child_id: str) -> list[PaymentOut]:
     child = await _find_child_or_403(guardian_id, child_id)
-    payments = await payments_repository.list_payments_for_user(child.id)
+    # This view isn't paginated itself (a guardian has few children, each with a short
+    # history) — page_size just mirrors the old hard cap so behavior is unchanged.
+    payments, _total = await payments_repository.list_payments_for_user(
+        child.id, page=1, page_size=200
+    )
     return [PaymentOut.from_prisma(payment) for payment in payments]
 
 

@@ -131,7 +131,7 @@ async def test_list_posts_shows_new_post(member_user):
     post = await _create_post(member_user, content="Findable post")
     async with _client_as(member_user) as client:
         response = await client.get("/api/v1/community/posts")
-    ids = [p["id"] for p in response.json()]
+    ids = [p["id"] for p in response.json()["items"]]
     assert post["id"] in ids
 
 
@@ -162,7 +162,7 @@ async def test_delete_post_by_moderator(member_user, admin_user):
 
     async with _client_as(member_user) as client:
         listed = await client.get("/api/v1/community/posts")
-    assert all(p["id"] != post["id"] for p in listed.json())
+    assert all(p["id"] != post["id"] for p in listed.json()["items"])
 
 
 async def test_delete_post_by_non_owner_non_moderator_forbidden(member_user, other_member_user):
@@ -228,6 +228,24 @@ async def test_report_post_by_member_not_own(member_user, other_member_user):
         response = await client.post(f"/api/v1/community/posts/{post['id']}/report")
     assert response.status_code == 200
     assert response.json()["reported"] is True
+    assert response.json()["reported_by_me"] is True
+
+
+async def test_report_comment_by_member_not_own(member_user, other_member_user):
+    post = await _create_post(member_user)
+    async with _client_as(member_user) as client:
+        commented = await client.post(
+            f"/api/v1/community/posts/{post['id']}/comments", json={"content": "Nice post"}
+        )
+    comment_id = commented.json()["comments"][0]["id"]
+
+    async with _client_as(member_user) as client:
+        own_report = await client.post(f"/api/v1/community/comments/{comment_id}/report")
+    assert own_report.status_code == 400
+
+    async with _client_as(other_member_user) as client:
+        response = await client.post(f"/api/v1/community/comments/{comment_id}/report")
+    assert response.status_code == 204
 
 
 async def test_report_post_forbidden_for_staff(member_user, admin_user):

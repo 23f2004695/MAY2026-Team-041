@@ -90,6 +90,10 @@ def _future_date() -> str:
     return (datetime.now(UTC) + timedelta(days=7)).isoformat()
 
 
+def _past_date() -> str:
+    return (datetime.now(UTC) - timedelta(days=7)).isoformat()
+
+
 async def _create_event(manager_user, **overrides) -> dict:
     payload = {
         "title": "Test Event",
@@ -461,3 +465,47 @@ async def test_attendance_summary_reflects_new_registrations(manager_user, membe
     assert body["total_attendees"] == baseline.json()["total_attendees"] + 1
     assert body["total_events_this_month"] >= baseline.json()["total_events_this_month"]
     assert body["average_attendance_rate"] >= 0.0
+
+
+async def test_manager_cannot_view_event_analytics(manager_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(manager_user) as client:
+        response = await client.get(f"/api/v1/events/{created['id']}/analytics")
+
+    assert response.status_code == 403
+
+
+async def test_analytics_for_an_upcoming_event_is_400(manager_user, admin_user):
+    created = await _create_event(manager_user)
+
+    async with _client_as(admin_user) as client:
+        response = await client.get(f"/api/v1/events/{created['id']}/analytics")
+
+    assert response.status_code == 400
+
+
+async def test_analytics_for_a_nonexistent_event_is_404(admin_user):
+    async with _client_as(admin_user) as client:
+        response = await client.get(f"/api/v1/events/{uuid.uuid4()}/analytics")
+
+    assert response.status_code == 404
+
+
+async def test_admin_can_view_analytics_for_a_past_event(manager_user, member_user, admin_user):
+    created = await _create_event(manager_user, date=_past_date())
+
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+
+    async with _client_as(admin_user) as client:
+        response = await client.get(f"/api/v1/events/{created['id']}/analytics")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total_registered"] == 1
+    assert body["fill_rate"] == 0.1
+    assert body["registrants"][0]["id"] == member_user.id
+    assert body["registrants"][0]["role"] == "member"
+    role_counts = {r["role"]: r["count"] for r in body["registrants_by_role"]}
+    assert role_counts == {"member": 1}

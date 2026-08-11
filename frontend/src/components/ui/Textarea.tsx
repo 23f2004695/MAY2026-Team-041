@@ -50,7 +50,7 @@ export function Textarea({
         {...props}
       />
       {error ? (
-        <p id={errorId} className="text-sm text-danger">
+        <p id={errorId} role="alert" className="text-sm text-danger">
           {error}
         </p>
       ) : hint ? (

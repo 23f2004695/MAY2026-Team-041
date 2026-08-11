@@ -130,12 +130,12 @@ async def test_list_my_payments_returns_only_the_caller_s_own_payments(
         "/api/v1/payments", json={"amount": 999, "label": "3 Months"}, headers=admin_headers
     )
     response = await client.get("/api/v1/payments/me", headers=member_headers)
-    print("\nList My Payments Response:", response.status_code, response.text)
-    assert response.status_code == 200 
-    body = response.json() 
-    assert len(body) == 1
-    assert body[0]["amount"] == 499
-    assert body[0]["label"] == "1 Month"
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 1
+    assert len(body["items"]) == 1
+    assert body["items"][0]["amount"] == 499
+    assert body["items"][0]["label"] == "1 Month"
 
 
 async def test_list_my_payments_orders_newest_first(client, member_user):
@@ -150,8 +150,27 @@ async def test_list_my_payments_orders_newest_first(client, member_user):
 
     response = await client.get("/api/v1/payments/me", headers=member_headers)
 
-    labels = [p["label"] for p in response.json()]
+    labels = [p["label"] for p in response.json()["items"]]
     assert labels.index("Second") < labels.index("First")
+
+
+async def test_list_my_payments_paginates(client, member_user):
+    member_headers = await _login(client, member_user)
+    for label in ("First", "Second", "Third"):
+        await client.post(
+            "/api/v1/payments", json={"amount": 100, "label": label}, headers=member_headers
+        )
+
+    page = await client.get(
+        "/api/v1/payments/me?page=1&page_size=2", headers=member_headers
+    )
+
+    assert page.status_code == 200
+    body = page.json()
+    assert body["total"] == 3
+    assert body["page"] == 1
+    assert body["page_size"] == 2
+    assert len(body["items"]) == 2
 
 
 async def test_membership_requires_authentication(client):
@@ -479,3 +498,42 @@ async def test_verify_razorpay_payment_records_a_real_payment(client, member_use
 
     membership = await client.get("/api/v1/payments/me/membership", headers=member_headers)
     assert membership.json()["is_active"] is True
+
+
+async def test_verify_razorpay_payment_is_idempotent_on_retry(client, member_user, monkeypatch):
+    # A client retry (double-click, network retry, resubmitted form) re-sends the same
+    # order/payment/signature triple, which re-verifies successfully every time — the
+    # fix under test is that this must not record a second payment or settle fines
+    # twice, not just that it doesn't crash.
+    fake_client = _FakeRazorpayClient()
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    member_headers = await _login(client, member_user)
+
+    await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 499, "label": "1 Month — ₹499", "plan_months": 1},
+        headers=member_headers,
+    )
+    # A payment_id unique to this test, not the "pay_fake123" other tests in this file
+    # reuse — the new uniqueness constraint under test would otherwise collide with
+    # whichever of those tests already claimed it in this run.
+    verify_payload = {
+        "razorpay_order_id": "order_fake123",
+        "razorpay_payment_id": f"pay_idempotent_{uuid.uuid4().hex}",
+        "razorpay_signature": "sig_fake123",
+    }
+
+    first = await client.post(
+        "/api/v1/payments/razorpay/verify", json=verify_payload, headers=member_headers
+    )
+    second = await client.post(
+        "/api/v1/payments/razorpay/verify", json=verify_payload, headers=member_headers
+    )
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert second.json()["id"] == first.json()["id"]
+
+    history = await client.get("/api/v1/payments/me", headers=member_headers)
+    matching = [p for p in history.json()["items"] if p["label"] == "1 Month — ₹499"]
+    assert len(matching) == 1

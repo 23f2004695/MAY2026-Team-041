@@ -2,9 +2,11 @@ from prisma.models import Coupon
 
 from app.db.prisma import prisma
 
+LIST_LIMIT = 200
+
 
 async def list_all() -> list[Coupon]:
-    return await prisma.coupon.find_many(order={"createdAt": "desc"})
+    return await prisma.coupon.find_many(order={"createdAt": "desc"}, take=LIST_LIMIT)
 
 
 async def find_by_code(code: str) -> Coupon | None:

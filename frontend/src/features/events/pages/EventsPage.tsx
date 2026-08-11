@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CalendarCheck, CalendarPlus, CalendarX, Percent, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { StatisticCard, EventCard, PageHeader } from '@/components/common';
-import { Button, EmptyState, Loader } from '@/components/ui';
+import { StatisticCard, EventCard, PageHeader, Pagination } from '@/components/common';
+import { Button, EmptyState, Loader, Select } from '@/components/ui';
 import { apiGet, apiPost, apiDelete, ApiError } from '@/lib/api';
+import { usePagedList } from '@/lib/usePagedList';
 import { useAuth } from '@/providers/AuthProvider';
 
 import { CreateEventModal } from '../components/CreateEventModal';
 import { EventDetailsDrawer } from '../components/EventDetailsDrawer';
+
+const EVENTS_PAGE_SIZE = 10;
+type EventTimeFilter = 'all' | 'upcoming' | 'past';
+type EventSort = 'dateAsc' | 'dateDesc' | 'attendeesDesc' | 'attendeesAsc';
 
 interface Registrant {
   id: string;
@@ -40,6 +45,26 @@ interface AttendanceSummary {
   average_attendance_rate: number;
 }
 
+function getEventStatus(eventDate: string, now: number): 'ongoing' | 'upcoming' | 'closed' {
+  const start = new Date(eventDate).getTime();
+  const nowDate = new Date(now);
+  const startDate = new Date(start);
+  const isSameDay =
+    startDate.getFullYear() === nowDate.getFullYear() &&
+    startDate.getMonth() === nowDate.getMonth() &&
+    startDate.getDate() === nowDate.getDate();
+
+  if (isSameDay && start <= now) return 'ongoing';
+  if (start > now) return 'upcoming';
+  return 'closed';
+}
+
+const STATUS_PRIORITY: Record<'ongoing' | 'upcoming' | 'closed', number> = {
+  ongoing: 0,
+  upcoming: 1,
+  closed: 2,
+};
+
 export function EventsPage() {
   const { t } = useTranslation();
   const { token, role } = useAuth();
@@ -54,8 +79,11 @@ export function EventsPage() {
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [timeFilter, setTimeFilter] = useState<EventTimeFilter>('all');
+  const [eventSort, setEventSort] = useState<EventSort>('dateAsc');
 
   const activeEvent = events.find((e) => e.id === activeEventId) ?? null;
+  const now = new Date().getTime();
 
   useEffect(fetchEvents, [token]);
 
@@ -96,6 +124,39 @@ export function EventsPage() {
       if (err instanceof ApiError) console.error(err.message);
     }
   }
+
+
+
+  const visibleEvents = useMemo(() => {
+    const filtered = events.filter((event) => {
+      if (timeFilter === 'upcoming') return new Date(event.date).getTime() >= now;
+      if (timeFilter === 'past') return new Date(event.date).getTime() < now;
+      return true;
+    });
+
+    return [...filtered].sort((a, b) => {
+      const statusDiff =
+        STATUS_PRIORITY[getEventStatus(a.date, now)] - STATUS_PRIORITY[getEventStatus(b.date, now)];
+      if (statusDiff !== 0) return statusDiff;
+
+      switch (eventSort) {
+        case 'dateDesc':
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        case 'attendeesDesc':
+          return b.attendees - a.attendees;
+        case 'attendeesAsc':
+          return a.attendees - b.attendees;
+        case 'dateAsc':
+        default:
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+      }
+    });
+  }, [events, timeFilter, eventSort, now]);
+
+  const { page, setPage, totalPages, pageItems: pagedEvents } = usePagedList(
+    visibleEvents,
+    EVENTS_PAGE_SIZE,
+  );
 
   if (loading) {
     return (
@@ -144,23 +205,77 @@ export function EventsPage() {
           description={t('events.empty.description')}
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
-            <EventCard
-              key={event.id}
-              title={event.title}
-              date={new Date(event.date).toLocaleString('en-IN', {
-                dateStyle: 'medium',
-                timeStyle: 'short',
-              })}
-              location={event.location}
-              attendees={event.attendees}
-              capacity={event.capacity}
-              registered={event.registered}
-              onViewDetails={() => setActiveEventId(event.id)}
+        <>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Select
+              label={t('events.filters.timeLabel')}
+              value={timeFilter}
+              onChange={(event) => {
+                setTimeFilter(event.target.value as EventTimeFilter);
+                setPage(1);
+              }}
+              className="w-full sm:w-44"
+              options={[
+                { value: 'all', label: t('events.filters.timeAll') },
+                { value: 'upcoming', label: t('events.filters.timeUpcoming') },
+                { value: 'past', label: t('events.filters.timePast') },
+              ]}
             />
-          ))}
-        </div>
+
+            <Select
+              label={t('events.sort.label')}
+              value={eventSort}
+              onChange={(event) => {
+                setEventSort(event.target.value as EventSort);
+                setPage(1);
+              }}
+              className="w-full sm:w-48"
+              options={[
+                { value: 'dateAsc', label: t('events.sort.dateAsc') },
+                { value: 'dateDesc', label: t('events.sort.dateDesc') },
+                { value: 'attendeesDesc', label: t('events.sort.attendeesDesc') },
+                { value: 'attendeesAsc', label: t('events.sort.attendeesAsc') },
+              ]}
+            />
+          </div>
+
+          {visibleEvents.length === 0 ? (
+            <EmptyState
+              icon={CalendarX}
+              title={t('events.empty.title')}
+              description={t('events.empty.description')}
+            />
+          ) : (
+            <>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {pagedEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    title={event.title}
+                    date={new Date(event.date).toLocaleString('en-IN', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                    })}
+                    location={event.location}
+                    attendees={event.attendees}
+                    capacity={event.capacity}
+                    registered={event.registered}
+                    status={getEventStatus(event.date, now)}
+                    onViewDetails={() => setActiveEventId(event.id)}
+                  />
+                ))}
+              </div>
+
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={visibleEvents.length}
+                pageSize={EVENTS_PAGE_SIZE}
+                onPageChange={setPage}
+              />
+            </>
+          )}
+        </>
       )}
 
       <EventDetailsDrawer
@@ -186,4 +301,3 @@ export function EventsPage() {
     </div>
   );
 }
-

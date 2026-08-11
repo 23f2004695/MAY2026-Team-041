@@ -83,3 +83,28 @@ class AttendanceSummary(BaseModel):
     total_events_this_month: int
     total_attendees: int
     average_attendance_rate: float
+
+
+class EventAnalyticsRegistrant(BaseModel):
+    id: str
+    full_name: str
+    email: str
+    role: str
+    registered_at: datetime
+
+
+class RoleBreakdown(BaseModel):
+    role: str
+    count: int
+
+
+class EventAnalytics(BaseModel):
+    event_id: str
+    title: str
+    date: datetime
+    location: str
+    capacity: int
+    total_registered: int
+    fill_rate: float
+    registrants_by_role: list[RoleBreakdown]
+    registrants: list[EventAnalyticsRegistrant]

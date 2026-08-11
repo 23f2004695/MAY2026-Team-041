@@ -148,6 +148,7 @@ export function SeatReservationForChild({ children }: { children: GuardianChild[
                       key={label}
                       label={label}
                       status={visualStatus}
+                      avatarUrl={seat?.booked_by_avatar_url}
                       selected={selectedSeatLabel === label}
                       onSelect={() => toggleSeat(label)}
                     />

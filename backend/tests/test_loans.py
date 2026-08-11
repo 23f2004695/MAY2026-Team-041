@@ -138,6 +138,21 @@ async def test_create_loan_for_missing_book_returns_404(it_head_user, member_use
     assert response.status_code == 404 
 
 
+async def test_loan_history_paginates(it_head_user, member_user, book):
+    async with _client_as(it_head_user) as client:
+        await client.post(
+            "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
+        )
+        response = await client.get("/api/v1/loans/history?page=1&page_size=1")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] >= 1
+    assert body["page"] == 1
+    assert body["page_size"] == 1
+    assert len(body["items"]) == 1
+
+
 async def test_overdue_loan_appears_in_fines_with_computed_fine(it_head_user, member_user, book):
     """Test Case 9: Overdue Loan Shows Computed Fine (₹50/day)"""
 

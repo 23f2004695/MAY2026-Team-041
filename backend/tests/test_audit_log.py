@@ -71,7 +71,7 @@ async def _get_audit_log(user) -> list[dict]:
     async with _client_as(user) as client:
         response = await client.get("/api/v1/admin/audit-log")
     assert response.status_code == 200
-    return response.json()
+    return response.json()["items"]
 
 
 def _find(entries: list[dict], action: str, amount: int) -> dict:
@@ -146,6 +146,20 @@ async def test_rejecting_a_fee_waiver_request_creates_a_rejected_entry(
     entries = await _get_audit_log(admin_user)
     entry = _find(entries, "feeWaiverRejected", 20)
     assert entry["params"]["memberName"] == member_user.fullName
+
+
+async def test_audit_log_paginates(admin_user):
+    async with _client_as(admin_user) as client:
+        await client.post("/api/v1/admin/expenses", json={"category": "utilities", "amount": 1})
+        await client.post("/api/v1/admin/expenses", json={"category": "utilities", "amount": 2})
+        response = await client.get("/api/v1/admin/audit-log?page=1&page_size=1")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] >= 2
+    assert body["page"] == 1
+    assert body["page_size"] == 1
+    assert len(body["items"]) == 1
 
 
 async def test_audit_log_is_ordered_most_recent_first(admin_user):

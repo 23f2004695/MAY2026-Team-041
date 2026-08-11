@@ -1,14 +1,22 @@
 import asyncio
 import contextlib
+import logging
 import os
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.api.routes.health import router as health_router
 from app.core.config import Settings, get_settings
+from app.core.logging import configure_logging
+from app.core.rate_limit import limiter
 from app.db.prisma import prisma
 from app.modules.admin.router import router as admin_router
 from app.modules.auth.router import router as auth_router
@@ -37,15 +45,24 @@ from app.modules.seat_booking.router import router as seat_booking_router
 from app.modules.support_tickets.router import router as support_tickets_router
 from app.modules.translate.router import router as translate_router
 
+configure_logging()
+logger = logging.getLogger(__name__)
+
 REMINDER_LOOP_INTERVAL_SECONDS = 24 * 60 * 60
 
 
+# This is an in-process asyncio task — running N app instances means N independent
+# sweep loops, each on its own timer. That's safe from duplicate sends only because
+# send_due_soon_reminders() checks Loan.lastRemindedAt (a DB-backed cooldown) before
+# nudging, not because of anything here. Don't remove that check without accounting
+# for multi-instance duplicate reminders.
 async def _due_soon_reminder_loop() -> None:
     while True:
-        # ponytail: swallow errors so one bad run doesn't kill the loop; wire real
-        # logging here if this needs to be observable in production.
-        with contextlib.suppress(Exception):
+        # One bad run shouldn't kill the loop, but it must not vanish silently either.
+        try:
             await send_due_soon_reminders()
+        except Exception:
+            logger.exception("send_due_soon_reminders failed")
         await asyncio.sleep(REMINDER_LOOP_INTERVAL_SECONDS)
 
 
@@ -77,6 +94,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield
     if reminder_task is not None:
         reminder_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await reminder_task
     if settings.app_env != "test":
         await prisma.disconnect()
 
@@ -97,6 +116,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+    app.state.limiter = limiter
+    # slowapi's own documented handler is typed for RateLimitExceeded specifically,
+    # narrower than add_exception_handler's general Exception signature — safe at
+    # runtime (Starlette dispatches by the registered exception type), just not
+    # expressible in add_exception_handler's overloads.
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
+    app.add_middleware(SlowAPIMiddleware)
+
+    @app.exception_handler(Exception)
+    async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+        logger.exception("Unhandled exception on %s %s", request.method, request.url.path)
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
     app.include_router(health_router)
     app.include_router(auth_router, prefix=settings.api_prefix)

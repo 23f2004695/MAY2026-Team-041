@@ -2,12 +2,11 @@ import { SearchX } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ExportButton, PageHeader } from '@/components/common';
+import { ExportButton, PageHeader, Pagination } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import {
   Avatar,
   Badge,
-  Pagination,
   SearchBar,
   Table,
   TableBody,
@@ -152,7 +151,13 @@ export function AdminPaymentsPage() {
             </TableBody>
           </Table>
 
-          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={total}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>

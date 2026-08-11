@@ -1,7 +1,8 @@
-import contextlib
+import logging
 from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException, status
+from prisma import Prisma
 from prisma.errors import ForeignKeyViolationError
 
 from app.core.mail import send_email_async
@@ -12,8 +13,10 @@ from app.modules.loans.constants import (
     REMIND_COOLDOWN_HOURS,
     REMINDER_WINDOW_DAYS,
 )
-from app.modules.loans.schemas import LoanCreate, LoanOut
+from app.modules.loans.schemas import LoanCreate, LoanListResponse, LoanOut
 from app.modules.notifications import service as notifications_service
+
+logger = logging.getLogger(__name__)
 
 
 async def create_loan(
@@ -41,15 +44,20 @@ async def list_active_loans() -> list[LoanOut]:
     return [LoanOut.from_prisma(row, now=now) for row in rows]
 
 
-async def list_all_loans() -> list[LoanOut]:
+async def list_all_loans(*, page: int, page_size: int) -> LoanListResponse:
     now = datetime.now(UTC)
-    rows = await repository.list_all()
-    return [LoanOut.from_prisma(row, now=now) for row in rows]
+    rows, total = await repository.list_all(page=page, page_size=page_size)
+    return LoanListResponse(
+        items=[LoanOut.from_prisma(row, now=now) for row in rows],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
-async def list_my_loans(member_id: str) -> list[LoanOut]:
+async def list_my_loans(member_id: str, *, client: Prisma | None = None) -> list[LoanOut]:
     now = datetime.now(UTC)
-    rows = await repository.list_for_member(member_id)
+    rows = await repository.list_for_member(member_id, client=client)
     return [LoanOut.from_prisma(row, now=now) for row in rows]
 
 
@@ -67,7 +75,9 @@ async def sum_outstanding_fines() -> int:
     return sum(item.fine_amount for item in fines if not item.fine_paid)
 
 
-async def settle_fines_for_member(member_id: str, amount_paid: int) -> int:
+async def settle_fines_for_member(
+    member_id: str, amount_paid: int, *, client: Prisma | None = None
+) -> int:
     """Clear a member's late-return fines after they've paid, returning the count settled.
 
     Recording a payment used to leave finePaid untouched, so a member who paid their
@@ -76,18 +86,20 @@ async def settle_fines_for_member(member_id: str, amount_paid: int) -> int:
     while the amount paid still covers it — a short payment leaves the rest owed
     rather than wiping the whole balance.
     """
-    loans = await list_my_loans(member_id)
+    loans = await list_my_loans(member_id, client=client)
     unpaid = [loan for loan in loans if loan.fine_amount > 0 and not loan.fine_paid]
 
     remaining = amount_paid
-    settled = 0
+    to_settle: list[str] = []
     for loan in sorted(unpaid, key=lambda item: item.due_date):
         if loan.fine_amount > remaining:
-            continue
+            break
         remaining -= loan.fine_amount
-        await repository.mark_fine_paid(loan.id)
-        settled += 1
-    return settled
+        to_settle.append(loan.id)
+
+    if to_settle:
+        await repository.mark_fines_paid(to_settle, client=client)
+    return len(to_settle)
 
 
 async def return_loan(loan_id: str) -> LoanOut:
@@ -154,7 +166,9 @@ async def send_due_soon_reminders() -> None:
         if loan.lastRemindedAt is not None and loan.lastRemindedAt > remind_cutoff:
             continue
         # Per-loan, so one unreachable mailbox (or a provider rate limit) doesn't abort
-        # the sweep and leave everyone after it un-nudged — the caller only suppresses
-        # errors at the whole-sweep level.
-        with contextlib.suppress(Exception):
+        # the sweep and leave everyone after it un-nudged — but still logged, so a
+        # member stuck failing every sweep is discoverable instead of silent forever.
+        try:
             await send_reminder(loan.id)
+        except Exception:
+            logger.exception("send_reminder failed for loan %s", loan.id)

@@ -52,6 +52,27 @@ async def count_seat_bookings(*, date: datetime, hour: int) -> int:
     return await prisma.seatbooking.count(where={"date": date, "hour": hour})
 
 
+# The dashboard needs one figure per opening hour. Asking per hour was a dozen round
+# trips for one day's bookings — fetch the day once and bucket it here instead, the
+# same fetch-then-aggregate shape sum_expenses above already uses.
+async def count_seat_bookings_by_hour(*, date: datetime) -> dict[int, int]:
+    bookings = await prisma.seatbooking.find_many(where={"date": date})
+    counts: dict[int, int] = {}
+    for booking in bookings:
+        counts[booking.hour] = counts.get(booking.hour, 0) + 1
+    return counts
+
+
+# Same idea for the budget panel: one scan of the month's expenses, bucketed by
+# category, rather than one filtered scan per category.
+async def sum_expenses_by_category(*, start: datetime) -> dict[str, int]:
+    expenses = await prisma.expense.find_many(where={"createdAt": {"gte": start}})
+    totals: dict[str, int] = {}
+    for expense in expenses:
+        totals[expense.category] = totals.get(expense.category, 0) + expense.amount
+    return totals
+
+
 async def list_plan_payments() -> list[Payment]:
     return await prisma.payment.find_many(
         where={"status": "success", "planMonths": {"not": None}}
@@ -84,7 +105,14 @@ async def list_member_ids() -> list[str]:
 
 
 async def list_members(
-    *, search: str | None, page: int, page_size: int
+    *,
+    search: str | None,
+    page: int,
+    page_size: int,
+    role: str | None = None,
+    status: str | None = None,
+    sort_by: str = "joined",
+    sort_dir: str = "desc",
 ) -> tuple[list[User], int]:
     # Unlike count_members/list_member_ids (which are strictly about the "member" role
     # for stats/announcements), this powers the admin's account-management table, so it
@@ -95,12 +123,26 @@ async def list_members(
             {"fullName": {"contains": search, "mode": "insensitive"}},
             {"email": {"contains": search, "mode": "insensitive"}},
         ]
+    if role:
+        where["role"] = {"name": role}
+    if status == "active":
+        where["isActive"] = True
+    elif status == "inactive":
+        where["isActive"] = False
+
+    direction = "desc" if sort_dir == "desc" else "asc"
+    if sort_by == "role":
+        order: dict = {"role": {"name": direction}}
+    elif sort_by == "name":
+        order = {"fullName": direction}
+    else:
+        order = {"createdAt": direction}
 
     return await paginate(
         prisma.user,
         where=where,
         include={"role": True},
-        order={"createdAt": "desc"},
+        order=order,
         skip=(page - 1) * page_size,
         take=page_size,
     )

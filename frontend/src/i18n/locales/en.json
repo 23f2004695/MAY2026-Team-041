@@ -22,7 +22,8 @@
       "approve": "Approve",
       "manage": "Manage",
       "viewReport": "View report",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "reset": "Reset"
     },
     "errors": {
       "generic": "Something went wrong. Please try again."
@@ -34,8 +35,10 @@
     "cards": {
       "event": {
         "registered": "Registered",
-        "open": "Open",
-        "viewDetails": "View details"
+        "viewDetails": "View details",
+        "ongoing": "Ongoing",
+        "closed": "Closed",
+        "upcoming": "Upcoming"
       },
       "book": {
         "reserve": "Reserve",
@@ -199,7 +202,7 @@
     "payAtLibraryDescription": "Skip online payment — visit the counter and pay the manager in cash.",
     "contactManager": "Notify the Manager",
     "payAtLibraryToast": "The manager has been notified — pay in cash at the counter",
-    "renewingCurrentPlan": "Renewing your current plan.",
+    "renewingCurrentPlan": "Upgrading your current plan.",
     "changePlan": "Change plan",
     "secureNotice": "Payments are processed securely",
     "coupon": {
@@ -256,6 +259,22 @@
       "empty": {
         "title": "No members found",
         "description": "Try a different search term."
+      },
+      "filters": {
+        "roleLabel": "Role",
+        "roleAll": "All roles",
+        "statusLabel": "Status",
+        "statusAll": "All statuses",
+        "statusActive": "Active",
+        "statusInactive": "Inactive"
+      },
+      "sort": {
+        "label": "Sort by",
+        "joinedDesc": "Newest joined",
+        "joinedAsc": "Oldest joined",
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)",
+        "roleAsc": "Role"
       }
     },
     "stats": {
@@ -307,7 +326,7 @@
     "pendingRequests": {
       "title": "Membership & Billing Requests",
       "types": {
-        "membershipRenewal": "Membership Renewal",
+        "membershipRenewal": "Membership Upgrade",
         "refundRequest": "Refund Request",
         "feeWaiverRequest": "Fee Waiver Request"
       },
@@ -577,9 +596,9 @@
       "noSubscription": "No active subscription",
       "fineOwed": "Fine owed: {{amount}}",
       "noFine": "No outstanding fine",
-      "renew": "Renew",
+      "renew": "Upgrade",
       "payFine": "Pay Fine",
-      "renewToast": "Renewing {{name}}'s subscription",
+      "renewToast": "Upgrading {{name}}'s subscription",
       "payFineToast": "Paying {{amount}} fine for {{name}}",
       "viewFineDetails": "View Details",
       "viewPaymentHistory": "Payment History",
@@ -617,10 +636,10 @@
     },
     "quickActions": {
       "payAllFines": "Pay All Fines",
-      "renewSubscription": "Renew Subscription",
+      "renewSubscription": "Upgrade Subscription",
       "toasts": {
         "payingAllFines": "Paying all outstanding fines",
-        "renewingSubscription": "Renewing subscription"
+        "renewingSubscription": "Upgrading subscription"
       },
       "contactStaff": "Contact Staff"
     }
@@ -639,9 +658,9 @@
       "noPlan": "You don't have an active plan yet",
       "fineOwed": "Fine owed: {{amount}}",
       "noFine": "No outstanding fine",
-      "renew": "Renew",
+      "renew": "Upgrade",
       "viewPlans": "View Plans",
-      "renewalPaymentLabel": "{{plan}} — Renewal",
+      "renewalPaymentLabel": "{{plan}} — Upgrade",
       "payFine": "Pay Fine",
       "viewFineDetails": "View Details",
       "fineDetails": {
@@ -660,6 +679,26 @@
       "booksReserved": "Books Reserved",
       "seatBookings": "Seat Bookings",
       "readingPoints": "Reading Points"
+    },
+    "statModal": {
+      "booksBorrowed": {
+        "emptyTitle": "No books borrowed",
+        "emptyDescription": "Books you've checked out will show up here."
+      },
+      "booksReserved": {
+        "emptyTitle": "No active reservations",
+        "emptyDescription": "Books you reserve will show up here while you wait."
+      },
+      "seatBookings": {
+        "emptyTitle": "No seat bookings",
+        "emptyDescription": "Seats you book will show up here.",
+        "seatLabel": "Seat {{seat}}",
+        "pastNote": "{{count}} earlier booking(s) aren't shown — seat booking only covers today and the next 2 days."
+      },
+      "readingStreak": {
+        "longest": "Longest streak: {{count}} day(s)",
+        "viewProgress": "View Reading Progress"
+      }
     },
     "booksDueSoon": {
       "title": "Books Due Soon",
@@ -682,7 +721,8 @@
       "title": "Quick Actions",
       "browseBooks": "Browse Books",
       "bookASeat": "Book a Seat",
-      "viewReservations": "View Reservations"
+      "viewReservations": "View Reservations",
+      "writeReview": "Write Library Review"
     },
     "notifications": {
       "title": "Recent Notifications",
@@ -702,6 +742,24 @@
       "booksIssuedToday": "Books Issued Today",
       "newRegistrationsToday": "New Registrations Today",
       "pendingTasks": "Pending Tasks"
+    },
+    "statModal": {
+      "seatsBookedToday": {
+        "description": "Walk-in seats booked at the counter today. Book another one for a member from here."
+      },
+      "booksIssuedToday": {
+        "emptyTitle": "No books issued yet today",
+        "emptyDescription": "Books issued to members at the counter today will show up here.",
+        "returnedNote": "{{count}} more issued today already came back and no longer show as active."
+      },
+      "newRegistrationsToday": {
+        "description": "New members registered at the counter today. Register another walk-in from here."
+      },
+      "pendingTasks": {
+        "total": "Total pending tasks",
+        "other": "Other pending items",
+        "otherHint": "Includes open support tickets and billing requests awaiting admin approval."
+      }
     },
     "walkIns": {
       "title": "Walk-In Assistance",
@@ -838,6 +896,24 @@
       "pageTitle": "Books",
       "pageDescription": "Check which books are on the shelf right now and when a checked-out copy is due back.",
       "searchPlaceholder": "Search by title or author",
+      "filters": {
+        "categoryLabel": "Category",
+        "allCategories": "All",
+        "statusLabel": "Status",
+        "statusOptions": {
+          "all": "All",
+          "available": "Available",
+          "unavailable": "Unavailable (Return Date Known)",
+          "unavailable_no_date": "Unavailable (No Return Date)"
+        },
+        "sortLabel": "Sort",
+        "sortOptions": {
+          "title_asc": "Title (A-Z)",
+          "title_desc": "Title (Z-A)",
+          "copies_desc": "Most Copies Available",
+          "copies_asc": "Fewest Copies Available"
+        }
+      },
       "table": {
         "title": "Book",
         "category": "Category",
@@ -876,12 +952,41 @@
       "empty": {
         "title": "No loan history",
         "description": "Loans will show up here once books are issued to members."
+      },
+      "searchPlaceholder": "Search by book or member",
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All",
+        "active": "Active",
+        "overdue": "Overdue",
+        "returned": "Returned"
+      },
+      "sort": {
+        "label": "Sort",
+        "newest": "Newest First",
+        "oldest": "Oldest First",
+        "dueSoonest": "Due Soonest",
+        "dueLatest": "Due Latest"
       }
     }
   },
   "myLoans": {
     "pageTitle": "My Borrow History",
     "pageDescription": "Books you've borrowed, with dates.",
+    "filters": {
+      "statusLabel": "Status",
+      "all": "All statuses",
+      "active": "Active",
+      "overdue": "Overdue",
+      "returned": "Returned"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "dueSoonest": "Due soonest",
+      "dueLatest": "Due latest"
+    },
     "table": {
       "book": "Book",
       "borrowed": "Borrowed",
@@ -900,6 +1005,7 @@
       "description": "Books you borrow will show up here with their dates."
     }
   },
+
   "landing": {
     "hero": {
       "badge": "Community Reading Club & Library Platform",
@@ -1066,7 +1172,8 @@
         "button": "Explore All Spaces"
       },
       "booked": "Booked",
-      "bookedSub": "Reserved right now"
+      "bookedSub": "Reserved right now",
+      "mine": "Your seat"
     },
     "readingChallenge": {
       "eyebrow": "Achievements",
@@ -1436,9 +1543,41 @@
       "noRegistrants": "No one has registered yet.",
       "removeRegistrant": "Remove"
     },
+    "analytics": {
+      "title": "Post-Event Analytics",
+      "totalRegistered": "Total Registered",
+      "fillRate": "Fill Rate",
+      "capacityFilled": "Capacity filled",
+      "byRole": "Registrants by Role",
+      "registrationTrend": "Registrations Over Time",
+      "registrants": "Registrants",
+      "noRegistrants": "No one registered for this event.",
+      "loadError": "Couldn't load analytics for this event.",
+      "exportTitle": "Post-Event Analytics — {{title}}",
+      "exportCharts": "Export Charts (PDF)",
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "registeredAt": "Registered At"
+      }
+    },
     "empty": {
       "title": "No events scheduled",
       "description": "Check back soon — new community events are added regularly."
+    },
+    "filters": {
+      "timeLabel": "Show",
+      "timeAll": "All events",
+      "timeUpcoming": "Upcoming",
+      "timePast": "Past"
+    },
+    "sort": {
+      "label": "Sort by",
+      "dateAsc": "Date (soonest)",
+      "dateDesc": "Date (latest)",
+      "attendeesDesc": "Most attendees",
+      "attendeesAsc": "Fewest attendees"
     }
   },
   "reservations": {
@@ -1483,6 +1622,9 @@
     "pageTitle": "Seat Booking",
     "pageDescription": "Reserve a quiet study seat",
     "today": "Today",
+    "pickTimeTitle": "Pick a time · {{date}}",
+    "selectedSlot": "Showing seats for {{date}} · {{hour}}.",
+    "changeTime": "Change time",
     "confirmToast": "Booking seat {{seatId}}",
     "bookingSummary": {
       "title": "Booking Summary",
@@ -1490,14 +1632,18 @@
       "selectPrompt": "Select an available seat to continue.",
       "confirmButton": "Confirm Booking",
       "cancelButton": "Cancel Booking",
-      "yourBookings": "Your upcoming bookings",
+      "yourBookings": "Your bookings",
+      "bookingInProgress": "In progress · until {{endHour}}",
       "reservedByOther": "Seat {{seatId}} is reserved for this time slot",
       "bookedByYou": "You've booked seat {{seatId}} for this time slot",
       "alreadyBookedThisSlot": "You already have a different seat booked for this time slot — cancel it first to switch.",
       "notifyButton": "Notify Me When Available",
       "notifySet": "We'll notify you when this seat frees up",
-      "notifyToast": "We'll notify you when seat {{seatId}} is available"
-    }
+      "notifyToast": "We'll notify you when seat {{seatId}} is available",
+      "slotDurationCountdown": "Each booking is for 1 hour — this seat will be available again in {{minutes}} min.",
+      "slotDurationFixed": "Each booking is for 1 hour — this seat will be available again at {{endHour}}."
+    },
+    "dateSliderAriaLabel": "Choose a date"
   },
   "readingProgress": {
     "pageTitle": "Reading Progress",
@@ -1591,6 +1737,7 @@
       "replyPlaceholder": "Write a reply...",
       "sendReply": "Send reply",
       "reportedBadge": "Reported",
+      "reportedCommentBadge": "Comment reported",
       "removeComment": "Remove",
       "banAria": "Ban {{author}}",
       "bannedBadge": "Banned",
@@ -1689,6 +1836,13 @@
       "linked": "Linked",
       "unlink": "Unlink"
     },
+    "changePassword": {
+      "title": "Change Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "updateButton": "Update password",
+      "successToast": "Password updated successfully"
+    },
     "account": {
       "title": "Account",
       "logOut": "Log out",
@@ -1705,12 +1859,62 @@
     "writeReview": "Write a Review",
     "viewReviews": "View Reviews",
     "commentsHeading": "Comments",
+    "libraryReviewCard": {
+      "title": "Rate Your Library Experience",
+      "existingTitle": "Your Library Review",
+      "description": "Share your thoughts about our platform! Your review will be featured in 'What Our Members Say' on our homepage.",
+      "button": "Leave a Review",
+      "editButton": "Edit Review"
+    },
+    "libraryReviewModal": {
+      "title": "Rate & Review Our Library",
+      "description": "Share your experience with our community! Approved reviews are featured in 'What Our Members Say' on the homepage.",
+      "ratingLabel": "Overall Rating",
+      "reviewLabel": "Your Review",
+      "placeholder": "What do you love most about our library, collection, seat reservations, or atmosphere?",
+      "submitButton": "Submit Review",
+      "errorMinLength": "Please write a review of at least 5 characters.",
+      "successToast": "Thank you for reviewing our library! Your review will appear on the homepage."
+    },
+    "member": {
+      "ratedBooksHeading": "My Rated Books",
+      "writtenReviewsHeading": "My Reviews",
+      "noRatings": "No books rated yet.",
+      "noWrittenReviews": "You haven't written any reviews yet.",
+      "searchPlaceholder": "Search rated books by title...",
+      "table": {
+        "book": "Book",
+        "author": "Author",
+        "rating": "My Rating"
+      },
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest first",
+        "titleAsc": "Title (A–Z)",
+        "titleDesc": "Title (Z–A)",
+        "ratingHigh": "Highest rating",
+        "ratingLow": "Lowest rating"
+      }
+    },
+
     "admin": {
       "pageDescription": "Reviews across the whole catalog",
       "stats": {
         "totalReviews": "Total Reviews",
         "averageRating": "Average Rating",
         "booksReviewed": "Books Reviewed"
+      },
+      "filters": {
+        "ratingLabel": "Rating",
+        "ratingAll": "All ratings",
+        "ratingValue": "{{count}} stars"
+      },
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "ratingHigh": "Highest rating",
+        "ratingLow": "Lowest rating"
       }
     },
     "summary": {
@@ -1849,7 +2053,12 @@
       "resolutionHint": "This will be shown to the person who raised the ticket.",
       "submitResolution": "Mark Resolved",
       "emptyTitle": "No tickets here",
-      "emptyDescription": "Nothing matches this filter right now."
+      "emptyDescription": "Nothing matches this filter right now.",
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest first",
+        "oldest": "Oldest first"
+      }
     }
   },
   "profile": {

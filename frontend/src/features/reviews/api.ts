@@ -34,3 +34,8 @@ export async function getAllReviews(token: string | null): Promise<Review[]> {
   if (!token) return [];
   return apiGet<Review[]>('/reviews', token);
 }
+
+export async function getMyReviews(token: string | null): Promise<Review[]> {
+  if (!token) return [];
+  return apiGet<Review[]>('/reviews/me', token);
+}

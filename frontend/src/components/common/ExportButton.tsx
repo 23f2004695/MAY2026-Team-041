@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui';
+import { cn } from '@/lib/cn';
 import { getErrorMessage } from '@/lib/api';
 import { downloadCsv, downloadPdf, type ExportCell } from '@/lib/export';
 
@@ -16,10 +17,19 @@ export interface ExportButtonProps {
   /** Either the rows to export directly, or a loader that fetches them on click
    * (e.g. a full month's data, independent of whatever page is currently on screen). */
   rows: ExportCell[][] | (() => Promise<ExportCell[][]>);
+  /** Optional lines (e.g. key metrics) printed above the table in both CSV and PDF exports. */
+  summaryLines?: string[];
   className?: string;
 }
 
-export function ExportButton({ filename, title, headers, rows, className }: ExportButtonProps) {
+export function ExportButton({
+  filename,
+  title,
+  headers,
+  rows,
+  summaryLines = [],
+  className,
+}: ExportButtonProps) {
   const { t } = useTranslation();
   const [loadingFormat, setLoadingFormat] = useState<'csv' | 'pdf' | null>(null);
 
@@ -32,11 +42,12 @@ export function ExportButton({ filename, title, headers, rows, className }: Expo
     try {
       const resolvedRows = await resolveRows();
       if (format === 'csv') {
-        downloadCsv(`${filename}.csv`, headers, resolvedRows);
+        downloadCsv(`${filename}.csv`, headers, resolvedRows, summaryLines);
       } else {
-        downloadPdf(`${filename}.pdf`, title, headers, resolvedRows);
+        await downloadPdf(`${filename}.pdf`, title, headers, resolvedRows, summaryLines);
       }
     } catch (err) {
+      console.error('[Export error]:', err);
       toast.error(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setLoadingFormat(null);
@@ -44,7 +55,7 @@ export function ExportButton({ filename, title, headers, rows, className }: Expo
   }
 
   return (
-    <div className={className}>
+    <div className={cn('flex flex-wrap items-center gap-2', className)}>
       <Button
         variant="outline"
         size="sm"
@@ -62,7 +73,6 @@ export function ExportButton({ filename, title, headers, rows, className }: Expo
         isLoading={loadingFormat === 'pdf'}
         disabled={loadingFormat !== null && loadingFormat !== 'pdf'}
         onClick={() => handleExport('pdf')}
-        className="ml-2"
       >
         {t('common.export.pdf')}
       </Button>

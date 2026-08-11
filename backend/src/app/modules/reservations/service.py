@@ -4,7 +4,6 @@ from datetime import UTC, datetime
 from fastapi import HTTPException, status
 
 from app.core.constants import Role
-from app.db.prisma import prisma
 from app.modules.books import repository as books_repository
 from app.modules.loans import repository as loans_repository
 from app.modules.loans.constants import REMINDER_WINDOW_DAYS
@@ -14,13 +13,7 @@ from app.modules.reservations.schemas import ReservationCreate, ReservationOut
 
 
 async def _notify_managers(message: str) -> None:
-    managers = await prisma.user.find_many(
-        where={"role": {"name": Role.MANAGER}, "deletedAt": None}
-    )
-    for manager in managers:
-        await notifications_service.create_notification(
-            manager.id, "reservation-requested", message
-        )
+    await notifications_service.notify_roles([Role.MANAGER], "reservation-requested", message)
 
 
 async def _queue_info(reservation) -> tuple[int | None, int | None]:

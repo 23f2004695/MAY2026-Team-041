@@ -5,7 +5,7 @@ LEADERBOARD_LIMIT = 50
 
 
 async def get_leaderboard(current_user_id: str) -> list[LeaderboardEntryOut]:
-    counts = await repository.list_completed_counts(LEADERBOARD_LIMIT)
+    counts = await repository.list_completed_counts()
     names = await repository.list_member_names([member_id for member_id, _ in counts])
 
     return [

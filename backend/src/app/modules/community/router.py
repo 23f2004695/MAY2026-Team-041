@@ -1,18 +1,28 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
 from app.modules.community import service
-from app.modules.community.schemas import BannedAuthorOut, CommentCreate, PostCreate, PostOut
+from app.modules.community.schemas import (
+    BannedAuthorOut,
+    CommentCreate,
+    PostCreate,
+    PostListResponse,
+    PostOut,
+)
 
 router = APIRouter(prefix="/community", tags=["community"])
 
 
-@router.get("/posts", response_model=list[PostOut])
-async def list_posts(user: Annotated[User, Depends(get_current_user)]) -> list[PostOut]:
-    return await service.list_posts(user)
+@router.get("/posts", response_model=PostListResponse)
+async def list_posts(
+    user: Annotated[User, Depends(get_current_user)],
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=200)] = 20,
+) -> PostListResponse:
+    return await service.list_posts(user, page=page, page_size=page_size)
 
 
 @router.post("/posts", response_model=PostOut, status_code=status.HTTP_201_CREATED)

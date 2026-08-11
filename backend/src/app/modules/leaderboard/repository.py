@@ -7,7 +7,7 @@ from app.db.prisma import prisma
 # ponytail: counts in Python rather than a DB group_by — no other module in this
 # codebase uses group_by yet, and the row count (completed reading entries) is small.
 # Swap for prisma.readingprogress.group_by(...) if this table gets large.
-async def list_completed_counts(limit: int) -> list[tuple[str, int]]:
+async def list_completed_counts(limit: int | None = None) -> list[tuple[str, int]]:
     rows = await prisma.readingprogress.find_many(
         where={"status": "completed", "member": {"role": {"name": Role.MEMBER}}}
     )

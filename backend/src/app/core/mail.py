@@ -1,8 +1,11 @@
 import asyncio
+import logging
 import smtplib
 from email.message import EmailMessage
 
 from app.core.config import get_settings
+
+logger = logging.getLogger(__name__)
 
 # smtplib has no default timeout — without this a silent/unreachable SMTP host hangs
 # the calling thread until the OS gives up, which used to mean the whole server.
@@ -16,7 +19,7 @@ def send_email(to: str, subject: str, body: str) -> None:
         # ponytail: no SMTP configured — log instead of failing so the reminder
         # flow still works end-to-end in dev. Set SMTP_HOST/PORT/USER/PASSWORD/FROM
         # in .env to send for real.
-        print(f"[email:not-configured] to={to} subject={subject!r}\n{body}")
+        logger.info("email not configured, skipping send: to=%s subject=%r\n%s", to, subject, body)
         return
 
     message = EmailMessage()
