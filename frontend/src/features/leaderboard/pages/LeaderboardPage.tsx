@@ -1,4 +1,14 @@
-import { Award, BookOpen, Calendar, CheckCircle2, Flame, Info, Star, Target, Trophy } from 'lucide-react';
+import {
+  Award,
+  BookOpen,
+  Calendar,
+  CheckCircle2,
+  Flame,
+  Info,
+  Star,
+  Target,
+  Trophy,
+} from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -88,7 +98,9 @@ export function LeaderboardPage() {
 
   const filteredEntries = useMemo(
     () =>
-      view === 'all' ? entries : entries.filter((entry) => entry.rank <= 50 || entry.is_current_user),
+      view === 'all'
+        ? entries
+        : entries.filter((entry) => entry.rank <= 50 || entry.is_current_user),
     [entries, view],
   );
 
@@ -149,7 +161,7 @@ export function LeaderboardPage() {
           className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
         >
           <Info className="size-4 text-primary" />
-          {showRules ? 'Hide Rules' : 'How Points Work'}
+          {t(showRules ? 'leaderboard.rules.hide' : 'leaderboard.rules.show')}
         </button>
       </div>
 
@@ -168,44 +180,57 @@ export function LeaderboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                <BookOpen className="size-3.5" /> +100 Pts
+                <BookOpen className="size-3.5" /> {t('leaderboard.pointsAmount', { points: 100 })}
               </span>
-              <span className="text-xs text-muted-foreground">Complete a Book</span>
+              <span className="text-xs text-muted-foreground">
+                {t('leaderboard.rules.labels.completeBook')}
+              </span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
-                <Star className="size-3.5" /> +25 Pts
+                <Star className="size-3.5" /> {t('leaderboard.pointsAmount', { points: 25 })}
               </span>
-              <span className="text-xs text-muted-foreground">Write a Review</span>
+              <span className="text-xs text-muted-foreground">
+                {t('leaderboard.rules.labels.writeReview')}
+              </span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 dark:text-purple-400">
-                <Calendar className="size-3.5" /> +30 Pts
+                <Calendar className="size-3.5" /> {t('leaderboard.pointsAmount', { points: 30 })}
               </span>
-              <span className="text-xs text-muted-foreground">Library Event</span>
+              <span className="text-xs text-muted-foreground">
+                {t('leaderboard.rules.labels.attendEvent')}
+              </span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 dark:text-teal-400">
-                <CheckCircle2 className="size-3.5" /> +15 Pts
+                <CheckCircle2 className="size-3.5" />{' '}
+                {t('leaderboard.pointsAmount', { points: 15 })}
               </span>
-              <span className="text-xs text-muted-foreground">On-Time Return</span>
+              <span className="text-xs text-muted-foreground">
+                {t('leaderboard.rules.labels.onTimeReturn')}
+              </span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-400">
-                <Flame className="size-3.5" /> +50 Pts
+                <Flame className="size-3.5" /> {t('leaderboard.pointsAmount', { points: 50 })}
               </span>
-              <span className="text-xs text-muted-foreground">7-Day Streak</span>
+              <span className="text-xs text-muted-foreground">
+                {t('leaderboard.rules.labels.streakBonus')}
+              </span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-700 dark:text-rose-400">
-                <Target className="size-3.5" /> -10 Pts
+                <Target className="size-3.5" /> {t('leaderboard.penaltyAmount', { points: 10 })}
               </span>
-              <span className="text-xs text-muted-foreground">Late Return Penalty</span>
+              <span className="text-xs text-muted-foreground">
+                {t('leaderboard.rules.labels.lateReturn')}
+              </span>
             </div>
           </div>
         </div>
@@ -266,7 +291,11 @@ export function LeaderboardPage() {
               title={t('leaderboard.empty.title')}
               description={t('leaderboard.empty.description')}
               action={
-                <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary">
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-sm font-medium text-primary"
+                >
                   Reset
                 </button>
               }
@@ -284,16 +313,25 @@ export function LeaderboardPage() {
                 </TableHeader>
                 <TableBody>
                   {paginatedItems.map((entry) => (
-                    <TableRow key={entry.member_id} className={cn(entry.is_current_user && 'bg-primary/5 font-medium')}>
+                    <TableRow
+                      key={entry.member_id}
+                      className={cn(entry.is_current_user && 'bg-primary/5 font-medium')}
+                    >
                       <TableCell>
                         <span className="flex items-center gap-1.5 font-bold text-foreground">
-                          {entry.rank <= 3 && <Award className={cn('size-4', medalColor[entry.rank])} />}
+                          {entry.rank <= 3 && (
+                            <Award className={cn('size-4', medalColor[entry.rank])} />
+                          )}
                           {entry.rank}
                         </span>
                       </TableCell>
                       <TableCell>
                         <span className="flex items-center gap-2">
-                          <Avatar src={entry.avatar_url ?? undefined} name={entry.full_name} size="sm" />
+                          <Avatar
+                            src={entry.avatar_url ?? undefined}
+                            name={entry.full_name}
+                            size="sm"
+                          />
                           <span className="font-medium">{entry.full_name}</span>
                           {entry.is_current_user && (
                             <Badge variant="outline" className="ml-1 text-[11px] py-0">
@@ -304,7 +342,8 @@ export function LeaderboardPage() {
                       </TableCell>
                       <TableCell>
                         <span className="font-semibold text-primary">
-                          {entry.score.toLocaleString()} <span className="text-xs font-normal text-muted-foreground">pts</span>
+                          {entry.score.toLocaleString()}{' '}
+                          <span className="text-xs font-normal text-muted-foreground">pts</span>
                         </span>
                       </TableCell>
                       <TableCell>

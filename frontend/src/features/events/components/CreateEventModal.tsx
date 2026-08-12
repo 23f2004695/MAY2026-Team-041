@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { Button, Checkbox, Input, Modal, Textarea } from '@/components/ui';
@@ -30,6 +31,7 @@ function toDatetimeLocalValue(iso: string): string {
 const EMPTY_FORM = { title: '', description: '', location: '', date: '', capacity: '' };
 
 export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
+  const { t } = useTranslation();
   const { token, getMembers } = useAuth();
   const isEditing = event != null;
   const [loading, setLoading] = useState(false);
@@ -92,7 +94,7 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!token) {
-      toast.error('You must be logged in with a real account to manage events');
+      toast.error(t('events.form.authRequired'));
       return;
     }
     setLoading(true);
@@ -107,40 +109,58 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
       };
       if (isEditing && event) {
         await apiPut(`/events/${event.id}`, payload, token);
-        toast.success(`Event "${form.title}" updated`);
+        toast.success(t('events.form.updatedToast', { title: form.title }));
       } else {
         await apiPost('/events', payload, token);
-        toast.success(`Event "${form.title}" created`);
+        toast.success(t('events.form.createdToast', { title: form.title }));
       }
       onSaved();
       onClose();
     } catch (err) {
       toast.error(
-        getErrorMessage(err, `Failed to ${isEditing ? 'update' : 'create'} event`,
-      ));
+        getErrorMessage(err, t(isEditing ? 'events.form.updateError' : 'events.form.createError')),
+      );
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={isEditing ? 'Edit Event' : 'Create Event'}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={t(isEditing ? 'events.form.editTitle' : 'events.form.createTitle')}
+    >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input label="Title" name="title" value={form.title} onChange={handleChange} required placeholder="Event title" />
+        <Input
+          label={t('events.form.title')}
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          required
+          placeholder={t('events.form.titlePlaceholder')}
+        />
 
         <Textarea
-          label="Description"
+          label={t('events.form.description')}
           name="description"
           value={form.description}
           onChange={handleChange}
-          placeholder="Optional description"
+          placeholder={t('events.form.descriptionPlaceholder')}
           rows={3}
         />
 
-        <Input label="Location" name="location" value={form.location} onChange={handleChange} required placeholder="e.g. Main Hall" />
+        <Input
+          label={t('events.form.location')}
+          name="location"
+          value={form.location}
+          onChange={handleChange}
+          required
+          placeholder={t('events.form.locationPlaceholder')}
+        />
 
         <Input
-          label="Date & Time"
+          label={t('events.form.dateTime')}
           name="date"
           type="datetime-local"
           min={isEditing ? undefined : toDatetimeLocalValue(new Date().toISOString())}
@@ -149,19 +169,37 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
           required
         />
 
-        <Input label="Capacity" name="capacity" type="number" min={1} value={form.capacity} onChange={handleChange} required placeholder="Max attendees" />
+        <Input
+          label={t('events.form.capacity')}
+          name="capacity"
+          type="number"
+          min={1}
+          value={form.capacity}
+          onChange={handleChange}
+          required
+          placeholder={t('events.form.capacityPlaceholder')}
+        />
 
         <fieldset className="flex flex-col gap-1.5">
-          <legend className="text-sm font-medium text-foreground">Manager Assign</legend>
+          <legend className="text-sm font-medium text-foreground">
+            {t('events.form.managerAssign')}
+          </legend>
           {isLoadingManagers ? (
-            <p className="text-sm text-muted-foreground" role="status">Loading assignable managers…</p>
+            <p className="text-sm text-muted-foreground" role="status">
+              {t('events.form.loadingManagers')}
+            </p>
           ) : managerLoadError ? (
-            <div role="alert" className="flex items-center justify-between gap-3 rounded-md border border-danger/30 p-2 text-sm text-danger">
-              <span>{getErrorMessage(managerLoadError, 'Unable to load assignable managers.')}</span>
-              <Button type="button" size="sm" variant="outline" onClick={loadManagers}>Try again</Button>
+            <div
+              role="alert"
+              className="flex items-center justify-between gap-3 rounded-md border border-danger/30 p-2 text-sm text-danger"
+            >
+              <span>{getErrorMessage(managerLoadError, t('events.form.managerLoadError'))}</span>
+              <Button type="button" size="sm" variant="outline" onClick={loadManagers}>
+                {t('feedback.error.retry')}
+              </Button>
             </div>
           ) : managers.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No managers available to assign.</p>
+            <p className="text-sm text-muted-foreground">{t('events.form.noManagers')}</p>
           ) : (
             <div className="flex max-h-40 flex-col gap-1.5 overflow-y-auto rounded-md border border-border p-2">
               {managers.map((manager) => (
@@ -177,9 +215,11 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
         </fieldset>
 
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
+          <Button type="button" variant="outline" onClick={onClose}>
+            {t('common.actions.cancel')}
+          </Button>
           <Button type="submit" isLoading={loading}>
-            {isEditing ? 'Save Changes' : 'Create Event'}
+            {t(isEditing ? 'events.form.saveChanges' : 'events.form.createButton')}
           </Button>
         </div>
       </form>

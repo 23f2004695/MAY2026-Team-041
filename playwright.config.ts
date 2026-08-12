@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const backendPort = process.env.PLAYWRIGHT_BACKEND_PORT ?? '8000';
-const frontendPort = process.env.PLAYWRIGHT_FRONTEND_PORT ?? '5173';
+// Keep E2E on dedicated defaults so a developer's production-like servers on
+// 8000/5173 cannot be reused with rate limiting and different environment flags.
+const backendPort = process.env.PLAYWRIGHT_BACKEND_PORT ?? '8010';
+const frontendPort = process.env.PLAYWRIGHT_FRONTEND_PORT ?? '5180';
 const backendURL = `http://127.0.0.1:${backendPort}`;
 const frontendURL = `http://127.0.0.1:${frontendPort}`;
 
@@ -19,8 +21,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command:
-        `docker compose up -d --wait db redis && cd backend && uv run prisma migrate deploy && PYTHONPATH=src uv run python scripts/seed_dev_accounts.py && uv run uvicorn app.main:app --app-dir src --host 127.0.0.1 --port ${backendPort}`,
+      command: `docker compose up -d --wait db redis && cd backend && uv run prisma migrate deploy && PYTHONPATH=src uv run python scripts/seed_dev_accounts.py && uv run uvicorn app.main:app --app-dir src --host 127.0.0.1 --port ${backendPort}`,
       url: `${backendURL}/health/ready`,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,

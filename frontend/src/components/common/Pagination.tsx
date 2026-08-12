@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/cn';
 
@@ -19,9 +20,7 @@ function getPageNumbers(currentPage: number, totalPages: number): (number | 'ell
   }
 
   const pages = new Set<number>([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
-  const sorted = [...pages]
-    .filter((page) => page >= 1 && page <= totalPages)
-    .sort((a, b) => a - b);
+  const sorted = [...pages].filter((page) => page >= 1 && page <= totalPages).sort((a, b) => a - b);
 
   const result: (number | 'ellipsis')[] = [];
   sorted.forEach((page, index) => {
@@ -42,6 +41,7 @@ export function Pagination({
   pageSize,
   className,
 }: CommonPaginationProps) {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
 
   const rangeStart = totalItems && pageSize ? (currentPage - 1) * pageSize + 1 : null;
@@ -57,13 +57,13 @@ export function Pagination({
     >
       {rangeStart !== null && rangeEnd !== null && (
         <span className="text-xs text-muted-foreground">
-          Showing {rangeStart}–{rangeEnd} of {totalItems}
+          {t('common.pagination.showing', { start: rangeStart, end: rangeEnd, total: totalItems })}
         </span>
       )}
-      <div className="flex items-center gap-2">
+      <div className="flex max-w-full min-w-0 items-center justify-center gap-1 sm:gap-2">
         <button
           type="button"
-          aria-label="Previous page"
+          aria-label={t('common.pagination.previous')}
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
           className="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
@@ -71,9 +71,16 @@ export function Pagination({
           <ChevronLeft className="size-4" />
         </button>
 
+        <span className="min-w-20 text-center text-sm font-medium text-foreground sm:hidden">
+          {t('common.pagination.pageOf', { current: currentPage, total: totalPages })}
+        </span>
+
         {getPageNumbers(currentPage, totalPages).map((page, index) =>
           page === 'ellipsis' ? (
-            <span key={`ellipsis-${index}`} className="px-1 text-sm text-muted-foreground">
+            <span
+              key={`ellipsis-${index}`}
+              className="hidden px-1 text-sm text-muted-foreground sm:inline"
+            >
               …
             </span>
           ) : (
@@ -83,7 +90,7 @@ export function Pagination({
               aria-current={page === currentPage ? 'page' : undefined}
               onClick={() => onPageChange(page)}
               className={cn(
-                'inline-flex size-9 items-center justify-center rounded-xl text-sm font-medium transition-colors',
+                'hidden size-9 items-center justify-center rounded-xl text-sm font-medium transition-colors sm:inline-flex',
                 page === currentPage
                   ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-foreground hover:bg-muted/70',
@@ -96,7 +103,7 @@ export function Pagination({
 
         <button
           type="button"
-          aria-label="Next page"
+          aria-label={t('common.pagination.next')}
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
           className="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"

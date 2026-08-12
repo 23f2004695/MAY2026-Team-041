@@ -1,5 +1,5 @@
 import { SlidersHorizontal } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { useClickOutside } from '@/hooks';
 import { cn } from '@/lib/cn';
@@ -25,7 +25,24 @@ export interface FiltersMenuProps {
 export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: FiltersMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const panelId = useId();
   useClickOutside(rootRef, () => setOpen(false));
+
+  useEffect(() => {
+    if (!open) return;
+    panelRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      setOpen(false);
+      requestAnimationFrame(() => triggerRef.current?.focus());
+    }
+
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [open]);
 
   // A filter counts as "active" once it's moved off its first (default) option.
   const activeCount = filters.filter(
@@ -35,10 +52,12 @@ export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: Fi
   return (
     <div ref={rootRef} className={cn('relative', className)}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-controls={panelId}
         className={cn(
           'relative flex h-10 items-center gap-1.5 rounded-md border border-border bg-surface px-3',
           'text-sm font-medium text-foreground hover:bg-secondary',
@@ -57,6 +76,8 @@ export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: Fi
 
       {open && (
         <div
+          ref={panelRef}
+          id={panelId}
           role="dialog"
           aria-label={triggerLabel}
           className="absolute right-0 z-20 mt-1.5 w-64 rounded-lg border border-border bg-surface p-3 shadow-panel"

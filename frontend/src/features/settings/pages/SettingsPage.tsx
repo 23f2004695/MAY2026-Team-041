@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -11,6 +12,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  ConfirmDialog,
   Input,
   Select,
 } from '@/components/ui';
@@ -32,6 +34,8 @@ export function SettingsPage() {
   const { role, fullName, email, logout, deleteAccount, updateProfile } = useAuth();
   const hasStaffAccount =
     role === 'admin' || role === 'manager' || role === 'librarian' || role === 'it-head';
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   const {
     register: registerPassword,
@@ -62,13 +66,15 @@ export function SettingsPage() {
   }
 
   async function handleDeleteAccount() {
-    if (!window.confirm(t('settings.account.deleteAccountConfirm'))) return;
+    setIsDeletingAccount(true);
     try {
       await deleteAccount();
       toast.success(t('settings.account.deleteAccountSuccess'));
       navigate(ROUTES.HOME);
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
+    } finally {
+      setIsDeletingAccount(false);
     }
   }
 
@@ -141,9 +147,7 @@ export function SettingsPage() {
               type="password"
               autoComplete="new-password"
               error={
-                passwordErrors.password?.message
-                  ? t(passwordErrors.password.message)
-                  : undefined
+                passwordErrors.password?.message ? t(passwordErrors.password.message) : undefined
               }
               {...registerPassword('password')}
             />
@@ -172,8 +176,8 @@ export function SettingsPage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
-              Guardian links are verified and managed by library staff. Contact the front desk
-              to add, change, or remove a guardian.
+              Guardian links are verified and managed by library staff. Contact the front desk to
+              add, change, or remove a guardian.
             </p>
           </CardContent>
         </Card>
@@ -211,16 +215,26 @@ export function SettingsPage() {
                 variant="danger"
                 size="sm"
                 className="w-fit"
-                onClick={handleDeleteAccount}
+                onClick={() => setDeleteConfirmationOpen(true)}
               >
                 {t('settings.account.deleteAccount')}
               </Button>
             </div>
           )}
-
-
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={deleteConfirmationOpen}
+        title={t('settings.account.deleteAccountTitle')}
+        description={t('settings.account.deleteAccountConfirm')}
+        confirmLabel={t('settings.account.deleteAccount')}
+        cancelLabel={t('common.actions.cancel')}
+        onCancel={() => setDeleteConfirmationOpen(false)}
+        onConfirm={handleDeleteAccount}
+        isLoading={isDeletingAccount}
+        destructive
+      />
     </div>
   );
 }

@@ -12,13 +12,14 @@ import asyncio
 import os
 
 from app.core.config import get_settings
+from app.core.constants import Role
 from app.core.security import hash_password
 from app.db.prisma import prisma
 
 DEV_PASSWORD = "DevPreview123!"
 DEV_EMAIL_DOMAIN = "devpreview.internal"
 
-ROLES = ["admin", "member", "manager", "librarian", "it-head", "guardian"]
+ROLES = tuple(role.value for role in Role)
 
 
 def _email(role: str) -> str:
@@ -47,7 +48,16 @@ async def main() -> None:
                         "fullName": f"Dev {role_name.title()} Preview",
                         "roleId": role.id,
                     },
-                    "update": {"passwordHash": password_hash, "roleId": role.id},
+                    # E2E exercises account deactivation and token invalidation. Reset every
+                    # mutable authentication guard so rerunning the seed always produces the
+                    # same usable preview accounts instead of inheriting state from a prior run.
+                    "update": {
+                        "passwordHash": password_hash,
+                        "roleId": role.id,
+                        "isActive": True,
+                        "deletedAt": None,
+                        "tokenVersion": 0,
+                    },
                 },
             )
             print(f"Seeded {email} ({role_name})")

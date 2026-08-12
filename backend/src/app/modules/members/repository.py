@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from prisma.errors import UniqueViolationError
 from prisma.models import LoginActivity, ReadingGoal, ReadingProgress, Role, User
 
+from app.core.constants import Role as AppRole
 from app.db.pagination import paginate
 from app.db.prisma import prisma
 
@@ -96,7 +97,7 @@ async def update_member(member_id: str, data: dict) -> User:
 
 async def count_active_admins() -> int:
     return await prisma.user.count(
-        where={"isActive": True, "deletedAt": None, "role": {"name": "admin"}}
+        where={"isActive": True, "deletedAt": None, "role": {"name": AppRole.ADMIN.value}}
     )
 
 

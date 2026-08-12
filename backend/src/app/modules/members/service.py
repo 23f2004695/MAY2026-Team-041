@@ -3,6 +3,7 @@ from datetime import UTC, date, datetime, timedelta
 from fastapi import HTTPException, status
 from prisma.errors import ForeignKeyViolationError, UniqueViolationError
 
+from app.core.constants import Role
 from app.core.security import hash_password
 from app.modules.members import repository
 from app.modules.members.schemas import (
@@ -64,7 +65,7 @@ async def update_member(member_id: str, payload: MemberUpdate, *, actor_id: str)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member not found")
 
     removes_admin_access = payload.is_active is False or (
-        payload.role_name is not None and payload.role_name.value != "admin"
+        payload.role_name is not None and payload.role_name != Role.ADMIN
     )
     if member_id == actor_id and removes_admin_access:
         raise HTTPException(
@@ -72,7 +73,7 @@ async def update_member(member_id: str, payload: MemberUpdate, *, actor_id: str)
             "You cannot deactivate or remove your own admin access",
         )
     if (
-        existing.role.name == "admin"
+        existing.role.name == Role.ADMIN.value
         and removes_admin_access
         and await repository.count_active_admins() <= 1
     ):

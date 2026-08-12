@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 from prisma.models import Event, EventRegistration
 
+from app.core.constants import Role
 from app.db.pagination import paginate
 from app.db.prisma import prisma
 
@@ -118,7 +119,7 @@ async def list_manager_ids(candidate_ids: list[str]) -> list[str]:
             "id": {"in": candidate_ids},
             "isActive": True,
             "deletedAt": None,
-            "role": {"name": "manager"},
+            "role": {"name": Role.MANAGER.value},
         }
     )
     return [row.id for row in rows]

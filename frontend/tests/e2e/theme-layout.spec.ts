@@ -4,18 +4,40 @@ import { expect, test, type Page } from '@playwright/test';
 import { API_BASE, DEV_EMAIL_DOMAIN, DEV_PASSWORD, type Role } from './helpers';
 
 type Theme = 'light' | 'dark';
-type RouteCase = { name: string; path: string; role?: Role };
+type RouteCase = { name: string; path: string | (() => string); role?: Role };
 type StoredAuth = Record<string, unknown>;
+
+const responsiveViewports = [
+  { width: 320, height: 568 },
+  { width: 360, height: 640 },
+  { width: 375, height: 667 },
+  { width: 414, height: 896 },
+  { width: 768, height: 1024 },
+  { width: 1024, height: 768 },
+  { width: 1280, height: 900 },
+  { width: 1440, height: 900 },
+  { width: 1920, height: 1080 },
+] as const;
 
 test.describe.configure({ mode: 'serial' });
 
 const authStates = new Map<Role, StoredAuth>();
+let seededBookId = '';
 test.beforeAll(async ({ request }) => {
   for (const role of ['admin', 'member', 'manager', 'librarian', 'it-head', 'guardian'] as const) {
-    const response = await request.post(`${API_BASE}/auth/login`, {
+    let response = await request.post(`${API_BASE}/auth/login`, {
       data: { email: `${role}@${DEV_EMAIL_DOMAIN}`, password: DEV_PASSWORD },
     });
-    expect(response.ok(), `Unable to prepare ${role} session`).toBe(true);
+    for (let attempt = 1; !response.ok() && attempt < 3; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, attempt * 250));
+      response = await request.post(`${API_BASE}/auth/login`, {
+        data: { email: `${role}@${DEV_EMAIL_DOMAIN}`, password: DEV_PASSWORD },
+      });
+    }
+    expect(
+      response.ok(),
+      `Unable to prepare ${role} session (${response.status()}): ${await response.text()}`,
+    ).toBe(true);
     const data = await response.json();
     authStates.set(role, {
       isAuthenticated: true,
@@ -31,6 +53,18 @@ test.beforeAll(async ({ request }) => {
       postAuthRedirect: null,
     });
   }
+
+  const memberToken = authStates.get('member')?.token;
+  const booksResponse = await request.get(`${API_BASE}/books?page=1&page_size=1`, {
+    headers: { Authorization: `Bearer ${String(memberToken)}` },
+  });
+  expect(booksResponse.ok(), 'Unable to prepare a seeded book route').toBe(true);
+  const books = (await booksResponse.json()) as { items: Array<{ id: string }> };
+  expect(
+    books.items.length,
+    'Responsive detail-page coverage requires a seeded book',
+  ).toBeGreaterThan(0);
+  seededBookId = books.items[0].id;
 });
 
 const publicRoutes: RouteCase[] = [
@@ -41,12 +75,14 @@ const publicRoutes: RouteCase[] = [
   { name: 'login', path: '/login' },
   { name: 'register', path: '/register' },
   { name: 'forgot password', path: '/forgot-password' },
+  { name: 'reset password', path: '/reset-password?token=invalid-responsive-audit-token' },
   { name: 'not found', path: '/does-not-exist' },
 ];
 
 const authenticatedRoutes: RouteCase[] = [
   { name: 'member dashboard', path: '/dashboard', role: 'member' },
   { name: 'books', path: '/books', role: 'member' },
+  { name: 'book details', path: () => `/books/${seededBookId}`, role: 'member' },
   { name: 'borrow history', path: '/borrow-history', role: 'member' },
   { name: 'reservations', path: '/reservations', role: 'member' },
   { name: 'seat booking', path: '/seat-booking', role: 'member' },
@@ -57,6 +93,7 @@ const authenticatedRoutes: RouteCase[] = [
   { name: 'reading progress', path: '/reading-progress', role: 'member' },
   { name: 'leaderboard', path: '/leaderboard', role: 'member' },
   { name: 'reviews', path: '/reviews', role: 'member' },
+  { name: 'book reviews', path: () => `/reviews/${seededBookId}`, role: 'member' },
   { name: 'support', path: '/support', role: 'member' },
   { name: 'settings', path: '/settings', role: 'member' },
   { name: 'manager dashboard', path: '/dashboard', role: 'manager' },
@@ -72,11 +109,14 @@ const authenticatedRoutes: RouteCase[] = [
 
 async function setStateBeforeLoad(page: Page, theme: Theme, role?: Role) {
   const authState = role ? authStates.get(role) : undefined;
-  await page.addInitScript(({ selectedTheme, storedAuth }) => {
-    localStorage.setItem('theme', JSON.stringify(selectedTheme));
-    if (storedAuth) localStorage.setItem('mock-auth', JSON.stringify(storedAuth));
-    else localStorage.removeItem('mock-auth');
-  }, { selectedTheme: theme, storedAuth: authState });
+  await page.addInitScript(
+    ({ selectedTheme, storedAuth }) => {
+      localStorage.setItem('theme', JSON.stringify(selectedTheme));
+      if (storedAuth) localStorage.setItem('mock-auth', JSON.stringify(storedAuth));
+      else localStorage.removeItem('mock-auth');
+    },
+    { selectedTheme: theme, storedAuth: authState },
+  );
   await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: theme });
 }
 
@@ -112,7 +152,9 @@ async function expectHealthyLayout(page: Page, theme: Theme, includeAccessibilit
   const layout = await page.evaluate(() => {
     const root = document.documentElement;
     const overflowingControls = Array.from(
-      document.querySelectorAll<HTMLElement>('main button, main a, main input, main select, main textarea'),
+      document.querySelectorAll<HTMLElement>(
+        'main button, main a, main input, main select, main textarea',
+      ),
     )
       .filter((element) => {
         const style = getComputedStyle(element);
@@ -146,10 +188,13 @@ async function expectHealthyLayout(page: Page, theme: Theme, includeAccessibilit
         let ancestor: HTMLElement | null = element;
         while (ancestor) {
           const transform = getComputedStyle(ancestor).transform;
-          if (transform !== 'none') transformedAncestors.push(`${ancestor.tagName.toLowerCase()}:${transform}`);
+          if (transform !== 'none')
+            transformedAncestors.push(`${ancestor.tagName.toLowerCase()}:${transform}`);
           if (ancestorRects.length < 5) {
             const ancestorRect = ancestor.getBoundingClientRect();
-            ancestorRects.push(`${ancestor.tagName.toLowerCase()}[${Math.round(ancestorRect.left)},${Math.round(ancestorRect.right)}]`);
+            ancestorRects.push(
+              `${ancestor.tagName.toLowerCase()}[${Math.round(ancestorRect.left)},${Math.round(ancestorRect.right)}]`,
+            );
           }
           ancestor = ancestor.parentElement;
         }
@@ -157,7 +202,9 @@ async function expectHealthyLayout(page: Page, theme: Theme, includeAccessibilit
       });
 
     const clippedText = Array.from(
-      document.querySelectorAll<HTMLElement>('main h1, main h2, main h3, main p, main label, main button'),
+      document.querySelectorAll<HTMLElement>(
+        'main h1, main h2, main h3, main p, main label, main button',
+      ),
     )
       .filter((element) => {
         const style = getComputedStyle(element);
@@ -165,16 +212,22 @@ async function expectHealthyLayout(page: Page, theme: Theme, includeAccessibilit
           element.classList.contains('sr-only') ||
           element.classList.contains('truncate') ||
           style.webkitLineClamp !== 'none'
-        ) return false;
+        )
+          return false;
         return (
           style.display !== 'none' &&
           style.visibility !== 'hidden' &&
           element.getBoundingClientRect().width > 0 &&
-          (element.scrollWidth > element.clientWidth + 1 || element.scrollHeight > element.clientHeight + 1) &&
-          (style.overflow === 'hidden' || style.overflowX === 'hidden' || style.overflowY === 'hidden')
+          (element.scrollWidth > element.clientWidth + 1 ||
+            element.scrollHeight > element.clientHeight + 1) &&
+          (style.overflow === 'hidden' ||
+            style.overflowX === 'hidden' ||
+            style.overflowY === 'hidden')
         );
       })
-      .map((element) => `${element.tagName.toLowerCase()}:${element.textContent?.trim().slice(0, 40)}`);
+      .map(
+        (element) => `${element.tagName.toLowerCase()}:${element.textContent?.trim().slice(0, 40)}`,
+      );
 
     const rawTranslationKeys = Array.from(document.querySelectorAll<HTMLElement>('main *'))
       .filter((element) => element.children.length === 0 && element.getClientRects().length > 0)
@@ -202,16 +255,142 @@ async function expectHealthyLayout(page: Page, theme: Theme, includeAccessibilit
   }
 }
 
+async function expectResponsiveLayout(page: Page) {
+  await expect(page.locator('main')).toBeVisible();
+  await page.waitForTimeout(250);
+
+  const issues = await page.evaluate(() => {
+    const isVisible = (element: HTMLElement) => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        parseFloat(style.opacity) > 0 &&
+        rect.width > 0 &&
+        rect.height > 0
+      );
+    };
+
+    const hasHorizontalScroller = (element: HTMLElement) => {
+      if (element.closest('[data-overflow-viewport]')) return true;
+      let ancestor: HTMLElement | null = element.parentElement;
+      while (ancestor) {
+        const style = getComputedStyle(ancestor);
+        if (
+          (style.overflowX === 'auto' || style.overflowX === 'scroll') &&
+          ancestor.scrollWidth > ancestor.clientWidth
+        ) {
+          return true;
+        }
+        ancestor = ancestor.parentElement;
+      }
+      return false;
+    };
+
+    const viewportBoundSelector = [
+      'main h1',
+      'main h2',
+      'main h3',
+      'main p',
+      'main button',
+      'main a',
+      'main input',
+      'main select',
+      'main textarea',
+      'main table',
+      'main [role="alert"]',
+      '[role="dialog"]',
+    ].join(',');
+
+    const outsideViewport = Array.from(
+      document.querySelectorAll<HTMLElement>(viewportBoundSelector),
+    )
+      .filter((element) => {
+        if (!isVisible(element) || hasHorizontalScroller(element)) return false;
+        const rect = element.getBoundingClientRect();
+        return rect.left < -2 || rect.right > window.innerWidth + 2;
+      })
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return `${element.tagName.toLowerCase()}:${element.textContent?.trim().slice(0, 50)} [${Math.round(rect.left)},${Math.round(rect.right)}]`;
+      });
+
+    const clippedText = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        'main h1, main h2, main h3, main p, main label, main button',
+      ),
+    )
+      .filter((element) => {
+        if (!isVisible(element)) return false;
+        const style = getComputedStyle(element);
+        if (
+          element.classList.contains('sr-only') ||
+          element.classList.contains('truncate') ||
+          style.webkitLineClamp !== 'none'
+        ) {
+          return false;
+        }
+        return (
+          (element.scrollWidth > element.clientWidth + 1 ||
+            element.scrollHeight > element.clientHeight + 1) &&
+          (style.overflow === 'hidden' ||
+            style.overflowX === 'hidden' ||
+            style.overflowY === 'hidden')
+        );
+      })
+      .map(
+        (element) => `${element.tagName.toLowerCase()}:${element.textContent?.trim().slice(0, 50)}`,
+      );
+
+    const offscreenFixedControls = Array.from(
+      document.querySelectorAll<HTMLElement>('button, a, input, select, textarea'),
+    )
+      .filter((element) => {
+        if (!isVisible(element) || getComputedStyle(element).position !== 'fixed') return false;
+        const rect = element.getBoundingClientRect();
+        return (
+          rect.left < -2 ||
+          rect.right > window.innerWidth + 2 ||
+          rect.top < -2 ||
+          rect.bottom > window.innerHeight + 2
+        );
+      })
+      .map(
+        (element) =>
+          `${element.tagName.toLowerCase()}:${element.getAttribute('aria-label') ?? element.textContent?.trim().slice(0, 50)}`,
+      );
+
+    return {
+      documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      outsideViewport,
+      clippedText,
+      offscreenFixedControls,
+    };
+  });
+
+  expect(issues.documentOverflow, JSON.stringify(issues, null, 2)).toBeLessThanOrEqual(1);
+  expect(issues.outsideViewport, JSON.stringify(issues, null, 2)).toEqual([]);
+  expect(issues.clippedText, JSON.stringify(issues, null, 2)).toEqual([]);
+  expect(issues.offscreenFixedControls, JSON.stringify(issues, null, 2)).toEqual([]);
+}
+
 for (const theme of ['light', 'dark'] as const) {
   test.describe(`${theme} theme route audit`, () => {
     for (const route of [...publicRoutes, ...authenticatedRoutes]) {
-      test(`${route.name} renders without visual layout or accessibility defects`, async ({ page }) => {
+      test(`${route.name} renders without visual layout or accessibility defects`, async ({
+        page,
+      }) => {
         await setStateBeforeLoad(page, theme, route.role);
-        for (const width of [1280, 375]) {
-          await page.setViewportSize({ width, height: 900 });
-          await page.goto(route.path);
+        for (const viewport of responsiveViewports) {
+          await page.setViewportSize(viewport);
+          await page.goto(typeof route.path === 'function' ? route.path() : route.path);
           await page.waitForLoadState('domcontentloaded');
-          await expectHealthyLayout(page, theme, width === 1280);
+          if (viewport.width === 375 || viewport.width === 1280) {
+            await expectHealthyLayout(page, theme, viewport.width === 1280);
+          } else {
+            await expectResponsiveLayout(page);
+          }
         }
       });
     }
@@ -226,7 +405,11 @@ for (const theme of ['light', 'dark'] as const) {
     for (const width of [375, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/');
-      const banner = page.getByText('Together, we build a stronger', { exact: false }).locator('..').locator('..').locator('..');
+      const banner = page
+        .getByText('Together, we build a stronger', { exact: false })
+        .locator('..')
+        .locator('..')
+        .locator('..');
       await banner.scrollIntoViewIfNeeded();
 
       const dimensions = await banner.evaluate((element) => {
