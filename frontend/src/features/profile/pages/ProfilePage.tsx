@@ -547,7 +547,7 @@ function MemberProfile() {
                     'flex items-start gap-3 rounded-xl border p-3.5 transition-all',
                     unlocked
                       ? 'border-emerald-500/40 bg-emerald-500/5 shadow-xs'
-                      : 'border-border/60 bg-card/60 opacity-60'
+                      : 'border-dashed border-border bg-card'
                   )}
                 >
                   <div

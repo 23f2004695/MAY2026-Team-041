@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LANGUAGES } from '@/i18n/languages';
 import { cn } from '@/lib/cn';
-import { useLanguage } from '@/providers/LanguageProvider';
+import { useLanguage } from '@/providers/languageContext';
 
 export interface LanguageSwitcherProps {
   className?: string;

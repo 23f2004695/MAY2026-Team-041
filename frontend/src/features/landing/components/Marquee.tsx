@@ -14,6 +14,7 @@ export function Marquee({ children, reverse = false, duration = 25, gap = 16 }: 
 
   return (
     <div
+      data-overflow-viewport="marquee"
       className="overflow-hidden"
       style={{
         maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',

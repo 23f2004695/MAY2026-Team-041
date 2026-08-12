@@ -63,7 +63,7 @@ export function ChatbotWidget() {
   }
 
   return (
-    <div className="pointer-events-none fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
+    <div className="pointer-events-none fixed bottom-3 right-3 z-40 flex flex-col items-end gap-3 sm:bottom-5 sm:right-5">
       <AnimatePresence>
         {open && (
           <motion.div
@@ -77,8 +77,7 @@ export function ChatbotWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: 'easeOut' }}
-            className="pointer-events-auto flex w-80 flex-col overflow-hidden rounded-2xl border border-border shadow-2xl sm:w-96"
-            style={{ height: 540 }}
+            className="pointer-events-auto flex h-[min(540px,calc(100dvh-5rem))] w-[calc(100vw-1.5rem)] max-w-80 flex-col overflow-hidden rounded-2xl border border-border shadow-2xl sm:w-96 sm:max-w-none"
           >
             {/* Header */}
             <div className="flex items-center justify-between gap-2 bg-gradient-to-r from-primary to-primary/80 px-4 py-3">
@@ -265,7 +264,7 @@ export function ChatbotWidget() {
           aria-label={t(open ? 'chatbot.closeChat' : 'chatbot.openChat')}
           aria-expanded={open}
           aria-controls={panelId}
-          className="relative size-14 rounded-full p-0 shadow-lg transition-transform hover:scale-105 active:scale-95"
+          className="relative size-11 rounded-full p-0 shadow-lg transition-transform hover:scale-105 active:scale-95 sm:size-14"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
@@ -276,7 +275,7 @@ export function ChatbotWidget() {
               transition={{ duration: 0.15 }}
               className="flex items-center justify-center"
             >
-              {open ? <X className="size-5" /> : <Bot className="size-5" />}
+              {open ? <X className="size-4 sm:size-5" /> : <Bot className="size-4 sm:size-5" />}
             </motion.span>
           </AnimatePresence>
         </Button>

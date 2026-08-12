@@ -23,10 +23,20 @@
       "manage": "Manage",
       "viewReport": "View report",
       "cancel": "Cancel",
+      "close": "Close",
       "reset": "Reset"
+    },
+    "pagination": {
+      "showing": "Showing {{start}}–{{end}} of {{total}}",
+      "pageOf": "Page {{current}} of {{total}}",
+      "previous": "Previous page",
+      "next": "Next page"
     },
     "errors": {
       "generic": "Something went wrong. Please try again."
+    },
+    "emptyState": {
+      "noResults": "No results found"
     },
     "export": {
       "csv": "Export CSV",
@@ -251,6 +261,15 @@
         "activate": "Activate",
         "deactivate": "Deactivate"
       },
+      "confirmRole": {
+        "title": "Change member role?",
+        "description": "Change {{name}} from {{currentRole}} to {{nextRole}}? Their access will change immediately.",
+        "confirm": "Change role"
+      },
+      "confirmDeactivate": {
+        "title": "Deactivate member?",
+        "description": "Deactivate {{name}}? They will immediately lose access to the application."
+      },
       "toasts": {
         "roleUpdated": "{{name}} is now {{role}}",
         "activated": "{{name}} activated",
@@ -289,6 +308,7 @@
     "seatOccupancy": {
       "title": "Seat Filling Frequency (Yesterday)",
       "summary": "Peak at {{peakHour}} ({{peakPercent}}% full) · {{avgPercent}}% average occupancy",
+      "zeroSummary": "No seats were occupied yesterday.",
       "emptyTitle": "No occupancy data yet",
       "emptyDescription": "Seat filling data will show up here once today's slots are recorded."
     },
@@ -1011,13 +1031,7 @@
       "badge": "Community Reading Club & Library Platform",
       "title": "Your library, your community, all in one place.",
       "titlePrefix": "Build Better ",
-      "titleWords": [
-        "Libraries",
-        "Communities",
-        "Learning",
-        "Reading Habits",
-        "Connections"
-      ],
+      "titleWords": ["Libraries", "Communities", "Learning", "Reading Habits", "Connections"],
       "subtitle": "Borrow books, reserve a study seat, join a reading club, and get personalized recommendations, without the paper registers and group chats.",
       "ctaJoin": "Join the Community",
       "ctaBrowse": "Browse Books",
@@ -1523,6 +1537,30 @@
   "events": {
     "pageTitle": "Events",
     "pageDescription": "Upcoming library events and community programs",
+    "form": {
+      "createTitle": "Create Event",
+      "editTitle": "Edit Event",
+      "title": "Title",
+      "titlePlaceholder": "Event title",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional description",
+      "location": "Location",
+      "locationPlaceholder": "e.g. Main Hall",
+      "dateTime": "Date & Time",
+      "capacity": "Capacity",
+      "capacityPlaceholder": "Maximum attendees",
+      "managerAssign": "Assign managers",
+      "loadingManagers": "Loading assignable managers…",
+      "managerLoadError": "Unable to load assignable managers.",
+      "noManagers": "No managers available to assign.",
+      "saveChanges": "Save Changes",
+      "createButton": "Create Event",
+      "authRequired": "You must be logged in with a real account to manage events.",
+      "createdToast": "Event “{{title}}” created",
+      "updatedToast": "Event “{{title}}” updated",
+      "createError": "Failed to create event",
+      "updateError": "Failed to update event"
+    },
     "stats": {
       "eventsThisMonth": "Events This Month",
       "totalAttendees": "Total Attendees",
@@ -1649,6 +1687,15 @@
     "pageTitle": "Reading Progress",
     "pageDescription": "Your reading activity across the year",
     "guardianPageDescription": "Your children's reading activity",
+    "goalForm": {
+      "title": "Set Reading Goal",
+      "yearly": "Yearly goal (books)",
+      "monthly": "Monthly goal (books)",
+      "integerError": "Enter a whole number of at least 1",
+      "save": "Save",
+      "savedToast": "Reading goal saved",
+      "saveError": "Could not save goal"
+    },
     "readingGoal": {
       "title": "{{year}} Reading Goal",
       "booksOf": "{{current}} of {{target}} books"
@@ -1688,6 +1735,8 @@
   "leaderboard": {
     "pageTitle": "Leaderboard",
     "pageDescription": "Community reading & participation leaderboard",
+    "pointsAmount": "+{{points}} pts",
+    "penaltyAmount": "-{{points}} pts",
     "table": {
       "rank": "Rank",
       "reader": "Member",
@@ -1715,6 +1764,16 @@
     "rules": {
       "title": "How Points & Badges Work",
       "subtitle": "Leaderboard rewards overall participation across books completed, reviews, events, streaks, and timely returns.",
+      "show": "How Points Work",
+      "hide": "Hide Rules",
+      "labels": {
+        "completeBook": "Complete a Book",
+        "writeReview": "Write a Review",
+        "attendEvent": "Library Event",
+        "onTimeReturn": "On-Time Return",
+        "streakBonus": "7-Day Streak",
+        "lateReturn": "Late Return Penalty"
+      },
       "completeBook": "Complete a book (+100 pts)",
       "writeReview": "Write a book review (+25 pts)",
       "attendEvent": "Library event (+30 pts)",
@@ -1874,10 +1933,20 @@
       "logOut": "Log out",
       "dangerZone": "Danger zone",
       "deleteAccount": "Delete account",
+      "deleteAccountTitle": "Delete your account?",
       "deleteAccountHint": "Permanently delete your account and all your data.",
       "deleteAccountConfirm": "Delete your account? This can't be undone.",
       "deleteAccountSuccess": "Your account has been deleted."
     }
+  },
+  "translateDemo": {
+    "title": "Translation demo",
+    "description": "Type any text and choose a language to translate it.",
+    "sourceLabel": "Text to translate",
+    "targetLabel": "Translate to",
+    "outputLabel": "Translated output",
+    "loading": "(translating…)",
+    "error": "Translation failed. Your original text is shown."
   },
   "reviews": {
     "pageTitle": "Book Reviews",

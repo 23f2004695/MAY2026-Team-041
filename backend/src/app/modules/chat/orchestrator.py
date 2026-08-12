@@ -25,6 +25,7 @@ from langgraph.prebuilt import create_react_agent
 from pydantic import SecretStr
 
 from app.core.config import get_settings
+from app.core.constants import Role
 from app.modules.books import service as books_service
 from app.modules.books.schemas import BookSort
 from app.modules.chat.guardrails import GuardrailBlock, check_input, check_output
@@ -46,8 +47,13 @@ from app.modules.support_tickets.schemas import SupportTicketCreate
 # ── Per-request context injected before each agent call ──────────────────────
 _ctx: dict[str, Any] = {}
 
-STAFF_ROLES = {"admin", "librarian", "manager", "it_head", "it-head"}
-LOAN_MANAGER_ROLES = {"admin", "manager", "librarian", "it_head", "it-head"}
+STAFF_ROLES = {
+    Role.ADMIN.value,
+    Role.LIBRARIAN.value,
+    Role.MANAGER.value,
+    Role.IT_HEAD.value,
+}
+LOAN_MANAGER_ROLES = STAFF_ROLES
 
 
 # ── LLM factory ───────────────────────────────────────────────────────────────
@@ -80,7 +86,7 @@ def _build_llm() -> BaseChatModel:
 
 # ── Context helpers ───────────────────────────────────────────────────────────
 def _role() -> str:
-    return _ctx.get("role", "member")
+    return _ctx.get("role", Role.MEMBER.value)
 
 
 def _member_id() -> str:
@@ -592,7 +598,7 @@ async def get_outstanding_fines(query: str = "") -> str:
 @tool
 async def get_all_support_tickets(status_filter: str = "") -> str:
     """STAFF ONLY. Get all support tickets. status_filter: 'open'/'resolved'/'closed'/'' for all."""
-    if _role() not in {"admin", "manager", "it_head", "it-head"}:
+    if _role() not in STAFF_ROLES:
         return "You don't have permission to view all support tickets."
     items = await support_tickets_service.list_all_tickets(status_filter or None)
     if not items:

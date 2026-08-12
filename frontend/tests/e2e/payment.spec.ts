@@ -1,12 +1,10 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
 
-import { continueAsRole, DEV_EMAIL_DOMAIN, DEV_PASSWORD } from './helpers';
+import { API_BASE, continueAsRole, DEV_EMAIL_DOMAIN, DEV_PASSWORD } from './helpers';
 
 // The Payment page's own dev server only talks to the backend through the browser —
 // coupons have to already exist for the UI to validate one, so this hits the API
 // directly (same backend the app itself calls) to seed one before each test needs it.
-const API_BASE = process.env.PLAYWRIGHT_API_BASE_URL ?? 'http://127.0.0.1:8000/api/v1';
-
 async function createCoupon(request: APIRequestContext, discountPercent: number): Promise<string> {
   const login = await request.post(`${API_BASE}/auth/login`, {
     data: { email: `admin@${DEV_EMAIL_DOMAIN}`, password: DEV_PASSWORD },

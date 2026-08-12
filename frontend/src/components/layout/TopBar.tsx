@@ -30,6 +30,8 @@ export function TopBar({ items }: TopBarProps) {
         size="sm"
         className="size-10 p-0 md:hidden"
         aria-label={t('topBar.openNavigation')}
+        aria-expanded={mobileNavOpen}
+        aria-controls="authenticated-mobile-navigation"
         onClick={() => setMobileNavOpen(true)}
       >
         <Menu className="size-5" />
@@ -46,6 +48,8 @@ export function TopBar({ items }: TopBarProps) {
             ? t('notifications.pageTitleWithUnread', { count: unreadCount })
             : t('notifications.pageTitle')
         }
+        aria-expanded={notificationsOpen}
+        aria-controls="notifications-dialog"
         onClick={() => setNotificationsOpen(true)}
       >
         <Bell
@@ -64,6 +68,7 @@ export function TopBar({ items }: TopBarProps) {
       <UserMenu />
 
       <Modal
+        id="notifications-dialog"
         open={notificationsOpen}
         onClose={() => {
           setNotificationsOpen(false);
@@ -76,6 +81,7 @@ export function TopBar({ items }: TopBarProps) {
       </Modal>
 
       <Drawer
+        id="authenticated-mobile-navigation"
         open={mobileNavOpen}
         onClose={() => setMobileNavOpen(false)}
         title={t('topBar.menu')}

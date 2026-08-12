@@ -56,8 +56,22 @@
   --color-secondary: #1b2536;
   --color-secondary-foreground: #e2e8f0;
 
-  --color-primary: #c13fcb;
-  --color-primary-hover: #a62db0;
+  /* Bright enough for brand text on both dark surfaces, paired with a dark
+     foreground for filled controls so both combinations clear WCAG AA. */
+  --color-primary: #ca50d4;
+  --color-primary-foreground: #0b1220;
+  --color-primary-hover: #d05bda;
+
+  /* Light semantic colors remain legible as text on dark cards. Their paired
+     dark foregrounds keep filled badges/buttons accessible as well. */
+  --color-success: #4ade80;
+  --color-success-foreground: #052e16;
+  --color-warning: #fbbf24;
+  --color-warning-foreground: #451a03;
+  --color-danger: #fb7185;
+  --color-danger-foreground: #450a0a;
+  --color-info: #60a5fa;
+  --color-info-foreground: #0c1a33;
 
   --color-ink: #5b0c63;
   --color-ink-foreground: #fdf4ff;

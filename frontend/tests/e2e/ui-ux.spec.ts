@@ -39,15 +39,19 @@ test.describe('Payment validation', () => {
       await page.goto(`/payment?amount=${encodeURIComponent(amount)}&label=Fine`);
 
       await expect(page.getByText('Invalid payment amount')).toBeVisible();
-      await expect(page.getByRole('button', { name: /Pay securely|Notify the Manager/ })).toHaveCount(
-        0,
-      );
+      await expect(
+        page.getByRole('button', { name: /Pay securely|Notify the Manager/ }),
+      ).toHaveCount(0);
     }
   });
 
   test('shows a recoverable error when a membership plan cannot be loaded', async ({ page }) => {
     await page.route('**/api/v1/pricing-plans', (route) =>
-      route.fulfill({ status: 500, contentType: 'application/json', body: '{"detail":"Plans offline"}' }),
+      route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: '{"detail":"Plans offline"}',
+      }),
     );
     await page.goto('/payment?plan=missing-plan');
 
@@ -58,10 +62,16 @@ test.describe('Payment validation', () => {
 });
 
 test.describe('Seat availability states', () => {
-  test('does not advertise seats as available when the schedule request fails', async ({ page }) => {
+  test('does not advertise seats as available when the schedule request fails', async ({
+    page,
+  }) => {
     await continueAsRole(page, 'member');
     await page.route('**/api/v1/seat-booking/schedule?*', (route) =>
-      route.fulfill({ status: 503, contentType: 'application/json', body: '{"detail":"Schedule offline"}' }),
+      route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: '{"detail":"Schedule offline"}',
+      }),
     );
 
     await page.goto('/seat-booking');
@@ -98,8 +108,49 @@ test.describe('Event registration states', () => {
 
     await page.goto('/events');
     await page.getByRole('button', { name: 'View Details' }).click();
-    await expect(page.getByText('Registration is closed because this event is full.')).toBeVisible();
+    await expect(
+      page.getByText('Registration is closed because this event is full.'),
+    ).toBeVisible();
     await expect(page.getByRole('button', { name: 'Register' })).toBeDisabled();
+  });
+});
+
+test.describe('Event management', () => {
+  test('only requests eligible managers for event assignment', async ({ page }) => {
+    let managerQueryWasUsed = false;
+    await page.route('**/api/v1/members?*', async (route) => {
+      const url = new URL(route.request().url());
+      managerQueryWasUsed =
+        url.searchParams.get('role') === 'manager' &&
+        url.searchParams.get('active_only') === 'true';
+      await route.fulfill({
+        json: {
+          items: [
+            {
+              id: 'eligible-manager',
+              email: 'eligible@example.com',
+              full_name: 'Eligible Manager',
+              phone: null,
+              avatar_url: null,
+              role: { id: 'manager-role', name: 'manager' },
+              is_active: true,
+              last_login_at: null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+          ],
+          total: 1,
+          page: 1,
+          page_size: 100,
+        },
+      });
+    });
+
+    await continueAsRole(page, 'manager');
+    await page.getByRole('button', { name: 'Create Event' }).click();
+
+    await expect(page.getByRole('checkbox', { name: 'Eligible Manager' })).toBeVisible();
+    expect(managerQueryWasUsed).toBe(true);
   });
 });
 
@@ -116,7 +167,9 @@ test.describe('Administrative safety and recovery', () => {
     await expect(page.getByRole('button', { name: 'Try again' })).toHaveCount(3);
   });
 
-  test('role changes and deactivation require confirmation before any request', async ({ page }) => {
+  test('role changes and deactivation require confirmation before any request', async ({
+    page,
+  }) => {
     let updateRequests = 0;
     await page.route('**/api/v1/members/*', async (route) => {
       if (route.request().method() === 'PUT') updateRequests += 1;
@@ -127,10 +180,15 @@ test.describe('Administrative safety and recovery', () => {
     await page.getByRole('searchbox', { name: 'Search' }).fill('admin@devpreview.internal');
 
     const selfRow = page.getByRole('row').filter({ hasText: 'admin@devpreview.internal' });
-    page.once('dialog', (dialog) => dialog.dismiss());
     await selfRow.getByRole('combobox').selectOption('member');
-    page.once('dialog', (dialog) => dialog.dismiss());
+    const roleDialog = page.getByRole('dialog', { name: 'Change member role?' });
+    await expect(roleDialog).toBeVisible();
+    await roleDialog.getByRole('button', { name: 'Cancel' }).click();
+
     await selfRow.getByRole('button', { name: 'Deactivate' }).click();
+    const deactivateDialog = page.getByRole('dialog', { name: 'Deactivate member?' });
+    await expect(deactivateDialog).toBeVisible();
+    await deactivateDialog.getByRole('button', { name: 'Cancel' }).click();
 
     expect(updateRequests).toBe(0);
   });

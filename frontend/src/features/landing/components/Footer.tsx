@@ -1,4 +1,4 @@
-import { motion, type Variants } from 'framer-motion';
+import { motion, type Variants, useReducedMotion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -75,6 +75,7 @@ export interface FooterProps {
 
 export function Footer({ sticky = true }: FooterProps) {
   const { t } = useTranslation();
+  const reduceMotion = useReducedMotion();
 
   const location = useLocation();
 
@@ -106,7 +107,7 @@ export function Footer({ sticky = true }: FooterProps) {
 
   const content = (
     <motion.div
-      initial="hidden"
+      initial={reduceMotion ? 'visible' : 'hidden'}
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       variants={containerVariants}
