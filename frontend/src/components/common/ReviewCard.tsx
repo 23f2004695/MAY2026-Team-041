@@ -65,7 +65,11 @@ export function ReviewCard({
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {rating != null && (
-          <div className="flex" aria-label={t('common.cards.review.ratedOutOf5', { rating })}>
+          <div
+            className="flex"
+            role="img"
+            aria-label={t('common.cards.review.ratedOutOf5', { rating })}
+          >
             {Array.from({ length: 5 }, (_, index) => (
               <Star
                 key={index}

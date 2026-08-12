@@ -51,7 +51,7 @@ export function DateSlider({ options, active, ariaLabel, onChange }: DateSliderP
             <span
               className={cn(
                 'relative text-xs font-normal',
-                isActive ? 'text-primary-foreground/80' : 'text-muted-foreground',
+                isActive ? 'text-primary-foreground' : 'text-muted-foreground',
               )}
             >
               {option.subLabel}

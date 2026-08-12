@@ -125,8 +125,8 @@ export function HowItWorks() {
         variants={fadeUp}
         transition={{ duration: 0.4, ease: 'easeOut', delay: 0.15 }}
       >
-        <Card className="mt-8 flex flex-col items-center gap-4 p-5 sm:flex-row sm:justify-between">
-          <div className="flex items-center gap-3">
+        <Card className="mt-8 flex flex-col items-stretch gap-5 p-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
             <IconBadge icon={Users} tone="primary-tint" size={12} />
             <div>
               <p className="font-semibold text-foreground">
@@ -140,21 +140,21 @@ export function HowItWorks() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-3">
+          <div className="flex min-w-0 flex-wrap items-center justify-center gap-3 sm:flex-nowrap lg:justify-end">
+            <div className="flex shrink-0 -space-x-2" role="group" aria-label="Community members">
               {testimonials.map((person) => (
                 <Avatar
                   key={person.id}
                   name={person.name}
                   size="sm"
-                  className="border-2 border-surface"
+                  className="ring-2 ring-surface"
                 />
               ))}
-              <span className="flex size-8 items-center justify-center rounded-full border-2 border-surface bg-primary text-xs font-semibold text-primary-foreground">
+              <span className="relative flex h-8 min-w-11 items-center justify-center rounded-full bg-primary px-2 text-xs font-semibold text-primary-foreground ring-2 ring-surface">
                 {t('landing.howItWorks.community.memberCount')}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-center text-sm text-muted-foreground sm:text-left">
               {t('landing.howItWorks.community.memberCaption')}
             </p>
           </div>

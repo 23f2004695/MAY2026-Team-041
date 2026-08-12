@@ -167,7 +167,7 @@ export function LeaderboardPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                 <BookOpen className="size-3.5" /> +100 Pts
               </span>
               <span className="text-xs text-muted-foreground">Complete a Book</span>
@@ -188,21 +188,21 @@ export function LeaderboardPage() {
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 dark:text-teal-400">
                 <CheckCircle2 className="size-3.5" /> +15 Pts
               </span>
               <span className="text-xs text-muted-foreground">On-Time Return</span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 dark:text-amber-400">
                 <Flame className="size-3.5" /> +50 Pts
               </span>
               <span className="text-xs text-muted-foreground">7-Day Streak</span>
             </div>
 
             <div className="rounded-lg border border-border/60 bg-background/80 p-2.5 flex flex-col items-start gap-1">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-700 dark:text-rose-400">
                 <Target className="size-3.5" /> -10 Pts
               </span>
               <span className="text-xs text-muted-foreground">Late Return Penalty</span>

@@ -5,6 +5,9 @@ import { expect, type Page } from '@playwright/test';
 // against your backend before running suites that call continueAsRole.
 export const DEV_PASSWORD = 'DevPreview123!';
 export const DEV_EMAIL_DOMAIN = 'devpreview.internal';
+export const API_BASE =
+  process.env.PLAYWRIGHT_API_BASE_URL ??
+  `http://127.0.0.1:${process.env.PLAYWRIGHT_BACKEND_PORT ?? '8000'}/api/v1`;
 
 export const ROLE_LABEL = {
   admin: 'Admin',

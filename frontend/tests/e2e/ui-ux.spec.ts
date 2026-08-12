@@ -103,6 +103,45 @@ test.describe('Event registration states', () => {
   });
 });
 
+test.describe('Event management', () => {
+  test('only requests eligible managers for event assignment', async ({ page }) => {
+    let managerQueryWasUsed = false;
+    await page.route('**/api/v1/members?*', async (route) => {
+      const url = new URL(route.request().url());
+      managerQueryWasUsed =
+        url.searchParams.get('role') === 'manager' &&
+        url.searchParams.get('active_only') === 'true';
+      await route.fulfill({
+        json: {
+          items: [
+            {
+              id: 'eligible-manager',
+              email: 'eligible@example.com',
+              full_name: 'Eligible Manager',
+              phone: null,
+              avatar_url: null,
+              role: { id: 'manager-role', name: 'manager' },
+              is_active: true,
+              last_login_at: null,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+          ],
+          total: 1,
+          page: 1,
+          page_size: 100,
+        },
+      });
+    });
+
+    await continueAsRole(page, 'manager');
+    await page.getByRole('button', { name: 'Create Event' }).click();
+
+    await expect(page.getByRole('checkbox', { name: 'Eligible Manager' })).toBeVisible();
+    expect(managerQueryWasUsed).toBe(true);
+  });
+});
+
 test.describe('Administrative safety and recovery', () => {
   test('dashboard API failures render retryable errors instead of empty success states', async ({
     page,

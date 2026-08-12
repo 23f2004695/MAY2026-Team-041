@@ -19,7 +19,7 @@ import { LANGUAGES } from '@/i18n/languages';
 import { getErrorMessage } from '@/lib/api';
 import { changePasswordSchema, type ChangePasswordFormValues } from '@/lib/authSchema';
 import { useAuth } from '@/providers/AuthProvider';
-import { useLanguage } from '@/providers/LanguageProvider';
+import { useLanguage } from '@/providers/languageContext';
 import { useTheme, type Theme } from '@/providers/ThemeProvider';
 
 const THEME_OPTIONS: Theme[] = ['light', 'dark', 'system'];

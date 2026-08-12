@@ -43,13 +43,14 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
     if (!open) return;
     setIsLoadingManagers(true);
     setManagerLoadError(null);
-    getMembers({ active_only: true, page_size: 100 })
+    getMembers({ active_only: true, role: 'manager', page_size: 100 })
       .then((data) => setManagers(data.items))
       .catch(setManagerLoadError)
       .finally(() => setIsLoadingManagers(false));
   }, [open, getMembers]);
 
-  // Any active user is assignable as an event manager.
+  // The API enforces this invariant too; filter the picker so invalid accounts
+  // are never presented as assignable choices in the first place.
   useEffect(() => {
     const timer = setTimeout(loadManagers, 0);
     return () => clearTimeout(timer);

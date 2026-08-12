@@ -28,6 +28,9 @@
     "errors": {
       "generic": "Something went wrong. Please try again."
     },
+    "emptyState": {
+      "noResults": "No results found"
+    },
     "export": {
       "csv": "Export CSV",
       "pdf": "Export PDF"
@@ -289,6 +292,7 @@
     "seatOccupancy": {
       "title": "Seat Filling Frequency (Yesterday)",
       "summary": "Peak at {{peakHour}} ({{peakPercent}}% full) · {{avgPercent}}% average occupancy",
+      "zeroSummary": "No seats were occupied yesterday.",
       "emptyTitle": "No occupancy data yet",
       "emptyDescription": "Seat filling data will show up here once today's slots are recorded."
     },
