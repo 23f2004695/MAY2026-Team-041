@@ -105,20 +105,28 @@ async def google_login(payload: GoogleLoginRequest) -> TokenResponse:
             detail="Google account email is not verified",
         )
 
-    email: str = claims["email"]
+    email = str(claims["email"]).strip().lower()
     user = await repository.find_by_email(email)
     is_new_user = user is None
 
     if user is None:
         role = await repository.upsert_role(Role.MEMBER.value)
-        user = await repository.create_member(
-            email=email,
-            password_hash=None,
-            full_name=claims.get("name") or email.split("@")[0],
-            phone=None,
-            avatar_url=claims.get("picture"),
-            role_id=role.id,
-        )
+        try:
+            user = await repository.create_member(
+                email=email,
+                password_hash=None,
+                full_name=claims.get("name") or email.split("@")[0],
+                phone=None,
+                avatar_url=claims.get("picture"),
+                role_id=role.id,
+            )
+        except UniqueViolationError:
+            # Another callback for the same first-time Google identity won the
+            # create race. Reuse that canonical account instead of returning 500.
+            user = await repository.find_by_email(email)
+            if user is None:
+                raise
+            is_new_user = False
     elif not user.isActive or user.deletedAt is not None:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="This account is disabled"
@@ -137,6 +145,9 @@ async def update_profile(user: User, payload: UpdateProfileRequest) -> TokenResp
         data["phone"] = payload.phone
     if payload.password is not None:
         data["passwordHash"] = hash_password(payload.password)
+        # Invalidate every refresh token issued before this password change in
+        # the same write that stores the new password.
+        data["tokenVersion"] = {"increment": 1}
     if "avatar_url" in fields_set:
         data["avatarUrl"] = payload.avatar_url
 

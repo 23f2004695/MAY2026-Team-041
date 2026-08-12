@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 
@@ -149,9 +150,7 @@ async def test_approve_reject_are_the_canonical_verbs_grant_deny_alias_them(
         approve_response = await client.post(
             f"/api/v1/permission-requests/{approved['id']}/approve"
         )
-        reject_response = await client.post(
-            f"/api/v1/permission-requests/{rejected['id']}/reject"
-        )
+        reject_response = await client.post(f"/api/v1/permission-requests/{rejected['id']}/reject")
 
     assert approve_response.status_code == 200
     assert approve_response.json()["status"] == "granted"
@@ -178,6 +177,18 @@ async def test_deciding_an_already_decided_request_conflicts(it_head_user, manag
 
     assert first.status_code == 200
     assert second.status_code == 409
+
+
+async def test_concurrent_opposite_permission_decisions_allow_only_one(it_head_user, manager_user):
+    created = await _file_request(manager_user)
+
+    async def decide(action: str):
+        async with _client_as(it_head_user) as client:
+            return await client.post(f"/api/v1/permission-requests/{created['id']}/{action}")
+
+    responses = await asyncio.gather(decide("grant"), decide("deny"))
+
+    assert sorted(response.status_code for response in responses) == [200, 409]
 
 
 async def test_manager_cannot_decide_a_request(it_head_user, manager_user):

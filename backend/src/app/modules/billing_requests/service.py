@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from prisma.errors import ForeignKeyViolationError
 
 from app.core.constants import Role
+from app.db.prisma import prisma
 from app.modules.audit_log import service as audit_log_service
 from app.modules.audit_log.constants import AuditAction
 from app.modules.billing_requests import repository
@@ -95,10 +96,16 @@ async def _decide(request_id: str, decided_by_id: str, status_value: str) -> Bil
             status_code=status.HTTP_409_CONFLICT, detail="This request has already been decided"
         )
 
-    row = await repository.decide(request_id, status=status_value, decided_by_id=decided_by_id)
-    await audit_log_service.record(
-        actor_id=decided_by_id,
-        action=_DECISION_ACTIONS[(row.type, status_value)],
-        metadata={"amount": row.amount, "memberName": row.member.fullName},
-    )
+    async with prisma.tx() as tx:
+        row = await repository.decide_if_pending(
+            request_id, status=status_value, decided_by_id=decided_by_id, client=tx
+        )
+        if row is None:
+            raise HTTPException(status.HTTP_409_CONFLICT, "This request has already been decided")
+        await audit_log_service.record(
+            actor_id=decided_by_id,
+            action=_DECISION_ACTIONS[(row.type, status_value)],
+            metadata={"amount": row.amount, "memberName": row.member.fullName},
+            client=tx,
+        )
     return BillingRequestOut.from_prisma(row)

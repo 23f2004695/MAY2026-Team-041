@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ROUTES } from '@/constants/routes';
@@ -15,13 +15,27 @@ export function Header() {
   const { isAuthenticated, role, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
   const scrolled = useScroll(10);
   const navLinks = useHeaderNavLinks();
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      drawerRef.current?.querySelector<HTMLElement>('a, button')?.focus();
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      setOpen(false);
+      requestAnimationFrame(() => toggleRef.current?.focus());
+    }
+
+    if (open) document.addEventListener('keydown', closeOnEscape);
     return () => {
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', closeOnEscape);
     };
   }, [open]);
 
@@ -57,7 +71,7 @@ export function Header() {
           onLogout={handleLogout}
         />
 
-        <MobileNavToggle open={open} onToggle={() => setOpen((value) => !value)} />
+        <MobileNavToggle ref={toggleRef} open={open} onToggle={() => setOpen((value) => !value)} />
       </nav>
 
       <MobileNavDrawer
@@ -67,6 +81,7 @@ export function Header() {
         role={role}
         onLogout={handleLogout}
         onNavigate={() => setOpen(false)}
+        panelRef={drawerRef}
       />
     </header>
   );

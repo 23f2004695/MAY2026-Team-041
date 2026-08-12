@@ -82,7 +82,7 @@ async def test_requires_authentication(method, path, allowed_role, denied_role):
 
     print(f"\n{method} {path} Response:", response.status_code, response.text)
 
-    assert response.status_code == 401  
+    assert response.status_code == 401
 
 
 @pytest.mark.parametrize("method,path,allowed_role,denied_role", ENDPOINTS, ids=ENDPOINT_IDS)
@@ -95,7 +95,7 @@ async def test_rejects_the_wrong_role(method, path, allowed_role, denied_role):
 
     print(f"\n{method} {path} Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
 
 
 @pytest.mark.parametrize("method,path,allowed_role,denied_role", ENDPOINTS, ids=ENDPOINT_IDS)
@@ -108,4 +108,4 @@ async def test_allows_the_correct_role(method, path, allowed_role, denied_role):
 
     print(f"\n{method} {path} Response:", response.status_code, response.text)
 
-    assert response.status_code not in (401, 403) 
+    assert response.status_code not in (401, 403)

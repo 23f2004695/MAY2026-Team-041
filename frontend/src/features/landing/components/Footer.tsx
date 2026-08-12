@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { ROUTES } from '@/constants/routes';
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
+import { preferredScrollBehavior } from '@/lib/scroll';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
@@ -88,7 +89,7 @@ export function Footer({ sticky = true }: FooterProps) {
     if (location.pathname === ROUTES.CONTACT_US) {
       e.preventDefault();
       const el = document.getElementById('contact-us');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) el.scrollIntoView({ behavior: preferredScrollBehavior(), block: 'start' });
       return;
     }
     // allow Link to navigate to the contact page and the ContactUsPage's effect will scroll on mount

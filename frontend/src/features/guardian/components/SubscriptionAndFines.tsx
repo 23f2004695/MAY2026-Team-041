@@ -27,7 +27,9 @@ export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFin
     setPendingChildId(child.id);
     try {
       await payChildFines(child.id);
-      toast.success(t('guardian.subscription.fineOwed', { amount: formatCurrency(child.outstanding_fine) }));
+      toast.success(
+        t('guardian.subscription.fineRequestToast', 'Cash fine-payment request sent to a manager'),
+      );
       setFineDetailsChildId(null);
       onChanged();
     } catch (err) {
@@ -41,7 +43,9 @@ export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFin
     setPendingChildId(child.id);
     try {
       await renewChildSubscription(child.id);
-      toast.success(t('guardian.subscription.renewToast', { name: child.full_name }));
+      toast.success(
+        t('guardian.subscription.renewRequestToast', 'Renewal payment request sent to a manager'),
+      );
       onChanged();
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
@@ -113,11 +117,11 @@ export function SubscriptionAndFines({ children, onChanged }: SubscriptionAndFin
                       isLoading={isPending}
                       onClick={() => payFine(child)}
                     >
-                      {t('guardian.subscription.payFine')}
+                      {t('guardian.subscription.requestFinePayment', 'Request cash payment')}
                     </Button>
                   )}
                   <Button size="sm" isLoading={isPending} onClick={() => renewChild(child)}>
-                    {t('guardian.subscription.renew')}
+                    {t('guardian.subscription.requestRenewal', 'Request renewal')}
                   </Button>
                 </div>
               </div>

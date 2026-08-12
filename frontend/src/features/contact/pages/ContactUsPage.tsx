@@ -26,7 +26,9 @@ import {
   Textarea,
 } from '@/components/ui';
 import { apiPost, getErrorMessage } from '@/lib/api';
+import { LIBRARY_CONTACT } from '@/constants/contact';
 import { isValidEmail } from '@/lib/email';
+import { preferredScrollBehavior } from '@/lib/scroll';
 
 import { LibraryMap } from '../components/LibraryMap';
 
@@ -48,22 +50,22 @@ const contactCategories = [
   {
     id: 'pricingAndFines',
     email: 'pricing@readingclub.org',
-    phone: '+91 84708 12345',
+    phone: LIBRARY_CONTACT.phoneDisplay,
   },
   {
     id: 'booksAndClubs',
     email: 'clubs@readingclub.org',
-    phone: '+91 84708 12345',
+    phone: LIBRARY_CONTACT.phoneDisplay,
   },
   {
     id: 'seatBooking',
     email: 'booking@readingclub.org',
-    phone: '+91 84708 12345',
+    phone: LIBRARY_CONTACT.phoneDisplay,
   },
   {
     id: 'donations',
     email: 'donations@readingclub.org',
-    phone: '+91 84708 12345',
+    phone: LIBRARY_CONTACT.phoneDisplay,
   },
 ];
 
@@ -127,7 +129,7 @@ export function ContactUsPage() {
     const section = document.getElementById(hash);
     if (!section) return;
 
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    section.scrollIntoView({ behavior: preferredScrollBehavior(), block: 'start' });
   }, [location.hash]);
 
   async function onSubmit(values: ContactUsFormValues) {
@@ -151,7 +153,7 @@ export function ContactUsPage() {
     const element = document.getElementById(id);
     if (!element) return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.scrollIntoView({ behavior: preferredScrollBehavior(), block: 'start' });
   }
 
   function renderAnswer(answer: string) {

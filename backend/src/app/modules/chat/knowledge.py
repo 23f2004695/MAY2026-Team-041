@@ -1,3 +1,5 @@
+import re
+
 # RAG knowledge base — static FAQ content the LLM can cite without hitting the DB.
 # Each entry has keywords for fast intent matching and a text answer.
 
@@ -126,10 +128,6 @@ RAG_KNOWLEDGE: list[dict] = [
         ),
     },
 ]
-
-
-import re
-
 # Patterns that indicate the user wants to DO something (action intent),
 # not ask HOW to do it. RAG is skipped for these so the LLM handles them.
 _ACTION_INTENT = re.compile(

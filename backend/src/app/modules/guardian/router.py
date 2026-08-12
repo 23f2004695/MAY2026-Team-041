@@ -39,9 +39,7 @@ async def list_child_payments(
 
 
 @router.post("/children/{child_id}/pay-fines", status_code=status.HTTP_204_NO_CONTENT)
-async def pay_child_fines(
-    child_id: str, user: Annotated[User, Depends(as_guardian)]
-) -> None:
+async def pay_child_fines(child_id: str, user: Annotated[User, Depends(as_guardian)]) -> None:
     await service.pay_child_fines(user.id, child_id)
 
 

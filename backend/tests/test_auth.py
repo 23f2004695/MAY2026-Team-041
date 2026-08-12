@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -59,6 +60,27 @@ async def test_register_returns_token_and_member_role(client):
     assert body["user"]["role"]["name"] == "member"
 
 
+async def test_email_identity_is_case_insensitive(client):
+    email = _unique_email()
+    registered = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email.upper(), "password": "Password123!", "full_name": "Case Test"},
+    )
+    duplicate = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email.lower(), "password": "Password123!", "full_name": "Duplicate"},
+    )
+    login = await client.post(
+        "/api/v1/auth/login",
+        json={"email": email.swapcase(), "password": "Password123!"},
+    )
+
+    assert registered.status_code == 201
+    assert registered.json()["user"]["email"] == email.lower()
+    assert duplicate.status_code == 409
+    assert login.status_code == 200
+
+
 async def test_register_duplicate_email_conflicts(client):
     """Test Case 7: Duplicate Email"""
 
@@ -69,7 +91,7 @@ async def test_register_duplicate_email_conflicts(client):
     print("\nRegister Response:", second.status_code, second.text)
 
     assert first.status_code == 201
-    assert second.status_code == 409 
+    assert second.status_code == 409
 
 
 async def test_register_missing_email(client):
@@ -82,9 +104,9 @@ async def test_register_missing_email(client):
 
     print("\nRegister Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
-    assert body["detail"][0]["loc"] == ["body", "email"] 
+    assert body["detail"][0]["loc"] == ["body", "email"]
     assert body["detail"][0]["type"] == "missing"
 
 
@@ -98,7 +120,7 @@ async def test_register_missing_password(client):
 
     print("\nRegister Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
     assert body["detail"][0]["loc"] == ["body", "password"]
     assert body["detail"][0]["type"] == "missing"
@@ -114,7 +136,7 @@ async def test_register_missing_full_name(client):
 
     print("\nRegister Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
     assert body["detail"][0]["loc"] == ["body", "full_name"]
     assert body["detail"][0]["type"] == "missing"
@@ -130,7 +152,7 @@ async def test_register_invalid_email_format(client):
 
     print("\nRegister Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
     assert body["detail"][0]["loc"] == ["body", "email"]
     assert body["detail"][0]["type"] == "value_error"
@@ -146,7 +168,7 @@ async def test_register_weak_password(client):
 
     print("\nRegister Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
     assert body["detail"][0]["loc"] == ["body", "password"]
     assert body["detail"][0]["type"] == "string_too_short"
@@ -166,9 +188,9 @@ async def test_register_invalid_role_is_ignored(client):
 
     print("\nRegister Response:", response.status_code, response.text)
 
-    assert response.status_code == 201 
+    assert response.status_code == 201
     body = response.json()
-    assert body["user"]["role"]["name"] == "member" 
+    assert body["user"]["role"]["name"] == "member"
 
 
 async def test_login_with_correct_password_returns_token(client):
@@ -178,16 +200,16 @@ async def test_login_with_correct_password_returns_token(client):
     await client.post(
         "/api/v1/auth/register",
         json={"email": email, "password": "Password123!", "full_name": "Login Test"},
-)
+    )
     response = await client.post(
         "/api/v1/auth/login", json={"email": email, "password": "Password123!"}
     )
 
     print("\nLogin Response:", response.status_code, response.text)
 
-    assert response.status_code == 200  
+    assert response.status_code == 200
     body = response.json()
-    assert body["access_token"]  
+    assert body["access_token"]
     assert body["user"]["email"] == email
 
 
@@ -203,7 +225,7 @@ async def test_login_with_wrong_password_rejected(client):
         "/api/v1/auth/login", json={"email": email, "password": "WrongPassword1"}
     )
     print("\nLogin Response:", response.status_code, response.text)
-    assert response.status_code == 401  
+    assert response.status_code == 401
 
 
 async def test_login_unknown_email_rejected(client):
@@ -244,7 +266,7 @@ async def test_login_missing_password(client):
 
     print("\nLogin Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
     assert body["detail"][0]["loc"] == ["body", "password"]
     assert body["detail"][0]["type"] == "missing"
@@ -260,9 +282,9 @@ async def test_login_invalid_email_format(client):
 
     print("\nLogin Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
-    assert body["detail"][0]["loc"] == ["body", "email"] 
+    assert body["detail"][0]["loc"] == ["body", "email"]
     assert body["detail"][0]["type"] == "value_error"
 
 
@@ -302,6 +324,28 @@ async def test_google_login_creates_new_member(client, monkeypatch):
     )
     assert second_response.status_code == 200
     assert second_response.json()["is_new_user"] is False
+
+
+async def test_concurrent_first_google_logins_share_one_account(client, monkeypatch):
+    settings = get_settings()
+    monkeypatch.setattr(settings, "google_client_id", "test-client-id")
+    monkeypatch.setattr(service, "get_settings", lambda: settings)
+    email = _unique_email()
+    monkeypatch.setattr(
+        service.google_id_token,
+        "verify_oauth2_token",
+        lambda *args, **kwargs: _google_claims(email.upper()),
+    )
+
+    first, second = await asyncio.gather(
+        client.post("/api/v1/auth/google", json={"id_token": "first"}),
+        client.post("/api/v1/auth/google", json={"id_token": "second"}),
+    )
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert first.json()["user"]["id"] == second.json()["user"]["id"]
+    assert await prisma.user.count(where={"email": email.lower()}) == 1
 
 
 async def test_google_login_unverified_email_rejected(client, monkeypatch):
@@ -421,6 +465,29 @@ async def test_update_profile_can_set_avatar_url(client):
     assert response.json()["user"]["avatar_url"] == "data:image/svg+xml,%3Csvg%3E%3C/svg%3E"
 
 
+async def test_password_change_invalidates_previous_refresh_token(client):
+    email = _unique_email()
+    registered = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Password Changer"},
+    )
+    old_refresh = registered.json()["refresh_token"]
+
+    changed = await client.patch(
+        "/api/v1/auth/me",
+        json={"password": "NewPassword123!"},
+        headers={"Authorization": f"Bearer {registered.json()['access_token']}"},
+    )
+    stale_refresh = await client.post("/api/v1/auth/refresh", json={"refresh_token": old_refresh})
+
+    assert changed.status_code == 200
+    assert stale_refresh.status_code == 401
+    fresh_refresh = await client.post(
+        "/api/v1/auth/refresh", json={"refresh_token": changed.json()["refresh_token"]}
+    )
+    assert fresh_refresh.status_code == 200
+
+
 async def test_register_returns_a_refresh_token_too(client):
     email = _unique_email()
     response = await client.post(
@@ -482,9 +549,7 @@ async def test_logout_requires_authentication(client):
 
 
 async def test_forgot_password_unknown_email_returns_204(client):
-    response = await client.post(
-        "/api/v1/auth/forgot-password", json={"email": _unique_email()}
-    )
+    response = await client.post("/api/v1/auth/forgot-password", json={"email": _unique_email()})
 
     assert response.status_code == 204
 

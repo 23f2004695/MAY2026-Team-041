@@ -21,6 +21,44 @@ async def create(*, book_id: str, member_id: str, due_date: datetime, created_by
     )
 
 
+async def create_if_available(
+    *,
+    book_id: str,
+    member_id: str,
+    due_date: datetime,
+    created_by_id: str,
+    client: Prisma | None = None,
+) -> Loan | None:
+    """Create a loan while holding a transaction-scoped lock for its book.
+
+    All issuance paths use the same advisory-lock key, making the physical-copy
+    capacity check and insert atomic even when several workers approve at once.
+    """
+
+    async def _create(db: Prisma) -> Loan | None:
+        await db.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", book_id)
+        book = await db.book.find_unique(where={"id": book_id})
+        if book is None:
+            return None
+        active = await db.loan.count(where={"bookId": book_id, "returnedAt": None})
+        if active >= book.totalCopies:
+            return None
+        return await db.loan.create(
+            data={
+                "bookId": book_id,
+                "memberId": member_id,
+                "dueDate": due_date,
+                "createdById": created_by_id,
+            },
+            include=INCLUDE,
+        )
+
+    if client is not None:
+        return await _create(client)
+    async with prisma.tx() as tx:
+        return await _create(tx)
+
+
 async def find_by_id(loan_id: str) -> Loan | None:
     return await prisma.loan.find_unique(where={"id": loan_id}, include=INCLUDE)
 
@@ -101,11 +139,25 @@ async def mark_reminded(loan_id: str, *, reminded_at: datetime) -> Loan:
     )
 
 
+async def claim_reminder(loan_id: str, *, remind_cutoff: datetime, claimed_at: datetime) -> bool:
+    """Atomically claim a reminder before any external side effect is sent."""
+    updated = await prisma.loan.update_many(
+        where={
+            "id": loan_id,
+            "returnedAt": None,
+            "OR": [
+                {"lastRemindedAt": None},
+                {"lastRemindedAt": {"lte": remind_cutoff}},
+            ],
+        },
+        data={"lastRemindedAt": claimed_at},
+    )
+    return updated == 1
+
+
 async def mark_fine_paid(loan_id: str, *, client: Prisma | None = None) -> Loan:
     db = client or prisma
-    return await db.loan.update(
-        where={"id": loan_id}, data={"finePaid": True}, include=INCLUDE
-    )
+    return await db.loan.update(where={"id": loan_id}, data={"finePaid": True}, include=INCLUDE)
 
 
 async def mark_fines_paid(loan_ids: list[str], *, client: Prisma | None = None) -> int:

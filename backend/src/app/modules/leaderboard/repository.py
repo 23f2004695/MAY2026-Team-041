@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from prisma.models import EventRegistration, Loan, LoginActivity, ReadingProgress, Review, User
 
 from app.core.constants import Role
@@ -5,9 +7,7 @@ from app.db.prisma import prisma
 
 
 async def list_member_users() -> list[User]:
-    return await prisma.user.find_many(
-        where={"role": {"name": Role.MEMBER}, "deletedAt": None}
-    )
+    return await prisma.user.find_many(where={"role": {"name": Role.MEMBER}, "deletedAt": None})
 
 
 async def list_completed_progress() -> list[ReadingProgress]:
@@ -17,14 +17,15 @@ async def list_completed_progress() -> list[ReadingProgress]:
 
 
 async def list_reviews() -> list[Review]:
-    return await prisma.review.find_many(
-        where={"member": {"role": {"name": Role.MEMBER}}}
-    )
+    return await prisma.review.find_many(where={"member": {"role": {"name": Role.MEMBER}}})
 
 
 async def list_event_registrations() -> list[EventRegistration]:
     return await prisma.eventregistration.find_many(
-        where={"member": {"role": {"name": Role.MEMBER}}}
+        where={
+            "member": {"role": {"name": Role.MEMBER}},
+            "event": {"deletedAt": None, "date": {"lte": datetime.now(UTC)}},
+        }
     )
 
 
@@ -35,7 +36,4 @@ async def list_returned_loans() -> list[Loan]:
 
 
 async def list_login_activities() -> list[LoginActivity]:
-    return await prisma.loginactivity.find_many(
-        where={"member": {"role": {"name": Role.MEMBER}}}
-    )
-
+    return await prisma.loginactivity.find_many(where={"member": {"role": {"name": Role.MEMBER}}})

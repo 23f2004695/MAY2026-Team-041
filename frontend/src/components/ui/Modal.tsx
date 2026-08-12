@@ -12,9 +12,18 @@ export interface ModalProps {
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
+  dismissible?: boolean;
 }
 
-export function Modal({ open, onClose, title, children, footer, className }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  footer,
+  className,
+  dismissible = true,
+}: ModalProps) {
   const titleId = useId();
 
   return (
@@ -35,14 +44,16 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
             <h2 id={titleId} className="text-lg font-semibold text-foreground">
               {title}
             </h2>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close"
-              className="flex size-10 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <X className="size-5" />
-            </button>
+            {dismissible && (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close"
+                className="flex size-10 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <X className="size-5" />
+              </button>
+            )}
           </div>
         )}
         <div className="flex-1 overflow-y-auto p-4">{children}</div>

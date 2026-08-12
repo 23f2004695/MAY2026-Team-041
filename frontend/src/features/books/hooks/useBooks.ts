@@ -48,6 +48,9 @@ export function useBooks(search: string, category: string, sort: BookSort, page:
     // wait either, it just happened to be delayed by the same 300ms debounce as every other
     // change since it shared that effect; nothing depends on that delay.
     refresh: query.refetch,
+    isLoading: query.isPending,
+    isFetching: query.isFetching,
+    error: query.error,
   };
 }
 

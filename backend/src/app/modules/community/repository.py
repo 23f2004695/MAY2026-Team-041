@@ -14,6 +14,12 @@ POST_INCLUDE = {
 }
 
 
+def _required_post(post: CommunityPost | None) -> CommunityPost:
+    if post is None:
+        raise RuntimeError("Community post disappeared after a successful database write")
+    return post
+
+
 async def list_posts(*, page: int, page_size: int) -> tuple[list[CommunityPost], int]:
     return await paginate(
         prisma.communitypost,
@@ -34,16 +40,12 @@ async def find_post(post_id: str) -> CommunityPost | None:
 
 async def create_post(author_id: str, data: dict) -> CommunityPost:
     created = await prisma.communitypost.create(data={**data, "authorId": author_id})
-    post = await find_post(created.id)
-    assert post is not None
-    return post
+    return _required_post(await find_post(created.id))
 
 
 async def update_post(post_id: str, data: dict) -> CommunityPost:
     await prisma.communitypost.update(where={"id": post_id}, data=data)
-    post = await find_post(post_id)
-    assert post is not None
-    return post
+    return _required_post(await find_post(post_id))
 
 
 async def soft_delete_post(post_id: str) -> None:
@@ -67,9 +69,7 @@ async def toggle_like(post_id: str, user_id: str) -> CommunityPost:
         await prisma.communitypostlike.delete(where={"id": existing.id})
     else:
         await prisma.communitypostlike.create(data={"postId": post_id, "userId": user_id})
-    post = await find_post(post_id)
-    assert post is not None
-    return post
+    return _required_post(await find_post(post_id))
 
 
 async def toggle_save(post_id: str, user_id: str) -> CommunityPost:
@@ -80,9 +80,7 @@ async def toggle_save(post_id: str, user_id: str) -> CommunityPost:
         await prisma.communitypostsave.delete(where={"id": existing.id})
     else:
         await prisma.communitypostsave.create(data={"postId": post_id, "userId": user_id})
-    post = await find_post(post_id)
-    assert post is not None
-    return post
+    return _required_post(await find_post(post_id))
 
 
 async def add_comment(
@@ -96,9 +94,7 @@ async def add_comment(
             "parentId": parent_id,
         }
     )
-    post = await find_post(post_id)
-    assert post is not None
-    return post
+    return _required_post(await find_post(post_id))
 
 
 async def find_comment(comment_id: str) -> CommunityComment | None:

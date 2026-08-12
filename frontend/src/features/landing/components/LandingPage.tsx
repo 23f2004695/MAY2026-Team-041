@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { preferredScrollBehavior } from '@/lib/scroll';
+
 import { Community } from './Community';
 import { CTA } from './CTA';
 import { FAQ } from './FAQ';
@@ -23,7 +25,7 @@ export function LandingPage() {
     const section = document.getElementById(hash);
     if (!section) return;
 
-    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    section.scrollIntoView({ behavior: preferredScrollBehavior(), block: 'start' });
   }, [location.hash]);
 
   return (

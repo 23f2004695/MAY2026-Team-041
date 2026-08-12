@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from prisma import Prisma
 from prisma.models import Reservation
 
 from app.db.prisma import prisma
@@ -13,8 +16,9 @@ RESERVATION_INCLUDE = {"book": True, "loan": True}
 LIST_LIMIT = 200
 
 
-async def find_by_id(reservation_id: str) -> Reservation | None:
-    return await prisma.reservation.find_unique(
+async def find_by_id(reservation_id: str, *, client: Prisma | None = None) -> Reservation | None:
+    db = client or prisma
+    return await db.reservation.find_unique(
         where={"id": reservation_id}, include=RESERVATION_INCLUDE
     )
 
@@ -73,13 +77,37 @@ async def count_available_copies(book_id: str) -> int:
 
 
 async def create_reservation(*, member_id: str, book_id: str) -> Reservation:
-    if await count_available_copies(book_id) <= 0:
-        raise ValueError("Book is not available")
-
     return await prisma.reservation.create(
         data={"memberId": member_id, "bookId": book_id},
         include={**RESERVATION_INCLUDE, "member": True},
     )
+
+
+async def create_reservation_if_allowed(
+    *, member_id: str, book_id: str, blocking_due_after: datetime
+) -> Reservation | None:
+    """Serialize the active-reservation check and insert for one member/book."""
+    lock_key = f"reservation:{member_id}:{book_id}"
+    async with prisma.tx() as tx:
+        await tx.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", lock_key)
+        existing = await tx.reservation.find_many(
+            where={
+                "memberId": member_id,
+                "bookId": book_id,
+                "status": {"in": ["pending", "approved"]},
+            },
+            include=RESERVATION_INCLUDE,
+        )
+        for reservation in existing:
+            if reservation.status == "pending":
+                return None
+            loan = reservation.loan
+            if loan is not None and loan.returnedAt is None and loan.dueDate > blocking_due_after:
+                return None
+        return await tx.reservation.create(
+            data={"memberId": member_id, "bookId": book_id},
+            include={**RESERVATION_INCLUDE, "member": True},
+        )
 
 
 async def cancel_reservation(reservation_id: str) -> Reservation:
@@ -88,8 +116,11 @@ async def cancel_reservation(reservation_id: str) -> Reservation:
     )
 
 
-async def approve(reservation_id: str, *, loan_id: str) -> Reservation:
-    return await prisma.reservation.update(
+async def approve(
+    reservation_id: str, *, loan_id: str, client: Prisma | None = None
+) -> Reservation:
+    db = client or prisma
+    return await db.reservation.update(
         where={"id": reservation_id},
         data={"status": "approved", "loanId": loan_id},
         include=RESERVATION_INCLUDE,

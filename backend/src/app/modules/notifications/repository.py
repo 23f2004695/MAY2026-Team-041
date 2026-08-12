@@ -22,9 +22,7 @@ async def create(
     user_id: str, type_: str, message: str, *, client: Prisma | None = None
 ) -> Notification:
     db = client or prisma
-    return await db.notification.create(
-        data={"userId": user_id, "type": type_, "message": message}
-    )
+    return await db.notification.create(data={"userId": user_id, "type": type_, "message": message})
 
 
 async def create_many(user_ids: list[str], type_: str, message: str) -> None:
@@ -37,7 +35,7 @@ async def create_many(user_ids: list[str], type_: str, message: str) -> None:
 
 async def list_active_user_ids_with_roles(role_names: list[str]) -> list[str]:
     users = await prisma.user.find_many(
-        where={"role": {"name": {"in": role_names}}, "deletedAt": None}
+        where={"role": {"name": {"in": role_names}}, "isActive": True, "deletedAt": None}
     )
     return [user.id for user in users]
 

@@ -9,13 +9,13 @@ import type { AppNotificationRecord } from '@/providers/AuthProvider';
 
 export interface PendingPaymentsProps {
   payments: AppNotificationRecord[];
-  onMarkPaid: (notificationId: string) => void;
+  onDismiss: (notificationId: string) => void;
 }
 
 // Members who'd rather pay cash at the counter than online — the manager
 // collects the cash here and clears the fee/fine (see the "pay at the
 // library" option on the payment page, which is what creates these).
-export function PendingPayments({ payments, onMarkPaid }: PendingPaymentsProps) {
+export function PendingPayments({ payments, onDismiss }: PendingPaymentsProps) {
   const { t } = useTranslation();
   const [sortValue, setSortValue] = useState('newest');
 
@@ -74,8 +74,8 @@ export function PendingPayments({ payments, onMarkPaid }: PendingPaymentsProps) 
                     <p className="text-sm text-foreground">{payment.message}</p>
                     <p className="text-xs text-muted-foreground">{formatRelativeTime(payment.created_at)}</p>
                   </div>
-                  <Button size="sm" variant="outline" onClick={() => onMarkPaid(payment.id)}>
-                    {t('managerDashboard.payments.markPaid')}
+                  <Button size="sm" variant="outline" onClick={() => onDismiss(payment.id)}>
+                    {t('managerDashboard.payments.dismissRequest', 'Dismiss request')}
                   </Button>
                 </li>
               ))}

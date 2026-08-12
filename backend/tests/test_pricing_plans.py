@@ -89,8 +89,8 @@ async def test_list_plans_is_public(test_plan):
 
     print("\nList Plans Response:", response.status_code, response.text)
 
-    assert response.status_code == 200  
-    body = response.json()  
+    assert response.status_code == 200
+    body = response.json()
     assert any(plan["id"] == test_plan.id for plan in body)
 
 
@@ -104,7 +104,7 @@ async def test_list_plans_is_ordered_by_months_ascending(test_plan):
 
     print("\nList Plans Response:", response.status_code, months)
 
-    assert months == sorted(months)  
+    assert months == sorted(months)
 
 
 async def test_update_plan_requires_authentication(test_plan):
@@ -117,7 +117,7 @@ async def test_update_plan_requires_authentication(test_plan):
 
     print("\nUpdate Plan Response:", response.status_code, response.text)
 
-    assert response.status_code == 401 
+    assert response.status_code == 401
 
 
 async def test_member_cannot_update_a_plan(member_user, test_plan):

@@ -77,7 +77,7 @@ async def test_create_book_record_requires_it_head_role(client):
 
     print("\nCreate Book Record Response:", response.status_code, response.text)
 
-    assert response.status_code == 403 
+    assert response.status_code == 403
 
 
 async def test_create_and_list_book_record(client):
@@ -94,8 +94,8 @@ async def test_create_and_list_book_record(client):
         headers={"Authorization": f"Bearer {token}"},
     )
     print("\nCreate Book Record Response:", create_response.status_code, create_response.text)
-    assert create_response.status_code == 201 
-    body = create_response.json()  
+    assert create_response.status_code == 201
+    body = create_response.json()
     assert body["type"] == "donated"
     assert body["book_title"] == f"{TEST_BOOK_TITLE_PREFIX} B"
     assert body["note"] == "Donated by a member"
@@ -126,7 +126,8 @@ async def test_create_book_record_rejects_unknown_type(client):
 
     print("\nCreate Book Record Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
+
 
 async def test_create_book_record_rejects_unknown_book(client):
     """Test Case 4: Create Book Record Unknown Book"""
@@ -142,4 +143,4 @@ async def test_create_book_record_rejects_unknown_book(client):
 
     print("\nCreate Book Record Response:", response.status_code, response.text)
 
-    assert response.status_code == 404  
+    assert response.status_code == 404

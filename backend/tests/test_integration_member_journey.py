@@ -176,9 +176,7 @@ async def test_registration_through_razorpay_payment_activates_membership_and_is
         admin_headers = await _login_headers(client, admin_user.email)
         admin_members = await client.get("/api/v1/admin/members", headers=admin_headers)
         assert admin_members.status_code == 200
-        member_row = next(
-            row for row in admin_members.json()["items"] if row["id"] == user["id"]
-        )
+        member_row = next(row for row in admin_members.json()["items"] if row["id"] == user["id"])
         assert member_row["plan_is_active"] is True
         assert member_row["last_payment_amount"] == 499
 
@@ -199,7 +197,7 @@ async def test_pay_at_library_notifies_staff_then_a_recorded_payment_and_loan_bo
     # member's own follow-up POST /payments below that actually records the payment.
     pay_at_library_response = await client.post(
         "/api/v1/payments/pay-at-library",
-        json={"amount": 499, "label": "1 Month — ₹499"},
+        json={"amount": 1, "label": "Client text is ignored", "plan_months": 1},
         headers=member_headers,
     )
     assert pay_at_library_response.status_code == 204
@@ -218,9 +216,7 @@ async def test_pay_at_library_notifies_staff_then_a_recorded_payment_and_loan_bo
     )
     assert payment_response.status_code == 201
 
-    membership_response = await client.get(
-        "/api/v1/payments/me/membership", headers=member_headers
-    )
+    membership_response = await client.get("/api/v1/payments/me/membership", headers=member_headers)
     assert membership_response.json()["is_active"] is True
 
     book = await prisma.book.create(
@@ -228,6 +224,7 @@ async def test_pay_at_library_notifies_staff_then_a_recorded_payment_and_loan_bo
             "title": f"{TEST_BOOK_TITLE_PREFIX} {uuid.uuid4().hex[:8]}",
             "author": "Author",
             "category": "Fiction",
+            "totalCopies": 1,
         }
     )
     staff_headers = await _login_headers(client, staff_user.email)
@@ -246,15 +243,11 @@ async def test_pay_at_library_notifies_staff_then_a_recorded_payment_and_loan_bo
     assert my_loan["book_title"] == book.title
     assert my_loan["status"] == "active"
 
-    return_response = await client.post(
-        f"/api/v1/loans/{loan_id}/return", headers=staff_headers
-    )
+    return_response = await client.post(f"/api/v1/loans/{loan_id}/return", headers=staff_headers)
     assert return_response.status_code == 200
 
     my_loans_after_return = await client.get("/api/v1/loans/me", headers=member_headers)
-    returned_loan = next(
-        row for row in my_loans_after_return.json() if row["id"] == loan_id
-    )
+    returned_loan = next(row for row in my_loans_after_return.json() if row["id"] == loan_id)
     assert returned_loan["status"] == "returned"
 
 

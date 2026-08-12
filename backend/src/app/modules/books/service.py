@@ -181,7 +181,14 @@ async def update_book(book_id: str, payload: BookUpdate) -> BookOut:
         return BookOut.from_prisma(existing)
 
     try:
-        updated = await repository.update_book(book_id, data)
+        updated, error = await repository.update_book_with_inventory_guard(book_id, data)
+        if error == "not_found":
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Book not found")
+        if error == "active_loans":
+            raise HTTPException(
+                status.HTTP_409_CONFLICT,
+                "Total copies cannot be lower than the number of active loans",
+            )
     except UniqueViolationError as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

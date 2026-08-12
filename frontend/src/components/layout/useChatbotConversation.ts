@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { apiDelete, apiPost, getErrorMessage } from '@/lib/api';
 import { CONVERSATION_TREE, type TreeNode } from '@/lib/chatbot';
+import { preferredScrollBehavior } from '@/lib/scroll';
 import { useAuth } from '@/providers/AuthProvider';
 
 export interface ChatMessage {
@@ -57,8 +58,6 @@ const ROLE_CHIPS: Record<string, string[]> = {
   ],
 };
 
-const SOURCE_LABEL: Record<string, string> = { rag: 'FAQ', tag: 'Live data', llm: 'AI' };
-
 export function useChatbotConversation() {
   const { t } = useTranslation();
   const { isAuthenticated, role, token } = useAuth();
@@ -107,7 +106,10 @@ export function useChatbotConversation() {
   }, [isAuthenticated, role, t]);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: preferredScrollBehavior(),
+    });
   }, [messages, loading]);
 
   // ── Authenticated: send to LLM backend ───────────────────────────────────

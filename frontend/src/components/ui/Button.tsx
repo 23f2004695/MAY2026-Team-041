@@ -80,11 +80,18 @@ export function Button({
   return (
     <button
       ref={ref}
-      disabled={disabled ?? isLoading}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading || undefined}
       className={buttonVariants({ variant, size, className })}
       {...props}
     >
-      {isLoading ? <Loader size="sm" /> : leadingIcon}
+      {isLoading ? (
+        <span aria-hidden="true">
+          <Loader size="sm" />
+        </span>
+      ) : (
+        leadingIcon
+      )}
       {children}
       {!isLoading && trailingIcon}
     </button>

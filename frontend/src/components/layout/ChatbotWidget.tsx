@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Bot, RotateCcw, Send, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useEffect, useId, useRef, useState } from 'react';
@@ -12,6 +12,8 @@ import { useChatbotConversation } from './useChatbotConversation';
 export function ChatbotWidget() {
   const { t } = useTranslation();
   const headingId = useId();
+  const panelId = useId();
+  const prefersReducedMotion = useReducedMotion();
   const {
     isAuthenticated,
     role,
@@ -31,24 +33,50 @@ export function ChatbotWidget() {
   const [open, setOpen] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (open && isAuthenticated) setTimeout(() => inputRef.current?.focus(), 150);
-  }, [open, isAuthenticated]);
+    if (!open) return;
+
+    const focusTimer = window.setTimeout(() => {
+      if (isAuthenticated) inputRef.current?.focus();
+      else panelRef.current?.querySelector<HTMLElement>('button')?.focus();
+    }, prefersReducedMotion ? 0 : 200);
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return;
+      setOpen(false);
+      requestAnimationFrame(() => launcherRef.current?.focus());
+    }
+
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [open, isAuthenticated, prefersReducedMotion]);
+
+  function closeChat() {
+    setOpen(false);
+    requestAnimationFrame(() => launcherRef.current?.focus());
+  }
 
   return (
     <div className="pointer-events-none fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
       <AnimatePresence>
         {open && (
           <motion.div
+            ref={panelRef}
+            id={panelId}
             key="chat-panel"
             role="dialog"
             aria-modal="false"
             aria-labelledby={headingId}
-            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: 'easeOut' }}
             className="pointer-events-auto flex w-80 flex-col overflow-hidden rounded-2xl border border-border shadow-2xl sm:w-96"
             style={{ height: 540 }}
           >
@@ -79,7 +107,7 @@ export function ChatbotWidget() {
                   <RotateCcw className="size-4" />
                 </button>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={closeChat}
                   aria-label={t('chatbot.closeChat')}
                   className="flex size-8 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/20 hover:text-white"
                 >
@@ -89,7 +117,12 @@ export function ChatbotWidget() {
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-surface p-4">
+            <div
+              ref={scrollRef}
+              aria-live="polite"
+              aria-busy={loading}
+              className="flex-1 space-y-3 overflow-y-auto bg-surface p-4"
+            >
               <AnimatePresence initial={false}>
                 {messages.map((msg) => (
                   <motion.div
@@ -201,6 +234,7 @@ export function ChatbotWidget() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask me anything…"
+                  aria-label="Ask Shelfie"
                   disabled={loading}
                   className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-50"
                 />
@@ -224,9 +258,13 @@ export function ChatbotWidget() {
       <div className="pointer-events-auto relative">
         {!open && <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-20" />}
         <Button
+          id="chatbot-launcher"
+          ref={launcherRef}
           variant="primary"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => (open ? closeChat() : setOpen(true))}
           aria-label={t(open ? 'chatbot.closeChat' : 'chatbot.openChat')}
+          aria-expanded={open}
+          aria-controls={panelId}
           className="relative size-14 rounded-full p-0 shadow-lg transition-transform hover:scale-105 active:scale-95"
         >
           <AnimatePresence mode="wait" initial={false}>

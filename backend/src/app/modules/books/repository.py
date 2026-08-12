@@ -105,5 +105,23 @@ async def update_book(book_id: str, data: dict) -> Book:
     return await prisma.book.update(where={"id": book_id}, data=data)
 
 
+async def update_book_with_inventory_guard(
+    book_id: str, data: dict
+) -> tuple[Book | None, str | None]:
+    """Keep copy-count edits serialized with loan issuance for this book."""
+    async with prisma.tx() as tx:
+        await tx.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", book_id)
+        book = await tx.book.find_unique(where={"id": book_id})
+        if book is None or book.deletedAt is not None:
+            return None, "not_found"
+        requested_total = data.get("totalCopies")
+        if requested_total is not None:
+            active_loans = await tx.loan.count(where={"bookId": book_id, "returnedAt": None})
+            if requested_total < active_loans:
+                return book, "active_loans"
+        updated = await tx.book.update(where={"id": book_id}, data=data)
+        return updated, None
+
+
 async def soft_delete_book(book_id: str) -> Book:
     return await prisma.book.update(where={"id": book_id}, data={"deletedAt": datetime.now(UTC)})

@@ -77,8 +77,10 @@ _PII_PATTERNS: list[tuple[re.Pattern, str]] = [
 
 # ── Input guardrail ───────────────────────────────────────────────────────────
 
+
 class GuardrailBlock(Exception):
     """Raised when a message should be blocked entirely."""
+
     def __init__(self, reply: str) -> None:
         self.reply = reply
 

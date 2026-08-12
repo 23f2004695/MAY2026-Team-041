@@ -3,6 +3,7 @@ import uuid
 
 os.environ["APP_ENV"] = "test"
 
+import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
@@ -67,9 +68,9 @@ async def test_list_members_success(admin_user):
 
     print("\nList Members Response:", response.status_code, response.text)
 
-    assert response.status_code == 200  
+    assert response.status_code == 200
     body = response.json()
-    assert "items" in body 
+    assert "items" in body
     assert "total" in body
 
 
@@ -82,7 +83,7 @@ async def test_list_members_requires_authentication():
 
     print("\nList Members Response:", response.status_code, response.text)
 
-    assert response.status_code == 401  
+    assert response.status_code == 401
 
 
 async def test_list_members_forbidden_for_member_role(member_user):
@@ -93,7 +94,7 @@ async def test_list_members_forbidden_for_member_role(member_user):
 
     print("\nList Members Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
 
 
 async def test_create_member_defaults_to_member_role(admin_user):
@@ -102,10 +103,11 @@ async def test_create_member_defaults_to_member_role(admin_user):
     async with _client_as(admin_user) as client:
         response = await client.post(
             "/api/v1/members",
-            json={"email": email, "password": "Password123!", "full_name": "Walk-in Visitor"},)
+            json={"email": email, "password": "Password123!", "full_name": "Walk-in Visitor"},
+        )
     print("\nCreate Member Response:", response.status_code, response.text)
-    assert response.status_code == 201 
-    body = response.json()  
+    assert response.status_code == 201
+    body = response.json()
     assert body["email"] == email
     assert body["full_name"] == "Walk-in Visitor"
     assert body["role"]["name"] == Role.MEMBER
@@ -125,9 +127,9 @@ async def test_create_member_missing_required_field(admin_user):
 
     print("\nCreate Member Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
     body = response.json()
-    assert body["detail"][0]["loc"] == ["body", "email"] 
+    assert body["detail"][0]["loc"] == ["body", "email"]
     assert body["detail"][0]["type"] == "missing"
 
 
@@ -158,7 +160,40 @@ async def test_create_member_forbidden_for_member_role(member_user):
 
     print("\nCreate Member Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
+
+
+@pytest.mark.parametrize("role_name", [Role.MANAGER, Role.LIBRARIAN, Role.IT_HEAD])
+async def test_non_admin_staff_cannot_create_members(role_name):
+    staff_user = await _make_user(role_name)
+
+    async with _client_as(staff_user) as client:
+        response = await client.post(
+            "/api/v1/members",
+            json={
+                "email": _unique_email(),
+                "password": "Password123!",
+                "full_name": "Escalation Attempt",
+                "role_name": Role.ADMIN,
+            },
+        )
+
+    assert response.status_code == 403
+
+
+async def test_create_member_rejects_unknown_role(admin_user):
+    async with _client_as(admin_user) as client:
+        response = await client.post(
+            "/api/v1/members",
+            json={
+                "email": _unique_email(),
+                "password": "Password123!",
+                "full_name": "Unknown Role",
+                "role_name": "super-admin",
+            },
+        )
+
+    assert response.status_code == 422
 
 
 async def test_list_members_search_and_pagination(admin_user):
@@ -171,9 +206,11 @@ async def test_list_members_search_and_pagination(admin_user):
                     "email": _unique_email(),
                     "password": "Password123!",
                     "full_name": f"Searchable-{unique_marker}-{i}",
-                },)
+                },
+            )
         response = await client.get(
-            "/api/v1/members", params={"search": unique_marker, "page": 1, "page_size": 2})
+            "/api/v1/members", params={"search": unique_marker, "page": 1, "page_size": 2}
+        )
     assert response.status_code == 200
     body = response.json()
     assert body["total"] == 3
@@ -225,9 +262,7 @@ async def test_list_members_active_only_excludes_inactive_accounts(admin_user):
                 "full_name": f"Inactive-{unique_marker}",
             },
         )
-        await client.put(
-            f"/api/v1/members/{created.json()['id']}", json={"is_active": False}
-        )
+        await client.put(f"/api/v1/members/{created.json()['id']}", json={"is_active": False})
 
         response = await client.get(
             "/api/v1/members", params={"search": unique_marker, "active_only": True}
@@ -264,6 +299,65 @@ async def test_update_member_changes_fields(admin_user):
     assert body["is_active"] is False
 
 
+async def test_admin_cannot_deactivate_or_demote_self(admin_user):
+    async with _client_as(admin_user) as client:
+        deactivate = await client.put(f"/api/v1/members/{admin_user.id}", json={"is_active": False})
+        demote = await client.put(
+            f"/api/v1/members/{admin_user.id}", json={"role_name": Role.MEMBER}
+        )
+
+    assert deactivate.status_code == 409
+    assert demote.status_code == 409
+    unchanged = await repository.find_by_id(admin_user.id)
+    assert unchanged is not None
+    assert unchanged.isActive is True
+    assert unchanged.role.name == Role.ADMIN
+
+
+async def test_last_active_admin_cannot_be_removed(admin_user, monkeypatch):
+    target = await _make_user(Role.ADMIN)
+
+    async def one_admin() -> int:
+        return 1
+
+    monkeypatch.setattr(repository, "count_active_admins", one_admin)
+    async with _client_as(admin_user) as client:
+        response = await client.put(f"/api/v1/members/{target.id}", json={"role_name": Role.MEMBER})
+
+    assert response.status_code == 409
+    unchanged = await repository.find_by_id(target.id)
+    assert unchanged is not None
+    assert unchanged.role.name == Role.ADMIN
+
+
+@pytest.mark.parametrize("role_name", [Role.MANAGER, Role.LIBRARIAN, Role.IT_HEAD])
+async def test_non_admin_staff_cannot_update_members(role_name, member_user):
+    staff_user = await _make_user(role_name)
+
+    async with _client_as(staff_user) as client:
+        response = await client.put(
+            f"/api/v1/members/{member_user.id}",
+            json={"role_name": Role.ADMIN, "is_active": False},
+        )
+
+    assert response.status_code == 403
+
+    unchanged = await repository.find_by_id(member_user.id)
+    assert unchanged is not None
+    assert unchanged.role.name == Role.MEMBER
+    assert unchanged.isActive is True
+
+
+async def test_update_member_rejects_unknown_role(admin_user, member_user):
+    async with _client_as(admin_user) as client:
+        response = await client.put(
+            f"/api/v1/members/{member_user.id}",
+            json={"role_name": "super-admin"},
+        )
+
+    assert response.status_code == 422
+
+
 async def test_update_member_not_found(admin_user):
     """Test Case 9: Update Member Not Found"""
 
@@ -275,7 +369,8 @@ async def test_update_member_not_found(admin_user):
 
     print("\nUpdate Member Response:", response.status_code, response.text)
 
-    assert response.status_code == 404 
+    assert response.status_code == 404
+
 
 async def test_update_member_rejects_malformed_id(admin_user):
     async with _client_as(admin_user) as client:

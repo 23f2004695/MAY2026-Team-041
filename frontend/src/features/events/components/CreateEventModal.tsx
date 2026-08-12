@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button, Checkbox, Input, Modal, Textarea } from '@/components/ui';
@@ -36,14 +36,24 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [managers, setManagers] = useState<ManagerOption[]>([]);
   const [selectedManagerIds, setSelectedManagerIds] = useState<string[]>([]);
+  const [isLoadingManagers, setIsLoadingManagers] = useState(false);
+  const [managerLoadError, setManagerLoadError] = useState<unknown>(null);
 
-  // ponytail: any active user (member or manager) is assignable.
-  useEffect(() => {
+  const loadManagers = useCallback(() => {
     if (!open) return;
+    setIsLoadingManagers(true);
+    setManagerLoadError(null);
     getMembers({ active_only: true, page_size: 100 })
       .then((data) => setManagers(data.items))
-      .catch(() => setManagers([]));
+      .catch(setManagerLoadError)
+      .finally(() => setIsLoadingManagers(false));
   }, [open, getMembers]);
+
+  // Any active user is assignable as an event manager.
+  useEffect(() => {
+    const timer = setTimeout(loadManagers, 0);
+    return () => clearTimeout(timer);
+  }, [loadManagers]);
 
   // Reset the form when the modal transitions closed -> open, prefilling from `event`
   // in edit mode. A render-time conditional (not an effect) — see WaiveFineModal for
@@ -115,10 +125,7 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
   return (
     <Modal open={open} onClose={onClose} title={isEditing ? 'Edit Event' : 'Create Event'}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">Title</label>
-          <Input name="title" value={form.title} onChange={handleChange} required placeholder="Event title" />
-        </div>
+        <Input label="Title" name="title" value={form.title} onChange={handleChange} required placeholder="Event title" />
 
         <Textarea
           label="Description"
@@ -129,24 +136,30 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
           rows={3}
         />
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">Location</label>
-          <Input name="location" value={form.location} onChange={handleChange} required placeholder="e.g. Main Hall" />
-        </div>
+        <Input label="Location" name="location" value={form.location} onChange={handleChange} required placeholder="e.g. Main Hall" />
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">Date & Time</label>
-          <Input name="date" type="datetime-local" value={form.date} onChange={handleChange} required />
-        </div>
+        <Input
+          label="Date & Time"
+          name="date"
+          type="datetime-local"
+          min={isEditing ? undefined : toDatetimeLocalValue(new Date().toISOString())}
+          value={form.date}
+          onChange={handleChange}
+          required
+        />
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">Capacity</label>
-          <Input name="capacity" type="number" min={1} value={form.capacity} onChange={handleChange} required placeholder="Max attendees" />
-        </div>
+        <Input label="Capacity" name="capacity" type="number" min={1} value={form.capacity} onChange={handleChange} required placeholder="Max attendees" />
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-foreground">Manager Assign</label>
-          {managers.length === 0 ? (
+        <fieldset className="flex flex-col gap-1.5">
+          <legend className="text-sm font-medium text-foreground">Manager Assign</legend>
+          {isLoadingManagers ? (
+            <p className="text-sm text-muted-foreground" role="status">Loading assignable managers…</p>
+          ) : managerLoadError ? (
+            <div role="alert" className="flex items-center justify-between gap-3 rounded-md border border-danger/30 p-2 text-sm text-danger">
+              <span>{getErrorMessage(managerLoadError, 'Unable to load assignable managers.')}</span>
+              <Button type="button" size="sm" variant="outline" onClick={loadManagers}>Try again</Button>
+            </div>
+          ) : managers.length === 0 ? (
             <p className="text-sm text-muted-foreground">No managers available to assign.</p>
           ) : (
             <div className="flex max-h-40 flex-col gap-1.5 overflow-y-auto rounded-md border border-border p-2">
@@ -160,7 +173,7 @@ export function CreateEventModal({ open, event, onClose, onSaved }: Props) {
               ))}
             </div>
           )}
-        </div>
+        </fieldset>
 
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>

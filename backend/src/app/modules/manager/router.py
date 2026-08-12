@@ -21,7 +21,7 @@ from app.modules.seat_booking.schemas import SeatBookingOut
 
 router = APIRouter(prefix="/manager", tags=["manager"])
 
-manage = require_role(Role.MANAGER)
+manage = require_role(Role.MANAGER, Role.LIBRARIAN)
 
 
 @router.get("/dashboard", response_model=ManagerDashboardStatsOut)

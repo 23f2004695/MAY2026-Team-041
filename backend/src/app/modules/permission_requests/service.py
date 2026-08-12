@@ -35,5 +35,9 @@ async def _decide(request_id: str, decided_by_id: str, status_value: str) -> Per
             status_code=status.HTTP_409_CONFLICT, detail="This request has already been decided"
         )
 
-    row = await repository.decide(request_id, status=status_value, decided_by_id=decided_by_id)
+    row = await repository.decide_if_pending(
+        request_id, status=status_value, decided_by_id=decided_by_id
+    )
+    if row is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "This request has already been decided")
     return PermissionRequestOut.from_prisma(row)

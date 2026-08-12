@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 """
 Chat orchestrator — LangGraph ReAct agent with multi-LLM backend support.
 
@@ -21,9 +22,11 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
+from pydantic import SecretStr
 
 from app.core.config import get_settings
 from app.modules.books import service as books_service
+from app.modules.books.schemas import BookSort
 from app.modules.chat.guardrails import GuardrailBlock, check_input, check_output
 from app.modules.chat.schemas import ChatMessage, ChatResponse
 from app.modules.events import service as events_service
@@ -54,6 +57,7 @@ def _build_llm() -> BaseChatModel:
 
     if mode == "bedrock":
         from langchain_aws import ChatBedrockConverse
+
         kwargs: dict[str, Any] = {"model_id": s.bedrock_model_id, "region_name": s.aws_region}
         if s.aws_access_key_id and s.aws_secret_access_key:
             kwargs["aws_access_key_id"] = s.aws_access_key_id
@@ -62,10 +66,16 @@ def _build_llm() -> BaseChatModel:
 
     if mode == "ollama":
         from langchain_ollama import ChatOllama
+
         return ChatOllama(model=s.ollama_model, base_url=s.ollama_base_url)
 
     from langchain_openai import ChatOpenAI
-    return ChatOpenAI(model=s.openai_model, api_key=s.openai_api_key, temperature=0.3)
+
+    return ChatOpenAI(
+        model=s.openai_model,
+        api_key=SecretStr(s.openai_api_key),
+        temperature=0.3,
+    )
 
 
 # ── Context helpers ───────────────────────────────────────────────────────────
@@ -81,47 +91,57 @@ def _member_id() -> str:
 # READ TOOLS — all authenticated users
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 @tool
 async def get_upcoming_events(query: str = "") -> str:
     """Fetch upcoming library events. Always call with query=""."""
     result = await events_service.list_events(page=1, page_size=10, member_id=_member_id())
     if not result.items:
         return "No upcoming events found."
-    return json.dumps([
-        {
-            "id": e.id,
-            "title": e.title,
-            "date": e.date.strftime("%d %b %Y, %I:%M %p"),
-            "location": e.location,
-            "capacity": e.capacity,
-            "attendees": e.attendees,
-            "registered": e.registered,
-        }
-        for e in result.items
-    ])
+    return json.dumps(
+        [
+            {
+                "id": e.id,
+                "title": e.title,
+                "date": e.date.strftime("%d %b %Y, %I:%M %p"),
+                "location": e.location,
+                "capacity": e.capacity,
+                "attendees": e.attendees,
+                "registered": e.registered,
+            }
+            for e in result.items
+        ]
+    )
 
 
 @tool
 async def get_books(query: str = "", sort: str = "newest") -> str:
     """List/search books. query="" for all books. sort='recommended' for personalised picks, 'rating' for top rated, 'newest' for latest. ALWAYS call this for any book recommendation request."""
+    sort_value: BookSort = sort if sort in {"newest", "rating", "recommended"} else "newest"  # type: ignore[assignment]
     result = await books_service.list_books(
-        search=query or None, category=None, sort=sort, page=1, page_size=10  # type: ignore[arg-type]
+        search=query or None,
+        category=None,
+        sort=sort_value,
+        page=1,
+        page_size=10,
     )
     if not result.items:
         return "No books found matching that query."
-    return json.dumps([
-        {
-            "id": b.id,
-            "title": b.title,
-            "author": b.author,
-            "category": b.category,
-            "available": b.available,
-            "copies": b.total_copies,
-            "average_rating": b.average_rating,
-            "review_count": b.review_count,
-        }
-        for b in result.items
-    ])
+    return json.dumps(
+        [
+            {
+                "id": b.id,
+                "title": b.title,
+                "author": b.author,
+                "category": b.category,
+                "available": b.available,
+                "copies": b.total_copies,
+                "average_rating": b.average_rating,
+                "review_count": b.review_count,
+            }
+            for b in result.items
+        ]
+    )
 
 
 @tool
@@ -135,15 +155,17 @@ async def get_highest_rated_books(query: str = "") -> str:
     rated = [b for b in result.items if b.review_count > 0]
     if not rated:
         return "No books have been reviewed yet. Ratings are not available."
-    return json.dumps([
-        {
-            "title": b.title,
-            "author": b.author,
-            "average_rating": b.average_rating,
-            "review_count": b.review_count,
-        }
-        for b in rated
-    ])
+    return json.dumps(
+        [
+            {
+                "title": b.title,
+                "author": b.author,
+                "average_rating": b.average_rating,
+                "review_count": b.review_count,
+            }
+            for b in rated
+        ]
+    )
 
 
 @tool
@@ -152,18 +174,20 @@ async def get_my_loans(query: str = "") -> str:
     items = await loans_service.list_my_loans(_member_id())
     if not items:
         return "empty_loans"
-    return json.dumps([
-        {
-            "id": l.id,
-            "book": l.book_title,
-            "due_date": l.due_date.strftime("%d %b %Y"),
-            "status": l.status,
-            "days_late": l.days_late,
-            "fine_amount": l.fine_amount,
-            "fine_paid": l.fine_paid,
-        }
-        for l in items
-    ])
+    return json.dumps(
+        [
+            {
+                "id": loan.id,
+                "book": loan.book_title,
+                "due_date": loan.due_date.strftime("%d %b %Y"),
+                "status": loan.status,
+                "days_late": loan.days_late,
+                "fine_amount": loan.fine_amount,
+                "fine_paid": loan.fine_paid,
+            }
+            for loan in items
+        ]
+    )
 
 
 @tool
@@ -172,38 +196,43 @@ async def get_my_reservations(query: str = "") -> str:
     items = await reservations_service.list_my_reservations(_member_id())
     if not items:
         return "empty_reservations"
-    return json.dumps([
-        {
-            "id": r.id,
-            "book": r.book_title,
-            "status": r.status,
-            "queue_position": r.queue_position,
-            "eta_days": r.eta_days,
-        }
-        for r in items
-    ])
+    return json.dumps(
+        [
+            {
+                "id": r.id,
+                "book": r.book_title,
+                "status": r.status,
+                "queue_position": r.queue_position,
+                "eta_days": r.eta_days,
+            }
+            for r in items
+        ]
+    )
 
 
 @tool
 async def get_my_seat_bookings(query: str = "") -> str:
     """Get current user's upcoming seat bookings. Call with query=""."""
+
     class _FakeUser:
         id = _member_id()
 
     items = await seat_booking_service.list_my_bookings(_FakeUser())
     if not items:
         return "empty_seat_bookings"
-    return json.dumps([
-        {"id": b.id, "seat": b.seat_label, "date": b.date.isoformat(), "hour": b.hour}
-        for b in items
-    ])
+    return json.dumps(
+        [
+            {"id": b.id, "seat": b.seat_label, "date": b.date.isoformat(), "hour": b.hour}
+            for b in items
+        ]
+    )
 
 
 @tool
 async def get_seat_availability(query: str = "") -> str:
     """Get current seat availability with available seat labels and today's date/time. Call before booking a seat."""
     from datetime import UTC, datetime
-    from app.modules.seat_booking.constants import SEAT_LABELS
+
     now = datetime.now(UTC)
     summary = await seat_booking_service.get_availability_summary()
     booked = await seat_booking_service.get_schedule(
@@ -212,18 +241,21 @@ async def get_seat_availability(query: str = "") -> str:
         now.hour,
     )
     available_seats = [s.seat_label for s in booked.seats if s.status == "available"]
-    return json.dumps({
-        "today": now.date().isoformat(),
-        "current_hour": now.hour,
-        "available_now": summary.available,
-        "total": summary.total,
-        "available_seat_labels": available_seats[:8],
-    })
+    return json.dumps(
+        {
+            "today": now.date().isoformat(),
+            "current_hour": now.hour,
+            "available_now": summary.available,
+            "total": summary.total,
+            "available_seat_labels": available_seats[:8],
+        }
+    )
 
 
 @tool
 async def get_my_notifications(query: str = "") -> str:
     """Get current user's unread notifications. Call with query=""."""
+
     class _FakeUser:
         id = _member_id()
 
@@ -237,6 +269,7 @@ async def get_my_notifications(query: str = "") -> str:
 @tool
 async def get_my_support_tickets(query: str = "") -> str:
     """Get current user's support tickets and their status. Call with query=""."""
+
     class _FakeUser:
         id = _member_id()
         role = type("R", (), {"name": _role()})()
@@ -245,10 +278,12 @@ async def get_my_support_tickets(query: str = "") -> str:
     items = await support_tickets_service.list_my_tickets(_FakeUser())
     if not items:
         return "No support tickets raised by this user."
-    return json.dumps([
-        {"id": t.id, "category": t.category, "status": t.status, "description": t.description}
-        for t in items
-    ])
+    return json.dumps(
+        [
+            {"id": t.id, "category": t.category, "status": t.status, "description": t.description}
+            for t in items
+        ]
+    )
 
 
 @tool
@@ -257,10 +292,17 @@ async def get_leaderboard(query: str = "") -> str:
     items = await leaderboard_service.get_leaderboard(_member_id())
     if not items:
         return "The leaderboard is empty."
-    return json.dumps([
-        {"rank": e.rank, "name": e.full_name, "books_completed": e.books_completed, "is_you": e.is_current_user}
-        for e in items[:10]
-    ])
+    return json.dumps(
+        [
+            {
+                "rank": e.rank,
+                "name": e.full_name,
+                "books_completed": e.books_completed,
+                "is_you": e.is_current_user,
+            }
+            for e in items[:10]
+        ]
+    )
 
 
 @tool
@@ -269,10 +311,9 @@ async def get_my_reading_progress(query: str = "") -> str:
     items = await members_service.list_reading_progress(_member_id())
     if not items:
         return "empty_reading_progress"
-    return json.dumps([
-        {"book": p.book_title, "status": p.status, "percent": p.percent_complete}
-        for p in items
-    ])
+    return json.dumps(
+        [{"book": p.book_title, "status": p.status, "percent": p.percent_complete} for p in items]
+    )
 
 
 @tool
@@ -281,22 +322,26 @@ async def get_my_reading_goal(query: str = "") -> str:
     goal = await members_service.get_reading_goal(_member_id())
     if goal is None:
         return "You haven't set a reading goal yet."
-    return json.dumps({
-        "yearly_goal": goal.yearly_goal,
-        "monthly_goal": goal.monthly_goal,
-        "completed_this_year": goal.books_completed_this_year,
-        "completed_this_month": goal.books_completed_this_month,
-    })
+    return json.dumps(
+        {
+            "yearly_goal": goal.yearly_goal,
+            "monthly_goal": goal.monthly_goal,
+            "completed_this_year": goal.books_completed_this_year,
+            "completed_this_month": goal.books_completed_this_month,
+        }
+    )
 
 
 @tool
 async def get_my_reading_streak(query: str = "") -> str:
     """Get current user's login/reading streak in days. Call with query=""."""
     streak = await members_service.get_reading_streak(_member_id())
-    return json.dumps({
-        "current_streak_days": streak.current_streak_days,
-        "longest_streak_days": streak.longest_streak_days,
-    })
+    return json.dumps(
+        {
+            "current_streak_days": streak.current_streak_days,
+            "longest_streak_days": streak.longest_streak_days,
+        }
+    )
 
 
 @tool
@@ -305,15 +350,24 @@ async def get_pricing_plans(query: str = "") -> str:
     plans = await pricing_plans_service.list_plans()
     if not plans:
         return "No pricing plans found."
-    return json.dumps([
-        {"plan": p.plan_id, "months": p.months, "price_inr": p.price, "save_percent": p.save_percent, "badge": p.badge}
-        for p in plans
-    ])
+    return json.dumps(
+        [
+            {
+                "plan": p.plan_id,
+                "months": p.months,
+                "price_inr": p.price,
+                "save_percent": p.save_percent,
+                "badge": p.badge,
+            }
+            for p in plans
+        ]
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # ACTION TOOLS — write operations any authenticated user can do on themselves
 # ═══════════════════════════════════════════════════════════════════════════════
+
 
 @tool
 async def reserve_book(book_id: str) -> str:
@@ -321,8 +375,11 @@ async def reserve_book(book_id: str) -> str:
     try:
         # If it doesn't look like a UUID, treat it as a title search
         import re
-        if not re.match(r'^[0-9a-f-]{36}$', book_id, re.IGNORECASE):
-            result = await books_service.list_books(search=book_id, category=None, page=1, page_size=1)
+
+        if not re.match(r"^[0-9a-f-]{36}$", book_id, re.IGNORECASE):
+            result = await books_service.list_books(
+                search=book_id, category=None, page=1, page_size=1
+            )
             if not result.items:
                 return f"Could not find a book matching '{book_id}'. Please check the title."
             book_id = result.items[0].id
@@ -330,9 +387,8 @@ async def reserve_book(book_id: str) -> str:
         reservation = await reservations_service.create_reservation(
             _member_id(), ReservationCreate(book_id=book_id)
         )
-        return (
-            f"Reserved '{reservation.book_title}'. Status: {reservation.status}."
-            + (f" Queue position: {reservation.queue_position}." if reservation.queue_position else "")
+        return f"Reserved '{reservation.book_title}'. Status: {reservation.status}." + (
+            f" Queue position: {reservation.queue_position}." if reservation.queue_position else ""
         )
     except Exception as exc:
         return f"Could not reserve book: {exc}"
@@ -343,7 +399,8 @@ async def cancel_reservation(reservation_id: str) -> str:
     """Cancel a pending reservation. reservation_id can be the actual ID or a book title — the tool will look it up."""
     try:
         import re
-        if not re.match(r'^[0-9a-f-]{36}$', reservation_id, re.IGNORECASE):
+
+        if not re.match(r"^[0-9a-f-]{36}$", reservation_id, re.IGNORECASE):
             items = await reservations_service.list_my_reservations(_member_id())
             match = next((r for r in items if reservation_id.lower() in r.book_title.lower()), None)
             if not match:
@@ -392,6 +449,7 @@ async def book_seat(seat_label: str, date: str, hour: int) -> str:
 @tool
 async def cancel_seat_booking(booking_id: str) -> str:
     """Cancel a seat booking. booking_id must come from get_my_seat_bookings tool output."""
+
     class _FakeUser:
         id = _member_id()
 
@@ -406,15 +464,16 @@ async def cancel_seat_booking(booking_id: str) -> str:
 async def register_for_event(event_id: str) -> str:
     """Register current user for an event. event_id can be the actual ID or an event name — the tool will look it up automatically."""
     import re
+
     try:
-        if not re.match(r'^[0-9a-f-]{36}$', event_id, re.IGNORECASE):
-            result = await events_service.list_events(page=1, page_size=20, member_id=_member_id())
-            match = next((e for e in result.items if event_id.lower() in e.title.lower()), None)
+        if not re.match(r"^[0-9a-f-]{36}$", event_id, re.IGNORECASE):
+            events = await events_service.list_events(page=1, page_size=20, member_id=_member_id())
+            match = next((e for e in events.items if event_id.lower() in e.title.lower()), None)
             if not match:
                 return f"Could not find an event matching '{event_id}'."
             event_id = match.id
-        result = await events_service.register(event_id, _member_id())
-        return f"Registered for '{result.title}' successfully."
+        registered_event = await events_service.register(event_id, _member_id())
+        return f"Registered for '{registered_event.title}' successfully."
     except Exception as exc:
         return f"Could not register for event: {exc}"
 
@@ -432,6 +491,7 @@ async def unregister_from_event(event_id: str) -> str:
 @tool
 async def raise_support_ticket(category: str, description: str) -> str:
     """Raise a support ticket. category: one of book_reservation/payment/seat_booking/harassment/offline_library/attendance/other. description: min 10 chars."""
+
     class _FakeUser:
         id = _member_id()
         role = type("R", (), {"name": _role()})()
@@ -439,7 +499,8 @@ async def raise_support_ticket(category: str, description: str) -> str:
 
     try:
         result = await support_tickets_service.create_ticket(
-            _FakeUser(), SupportTicketCreate(category=TicketCategory(category), description=description)
+            _FakeUser(),
+            SupportTicketCreate(category=TicketCategory(category), description=description),
         )
         return f"Support ticket raised (ID: {result.id}). Status: {result.status}."
     except Exception as exc:
@@ -450,6 +511,7 @@ async def raise_support_ticket(category: str, description: str) -> str:
 # STAFF TOOLS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+
 @tool
 async def get_members(query: str = "") -> str:
     """STAFF ONLY. Search members by name/email (query="" for all). Role must be admin/librarian/manager/it_head."""
@@ -458,16 +520,18 @@ async def get_members(query: str = "") -> str:
     result = await members_service.list_members(search=query or None, page=1, page_size=10)
     if not result.items:
         return "No members found."
-    return json.dumps([
-        {
-            "name": m.full_name,
-            "email": m.email,
-            "role": m.role.name,
-            "active": m.is_active,
-            "last_login": m.last_login_at.strftime("%d %b %Y") if m.last_login_at else "Never",
-        }
-        for m in result.items
-    ])
+    return json.dumps(
+        [
+            {
+                "name": m.full_name,
+                "email": m.email,
+                "role": m.role.name,
+                "active": m.is_active,
+                "last_login": m.last_login_at.strftime("%d %b %Y") if m.last_login_at else "Never",
+            }
+            for m in result.items
+        ]
+    )
 
 
 @tool
@@ -478,15 +542,24 @@ async def get_active_loans(query: str = "") -> str:
     items = await loans_service.list_active_loans()
     if not items:
         return "No active loans."
-    overdue = [l for l in items if l.status == "overdue"]
-    return json.dumps({
-        "total_active": len(items),
-        "overdue_count": len(overdue),
-        "loans": [
-            {"id": l.id, "book": l.book_title, "member": l.member_name, "due_date": l.due_date.strftime("%d %b %Y"), "status": l.status, "fine": l.fine_amount}
-            for l in items[:20]
-        ],
-    })
+    overdue = [loan for loan in items if loan.status == "overdue"]
+    return json.dumps(
+        {
+            "total_active": len(items),
+            "overdue_count": len(overdue),
+            "loans": [
+                {
+                    "id": loan.id,
+                    "book": loan.book_title,
+                    "member": loan.member_name,
+                    "due_date": loan.due_date.strftime("%d %b %Y"),
+                    "status": loan.status,
+                    "fine": loan.fine_amount,
+                }
+                for loan in items[:20]
+            ],
+        }
+    )
 
 
 @tool
@@ -495,15 +568,25 @@ async def get_outstanding_fines(query: str = "") -> str:
     if _role() not in LOAN_MANAGER_ROLES:
         return "You don't have permission to view fine data."
     items = await loans_service.list_fines()
-    unpaid = [l for l in items if not l.fine_paid]
+    unpaid = [loan for loan in items if not loan.fine_paid]
     if not unpaid:
         return "No outstanding fines."
-    total = sum(l.fine_amount for l in unpaid)
-    return json.dumps({
-        "total_outstanding": total,
-        "count": len(unpaid),
-        "fines": [{"loan_id": l.id, "book": l.book_title, "member": l.member_name, "amount": l.fine_amount} for l in unpaid[:20]],
-    })
+    total = sum(loan.fine_amount for loan in unpaid)
+    return json.dumps(
+        {
+            "total_outstanding": total,
+            "count": len(unpaid),
+            "fines": [
+                {
+                    "loan_id": loan.id,
+                    "book": loan.book_title,
+                    "member": loan.member_name,
+                    "amount": loan.fine_amount,
+                }
+                for loan in unpaid[:20]
+            ],
+        }
+    )
 
 
 @tool
@@ -514,10 +597,12 @@ async def get_all_support_tickets(status_filter: str = "") -> str:
     items = await support_tickets_service.list_all_tickets(status_filter or None)
     if not items:
         return "No support tickets found."
-    return json.dumps([
-        {"id": t.id, "category": t.category, "status": t.status, "raised_by": t.raised_by_name}
-        for t in items[:20]
-    ])
+    return json.dumps(
+        [
+            {"id": t.id, "category": t.category, "status": t.status, "raised_by": t.raised_by_name}
+            for t in items[:20]
+        ]
+    )
 
 
 @tool
@@ -546,14 +631,33 @@ async def send_loan_reminder(loan_id: str) -> str:
 
 # ── Tools list ────────────────────────────────────────────────────────────────
 TOOLS = [
-    get_upcoming_events, get_books, get_highest_rated_books, get_my_loans, get_my_reservations,
-    get_my_seat_bookings, get_seat_availability, get_my_notifications,
-    get_my_support_tickets, get_leaderboard, get_my_reading_progress,
-    get_my_reading_goal, get_my_reading_streak, get_pricing_plans,
-    reserve_book, cancel_reservation, book_seat, cancel_seat_booking,
-    register_for_event, unregister_from_event, raise_support_ticket,
-    get_members, get_active_loans, get_outstanding_fines, get_all_support_tickets,
-    return_loan, send_loan_reminder,
+    get_upcoming_events,
+    get_books,
+    get_highest_rated_books,
+    get_my_loans,
+    get_my_reservations,
+    get_my_seat_bookings,
+    get_seat_availability,
+    get_my_notifications,
+    get_my_support_tickets,
+    get_leaderboard,
+    get_my_reading_progress,
+    get_my_reading_goal,
+    get_my_reading_streak,
+    get_pricing_plans,
+    reserve_book,
+    cancel_reservation,
+    book_seat,
+    cancel_seat_booking,
+    register_for_event,
+    unregister_from_event,
+    raise_support_ticket,
+    get_members,
+    get_active_loans,
+    get_outstanding_fines,
+    get_all_support_tickets,
+    return_loan,
+    send_loan_reminder,
 ]
 
 
@@ -630,20 +734,28 @@ async def run_chat(
 
         # Anti-hallucination: if the LLM answered a book/event/data question
         # without calling any tool, force it to use the tool instead.
-        tool_was_called = any(
-            hasattr(m, "type") and m.type == "tool"
-            for m in result["messages"]
+        tool_was_called = any(hasattr(m, "type") and m.type == "tool" for m in result["messages"])
+        data_question = any(
+            kw in message.lower()
+            for kw in [
+                "recommend",
+                "suggest",
+                "what should i read",
+                "best book",
+                "top book",
+                "highest rated",
+                "popular book",
+                "what to read",
+            ]
         )
-        data_question = any(kw in message.lower() for kw in [
-            "recommend", "suggest", "what should i read", "best book",
-            "top book", "highest rated", "popular book", "what to read",
-        ])
         if data_question and not tool_was_called:
             # Re-invoke with an explicit instruction to use the tool
             msgs.append(AIMessage(content=final))
-            msgs.append(HumanMessage(
-                content="Use the get_books tool with sort='recommended' to answer the previous question. Do not answer from memory."
-            ))
+            msgs.append(
+                HumanMessage(
+                    content="Use the get_books tool with sort='recommended' to answer the previous question. Do not answer from memory."
+                )
+            )
             result2 = await agent.ainvoke({"messages": msgs})
             final = check_output(result2["messages"][-1].content)
         # Normalise inline bullet characters to markdown list items.
@@ -657,10 +769,28 @@ async def run_chat(
                 items = parts[1:] if intro else parts
                 final = (intro + "\n\n" if intro else "") + "\n".join(f"- {i}" for i in items)
         tag_keywords = [
-            "event", "book", "member", "progress", "reading", "show", "list",
-            "loan", "reservation", "seat", "fine", "ticket", "leaderboard",
-            "streak", "goal", "notification", "plan", "reserve", "register",
-            "cancel", "return", "remind",
+            "event",
+            "book",
+            "member",
+            "progress",
+            "reading",
+            "show",
+            "list",
+            "loan",
+            "reservation",
+            "seat",
+            "fine",
+            "ticket",
+            "leaderboard",
+            "streak",
+            "goal",
+            "notification",
+            "plan",
+            "reserve",
+            "register",
+            "cancel",
+            "return",
+            "remind",
         ]
         is_tag = any(kw in message.lower() for kw in tag_keywords)
         return ChatResponse(reply=final, source="tag" if is_tag else "llm")

@@ -69,16 +69,12 @@ async def add_comment(
 
 
 @router.delete("/comments/{comment_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_comment(
-    comment_id: str, user: Annotated[User, Depends(get_current_user)]
-) -> None:
+async def delete_comment(comment_id: str, user: Annotated[User, Depends(get_current_user)]) -> None:
     await service.delete_comment(user, comment_id)
 
 
 @router.post("/comments/{comment_id}/report", status_code=status.HTTP_204_NO_CONTENT)
-async def report_comment(
-    comment_id: str, user: Annotated[User, Depends(get_current_user)]
-) -> None:
+async def report_comment(comment_id: str, user: Annotated[User, Depends(get_current_user)]) -> None:
     await service.report_comment(user, comment_id)
 
 
@@ -90,9 +86,7 @@ async def list_banned_authors(
 
 
 @router.post("/banned-authors/{target_user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def ban_author(
-    target_user_id: str, user: Annotated[User, Depends(get_current_user)]
-) -> None:
+async def ban_author(target_user_id: str, user: Annotated[User, Depends(get_current_user)]) -> None:
     await service.ban_author(user, target_user_id)
 
 

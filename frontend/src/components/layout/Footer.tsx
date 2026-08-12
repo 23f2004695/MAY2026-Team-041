@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ROUTES } from '@/constants/routes';
+import { LIBRARY_CONTACT } from '@/constants/contact';
 
 interface FooterProps {
   minimal?: boolean;
@@ -28,20 +29,20 @@ export function Footer({ minimal }: FooterProps) {
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex flex-wrap items-center gap-4">
             <a
-              href="mailto:hello@readingclub.org"
+              href={`mailto:${LIBRARY_CONTACT.email}`}
               aria-label={t('contactUs.actions.emailUs')}
               className="flex items-center gap-1.5 hover:text-foreground"
             >
               <Mail className="size-3.5" />
-              hello@readingclub.org
+              {LIBRARY_CONTACT.email}
             </a>
             <a
-              href="tel:+15550101234"
+              href={LIBRARY_CONTACT.phoneHref}
               aria-label={t('contactUs.actions.callUs')}
               className="flex items-center gap-1.5 hover:text-foreground"
             >
               <Phone className="size-3.5" />
-              +1 (555) 010-1234
+              {LIBRARY_CONTACT.phoneDisplay}
             </a>
           </div>
           <div className="flex flex-wrap items-center gap-3">

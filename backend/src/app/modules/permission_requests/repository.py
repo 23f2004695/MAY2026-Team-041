@@ -34,3 +34,15 @@ async def decide(request_id: str, *, status: str, decided_by_id: str) -> Permiss
         data={"status": status, "decidedById": decided_by_id, "decidedAt": datetime.now(UTC)},
         include=INCLUDE,
     )
+
+
+async def decide_if_pending(
+    request_id: str, *, status: str, decided_by_id: str
+) -> PermissionRequest | None:
+    updated = await prisma.permissionrequest.update_many(
+        where={"id": request_id, "status": "pending"},
+        data={"status": status, "decidedById": decided_by_id, "decidedAt": datetime.now(UTC)},
+    )
+    if updated != 1:
+        return None
+    return await find_by_id(request_id)

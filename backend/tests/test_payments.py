@@ -1,5 +1,7 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 
 os.environ["APP_ENV"] = "test"
 
@@ -94,6 +96,22 @@ async def test_create_payment_records_it_for_the_current_user(client, member_use
     assert body["status"] == "success"
 
 
+async def test_direct_payment_recording_is_disabled_outside_tests(client, member_user, monkeypatch):
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": member_user.email, "password": "Password123!"}
+    )
+    settings = get_settings()
+    monkeypatch.setattr(settings, "app_env", "production")
+
+    response = await client.post(
+        "/api/v1/payments",
+        json={"amount": 1, "label": "Forged", "plan_months": 120},
+        headers={"Authorization": f"Bearer {login.json()['access_token']}"},
+    )
+
+    assert response.status_code == 404
+
+
 async def test_create_payment_rejects_non_positive_amount(client, member_user):
     login = await client.post(
         "/api/v1/auth/login", json={"email": member_user.email, "password": "Password123!"}
@@ -161,9 +179,7 @@ async def test_list_my_payments_paginates(client, member_user):
             "/api/v1/payments", json={"amount": 100, "label": label}, headers=member_headers
         )
 
-    page = await client.get(
-        "/api/v1/payments/me?page=1&page_size=2", headers=member_headers
-    )
+    page = await client.get("/api/v1/payments/me?page=1&page_size=2", headers=member_headers)
 
     assert page.status_code == 200
     body = page.json()
@@ -231,6 +247,26 @@ async def test_membership_reflects_latest_plan_payment(client, member_user):
     assert body["is_active"] is True
 
 
+async def test_early_membership_renewal_preserves_remaining_term(client, member_user):
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": member_user.email, "password": "Password123!"}
+    )
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+    for label in ("First month", "Renewal month"):
+        await client.post(
+            "/api/v1/payments",
+            json={"amount": 499, "label": label, "plan_months": 1},
+            headers=headers,
+        )
+
+    response = await client.get("/api/v1/payments/me/membership", headers=headers)
+    expires_at = response.json()["expires_at"]
+    assert expires_at is not None
+    assert datetime.fromisoformat(expires_at.replace("Z", "+00:00")) > datetime.now(
+        UTC
+    ) + timedelta(days=50)
+
+
 @pytest_asyncio.fixture
 async def manager_user():
     role = await repository.upsert_role(Role.MANAGER)
@@ -244,7 +280,17 @@ async def manager_user():
     )
 
 
-async def test_pay_at_library_notifies_managers(client, member_user, manager_user):
+async def test_pay_at_library_uses_server_fine_balance(
+    client, member_user, manager_user, monkeypatch
+):
+    async def outstanding_loans(member_id: str):
+        assert member_id == member_user.id
+        return [
+            SimpleNamespace(fine_amount=275, fine_paid=False),
+            SimpleNamespace(fine_amount=40, fine_paid=True),
+        ]
+
+    monkeypatch.setattr(payments_service.loans_service, "list_my_loans", outstanding_loans)
     login = await client.post(
         "/api/v1/auth/login", json={"email": member_user.email, "password": "Password123!"}
     )
@@ -252,7 +298,7 @@ async def test_pay_at_library_notifies_managers(client, member_user, manager_use
 
     response = await client.post(
         "/api/v1/payments/pay-at-library",
-        json={"amount": 150, "label": "Overdue fine"},
+        json={"amount": 1, "label": "Forged description"},
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -262,7 +308,27 @@ async def test_pay_at_library_notifies_managers(client, member_user, manager_use
     )
     assert notification is not None
     assert member_user.fullName in notification.message
-    assert "150" in notification.message
+    assert "275" in notification.message
+    assert "Forged" not in notification.message
+
+
+async def test_pay_at_library_rejects_request_without_outstanding_fines(
+    client, member_user, monkeypatch
+):
+    async def no_outstanding_loans(member_id: str):
+        assert member_id == member_user.id
+        return []
+
+    monkeypatch.setattr(payments_service.loans_service, "list_my_loans", no_outstanding_loans)
+    headers = await _login(client, member_user)
+
+    response = await client.post(
+        "/api/v1/payments/pay-at-library",
+        json={"amount": 99999, "label": "Forged"},
+        headers=headers,
+    )
+
+    assert response.status_code == 409
 
 
 async def _login(client, user) -> dict:
@@ -411,6 +477,16 @@ async def test_create_razorpay_order_applies_coupon_before_charging(
     coupon = await _generate_coupon(client, admin_headers, discount_percent=20, max_uses=1)
     fake_client = _FakeRazorpayClient()
     monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+    settled_amounts: list[int] = []
+
+    async def capture_settlement(member_id: str, amount: int, *, client=None):
+        del client
+        assert member_id == member_user.id
+        settled_amounts.append(amount)
+
+    monkeypatch.setattr(
+        payments_service.loans_service, "settle_fines_for_member", capture_settlement
+    )
     member_headers = await _login(client, member_user)
 
     response = await client.post(
@@ -422,6 +498,77 @@ async def test_create_razorpay_order_applies_coupon_before_charging(
     assert response.status_code == 201
     assert response.json()["amount"] == 400
     assert fake_client.order.created["amount"] == 40000
+
+    listed_before_payment = await client.get("/api/v1/coupons", headers=admin_headers)
+    before = next(c for c in listed_before_payment.json() if c["code"] == coupon["code"])
+    assert before["uses_count"] == 0
+
+    verified = await client.post(
+        "/api/v1/payments/razorpay/verify",
+        json={
+            "razorpay_order_id": "order_fake123",
+            "razorpay_payment_id": f"pay_coupon_{uuid.uuid4().hex}",
+            "razorpay_signature": "sig_fake123",
+        },
+        headers=member_headers,
+    )
+    assert verified.status_code == 200
+    assert settled_amounts == [500]
+
+    listed_after_payment = await client.get("/api/v1/coupons", headers=admin_headers)
+    after = next(c for c in listed_after_payment.json() if c["code"] == coupon["code"])
+    assert after["uses_count"] == 1
+
+
+async def test_production_fine_coupon_settles_original_server_balance(
+    client, member_user, admin_user, monkeypatch
+):
+    settings = get_settings()
+    monkeypatch.setattr(settings, "app_env", "production")
+    admin_headers = await _login(client, admin_user)
+    member_headers = await _login(client, member_user)
+    coupon = await _generate_coupon(client, admin_headers, discount_percent=20, max_uses=1)
+    fake_client = _FakeRazorpayClient()
+    monkeypatch.setattr(payments_service, "_get_client", lambda: fake_client)
+
+    async def outstanding_loans(member_id: str):
+        assert member_id == member_user.id
+        return [SimpleNamespace(fine_amount=500, fine_paid=False)]
+
+    settled_amounts: list[int] = []
+
+    async def capture_settlement(member_id: str, amount: int, *, client=None):
+        del client
+        assert member_id == member_user.id
+        settled_amounts.append(amount)
+
+    monkeypatch.setattr(payments_service.loans_service, "list_my_loans", outstanding_loans)
+    monkeypatch.setattr(
+        payments_service.loans_service, "settle_fines_for_member", capture_settlement
+    )
+
+    order = await client.post(
+        "/api/v1/payments/razorpay/order",
+        json={"amount": 1, "label": "Forged", "coupon_code": coupon["code"]},
+        headers=member_headers,
+    )
+    assert order.status_code == 201
+    assert order.json()["amount"] == 400
+    assert order.json()["label"] == "Outstanding library fines"
+
+    verified = await client.post(
+        "/api/v1/payments/razorpay/verify",
+        json={
+            "razorpay_order_id": "order_fake123",
+            "razorpay_payment_id": f"pay_production_fine_{uuid.uuid4().hex}",
+            "razorpay_signature": "sig_fake123",
+        },
+        headers=member_headers,
+    )
+
+    assert verified.status_code == 200
+    assert verified.json()["amount"] == 400
+    assert settled_amounts == [500]
 
 
 async def test_verify_razorpay_payment_rejects_bad_signature(client, member_user, monkeypatch):

@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 
@@ -222,6 +223,22 @@ async def test_admin_can_reject_a_request(admin_user, manager_user, member_user)
 
     assert response.status_code == 200
     assert response.json()["status"] == "rejected"
+
+
+async def test_concurrent_opposite_billing_decisions_allow_only_one(
+    admin_user, manager_user, member_user
+):
+    created = await _file_request(manager_user, member_user)
+
+    async def decide(action: str):
+        async with _client_as(admin_user) as client:
+            return await client.post(f"/api/v1/billing-requests/{created['id']}/{action}")
+
+    responses = await asyncio.gather(decide("approve"), decide("reject"))
+
+    assert sorted(response.status_code for response in responses) == [200, 409]
+    audits = await prisma.auditlogentry.find_many(where={"actorId": admin_user.id})
+    assert len(audits) == 1
 
 
 async def test_approving_removes_it_from_the_pending_list(admin_user, manager_user, member_user):

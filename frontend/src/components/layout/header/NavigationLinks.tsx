@@ -6,6 +6,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { buttonVariants } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/lib/cn';
+import { preferredScrollBehavior } from '@/lib/scroll';
 import { useActiveSection } from '@/providers/ActiveSectionProvider';
 
 export interface HeaderNavLink {
@@ -33,7 +34,7 @@ export function useHeaderNavLinks(): HeaderNavLink[] {
     if (location.pathname === ROUTES.HOME) {
       event.preventDefault();
       const el = document.getElementById('testimonials');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (el) el.scrollIntoView({ behavior: preferredScrollBehavior(), block: 'start' });
     }
   }
 

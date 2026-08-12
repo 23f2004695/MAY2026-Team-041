@@ -6,9 +6,10 @@ import type { NavItem } from '@/constants/navigation';
 
 export interface SidebarProps {
   items: NavItem[];
+  onNavigate?: () => void;
 }
 
-export function Sidebar({ items }: SidebarProps) {
+export function Sidebar({ items, onNavigate }: SidebarProps) {
   const { t } = useTranslation();
 
   return (
@@ -18,6 +19,7 @@ export function Sidebar({ items }: SidebarProps) {
           key={path}
           to={path}
           end
+          onClick={onNavigate}
           className={({ isActive }) =>
             cn(
               'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground',

@@ -12,4 +12,3 @@ class LeaderboardEntryOut(BaseModel):
     reading_streak: int
     badges: list[str]
     is_current_user: bool
-

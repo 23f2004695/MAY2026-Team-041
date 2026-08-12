@@ -10,7 +10,7 @@ from app.modules.reviews.schemas import BookReviewsOut, ReviewCreate, ReviewOut,
 
 router = APIRouter(tags=["reviews"])
 
-view_all_reviews = require_role(Role.ADMIN, Role.MANAGER, Role.IT_HEAD)
+view_all_reviews = require_role(Role.ADMIN, Role.MANAGER, Role.LIBRARIAN, Role.IT_HEAD)
 
 
 @router.get("/books/{book_id}/reviews", response_model=BookReviewsOut)
@@ -37,7 +37,6 @@ async def list_my_reviews(user: Annotated[User, Depends(get_current_user)]) -> l
 @router.get("/reviews", response_model=list[ReviewOut])
 async def list_all_reviews(user: Annotated[User, Depends(view_all_reviews)]) -> list[ReviewOut]:
     return await service.get_all_reviews(viewer_id=user.id)
-
 
 
 @router.put("/reviews/{review_id}", response_model=ReviewOut)

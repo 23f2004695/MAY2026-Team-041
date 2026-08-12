@@ -77,7 +77,7 @@ test.describe('Payment — coupons', () => {
 test.describe('Payment — pay at library', () => {
   test('notifies the manager and redirects to the dashboard', async ({ page }) => {
     await continueAsRole(page, 'member');
-    await page.goto('/payment?amount=150&label=Overdue%20fine');
+    await page.goto('/payment?plan=1m&label=Monthly%20membership');
 
     await page.getByRole('button', { name: 'Notify the Manager' }).click();
 

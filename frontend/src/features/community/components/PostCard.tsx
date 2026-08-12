@@ -163,9 +163,10 @@ export const PostCard = memo(function PostCard({
 }: PostCardProps) {
   const { t } = useTranslation();
   const { userId, role } = useAuth();
-  const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
+  const isStaff =
+    role === 'admin' || role === 'manager' || role === 'librarian' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
-  const canReport = role === 'member' || role === 'manager';
+  const canReport = role === 'member';
   const isMember = role === 'member';
   // Members never see reported comments (or their replies) at all — strip them
   // before anything downstream (count, list, auto-expand) touches the thread.

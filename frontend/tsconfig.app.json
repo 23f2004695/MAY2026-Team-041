@@ -22,7 +22,7 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseurl": ".",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

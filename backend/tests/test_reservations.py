@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -111,29 +112,31 @@ async def test_reserve_available_book_is_pending_and_does_not_hold_a_copy(
     assert any(n["type"] == "reservation-requested" for n in notifications.json())
 
 
-async def test_reserve_unavailable_book_conflicts(member_user, librarian_user):
+async def test_unavailable_book_accepts_a_waitlist_reservation(member_user, librarian_user):
     book_id = await _create_book(librarian_user, total_copies=0)
 
     async with _client_as(member_user) as client:
         response = await client.post("/api/v1/reservations", json={"book_id": book_id})
 
-    assert response.status_code == 409
+    assert response.status_code == 201
+    assert response.json()["status"] == "pending"
+    assert response.json()["queue_position"] == 1
 
 
-async def test_reserve_conflicts_once_all_copies_are_on_loan(member_user, librarian_user):
+async def test_reserve_joins_waitlist_once_all_copies_are_on_loan(member_user, librarian_user):
     manager = await _make_user(Role.MANAGER)
     book_id = await _create_book(librarian_user, total_copies=1)
     other_member = await _make_user(Role.MEMBER)
 
     async with _client_as(manager) as client:
-        await client.post(
-            "/api/v1/loans", json={"book_id": book_id, "member_id": other_member.id}
-        )
+        await client.post("/api/v1/loans", json={"book_id": book_id, "member_id": other_member.id})
 
     async with _client_as(member_user) as client:
         response = await client.post("/api/v1/reservations", json={"book_id": book_id})
 
-    assert response.status_code == 409
+    assert response.status_code == 201
+    assert response.json()["status"] == "pending"
+    assert response.json()["queue_position"] == 1
 
 
 async def test_list_my_reservations_excludes_cancelled_ones(member_user, librarian_user):
@@ -269,6 +272,22 @@ async def test_reserving_the_same_book_twice_conflicts(member_user, librarian_us
     # 2 copies and none on loan, so availability isn't what's rejecting this.
     assert second.status_code == 409
     assert second.json()["detail"] == "You already have this book reserved or on loan"
+
+
+async def test_concurrent_duplicate_reservations_create_only_one(member_user, librarian_user):
+    book_id = await _create_book(librarian_user, total_copies=2)
+
+    async def reserve():
+        async with _client_as(member_user) as client:
+            return await client.post("/api/v1/reservations", json={"book_id": book_id})
+
+    responses = await asyncio.gather(reserve(), reserve())
+
+    assert sorted(response.status_code for response in responses) == [201, 409]
+    saved = await prisma.reservation.count(
+        where={"memberId": member_user.id, "bookId": book_id, "status": "pending"}
+    )
+    assert saved == 1
 
 
 async def test_another_member_can_still_reserve_the_same_book(member_user, librarian_user):

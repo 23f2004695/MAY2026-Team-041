@@ -18,7 +18,7 @@ from app.modules.events.schemas import (
 
 router = APIRouter(prefix="/events", tags=["events"])
 
-manage_events = require_role(Role.ADMIN, Role.MANAGER)
+manage_events = require_role(Role.ADMIN, Role.MANAGER, Role.LIBRARIAN)
 moderate_registrants = require_role(Role.ADMIN, Role.IT_HEAD)
 view_analytics = require_role(Role.ADMIN)
 

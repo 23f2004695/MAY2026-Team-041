@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from app.modules.it_head import repository
 from app.modules.it_head.schemas import FeeStatusEntryOut, ITHeadDashboardOut, ITHeadStatsOut
@@ -25,7 +26,7 @@ async def get_dashboard() -> ITHeadDashboardOut:
 
     # `payments` is already ordered newest-first, so the first payment seen per member
     # is their latest — no need to sort per-member.
-    latest_payment_by_member: dict[str, object] = {}
+    latest_payment_by_member: dict[str, Any] = {}
     for payment in payments:
         latest_payment_by_member.setdefault(payment.userId, payment)
 

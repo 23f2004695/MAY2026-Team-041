@@ -11,7 +11,8 @@ Usage:
     python -m uv run python scripts/test_chatbot.py
 
     # Override defaults:
-    python -m uv run python scripts/test_chatbot.py --url http://localhost:8000 --email member@test.com --password secret
+    python -m uv run python scripts/test_chatbot.py --url http://localhost:8000 \
+        --email member@test.com --password secret
 """
 
 from __future__ import annotations
@@ -131,7 +132,6 @@ TESTS: list[dict] = [
         "role": "member",
         "prompt": "What are the membership pricing plans?",
     },
-
     # ── ACTION TOOLS ──────────────────────────────────────────────────────────
     {
         "id": "reserve_book_by_title",
@@ -161,7 +161,9 @@ TESTS: list[dict] = [
         "id": "raise_support_ticket",
         "tool": "raise_support_ticket",
         "role": "member",
-        "prompt": "I have a problem with my seat booking, the system charged me but no seat was confirmed",
+        "prompt": (
+            "I have a problem with my seat booking, the system charged me but no seat was confirmed"
+        ),
     },
     {
         "id": "cancel_reservation",
@@ -181,7 +183,6 @@ TESTS: list[dict] = [
         "role": "member",
         "prompt": "Unregister me from the event I just registered for",
     },
-
     # ── STAFF TOOLS ───────────────────────────────────────────────────────────
     {
         "id": "get_members_all",
@@ -219,7 +220,6 @@ TESTS: list[dict] = [
         "role": "admin",
         "prompt": "Show me all support tickets regardless of status",
     },
-
     # ── GUARDRAILS ────────────────────────────────────────────────────────────
     {
         "id": "guardrail_off_topic",
@@ -245,7 +245,6 @@ TESTS: list[dict] = [
         "role": "member",
         "prompt": "Show me all members in the library",
     },
-
     # ── MULTI-TURN CONVERSATIONS ──────────────────────────────────────────────
     {
         "id": "multi_browse_then_reserve",
@@ -345,6 +344,7 @@ TESTS: list[dict] = [
 
 # ── Auth helpers ──────────────────────────────────────────────────────────────
 
+
 async def login(client: httpx.AsyncClient, email: str, password: str) -> str:
     resp = await client.post(
         f"{BASE_URL}{API}/auth/login",
@@ -360,6 +360,7 @@ async def get_token(client: httpx.AsyncClient, role: str, credentials: dict[str,
 
 
 # ── Chat helpers ──────────────────────────────────────────────────────────────
+
 
 async def send_message(client: httpx.AsyncClient, token: str, message: str) -> dict:
     resp = await client.post(
@@ -382,6 +383,7 @@ async def clear_history(client: httpx.AsyncClient, token: str) -> None:
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
+
 async def run_tests(credentials: dict[str, dict]) -> list[dict]:
     results = []
 
@@ -403,16 +405,19 @@ async def run_tests(credentials: dict[str, dict]) -> list[dict]:
             token = tokens.get(role, "")
             is_multi = "turns" in test
 
-            print(f"\n[{i}/{total}] {test_id} ({'multi' if is_multi else 'single'}-turn, role={role})")
+            turn_kind = "multi" if is_multi else "single"
+            print(f"\n[{i}/{total}] {test_id} ({turn_kind}-turn, role={role})")
 
             if not token:
-                results.append({
-                    "id": test_id,
-                    "tool": test.get("tool"),
-                    "role": role,
-                    "type": "multi" if is_multi else "single",
-                    "error": f"No token for role '{role}'",
-                })
+                results.append(
+                    {
+                        "id": test_id,
+                        "tool": test.get("tool"),
+                        "role": role,
+                        "type": "multi" if is_multi else "single",
+                        "error": f"No token for role '{role}'",
+                    }
+                )
                 continue
 
             # Clear Redis history before each test for isolation
@@ -424,39 +429,46 @@ async def run_tests(credentials: dict[str, dict]) -> list[dict]:
                     print(f"    → {turn_msg}")
                     resp = await send_message(client, token, turn_msg)
                     print(f"    ← {resp.get('reply', '')[:120]}...")
-                    turns_log.append({
-                        "prompt": turn_msg,
-                        "reply": resp.get("reply", ""),
-                        "source": resp.get("source", ""),
-                    })
-                results.append({
-                    "id": test_id,
-                    "tool": test.get("tool"),
-                    "role": role,
-                    "type": "multi",
-                    "turns": turns_log,
-                    "timestamp": datetime.now(UTC).isoformat(),
-                })
+                    turns_log.append(
+                        {
+                            "prompt": turn_msg,
+                            "reply": resp.get("reply", ""),
+                            "source": resp.get("source", ""),
+                        }
+                    )
+                results.append(
+                    {
+                        "id": test_id,
+                        "tool": test.get("tool"),
+                        "role": role,
+                        "type": "multi",
+                        "turns": turns_log,
+                        "timestamp": datetime.now(UTC).isoformat(),
+                    }
+                )
             else:
                 prompt = test["prompt"]
                 print(f"    → {prompt}")
                 resp = await send_message(client, token, prompt)
                 print(f"    ← {resp.get('reply', '')[:120]}...")
-                results.append({
-                    "id": test_id,
-                    "tool": test.get("tool"),
-                    "role": role,
-                    "type": "single",
-                    "prompt": prompt,
-                    "reply": resp.get("reply", ""),
-                    "source": resp.get("source", ""),
-                    "timestamp": datetime.now(UTC).isoformat(),
-                })
+                results.append(
+                    {
+                        "id": test_id,
+                        "tool": test.get("tool"),
+                        "role": role,
+                        "type": "single",
+                        "prompt": prompt,
+                        "reply": resp.get("reply", ""),
+                        "source": resp.get("source", ""),
+                        "timestamp": datetime.now(UTC).isoformat(),
+                    }
+                )
 
     return results
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run chatbot tool tests")
@@ -476,10 +488,10 @@ def main() -> None:
         "admin": {"email": args.admin_email, "password": args.admin_password},
     }
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Chatbot Test Suite — {len(TESTS)} tests")
     print(f"  Backend: {BASE_URL}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print("\nLogging in...")
 
     results = asyncio.run(run_tests(credentials))
@@ -500,10 +512,10 @@ def main() -> None:
         )
 
     errors = [r for r in results if "error" in r or r.get("source") == "error"]
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Done. {len(results)} tests run, {len(errors)} errors.")
     print(f"  Results saved to: {output_path}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     if errors:
         print("Errors:")

@@ -93,7 +93,7 @@ async def test_dashboard_requires_authentication():
 
     print("\nDashboard Response:", response.status_code, response.text)
 
-    assert response.status_code == 401  
+    assert response.status_code == 401
 
 
 async def test_dashboard_forbidden_for_member(member_user):
@@ -104,7 +104,7 @@ async def test_dashboard_forbidden_for_member(member_user):
 
     print("\nDashboard Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
 
 
 async def test_dashboard_has_the_right_shape(admin_user):
@@ -116,9 +116,7 @@ async def test_dashboard_has_the_right_shape(admin_user):
     assert len(body["seat_occupancy"]) == 12  # 9 AM - 8 PM
 
 
-async def test_membership_payment_increases_revenue_and_membership_fees(
-    admin_user, member_user
-):
+async def test_membership_payment_increases_revenue_and_membership_fees(admin_user, member_user):
     before = await _get_dashboard(admin_user)
 
     async with _client_as(member_user) as client:
@@ -166,7 +164,7 @@ async def test_log_expense_requires_admin_role(member_user):
 
     print("\nLog Expense Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
 
 
 async def test_log_expense_increases_expenses_and_budget_spent(admin_user):
@@ -220,7 +218,7 @@ async def test_reports_require_admin_role(member_user):
 
             print(f"\n{path} Response:", response.status_code, response.text)
 
-            assert response.status_code == 403  
+            assert response.status_code == 403
 
 
 async def test_revenue_by_plan_groups_membership_payments_by_label(admin_user, member_user):
@@ -259,9 +257,7 @@ async def test_profit_and_loss_reflects_current_month_activity(admin_user, membe
             json={"amount": 300, "label": "3 Months — ₹1349", "plan_months": 3},
         )
     async with _client_as(admin_user) as client:
-        await client.post(
-            "/api/v1/admin/expenses", json={"category": "marketing", "amount": 100}
-        )
+        await client.post("/api/v1/admin/expenses", json={"category": "marketing", "amount": 100})
         response = await client.get("/api/v1/admin/reports/profit-and-loss")
 
     assert response.status_code == 200
@@ -271,8 +267,7 @@ async def test_profit_and_loss_reflects_current_month_activity(admin_user, membe
     assert this_month_after["revenue"] == this_month_before["revenue"] + 300
     assert this_month_after["expenses"] == this_month_before["expenses"] + 100
     assert (
-        this_month_after["net_profit"]
-        == this_month_after["revenue"] - this_month_after["expenses"]
+        this_month_after["net_profit"] == this_month_after["revenue"] - this_month_after["expenses"]
     )
 
 
@@ -314,7 +309,7 @@ async def test_announcement_requires_authentication():
 
     print("\nAnnouncement Response:", response.status_code, response.text)
 
-    assert response.status_code == 401 
+    assert response.status_code == 401
 
 
 async def test_member_cannot_send_an_announcement(member_user):
@@ -325,7 +320,7 @@ async def test_member_cannot_send_an_announcement(member_user):
 
     print("\nAnnouncement Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
 
 
 async def test_announcement_rejects_empty_message(admin_user):
@@ -449,9 +444,7 @@ async def test_list_members_flags_a_reported_member(admin_user, member_user):
 
 async def test_list_members_search_filters_by_email(admin_user, member_user):
     async with _client_as(admin_user) as client:
-        response = await client.get(
-            "/api/v1/admin/members", params={"search": member_user.email}
-        )
+        response = await client.get("/api/v1/admin/members", params={"search": member_user.email})
 
     assert response.status_code == 200
     body = response.json()
@@ -541,9 +534,7 @@ async def test_list_payments_search_filters_by_member_email(admin_user, member_u
         await client.post("/api/v1/payments", json={"amount": 60, "label": "Not mine"})
 
     async with _client_as(admin_user) as client:
-        response = await client.get(
-            "/api/v1/admin/payments", params={"search": member_user.email}
-        )
+        response = await client.get("/api/v1/admin/payments", params={"search": member_user.email})
 
     body = response.json()
     assert all(member_user.email == item["member_email"] for item in body["items"])

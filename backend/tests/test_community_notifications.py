@@ -61,9 +61,7 @@ async def test_reporting_a_post_notifies_every_moderator():
     it_head = await _make_user(Role.IT_HEAD)
 
     async with _client_as(author) as client:
-        created = await client.post(
-            "/api/v1/community/posts", json={"content": "Hello community"}
-        )
+        created = await client.post("/api/v1/community/posts", json={"content": "Hello community"})
     post_id = created.json()["id"]
 
     async with _client_as(reporter) as client:
@@ -84,9 +82,7 @@ async def test_commenting_on_a_post_notifies_the_author():
     commenter = await _make_user(Role.MEMBER)
 
     async with _client_as(author) as client:
-        created = await client.post(
-            "/api/v1/community/posts", json={"content": "Hello community"}
-        )
+        created = await client.post("/api/v1/community/posts", json={"content": "Hello community"})
     post_id = created.json()["id"]
 
     async with _client_as(commenter) as client:
@@ -108,9 +104,7 @@ async def test_liking_a_post_notifies_the_author_once_per_like():
     liker = await _make_user(Role.MEMBER)
 
     async with _client_as(author) as client:
-        created = await client.post(
-            "/api/v1/community/posts", json={"content": "Hello community"}
-        )
+        created = await client.post("/api/v1/community/posts", json={"content": "Hello community"})
     post_id = created.json()["id"]
 
     async with _client_as(liker) as client:
@@ -131,9 +125,7 @@ async def test_replying_to_a_comment_notifies_the_comment_author_not_the_post_au
     replier = await _make_user(Role.MEMBER)
 
     async with _client_as(post_author) as client:
-        created = await client.post(
-            "/api/v1/community/posts", json={"content": "Hello community"}
-        )
+        created = await client.post("/api/v1/community/posts", json={"content": "Hello community"})
     post_id = created.json()["id"]
 
     async with _client_as(commenter) as client:
@@ -156,6 +148,4 @@ async def test_replying_to_a_comment_notifies_the_comment_author_not_the_post_au
     assert any(n["type"] == "post-comment" for n in commenter_notifications.json())
     # The reply is to the comment, not the post — the post author (who didn't write
     # the parent comment) shouldn't get a second notification for the same reply.
-    assert (
-        sum(1 for n in post_author_notifications.json() if n["type"] == "post-comment") == 1
-    )
+    assert sum(1 for n in post_author_notifications.json() if n["type"] == "post-comment") == 1

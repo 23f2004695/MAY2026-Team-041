@@ -1,9 +1,9 @@
 import { Award, BookOpen, Calendar, CheckCircle2, Flame, Info, Star, Target, Trophy } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PageTitle, Pagination, TableToolbar } from '@/components/common';
-import { NoResults } from '@/components/feedback';
+import { ErrorState, LoadingState, NoResults } from '@/components/feedback';
 import {
   Avatar,
   Badge,
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui';
 import { usePagination, useSortedItems } from '@/hooks';
 import { cn } from '@/lib/cn';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type LeaderboardEntry } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 10;
@@ -68,10 +69,22 @@ export function LeaderboardPage() {
   const [view, setView] = useState<LeaderboardView>('top50');
   const [sort, setSort] = useState<LeaderboardSort>('scoreHigh');
   const [showRules, setShowRules] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<unknown>(null);
+
+  const loadLeaderboard = useCallback(() => {
+    setIsLoading(true);
+    setLoadError(null);
+    getLeaderboard()
+      .then(setEntries)
+      .catch(setLoadError)
+      .finally(() => setIsLoading(false));
+  }, [getLeaderboard]);
 
   useEffect(() => {
-    getLeaderboard().then(setEntries).catch(() => setEntries([]));
-  }, [getLeaderboard]);
+    const timer = setTimeout(loadLeaderboard, 0);
+    return () => clearTimeout(timer);
+  }, [loadLeaderboard]);
 
   const filteredEntries = useMemo(
     () =>
@@ -198,7 +211,15 @@ export function LeaderboardPage() {
         </div>
       )}
 
-      {entries.length === 0 ? (
+      {isLoading ? (
+        <LoadingState label="Loading leaderboard" />
+      ) : loadError ? (
+        <ErrorState
+          className="min-h-48"
+          description={getErrorMessage(loadError, t('common.errors.generic'))}
+          onRetry={loadLeaderboard}
+        />
+      ) : entries.length === 0 ? (
         <NoResults
           icon={Award}
           title={t('leaderboard.empty.title')}
@@ -329,4 +350,3 @@ export function LeaderboardPage() {
     </div>
   );
 }
-

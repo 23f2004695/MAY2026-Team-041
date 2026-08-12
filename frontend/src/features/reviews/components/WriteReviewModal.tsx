@@ -19,13 +19,14 @@ export interface ReviewDraft {
 export interface WriteReviewModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (draft: ReviewDraft) => void;
+  onSubmit: (draft: ReviewDraft) => void | Promise<void>;
   /** When set, the modal opens pre-filled for editing an existing review — the book can't be changed. */
   initialValues?: ReviewDraft & { bookTitle: string; bookAuthor: string };
 }
 
 const MAX_IMAGES = 4;
 const MAX_COMMENT_LENGTH = 500;
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 const SEARCH_DEBOUNCE_MS = 300;
 
 export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: WriteReviewModalProps) {
@@ -47,6 +48,8 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
   const [bookQuery, setBookQuery] = useState('');
   const [bookResults, setBookResults] = useState<Book[]>([]);
   const [bookSearchFailed, setBookSearchFailed] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Re-sync the draft whenever the modal transitions to open, so a fresh
   // "write" starts blank and "edit" starts pre-filled with that review.
@@ -69,6 +72,8 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
       setBookQuery('');
       setBookResults([]);
       setBookSearchFailed(false);
+      setImageError(null);
+      setIsSubmitting(false);
     }
   }
 
@@ -113,21 +118,42 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
     const files = Array.from(event.target.files ?? []);
     const remainingSlots = MAX_IMAGES - images.length;
     event.target.value = '';
+    setImageError(null);
+    const selectedFiles = files.slice(0, remainingSlots);
+    const invalidType = selectedFiles.find((file) => !file.type.startsWith('image/'));
+    if (invalidType) {
+      setImageError(t('reviews.writeReviewModal.invalidImageType', 'Only image files can be attached.'));
+      return;
+    }
+    const oversized = selectedFiles.find((file) => file.size > MAX_IMAGE_SIZE_BYTES);
+    if (oversized) {
+      setImageError(t('reviews.writeReviewModal.imageTooLarge', 'Each image must be 5 MB or smaller.'));
+      return;
+    }
     // Data URLs (not blob: URLs) because there's no upload/object storage yet (see the
     // ponytail note on CommunityPost.images/Review.images) — this way the image
     // actually persists in the DB and is visible after reload.
-    const nextUrls = await Promise.all(files.slice(0, remainingSlots).map(readAsDataUrl));
-    setImages((prev) => [...prev, ...nextUrls]);
+    try {
+      const nextUrls = await Promise.all(selectedFiles.map(readAsDataUrl));
+      setImages((prev) => [...prev, ...nextUrls]);
+    } catch {
+      setImageError(t('reviews.writeReviewModal.imageReadFailed', 'One or more images could not be read.'));
+    }
   }
 
   function removeImage(index: number) {
     setImages((prev) => prev.filter((_, i) => i !== index));
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!selectedBook || rating === 0 || comment.trim().length === 0) return;
-    onSubmit({ bookId: selectedBook.id, rating, comment: comment.trim(), images });
+    if (!selectedBook || rating === 0 || comment.trim().length === 0 || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await onSubmit({ bookId: selectedBook.id, rating, comment: comment.trim(), images });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const canSubmit = selectedBook !== null && rating > 0 && comment.trim().length > 0;
@@ -286,9 +312,14 @@ export function WriteReviewModal({ open, onClose, onSubmit, initialValues }: Wri
           <p className="text-xs text-muted-foreground">
             {t('reviews.writeReviewModal.imagesHint', { count: MAX_IMAGES })}
           </p>
+          {imageError && (
+            <p role="alert" className="text-xs text-danger">
+              {imageError}
+            </p>
+          )}
         </div>
 
-        <Button type="submit" disabled={!canSubmit}>
+        <Button type="submit" disabled={!canSubmit} isLoading={isSubmitting}>
           {isEditing ? t('reviews.writeReviewModal.saveChanges') : t('reviews.writeReviewModal.submit')}
         </Button>
       </form>

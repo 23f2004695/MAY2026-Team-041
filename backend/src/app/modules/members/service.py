@@ -38,7 +38,7 @@ async def list_members(
 
 
 async def create_member(payload: MemberCreate) -> MemberOut:
-    role = await repository.upsert_role(payload.role_name)
+    role = await repository.upsert_role(payload.role_name.value)
 
     try:
         user = await repository.create_member(
@@ -58,10 +58,28 @@ async def create_member(payload: MemberCreate) -> MemberOut:
     return MemberOut.from_prisma(user)
 
 
-async def update_member(member_id: str, payload: MemberUpdate) -> MemberOut:
+async def update_member(member_id: str, payload: MemberUpdate, *, actor_id: str) -> MemberOut:
     existing = await repository.find_by_id(member_id)
     if existing is None or existing.deletedAt is not None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member not found")
+
+    removes_admin_access = payload.is_active is False or (
+        payload.role_name is not None and payload.role_name.value != "admin"
+    )
+    if member_id == actor_id and removes_admin_access:
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "You cannot deactivate or remove your own admin access",
+        )
+    if (
+        existing.role.name == "admin"
+        and removes_admin_access
+        and await repository.count_active_admins() <= 1
+    ):
+        raise HTTPException(
+            status.HTTP_409_CONFLICT,
+            "The last active admin cannot be deactivated or reassigned",
+        )
 
     fields_set = payload.model_fields_set
     data: dict = {}
@@ -74,7 +92,7 @@ async def update_member(member_id: str, payload: MemberUpdate) -> MemberOut:
     if payload.is_active is not None:
         data["isActive"] = payload.is_active
     if payload.role_name is not None:
-        role = await repository.upsert_role(payload.role_name)
+        role = await repository.upsert_role(payload.role_name.value)
         data["roleId"] = role.id
 
     if not data:

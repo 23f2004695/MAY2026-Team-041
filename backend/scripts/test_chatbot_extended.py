@@ -22,11 +22,9 @@ BASE_URL = "http://localhost:8000"
 API = "/api/v1"
 
 TESTS: list[dict] = [
-
     # ══════════════════════════════════════════════════════════════════════════
     # MEMBER — additional single-turn prompts
     # ══════════════════════════════════════════════════════════════════════════
-
     # How-to / chip prompts (missing from original suite)
     {
         "id": "member_how_to_reserve",
@@ -40,7 +38,6 @@ TESTS: list[dict] = [
         "role": "member",
         "prompt": "How do I book a seat?",
     },
-
     # Natural language variants
     {
         "id": "member_books_fiction",
@@ -108,7 +105,6 @@ TESTS: list[dict] = [
         "role": "member",
         "prompt": "What is the weather like in Mumbai today?",
     },
-
     # ── MEMBER multi-turn ─────────────────────────────────────────────────────
     {
         "id": "member_multi_how_to_reserve_then_do_it",
@@ -158,14 +154,12 @@ TESTS: list[dict] = [
             "Show me the leaderboard — am I on it?",
         ],
     },
-
     # ══════════════════════════════════════════════════════════════════════════
     # IT HEAD — single-turn prompts
     # it_head has LOAN_MANAGER_ROLES access: active loans, fines, return loan,
     # send reminder. Does NOT have get_all_support_tickets (admin/manager/it_head only —
     # actually it_head IS in that set). Also has get_members.
     # ══════════════════════════════════════════════════════════════════════════
-
     {
         "id": "ithead_get_members",
         "tool": "get_members",
@@ -232,7 +226,6 @@ TESTS: list[dict] = [
         "role": "it_head",
         "prompt": "Show me all members in the system",
     },
-
     # ── IT HEAD multi-turn ────────────────────────────────────────────────────
     {
         "id": "ithead_multi_loans_then_return",
@@ -271,12 +264,10 @@ TESTS: list[dict] = [
             "Send a reminder to the member with the oldest overdue loan",
         ],
     },
-
     # ══════════════════════════════════════════════════════════════════════════
     # MANAGER — single-turn prompts
     # manager has LOAN_MANAGER_ROLES + get_all_support_tickets + get_members
     # ══════════════════════════════════════════════════════════════════════════
-
     {
         "id": "manager_get_members",
         "tool": "get_members",
@@ -349,7 +340,6 @@ TESTS: list[dict] = [
         "role": "manager",
         "prompt": "What is the latest IPL score?",
     },
-
     # ── MANAGER multi-turn ────────────────────────────────────────────────────
     {
         "id": "manager_multi_loans_then_reminder",
@@ -404,6 +394,7 @@ TESTS: list[dict] = [
 
 # ── Auth helpers ──────────────────────────────────────────────────────────────
 
+
 async def login(client: httpx.AsyncClient, email: str, password: str) -> str:
     resp = await client.post(
         f"{BASE_URL}{API}/auth/login",
@@ -419,6 +410,7 @@ async def get_token(client: httpx.AsyncClient, role: str, credentials: dict[str,
 
 
 # ── Chat helpers ──────────────────────────────────────────────────────────────
+
 
 async def send_message(client: httpx.AsyncClient, token: str, message: str) -> dict:
     resp = await client.post(
@@ -441,6 +433,7 @@ async def clear_history(client: httpx.AsyncClient, token: str) -> None:
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
+
 async def run_tests(credentials: dict[str, dict]) -> list[dict]:
     results = []
 
@@ -461,16 +454,19 @@ async def run_tests(credentials: dict[str, dict]) -> list[dict]:
             token = tokens.get(role, "")
             is_multi = "turns" in test
 
-            print(f"\n[{i}/{total}] {test_id} ({'multi' if is_multi else 'single'}-turn, role={role})")
+            turn_kind = "multi" if is_multi else "single"
+            print(f"\n[{i}/{total}] {test_id} ({turn_kind}-turn, role={role})")
 
             if not token:
-                results.append({
-                    "id": test_id,
-                    "tool": test.get("tool"),
-                    "role": role,
-                    "type": "multi" if is_multi else "single",
-                    "error": f"No token for role '{role}'",
-                })
+                results.append(
+                    {
+                        "id": test_id,
+                        "tool": test.get("tool"),
+                        "role": role,
+                        "type": "multi" if is_multi else "single",
+                        "error": f"No token for role '{role}'",
+                    }
+                )
                 continue
 
             await clear_history(client, token)
@@ -481,39 +477,46 @@ async def run_tests(credentials: dict[str, dict]) -> list[dict]:
                     print(f"    → {turn_msg}")
                     resp = await send_message(client, token, turn_msg)
                     print(f"    ← {resp.get('reply', '')[:120]}...")
-                    turns_log.append({
-                        "prompt": turn_msg,
-                        "reply": resp.get("reply", ""),
-                        "source": resp.get("source", ""),
-                    })
-                results.append({
-                    "id": test_id,
-                    "tool": test.get("tool"),
-                    "role": role,
-                    "type": "multi",
-                    "turns": turns_log,
-                    "timestamp": datetime.now(UTC).isoformat(),
-                })
+                    turns_log.append(
+                        {
+                            "prompt": turn_msg,
+                            "reply": resp.get("reply", ""),
+                            "source": resp.get("source", ""),
+                        }
+                    )
+                results.append(
+                    {
+                        "id": test_id,
+                        "tool": test.get("tool"),
+                        "role": role,
+                        "type": "multi",
+                        "turns": turns_log,
+                        "timestamp": datetime.now(UTC).isoformat(),
+                    }
+                )
             else:
                 prompt = test["prompt"]
                 print(f"    → {prompt}")
                 resp = await send_message(client, token, prompt)
                 print(f"    ← {resp.get('reply', '')[:120]}...")
-                results.append({
-                    "id": test_id,
-                    "tool": test.get("tool"),
-                    "role": role,
-                    "type": "single",
-                    "prompt": prompt,
-                    "reply": resp.get("reply", ""),
-                    "source": resp.get("source", ""),
-                    "timestamp": datetime.now(UTC).isoformat(),
-                })
+                results.append(
+                    {
+                        "id": test_id,
+                        "tool": test.get("tool"),
+                        "role": role,
+                        "type": "single",
+                        "prompt": prompt,
+                        "reply": resp.get("reply", ""),
+                        "source": resp.get("source", ""),
+                        "timestamp": datetime.now(UTC).isoformat(),
+                    }
+                )
 
     return results
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run extended chatbot tests")
@@ -531,19 +534,19 @@ def main() -> None:
     BASE_URL = args.url
 
     credentials = {
-        "member":   {"email": args.member_email,   "password": args.member_password},
-        "it_head":  {"email": args.it_head_email,   "password": args.it_head_password},
-        "manager":  {"email": args.manager_email,   "password": args.manager_password},
+        "member": {"email": args.member_email, "password": args.member_password},
+        "it_head": {"email": args.it_head_email, "password": args.it_head_password},
+        "manager": {"email": args.manager_email, "password": args.manager_password},
     }
 
     single = sum(1 for t in TESTS if "turns" not in t)
-    multi  = sum(1 for t in TESTS if "turns" in t)
-    print(f"\n{'='*60}")
+    multi = sum(1 for t in TESTS if "turns" in t)
+    print(f"\n{'=' * 60}")
     print(f"  Extended Chatbot Test Suite — {len(TESTS)} tests")
     print(f"  Single-turn: {single}  |  Multi-turn: {multi}")
-    print(f"  Roles: member, it_head, manager")
+    print("  Roles: member, it_head, manager")
     print(f"  Backend: {BASE_URL}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print("\nLogging in...")
 
     results = asyncio.run(run_tests(credentials))
@@ -557,7 +560,7 @@ def main() -> None:
                 "single_turn": sum(1 for r in results if r.get("type") == "single"),
                 "multi_turn": sum(1 for r in results if r.get("type") == "multi"),
                 "by_role": {
-                    "member":  sum(1 for r in results if r.get("role") == "member"),
+                    "member": sum(1 for r in results if r.get("role") == "member"),
                     "it_head": sum(1 for r in results if r.get("role") == "it_head"),
                     "manager": sum(1 for r in results if r.get("role") == "manager"),
                 },
@@ -569,10 +572,10 @@ def main() -> None:
         )
 
     errors = [r for r in results if "error" in r or r.get("source") == "error"]
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"  Done. {len(results)} tests run, {len(errors)} errors.")
     print(f"  Results saved to: {output_path}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     if errors:
         print("Errors:")

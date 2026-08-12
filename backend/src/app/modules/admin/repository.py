@@ -74,15 +74,11 @@ async def sum_expenses_by_category(*, start: datetime) -> dict[str, int]:
 
 
 async def list_plan_payments() -> list[Payment]:
-    return await prisma.payment.find_many(
-        where={"status": "success", "planMonths": {"not": None}}
-    )
+    return await prisma.payment.find_many(where={"status": "success", "planMonths": {"not": None}})
 
 
 async def list_payments_since(start: datetime) -> list[Payment]:
-    return await prisma.payment.find_many(
-        where={"status": "success", "createdAt": {"gte": start}}
-    )
+    return await prisma.payment.find_many(where={"status": "success", "createdAt": {"gte": start}})
 
 
 async def list_expenses(*, start: datetime | None = None) -> list[Expense]:
@@ -93,9 +89,7 @@ async def list_expenses(*, start: datetime | None = None) -> list[Expense]:
 
 
 async def list_member_created_dates() -> list[datetime]:
-    members = await prisma.user.find_many(
-        where={"role": {"name": Role.MEMBER}, "deletedAt": None}
-    )
+    members = await prisma.user.find_many(where={"role": {"name": Role.MEMBER}, "deletedAt": None})
     return [member.createdAt for member in members]
 
 
@@ -237,9 +231,7 @@ async def find_reported_member_ids(member_ids: list[str]) -> set[str]:
 async def count_event_registrations(member_ids: list[str]) -> dict[str, int]:
     if not member_ids:
         return {}
-    registrations = await prisma.eventregistration.find_many(
-        where={"memberId": {"in": member_ids}}
-    )
+    registrations = await prisma.eventregistration.find_many(where={"memberId": {"in": member_ids}})
     counts: dict[str, int] = {}
     for registration in registrations:
         counts[registration.memberId] = counts.get(registration.memberId, 0) + 1

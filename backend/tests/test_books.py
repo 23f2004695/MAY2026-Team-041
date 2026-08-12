@@ -99,9 +99,10 @@ async def test_list_books_is_public():
 
     print("\nList Books Response:", response.status_code, response.text)
 
-    assert response.status_code == 200 
+    assert response.status_code == 200
     body = response.json()
-    assert "items" in body and "total" in body  
+    assert "items" in body and "total" in body
+
 
 async def test_get_book_not_found():
     """Test Case 2: Get Book Not Found"""
@@ -111,7 +112,7 @@ async def test_get_book_not_found():
 
     print("\nGet Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 404  
+    assert response.status_code == 404
 
 
 async def test_get_book_rejects_malformed_id():
@@ -122,7 +123,7 @@ async def test_get_book_rejects_malformed_id():
 
     print("\nGet Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 422 
+    assert response.status_code == 422
 
 
 async def test_create_book_requires_authentication():
@@ -133,7 +134,7 @@ async def test_create_book_requires_authentication():
 
     print("\nCreate Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 401 
+    assert response.status_code == 401
 
 
 async def test_create_book_forbidden_for_member_role(member_user):
@@ -144,7 +145,7 @@ async def test_create_book_forbidden_for_member_role(member_user):
 
     print("\nCreate Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 403 
+    assert response.status_code == 403
 
 
 async def test_create_book_success_as_librarian(librarian_user):
@@ -163,8 +164,8 @@ async def test_create_book_success_as_librarian(librarian_user):
             ),
         )
     print("\nCreate Book Response:", response.status_code, response.text)
-    assert response.status_code == 201 
-    body = response.json() 
+    assert response.status_code == 201
+    body = response.json()
     assert body["title"] == title
     assert body["isbn"] == isbn
     assert body["published_year"] == 2020
@@ -184,7 +185,7 @@ async def test_create_book_duplicate_isbn_conflicts(librarian_user):
     print("\nCreate Book Response:", second.status_code, second.text)
 
     assert first.status_code == 201
-    assert second.status_code == 409 
+    assert second.status_code == 409
 
 
 async def test_create_book_rejects_invalid_isbn(librarian_user):
@@ -195,8 +196,8 @@ async def test_create_book_rejects_invalid_isbn(librarian_user):
 
     print("\nCreate Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 422 
-    
+    assert response.status_code == 422
+
 
 async def test_create_book_rejects_future_published_year(librarian_user):
     """Test Case 9: Create Book Future Published Year"""
@@ -206,7 +207,7 @@ async def test_create_book_rejects_future_published_year(librarian_user):
 
     print("\nCreate Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 422  
+    assert response.status_code == 422
 
 
 async def test_create_book_requires_author_and_category(librarian_user):
@@ -217,7 +218,8 @@ async def test_create_book_requires_author_and_category(librarian_user):
 
     print("\nCreate Book Response:", response.status_code, response.text)
 
-    assert response.status_code == 422 
+    assert response.status_code == 422
+
 
 async def test_create_book_available_when_copies_positive(librarian_user):
     async with _client_as(librarian_user) as client:
@@ -227,6 +229,28 @@ async def test_create_book_available_when_copies_positive(librarian_user):
     body = response.json()
     assert body["total_copies"] == 3
     assert body["available"] is True
+
+
+async def test_update_cannot_shrink_copies_below_active_loans(librarian_user, member_user):
+    book = await prisma.book.create(data=_book_payload(totalCopies=2))
+    other_member = await _make_user(Role.MEMBER)
+    for borrower in (member_user, other_member):
+        await prisma.loan.create(
+            data={
+                "bookId": book.id,
+                "memberId": borrower.id,
+                "createdById": librarian_user.id,
+                "dueDate": datetime.now(UTC) + timedelta(days=14),
+            }
+        )
+
+    async with _client_as(librarian_user) as client:
+        response = await client.put(f"/api/v1/books/{book.id}", json={"total_copies": 1})
+
+    assert response.status_code == 409
+    saved = await prisma.book.find_unique(where={"id": book.id})
+    assert saved is not None
+    assert saved.totalCopies == 2
 
 
 async def test_list_books_search_and_pagination(librarian_user):
@@ -324,8 +348,8 @@ async def test_delete_book_success_as_admin(admin_user, librarian_user):
     async with _anon_client() as client:
         get_response = await client.get(f"/api/v1/books/{book_id}")
 
-    assert delete_response.status_code == 204  
-    assert get_response.status_code == 404  
+    assert delete_response.status_code == 204
+    assert get_response.status_code == 404
 
 
 async def test_related_books_not_found():

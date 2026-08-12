@@ -662,10 +662,9 @@ export function ProfilePage() {
   const { role } = useAuth();
 
   if (role === 'admin') return <AdminProfile />;
-  if (role === 'manager') return <ManagerProfile />;
+  if (role === 'manager' || role === 'librarian') return <ManagerProfile />;
   if (role === 'it-head') return <ITHeadProfile />;
   if (role === 'guardian') return <GuardianProfile />;
 
   return <MemberProfile />;
 }
-
