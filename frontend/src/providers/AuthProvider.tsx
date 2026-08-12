@@ -1593,10 +1593,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   function logout() {
-    if (stateRef.current.token) {
-      apiPost('/auth/logout', undefined, stateRef.current.token).catch(() => {});
-    }
+    const token = stateRef.current.token;
+    // Make the signed-out state visible to the refresh handler immediately. React's
+    // state update is asynchronous; without this assignment, a 401 from the logout
+    // request can race through refreshAccessToken and resurrect the old session.
+    stateRef.current = SIGNED_OUT;
     setState(SIGNED_OUT);
+    if (token) {
+      apiPost('/auth/logout', undefined, token).catch(() => {});
+    }
   }
 
   // Every function above reads stateRef.current rather than closing over `state`, so none of

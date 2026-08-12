@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException, status
 
@@ -90,44 +90,18 @@ async def list_my_reservations(member_id: str) -> list[ReservationOut]:
     return out
 
 
-async def _blocking_reservation(member_id: str, book_id: str):
-    """An existing reservation that should stop this member reserving the book again.
-
-    A pending request already holds their place in the queue, and an approved one they
-    haven't returned yet means they're still holding the copy — reserving on top of
-    either would let one member take two queue slots for the same book. Once the loan
-    is within the due-soon window (the same point the reminder job starts nudging) they
-    can queue the next borrow, and a returned loan never blocks: the reservation row
-    stays "approved" forever after a return, so status alone can't be the test.
-    """
-    existing = await repository.list_active_for_member_and_book(member_id, book_id)
-    for reservation in existing:
-        if reservation.status == "pending":
-            return reservation
-        loan = reservation.loan
-        if loan is None or loan.returnedAt is not None:
-            continue
-        days_to_due = (loan.dueDate.date() - datetime.now(UTC).date()).days
-        if days_to_due > REMINDER_WINDOW_DAYS:
-            return reservation
-    return None
-
-
 async def create_reservation(member_id: str, payload: ReservationCreate) -> ReservationOut:
-    if await _blocking_reservation(member_id, payload.book_id) is not None:
+    blocking_due_after = datetime.now(UTC) + timedelta(days=REMINDER_WINDOW_DAYS)
+    reservation = await repository.create_reservation_if_allowed(
+        member_id=member_id,
+        book_id=payload.book_id,
+        blocking_due_after=blocking_due_after,
+    )
+    if reservation is None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="You already have this book reserved or on loan",
         )
-
-    try:
-        reservation = await repository.create_reservation(
-            member_id=member_id, book_id=payload.book_id
-        )
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="Book is not available"
-        ) from exc
 
     await notifications_service.create_notification(
         member_id,
@@ -143,11 +117,7 @@ async def create_reservation(member_id: str, payload: ReservationCreate) -> Rese
 
 async def cancel_reservation(member_id: str, reservation_id: str) -> None:
     reservation = await repository.find_by_id(reservation_id)
-    if (
-        reservation is None
-        or reservation.memberId != member_id
-        or reservation.status != "pending"
-    ):
+    if reservation is None or reservation.memberId != member_id or reservation.status != "pending":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Reservation not found")
 
     await repository.cancel_reservation(reservation_id)

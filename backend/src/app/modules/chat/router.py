@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from prisma.models import User
 
 from app.api.deps import get_current_user
+from app.core.rate_limit import limiter
 from app.modules.chat import history as chat_history
 from app.modules.chat.orchestrator import run_chat
 from app.modules.chat.schemas import ChatRequest, ChatResponse
@@ -12,7 +13,9 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 @router.post("", response_model=ChatResponse)
+@limiter.limit("20/minute")
 async def chat(
+    request: Request,
     payload: ChatRequest,
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> ChatResponse:

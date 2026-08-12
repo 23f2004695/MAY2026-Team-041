@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -123,34 +124,46 @@ async def test_create_event_with_no_managers_has_empty_assignments(manager_user)
     assert body["assigned_managers"] == []
 
 
-async def test_create_event_assigns_valid_managers_including_self(
-    manager_user, other_manager_user
-):
-    body = await _create_event(
-        manager_user, manager_ids=[manager_user.id, other_manager_user.id]
-    )
+async def test_create_event_assigns_valid_managers_including_self(manager_user, other_manager_user):
+    body = await _create_event(manager_user, manager_ids=[manager_user.id, other_manager_user.id])
 
     assigned_ids = {m["id"] for m in body["assigned_managers"]}
     assert assigned_ids == {manager_user.id, other_manager_user.id}
 
 
-async def test_create_event_can_assign_a_member_too(manager_user, member_user):
-    body = await _create_event(manager_user, manager_ids=[manager_user.id, member_user.id])
+async def test_create_event_rejects_member_assignment(manager_user, member_user):
+    async with _client_as(manager_user) as client:
+        response = await client.post(
+            "/api/v1/events",
+            json={
+                "title": "Invalid assignment",
+                "location": "Main Hall",
+                "date": _future_date(),
+                "capacity": 10,
+                "manager_ids": [manager_user.id, member_user.id],
+            },
+        )
 
-    assigned_ids = {m["id"] for m in body["assigned_managers"]}
-    assert assigned_ids == {manager_user.id, member_user.id}
+    assert response.status_code == 422
 
 
-async def test_create_event_drops_a_nonexistent_id(manager_user):
-    body = await _create_event(manager_user, manager_ids=[manager_user.id, str(uuid.uuid4())])
+async def test_create_event_rejects_a_nonexistent_manager_id(manager_user):
+    async with _client_as(manager_user) as client:
+        response = await client.post(
+            "/api/v1/events",
+            json={
+                "title": "Unknown assignment",
+                "location": "Main Hall",
+                "date": _future_date(),
+                "capacity": 10,
+                "manager_ids": [manager_user.id, str(uuid.uuid4())],
+            },
+        )
 
-    assigned_ids = {m["id"] for m in body["assigned_managers"]}
-    assert assigned_ids == {manager_user.id}
+    assert response.status_code == 422
 
 
-async def test_update_event_replaces_manager_assignments(
-    manager_user, other_manager_user
-):
+async def test_update_event_replaces_manager_assignments(manager_user, other_manager_user):
     created = await _create_event(manager_user, manager_ids=[manager_user.id])
 
     async with _client_as(manager_user) as client:
@@ -401,6 +414,37 @@ async def test_registering_at_capacity_is_a_conflict(manager_user, member_user):
         response = await client.post(f"/api/v1/events/{created['id']}/register")
 
     assert response.status_code == 409
+
+
+async def test_capacity_cannot_shrink_below_registered_count(manager_user, member_user):
+    other_member = await _make_user(Role.MEMBER)
+    created = await _create_event(manager_user, capacity=3)
+    async with _client_as(member_user) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+    async with _client_as(other_member) as client:
+        await client.post(f"/api/v1/events/{created['id']}/register")
+    async with _client_as(manager_user) as client:
+        response = await client.put(f"/api/v1/events/{created['id']}", json={"capacity": 1})
+
+    assert response.status_code == 409
+    saved = await prisma.event.find_unique(where={"id": created["id"]})
+    assert saved is not None
+    assert saved.capacity == 3
+
+
+async def test_concurrent_registrations_cannot_overbook(manager_user, member_user):
+    other_member = await _make_user(Role.MEMBER)
+    created = await _create_event(manager_user, capacity=1)
+
+    async def register(user):
+        async with _client_as(user) as client:
+            return await client.post(f"/api/v1/events/{created['id']}/register")
+
+    responses = await asyncio.gather(register(member_user), register(other_member))
+    assert sorted(response.status_code for response in responses) == [200, 409]
+
+    saved = await prisma.eventregistration.count(where={"eventId": created["id"]})
+    assert saved == 1
 
 
 async def test_registering_for_a_nonexistent_event_is_404(member_user):

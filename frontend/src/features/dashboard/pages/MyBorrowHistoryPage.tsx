@@ -1,9 +1,9 @@
 import { History } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { PageHeader, Pagination, TableToolbar } from '@/components/common';
-import { NoResults } from '@/components/feedback';
+import { ErrorState, LoadingState, NoResults } from '@/components/feedback';
 import {
   Badge,
   Table,
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui';
 import { usePagination, useSortedItems } from '@/hooks';
 import { formatDate } from '@/lib/format';
+import { getErrorMessage } from '@/lib/api';
 import { useAuth, type LoanRecord } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 10;
@@ -35,24 +36,36 @@ export function MyBorrowHistoryPage() {
   const [loans, setLoans] = useState<LoanRecord[]>([]);
   const [statusFilter, setStatusFilter] = useState<LoanStatusFilter>('all');
   const [sort, setSort] = useState<LoanSort>('newest');
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<unknown>(null);
+  const requestIdRef = useRef(0);
 
-  useEffect(() => {
-    let cancelled = false;
+  const loadLoans = useCallback(() => {
+    const requestId = ++requestIdRef.current;
+    setIsLoading(true);
+    setLoadError(null);
     getMyLoans()
       .then((data) => {
-        if (!cancelled) setLoans(data);
+        if (requestId === requestIdRef.current) setLoans(data);
       })
-      .catch(() => {
-        if (!cancelled) setLoans([]);
+      .catch((error) => {
+        if (requestId === requestIdRef.current) setLoadError(error);
+      })
+      .finally(() => {
+        if (requestId === requestIdRef.current) setIsLoading(false);
       });
-    return () => {
-      cancelled = true;
-    };
   }, [getMyLoans]);
 
+  useEffect(() => {
+    const timer = setTimeout(loadLoans, 0);
+    return () => {
+      clearTimeout(timer);
+      requestIdRef.current += 1;
+    };
+  }, [loadLoans]);
+
   const filteredLoans = useMemo(
-    () =>
-      statusFilter === 'all' ? loans : loans.filter((loan) => loan.status === statusFilter),
+    () => (statusFilter === 'all' ? loans : loans.filter((loan) => loan.status === statusFilter)),
     [loans, statusFilter],
   );
 
@@ -87,7 +100,15 @@ export function MyBorrowHistoryPage() {
     <div className="flex flex-col gap-6">
       <PageHeader title={t('myLoans.pageTitle')} description={t('myLoans.pageDescription')} />
 
-      {loans.length === 0 ? (
+      {isLoading ? (
+        <LoadingState label="Loading borrowing history" />
+      ) : loadError ? (
+        <ErrorState
+          className="min-h-48"
+          description={getErrorMessage(loadError, t('common.errors.generic'))}
+          onRetry={loadLoans}
+        />
+      ) : loans.length === 0 ? (
         <NoResults
           icon={History}
           title={t('myLoans.empty.title')}
@@ -136,7 +157,11 @@ export function MyBorrowHistoryPage() {
               title={t('myLoans.empty.title')}
               description={t('myLoans.empty.description')}
               action={
-                <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary">
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-sm font-medium text-primary"
+                >
                   Reset
                 </button>
               }
@@ -161,7 +186,9 @@ export function MyBorrowHistoryPage() {
                       </TableCell>
                       <TableCell>{formatDate(loan.borrowed_at)}</TableCell>
                       <TableCell>{formatDate(loan.due_date)}</TableCell>
-                      <TableCell>{formatDate(loan.returned_at) ?? t('myLoans.notReturned')}</TableCell>
+                      <TableCell>
+                        {formatDate(loan.returned_at) ?? t('myLoans.notReturned')}
+                      </TableCell>
                       <TableCell>
                         <StatusBadge status={loan.status} />
                       </TableCell>

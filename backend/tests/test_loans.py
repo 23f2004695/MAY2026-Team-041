@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -65,6 +66,7 @@ async def book():
             "title": f"{TEST_BOOK_TITLE_PREFIX} {uuid.uuid4().hex[:8]}",
             "author": "Author",
             "category": "Fiction",
+            "totalCopies": 1,
         }
     )
 
@@ -90,7 +92,7 @@ async def test_create_loan_requires_authentication():
 
     print("\nCreate Loan Response:", response.status_code, response.text)
 
-    assert response.status_code == 401 
+    assert response.status_code == 401
 
 
 async def test_member_cannot_create_a_loan(member_user, book):
@@ -103,7 +105,7 @@ async def test_member_cannot_create_a_loan(member_user, book):
 
     print("\nCreate Loan Response:", response.status_code, response.text)
 
-    assert response.status_code == 403  
+    assert response.status_code == 403
 
 
 async def test_it_head_can_create_a_loan(it_head_user, member_user, book):
@@ -116,8 +118,8 @@ async def test_it_head_can_create_a_loan(it_head_user, member_user, book):
 
     print("\nCreate Loan Response:", response.status_code, response.text)
 
-    assert response.status_code == 201 
-    body = response.json() 
+    assert response.status_code == 201
+    body = response.json()
     assert body["book_title"] == book.title
     assert body["member_name"] == member_user.fullName
     assert body["status"] == "active"
@@ -135,14 +137,26 @@ async def test_create_loan_for_missing_book_returns_404(it_head_user, member_use
 
     print("\nCreate Loan Response:", response.status_code, response.text)
 
-    assert response.status_code == 404 
+    assert response.status_code == 404
+
+
+async def test_create_loan_rejects_when_all_copies_are_active(it_head_user, member_user, book):
+    another_member = await _make_user(Role.MEMBER)
+    async with _client_as(it_head_user) as client:
+        first = await client.post(
+            "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
+        )
+        second = await client.post(
+            "/api/v1/loans", json={"book_id": book.id, "member_id": another_member.id}
+        )
+
+    assert first.status_code == 201
+    assert second.status_code == 409
 
 
 async def test_loan_history_paginates(it_head_user, member_user, book):
     async with _client_as(it_head_user) as client:
-        await client.post(
-            "/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id}
-        )
+        await client.post("/api/v1/loans", json={"book_id": book.id, "member_id": member_user.id})
         response = await client.get("/api/v1/loans/history?page=1&page_size=1")
 
     assert response.status_code == 200
@@ -168,10 +182,10 @@ async def test_overdue_loan_appears_in_fines_with_computed_fine(it_head_user, me
         response = await client.get("/api/v1/loans/fines")
     entry = next(row for row in response.json() if row["id"] == overdue_loan.id)
     print("\nLoans Fines Response:", response.status_code, entry)
-    assert response.status_code == 200  
-    assert entry["status"] == "overdue" 
+    assert response.status_code == 200
+    assert entry["status"] == "overdue"
     assert entry["days_late"] == 5
-    assert entry["fine_amount"] == 250  
+    assert entry["fine_amount"] == 250
     assert entry["fine_paid"] is False
 
 
@@ -360,6 +374,36 @@ async def test_due_soon_reminders_do_not_renudge_a_recently_reminded_loan(
 
     refreshed = await prisma.loan.find_unique(where={"id": loan.id})
     assert refreshed.lastRemindedAt is not None
+
+
+async def test_concurrent_reminder_sweeps_send_only_once(
+    it_head_user, member_user, book, monkeypatch
+):
+    from app.modules.loans import service as loans_service
+
+    loan = await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=1),
+            "createdById": it_head_user.id,
+        }
+    )
+    sent: list[str] = []
+
+    async def _capture(loan_id: str) -> None:
+        await asyncio.sleep(0.02)
+        if loan_id == loan.id:
+            sent.append(loan_id)
+
+    monkeypatch.setattr(loans_service, "send_reminder", _capture)
+
+    await asyncio.gather(
+        loans_service.send_due_soon_reminders(),
+        loans_service.send_due_soon_reminders(),
+    )
+
+    assert sent == [loan.id]
 
 
 async def test_a_stale_reminder_lets_the_loan_be_nudged_again(

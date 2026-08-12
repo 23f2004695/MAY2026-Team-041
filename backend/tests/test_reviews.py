@@ -161,9 +161,7 @@ async def test_book_reviews_average_and_breakdown(member_user, other_member_user
             f"/api/v1/books/{book_id}/reviews", json={"rating": 5, "comment": "Excellent"}
         )
     async with _client_as(other_member_user) as client:
-        await client.post(
-            f"/api/v1/books/{book_id}/reviews", json={"rating": 3, "comment": "Okay"}
-        )
+        await client.post(f"/api/v1/books/{book_id}/reviews", json={"rating": 3, "comment": "Okay"})
 
     async with _client_as(member_user) as client:
         response = await client.get(f"/api/v1/books/{book_id}/reviews")
@@ -290,8 +288,6 @@ async def test_list_my_reviews(member_user, librarian_user):
     assert response.status_code == 200
     items = response.json()
     assert any(
-        item["book_id"] == book_id
-        and item["rating"] == 4
-        and item["comment"] == "My review text"
+        item["book_id"] == book_id and item["rating"] == 4 and item["comment"] == "My review text"
         for item in items
     )

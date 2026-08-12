@@ -3,7 +3,10 @@ from slowapi.util import get_remote_address
 
 from app.core.config import get_settings
 
-# Disabled in tests — the test client reuses a single IP across many requests per
-# module, so a request-count limit keyed by IP would produce spurious 429s instead of
-# testing anything real.
-limiter = Limiter(key_func=get_remote_address, enabled=get_settings().app_env != "test")
+# Disabled only in isolated test/E2E environments. E2E still uses the real database
+# lifecycle, but its browser workers share one loopback address and would otherwise
+# trip the production brute-force limit while exercising unrelated pages.
+limiter = Limiter(
+    key_func=get_remote_address,
+    enabled=get_settings().app_env not in {"test", "e2e"},
+)

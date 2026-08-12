@@ -19,7 +19,10 @@ def send_email(to: str, subject: str, body: str) -> None:
         # ponytail: no SMTP configured — log instead of failing so the reminder
         # flow still works end-to-end in dev. Set SMTP_HOST/PORT/USER/PASSWORD/FROM
         # in .env to send for real.
-        logger.info("email not configured, skipping send: to=%s subject=%r\n%s", to, subject, body)
+        # Email bodies can contain password-reset bearer tokens. Never put the body
+        # in application logs; a local mail sink is the appropriate way to inspect
+        # development messages.
+        logger.info("email not configured, skipping send: to=%s subject=%r", to, subject)
         return
 
     message = EmailMessage()

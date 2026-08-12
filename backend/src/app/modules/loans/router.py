@@ -28,9 +28,7 @@ async def list_loan_history(
 
 
 @router.post("", response_model=LoanOut, status_code=status.HTTP_201_CREATED)
-async def create_loan(
-    payload: LoanCreate, user: Annotated[User, Depends(manage_loans)]
-) -> LoanOut:
+async def create_loan(payload: LoanCreate, user: Annotated[User, Depends(manage_loans)]) -> LoanOut:
     return await service.create_loan(user.id, payload)
 
 

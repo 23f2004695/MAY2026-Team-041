@@ -73,7 +73,8 @@ export function CommunityPage() {
     banCommunityAuthor,
     unbanCommunityAuthor,
   } = useAuth();
-  const isStaff = role === 'admin' || role === 'manager' || role === 'it-head';
+  const isStaff =
+    role === 'admin' || role === 'manager' || role === 'librarian' || role === 'it-head';
   const canModerate = role === 'admin' || role === 'it-head';
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -1,14 +1,15 @@
 import { useState } from 'react';
 
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
   Select,
   Textarea,
 } from '@/components/ui';
+import { getErrorMessage } from '@/lib/api';
 import { useTranslateText } from '@/features/translate/hooks/useTranslateText';
 
 const DEMO_LANGUAGES = [
@@ -31,13 +32,13 @@ const DEFAULT_TEXT = 'Welcome to the library. This book is currently available t
 export function TranslateDemoPage() {
   const [text, setText] = useState(DEFAULT_TEXT);
   const [targetLang, setTargetLang] = useState('hi');
-  const { translated, loading } = useTranslateText(text, targetLang);
+  const { translated, loading, error, retry } = useTranslateText(text, targetLang);
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-16">
       <Card className="rounded-3xl border-border bg-surface shadow-panel">
         <CardHeader>
-          <CardTitle>Translation demo</CardTitle>
+          <h1 className="text-lg font-semibold text-foreground">Translation demo</h1>
           <CardDescription>
             Type any text and pick a language — this calls the backend&apos;s free{' '}
             <code>deep-translator</code> proxy at <code>/api/translate</code>.
@@ -66,6 +67,14 @@ export function TranslateDemoPage() {
             <p className="min-h-[3.5rem] rounded-md border border-border-muted bg-secondary/10 px-3 py-2 text-sm text-foreground">
               {translated}
             </p>
+            {Boolean(error) && (
+              <div role="alert" className="flex flex-wrap items-center justify-between gap-2 text-sm text-danger">
+                <span>{getErrorMessage(error, 'Translation failed. Your original text is shown.')}</span>
+                <Button type="button" size="sm" variant="outline" onClick={retry}>
+                  Try again
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

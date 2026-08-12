@@ -81,7 +81,7 @@ export function TopBar({ items }: TopBarProps) {
         title={t('topBar.menu')}
         side="left"
       >
-        <Sidebar items={items} />
+        <Sidebar items={items} onNavigate={() => setMobileNavOpen(false)} />
       </Drawer>
     </header>
   );

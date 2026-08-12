@@ -4,9 +4,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { BookCard } from '@/components/common';
+import { ErrorState, LoadingState } from '@/components/feedback';
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
-import { getErrorMessage } from '@/lib/api';
+import { ApiError, getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/providers/AuthProvider';
 
@@ -18,7 +19,7 @@ export function BookDetailsPage() {
   const { bookId } = useParams<{ bookId: string }>();
   const navigate = useNavigate();
   const { reserveBook } = useAuth();
-  const { data: book, isLoading, isError } = useBookQuery(bookId);
+  const { data: book, isLoading, error, refetch } = useBookQuery(bookId);
   const { data: relatedBooks = [] } = useRelatedBooksQuery(bookId);
   const { isWishlisted, toggleWishlist } = useWishlist();
 
@@ -34,9 +35,18 @@ export function BookDetailsPage() {
     }
   }
 
-  if (isLoading) return null;
+  if (isLoading) return <LoadingState variant="page" label="Loading book details" />;
 
-  if (!book || isError) {
+  if (error && (!(error instanceof ApiError) || error.status !== 404)) {
+    return (
+      <ErrorState
+        description={getErrorMessage(error, t('common.errors.generic'))}
+        onRetry={() => void refetch()}
+      />
+    );
+  }
+
+  if (!book) {
     return (
       <EmptyState
         title={t('books.details.notFound.title')}

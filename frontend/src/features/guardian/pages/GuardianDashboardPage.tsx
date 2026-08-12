@@ -91,7 +91,7 @@ export function GuardianDashboardPage() {
     }
     try {
       await Promise.all(childrenWithFines.map((child) => payChildFines(child.id)));
-      toast.success(t('guardian.quickActions.toasts.payingAllFines'));
+      toast.success('Cash fine-payment requests sent to a manager');
       refreshChildren();
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
@@ -105,7 +105,7 @@ export function GuardianDashboardPage() {
     }
     try {
       await Promise.all(realChildren.map((child) => renewChildSubscription(child.id)));
-      toast.success(t('guardian.quickActions.toasts.renewingSubscription'));
+      toast.success('Renewal payment requests sent to a manager');
       refreshChildren();
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
@@ -196,7 +196,7 @@ export function GuardianDashboardPage() {
         onPayFine={async (childId) => {
           try {
             await payChildFines(childId);
-            toast.success(t('guardian.quickActions.toasts.payingAllFines'));
+            toast.success('Cash fine-payment request sent to a manager');
             refreshChildren();
           } catch (err) {
             toast.error(getErrorMessage(err, t('common.errors.generic')));

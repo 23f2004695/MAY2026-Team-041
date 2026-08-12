@@ -175,10 +175,19 @@ const router = createBrowserRouter([
       { path: relative(ROUTES.DASHBOARD), element: withSuspense(<DashboardPage />) },
       { path: relative(ROUTES.BOOKS), element: withSuspense(<BooksListPage />) },
       { path: relative(ROUTES.BOOK_DETAILS), element: withSuspense(<BookDetailsPage />) },
-      { path: relative(ROUTES.MANAGER_BOOKS), element: withSuspense(<ManagerBooksPage />) },
       {
-        path: relative(ROUTES.MANAGER_BORROW_HISTORY),
-        element: withSuspense(<ManagerBorrowHistoryPage />),
+        element: (
+          <RoleRoute allow={['manager', 'librarian']}>
+            <Outlet />
+          </RoleRoute>
+        ),
+        children: [
+          { path: relative(ROUTES.MANAGER_BOOKS), element: withSuspense(<ManagerBooksPage />) },
+          {
+            path: relative(ROUTES.MANAGER_BORROW_HISTORY),
+            element: withSuspense(<ManagerBorrowHistoryPage />),
+          },
+        ],
       },
       { path: relative(ROUTES.BORROW_HISTORY), element: withSuspense(<MyBorrowHistoryPage />) },
       { path: relative(ROUTES.RESERVATIONS), element: withSuspense(<ReservationsPage />) },

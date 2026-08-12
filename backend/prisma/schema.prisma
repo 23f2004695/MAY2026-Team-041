@@ -372,6 +372,7 @@ model SeatBooking {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@unique([seatLabel, date, hour])
+  @@unique([memberId, date, hour])
   @@map("seat_bookings")
 }
 
@@ -561,6 +562,7 @@ model Loan {
   dueDate     DateTime  @map("due_date")
   returnedAt  DateTime? @map("returned_at")
   finePaid    Boolean   @default(false) @map("fine_paid")
+  lastRemindedAt DateTime? @map("last_reminded_at")
   createdById String    @map("created_by_id") @db.Uuid
   createdBy   User      @relation("LoanCreatedBy", fields: [createdById], references: [id])
   createdAt   DateTime  @default(now()) @map("created_at")

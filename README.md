@@ -4,8 +4,6 @@ A web platform that digitizes community library operations - borrowing, reservat
 seat booking, reading clubs, and AI-powered recommendations - replacing paper registers
 and spreadsheets.
 
-
-
 Stack:
 
 - Backend: FastAPI, uv, Prisma, PostgreSQL
@@ -157,11 +155,11 @@ make test
 
 There are three test suites, each checking a different layer:
 
-| Suite | Tool | What it checks | Location |
-|---|---|---|---|
-| Backend | pytest | API endpoints, business logic, DB state | `backend/tests/` |
-| Frontend units | Vitest | Individual components/functions, no server | `frontend/src/**/*.test.tsx` |
-| End-to-end | Playwright | The full flow through a real browser against the real backend + DB | `frontend/tests/e2e/` |
+| Suite          | Tool       | What it checks                                                     | Location                     |
+| -------------- | ---------- | ------------------------------------------------------------------ | ---------------------------- |
+| Backend        | pytest     | API endpoints, business logic, DB state                            | `backend/tests/`             |
+| Frontend units | Vitest     | Individual components/functions, no server                         | `frontend/src/**/*.test.tsx` |
+| End-to-end     | Playwright | The full flow through a real browser against the real backend + DB | `frontend/tests/e2e/`        |
 
 **Backend (pytest)** — needs PostgreSQL running (`docker compose up -d --wait db`, or
 just run `make backend-dev` once beforehand):
@@ -190,33 +188,26 @@ or from the repo root:
 make test-frontend
 ```
 
-**End-to-end (Playwright)** — this one drives a real browser against a real running
-backend, so it needs more set up first:
+**End-to-end (Playwright)** — this drives a real browser against the backend and
+PostgreSQL. The Playwright configuration starts the Docker database/Redis services,
+applies pending migrations, idempotently seeds the role-preview accounts, and starts
+both the backend (`APP_ENV=e2e`) and frontend when they are not already running.
 
 1. Install Playwright's browser binaries once (skip if already installed):
    ```bash
    npm run test:e2e:install
    ```
-2. Start PostgreSQL and the backend (leave this running in its own terminal):
-   ```bash
-   make backend-dev
-   ```
-3. Seed the dev accounts (one per role — used by the Login page's "Continue as
-   `<role>`" buttons and by the e2e tests) and the pricing plans, once per fresh
-   database:
-   ```bash
-   cd backend
-   uv run python scripts/seed_dev_accounts.py
-   uv run python scripts/seed_pricing_plans.py
-   ```
-4. Run the suite (this auto-starts the frontend dev server itself — no need to run
-   `npm run frontend` separately):
+2. Run the suite from the repository root:
    ```bash
    make test-e2e
    ```
 
-Run everything (backend + frontend units only, not e2e — e2e needs the manual setup
-above):
+On local runs, an already-running backend or frontend is reused. CI starts fresh
+servers and waits for their readiness endpoints. The account seed is safe to rerun:
+it upserts the fixed `@devpreview.internal` users and resets only their preview
+passwords and roles.
+
+Run everything (backend + frontend units only; run e2e separately as above):
 
 ```bash
 make test

@@ -42,6 +42,13 @@ async def find_latest_membership_payment(user_id: str) -> Payment | None:
     )
 
 
+async def list_membership_payments(user_id: str) -> list[Payment]:
+    return await prisma.payment.find_many(
+        where={"userId": user_id, "planMonths": {"not": None}, "status": "success"},
+        order={"createdAt": "asc"},
+    )
+
+
 async def list_payments_for_user(
     user_id: str, *, page: int, page_size: int
 ) -> tuple[list[Payment], int]:

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { ListRow } from '@/components/common';
-import { Input } from '@/components/ui';
+import { Button, Input } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 import { useAuth, type MemberSummary } from '@/providers/AuthProvider';
@@ -37,7 +37,7 @@ export function MemberPicker({
 }: MemberPickerProps) {
   const { searchMembers } = useAuth();
   const [query, setQuery] = useState('');
-  const { data: results } = useDebouncedFetch<MemberSummary[]>(
+  const { data: results, isLoading, error, refresh } = useDebouncedFetch<MemberSummary[]>(
     () => searchMembers(query, { role, activeOnly }),
     [query, role, activeOnly],
     [],
@@ -68,7 +68,20 @@ export function MemberPicker({
             placeholder={searchPlaceholder}
             autoFocus={autoFocus}
           />
-          {results.length > 0 && (
+          {isLoading && (
+            <p className="px-1 text-xs text-muted-foreground" role="status">
+              Searching members…
+            </p>
+          )}
+          {Boolean(error) && !isLoading && (
+            <div className="flex items-center justify-between gap-2 px-1" role="alert">
+              <p className="text-xs text-danger">Could not load members.</p>
+              <Button size="sm" variant="outline" onClick={refresh}>
+                Retry
+              </Button>
+            </div>
+          )}
+          {!isLoading && !error && results.length > 0 && (
             <ul className="flex flex-col gap-1 rounded-md border border-border bg-surface p-1 shadow-panel">
               {results.map((member) => (
                 <li key={member.id}>
@@ -87,7 +100,7 @@ export function MemberPicker({
               ))}
             </ul>
           )}
-          {query.trim().length > 0 && results.length === 0 && (
+          {!isLoading && !error && query.trim().length > 0 && results.length === 0 && (
             <p className="px-1 text-xs text-muted-foreground">{noResultsLabel}</p>
           )}
         </div>

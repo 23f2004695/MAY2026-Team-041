@@ -3,10 +3,12 @@ import { CalendarCheck, CalendarPlus, CalendarX, Percent, Users } from 'lucide-r
 import { useTranslation } from 'react-i18next';
 
 import { StatisticCard, EventCard, PageHeader, Pagination } from '@/components/common';
+import { ErrorState } from '@/components/feedback';
 import { Button, EmptyState, Loader, Select } from '@/components/ui';
-import { apiGet, apiPost, apiDelete, ApiError } from '@/lib/api';
+import { apiGet, apiPost, apiDelete, getErrorMessage } from '@/lib/api';
 import { usePagedList } from '@/lib/usePagedList';
 import { useAuth } from '@/providers/AuthProvider';
+import { toast } from 'sonner';
 
 import { CreateEventModal } from '../components/CreateEventModal';
 import { EventDetailsDrawer } from '../components/EventDetailsDrawer';
@@ -68,7 +70,7 @@ const STATUS_PRIORITY: Record<'ongoing' | 'upcoming' | 'closed', number> = {
 export function EventsPage() {
   const { t } = useTranslation();
   const { token, role } = useAuth();
-  const canManage = role === 'admin' || role === 'manager';
+  const canManage = role === 'admin' || role === 'manager' || role === 'librarian';
   const [events, setEvents] = useState<Event[]>([]);
   const [summary, setSummary] = useState<AttendanceSummary>({
     total_events_this_month: 0,
@@ -76,6 +78,8 @@ export function EventsPage() {
     average_attendance_rate: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [registrationBusyId, setRegistrationBusyId] = useState<string | null>(null);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
@@ -85,10 +89,11 @@ export function EventsPage() {
   const activeEvent = events.find((e) => e.id === activeEventId) ?? null;
   const now = new Date().getTime();
 
-  useEffect(fetchEvents, [token]);
+  useEffect(fetchEvents, [token, t]);
 
   function fetchEvents() {
     setLoading(true);
+    setLoadError(null);
     Promise.all([
       apiGet<EventListResponse>('/events?page_size=100', token ?? undefined),
       apiGet<AttendanceSummary>('/events/summary'),
@@ -97,11 +102,15 @@ export function EventsPage() {
         setEvents(list.items);
         setSummary(s);
       })
+      .catch((error) => setLoadError(getErrorMessage(error, t('common.errors.generic'))))
       .finally(() => setLoading(false));
   }
 
   async function toggleRegistration(event: Event) {
     if (!token) return;
+    const hasStarted = new Date(event.date).getTime() <= Date.now();
+    if (!event.registered && (hasStarted || event.attendees >= event.capacity)) return;
+    setRegistrationBusyId(event.id);
     try {
       let updated: Event;
       if (event.registered) {
@@ -111,7 +120,9 @@ export function EventsPage() {
       }
       setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
     } catch (err) {
-      if (err instanceof ApiError) console.error(err.message);
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
+    } finally {
+      setRegistrationBusyId(null);
     }
   }
 
@@ -121,7 +132,7 @@ export function EventsPage() {
       const updated = await apiDelete<Event>(`/events/${eventId}/registrants/${memberId}`, token);
       setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
     } catch (err) {
-      if (err instanceof ApiError) console.error(err.message);
+      toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
   }
 
@@ -163,6 +174,16 @@ export function EventsPage() {
       <div className="flex h-64 items-center justify-center">
         <Loader />
       </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <ErrorState
+        title="Events unavailable"
+        description={loadError}
+        onRetry={fetchEvents}
+      />
     );
   }
 
@@ -282,6 +303,7 @@ export function EventsPage() {
         event={activeEvent}
         onClose={() => setActiveEventId(null)}
         onToggleRegistration={toggleRegistration}
+        registrationBusy={registrationBusyId === activeEvent?.id}
         onRemoveRegistrant={removeRegistrant}
         onEdit={(event) => {
           setActiveEventId(null);

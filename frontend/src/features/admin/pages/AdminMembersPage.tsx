@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { PageHeader, Pagination } from '@/components/common';
-import { NoResults } from '@/components/feedback';
+import { ErrorState, LoadingState, NoResults } from '@/components/feedback';
 import {
   Avatar,
   Badge,
@@ -118,7 +118,7 @@ export function AdminMembersPage() {
 
   const [sortBy, sortDir] = sort.split('-') as [AdminMemberSortBy, SortDirection];
 
-  const { data, refresh } = useDebouncedFetch(
+  const { data, isLoading, error: loadError, refresh } = useDebouncedFetch(
     () =>
       getAdminMembers({
         search,
@@ -155,6 +155,13 @@ export function AdminMembersPage() {
   }
 
   async function changeRole(member: AdminMemberRecord, roleName: string) {
+    if (roleName === member.role) return;
+    if (
+      !window.confirm(
+        `Change ${member.full_name}'s role from ${member.role} to ${roleName}? Their access will change immediately.`,
+      )
+    )
+      return;
     setUpdatingId(member.id);
     try {
       await updateAdminMember(member.id, { role_name: roleName });
@@ -168,6 +175,13 @@ export function AdminMembersPage() {
   }
 
   async function toggleActive(member: AdminMemberRecord) {
+    if (
+      member.is_active &&
+      !window.confirm(
+        `Deactivate ${member.full_name}? They will immediately lose access to the application.`,
+      )
+    )
+      return;
     setUpdatingId(member.id);
     try {
       await updateAdminMember(member.id, { is_active: !member.is_active });
@@ -229,7 +243,15 @@ export function AdminMembersPage() {
         />
       </div>
 
-      {items.length === 0 ? (
+      {isLoading && items.length === 0 ? (
+        <LoadingState label="Loading members" />
+      ) : loadError ? (
+        <ErrorState
+          className="min-h-48"
+          description={getErrorMessage(loadError, t('common.errors.generic'))}
+          onRetry={refresh}
+        />
+      ) : items.length === 0 ? (
         <NoResults
           icon={SearchX}
           title={t('admin.members.empty.title')}

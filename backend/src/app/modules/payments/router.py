@@ -1,10 +1,11 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
+from app.core.config import get_settings
 from app.core.constants import Role
 from app.modules.coupons import service as coupons_service
 from app.modules.loans import service as loans_service
@@ -28,6 +29,11 @@ async def create_payment(
     payload: PaymentCreate,
     user: Annotated[User, Depends(get_current_user)],
 ) -> PaymentOut:
+    if get_settings().app_env != "test":
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Direct payment recording is not available",
+        )
     amount = payload.amount
     if payload.coupon_code:
         amount = await coupons_service.redeem_coupon(payload.coupon_code, payload.amount)
@@ -55,7 +61,23 @@ async def pay_at_library(
     payload: PaymentCreate,
     user: Annotated[User, Depends(get_current_user)],
 ) -> None:
-    message = f"{user.fullName} wants to pay ₹{payload.amount} in cash for {payload.label}."
+    # Cash requests are notifications rather than payments, but the displayed
+    # amount still must be server-authoritative: otherwise a member can forge a
+    # manager-facing request by editing the payment URL/body.
+    if payload.plan_months is not None:
+        plan = await payments_service.resolve_pricing_plan(payload.plan_months)
+        amount = plan.price
+        label = f"{plan.months} month membership"
+    else:
+        loans = await loans_service.list_my_loans(user.id)
+        amount = sum(
+            loan.fine_amount for loan in loans if loan.fine_amount > 0 and not loan.fine_paid
+        )
+        label = "Outstanding library fines"
+        if amount <= 0:
+            raise HTTPException(status.HTTP_409_CONFLICT, "No outstanding fines to pay")
+
+    message = f"{user.fullName} wants to pay ₹{amount} in cash for {label}."
     await notifications_service.notify_roles([Role.MANAGER], "payment-pending", message)
 
 
@@ -98,14 +120,13 @@ async def list_my_payments(
 async def get_my_membership(
     user: Annotated[User, Depends(get_current_user)],
 ) -> MembershipOut | None:
-    payment = await repository.find_latest_membership_payment(user.id)
-    if payment is None:
+    payments = await repository.list_membership_payments(user.id)
+    if not payments:
         return None
-
-    # ponytail: 30 days/month approximation, no calendar-month arithmetic in the
-    # stdlib and this doesn't stack overlapping renewals — good enough until a real
-    # membership/plan model exists (see FINAL_SPEC.md item 10).
-    expires_at = payment.createdAt + timedelta(days=30 * payment.planMonths)
+    expires_at = payments_service.calculate_membership_expiry(payments)
+    if expires_at is None:
+        raise RuntimeError("Membership payments unexpectedly produced no expiry")
+    payment = payments[-1]
     return MembershipOut(
         plan_label=payment.label,
         purchased_at=payment.createdAt,

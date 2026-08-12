@@ -63,3 +63,10 @@ mypy_path = "src"
 explicit_package_bases = true
 ignore_missing_imports = true
 check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+# Prisma's generated client exposes extremely large recursive TypedDict overloads.
+# Treat that generated dependency as an external boundary so mypy checks our app
+# code without spending minutes expanding (and rejecting) generated query shapes.
+module = ["prisma", "prisma.*"]
+follow_imports = "skip"

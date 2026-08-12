@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -330,6 +331,27 @@ async def test_approving_when_no_copies_remain_conflicts(manager_user, member_us
         )
 
     assert response.status_code == 409
+
+
+async def test_concurrent_approvals_cannot_issue_the_same_copy_twice(manager_user, member_user):
+    other_manager = await _make_user(Role.MANAGER)
+    other_member = await _make_user(Role.MEMBER)
+    book_id = await _create_book(manager_user, total_copies=1)
+    first_id = await _request_reservation(member_user, book_id)
+    second_id = await _request_reservation(other_member, book_id)
+
+    async def approve(manager, reservation_id):
+        async with _client_as(manager) as client:
+            return await client.post(
+                f"/api/v1/manager/reservations/{reservation_id}/approve",
+                json={"duration_days": 3},
+            )
+
+    responses = await asyncio.gather(
+        approve(manager_user, first_id), approve(other_manager, second_id)
+    )
+    assert sorted(response.status_code for response in responses) == [200, 409]
+    assert await prisma.loan.count(where={"bookId": book_id, "returnedAt": None}) == 1
 
 
 async def test_approving_notifies_the_requesting_member(manager_user, member_user):

@@ -14,7 +14,14 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { PageHeader, Pagination, QuickActionsCard, StatisticCard, TableToolbar } from '@/components/common';
+import {
+  PageHeader,
+  Pagination,
+  QuickActionsCard,
+  StatisticCard,
+  TableToolbar,
+} from '@/components/common';
+import { ErrorState, LoadingState } from '@/components/feedback';
 import { usePagination } from '@/hooks';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
@@ -62,6 +69,12 @@ export function AdminDashboardPage() {
   const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
   const [billingRequests, setBillingRequests] = useState<BillingRequestRecord[]>([]);
   const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
+  const [dashboardLoading, setDashboardLoading] = useState(true);
+  const [billingLoading, setBillingLoading] = useState(true);
+  const [auditLoading, setAuditLoading] = useState(true);
+  const [dashboardError, setDashboardError] = useState(false);
+  const [billingError, setBillingError] = useState(false);
+  const [auditError, setAuditError] = useState(false);
   const [loggingCategory, setLoggingCategory] = useState<ExpenseCategory | null>(null);
   const [isLogExpenseOpen, setIsLogExpenseOpen] = useState(false);
   const [isWaiveFineOpen, setIsWaiveFineOpen] = useState(false);
@@ -75,21 +88,45 @@ export function AdminDashboardPage() {
   const [reportSort, setReportSort] = useState('name-asc');
 
   function refresh() {
-    getAdminDashboard()
-      .then(setDashboard)
-      .catch(() => setDashboard(null));
+    void Promise.resolve().then(async () => {
+      setDashboardLoading(true);
+      setDashboardError(false);
+      try {
+        setDashboard(await getAdminDashboard());
+      } catch {
+        setDashboardError(true);
+      } finally {
+        setDashboardLoading(false);
+      }
+    });
   }
 
   function refreshBillingRequests() {
-    getBillingRequests()
-      .then(setBillingRequests)
-      .catch(() => setBillingRequests([]));
+    void Promise.resolve().then(async () => {
+      setBillingLoading(true);
+      setBillingError(false);
+      try {
+        setBillingRequests(await getBillingRequests());
+      } catch {
+        setBillingError(true);
+      } finally {
+        setBillingLoading(false);
+      }
+    });
   }
 
   function refreshAuditLog() {
-    getAuditLog()
-      .then(setAuditLog)
-      .catch(() => setAuditLog([]));
+    void Promise.resolve().then(async () => {
+      setAuditLoading(true);
+      setAuditError(false);
+      try {
+        setAuditLog(await getAuditLog());
+      } catch {
+        setAuditError(true);
+      } finally {
+        setAuditLoading(false);
+      }
+    });
   }
 
   useEffect(refresh, [getAdminDashboard]);
@@ -126,7 +163,11 @@ export function AdminDashboardPage() {
 
       <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
 
-      {dashboard && (
+      {dashboardLoading ? (
+        <LoadingState label="Loading dashboard" />
+      ) : dashboardError ? (
+        <ErrorState onRetry={refresh} />
+      ) : dashboard ? (
         <>
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <StatisticCard
@@ -175,18 +216,30 @@ export function AdminDashboardPage() {
 
           <SeatOccupancySummary slots={dashboard.seat_occupancy} />
         </>
+      ) : null}
+
+      {billingLoading ? (
+        <LoadingState label="Loading pending requests" />
+      ) : billingError ? (
+        <ErrorState onRetry={refreshBillingRequests} />
+      ) : (
+        <PendingRequests
+          requests={billingRequests}
+          onDecided={() => {
+            refreshBillingRequests();
+            refreshAuditLog();
+          }}
+        />
       )}
 
-      <PendingRequests
-        requests={billingRequests}
-        onDecided={() => {
-          refreshBillingRequests();
-          refreshAuditLog();
-        }}
-      />
-
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <AuditLog entries={auditLog} />
+        {auditLoading ? (
+          <LoadingState label="Loading audit log" />
+        ) : auditError ? (
+          <ErrorState onRetry={refreshAuditLog} />
+        ) : (
+          <AuditLog entries={auditLog} />
+        )}
 
         <Card>
           <CardHeader>

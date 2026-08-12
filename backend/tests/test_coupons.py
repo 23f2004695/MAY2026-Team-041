@@ -102,9 +102,7 @@ async def test_admin_can_generate_a_coupon(admin_user):
 
 async def test_generate_coupon_rejects_out_of_range_discount(admin_user):
     async with _client_as(admin_user) as client:
-        response = await client.post(
-            "/api/v1/coupons", json={"discount_percent": 0, "max_uses": 5}
-        )
+        response = await client.post("/api/v1/coupons", json={"discount_percent": 0, "max_uses": 5})
     assert response.status_code == 422
 
     async with _client_as(admin_user) as client:

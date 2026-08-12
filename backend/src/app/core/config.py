@@ -3,7 +3,8 @@ from functools import lru_cache
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DEFAULT_JWT_SECRET = "dev-secret-change-me-32-bytes-minimum"
+# Development-only fallback; the validator below rejects it in production.
+DEFAULT_JWT_SECRET = "dev-secret-change-me-32-bytes-minimum"  # nosec B105
 MIN_JWT_SECRET_LENGTH = 32
 
 
@@ -35,9 +36,13 @@ class Settings(BaseSettings):
     aws_region: str = Field(default="us-east-1", validation_alias="AWS_REGION")
     aws_access_key_id: str = Field(default="", validation_alias="AWS_ACCESS_KEY_ID")
     aws_secret_access_key: str = Field(default="", validation_alias="AWS_SECRET_ACCESS_KEY")
-    bedrock_model_id: str = Field(default="amazon.nova-lite-v1:0", validation_alias="BEDROCK_MODEL_ID")
+    bedrock_model_id: str = Field(
+        default="amazon.nova-lite-v1:0", validation_alias="BEDROCK_MODEL_ID"
+    )
     # Ollama
-    ollama_base_url: str = Field(default="http://localhost:11434", validation_alias="OLLAMA_BASE_URL")
+    ollama_base_url: str = Field(
+        default="http://localhost:11434", validation_alias="OLLAMA_BASE_URL"
+    )
     ollama_model: str = Field(default="llama3.2:3b", validation_alias="OLLAMA_MODEL")
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7

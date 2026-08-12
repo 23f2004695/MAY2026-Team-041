@@ -56,10 +56,32 @@ async def resolve(ticket_id: str, *, resolved_by_id: str, resolution_note: str) 
     )
 
 
+async def resolve_if_open(
+    ticket_id: str, *, resolved_by_id: str, resolution_note: str
+) -> SupportTicket | None:
+    updated = await prisma.supportticket.update_many(
+        where={"id": ticket_id, "status": "open"},
+        data={
+            "status": "resolved",
+            "resolutionNote": resolution_note,
+            "resolvedById": resolved_by_id,
+            "resolvedAt": datetime.now(UTC),
+        },
+    )
+    return await find_by_id(ticket_id) if updated == 1 else None
+
+
 async def reopen(ticket_id: str) -> SupportTicket:
     return await prisma.supportticket.update(
         where={"id": ticket_id}, data={"status": "open"}, include=INCLUDE
     )
+
+
+async def reopen_if_resolved(ticket_id: str) -> SupportTicket | None:
+    updated = await prisma.supportticket.update_many(
+        where={"id": ticket_id, "status": "resolved"}, data={"status": "open"}
+    )
+    return await find_by_id(ticket_id) if updated == 1 else None
 
 
 async def close(ticket_id: str) -> SupportTicket:
@@ -68,3 +90,11 @@ async def close(ticket_id: str) -> SupportTicket:
         data={"status": "closed", "closedAt": datetime.now(UTC)},
         include=INCLUDE,
     )
+
+
+async def close_if_resolved(ticket_id: str) -> SupportTicket | None:
+    updated = await prisma.supportticket.update_many(
+        where={"id": ticket_id, "status": "resolved"},
+        data={"status": "closed", "closedAt": datetime.now(UTC)},
+    )
+    return await find_by_id(ticket_id) if updated == 1 else None

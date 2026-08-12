@@ -42,17 +42,78 @@ DEV_PASSWORD_HASH = hash_password("SeedDemo123!")
 RNG = random.Random(20260803)
 
 FIRST_NAMES = [
-    "Aarav", "Vivaan", "Aditya", "Vihaan", "Arjun", "Sai", "Reyansh", "Krishna",
-    "Ishaan", "Rohan", "Kabir", "Aryan", "Dev", "Yash", "Karan", "Nikhil",
-    "Ananya", "Diya", "Saanvi", "Aadhya", "Kavya", "Myra", "Anika", "Ira",
-    "Riya", "Priya", "Neha", "Pooja", "Sneha", "Meera", "Isha", "Tara",
-    "Rahul", "Amit", "Vikram", "Sanjay", "Rajesh", "Suresh", "Manoj", "Deepak",
+    "Aarav",
+    "Vivaan",
+    "Aditya",
+    "Vihaan",
+    "Arjun",
+    "Sai",
+    "Reyansh",
+    "Krishna",
+    "Ishaan",
+    "Rohan",
+    "Kabir",
+    "Aryan",
+    "Dev",
+    "Yash",
+    "Karan",
+    "Nikhil",
+    "Ananya",
+    "Diya",
+    "Saanvi",
+    "Aadhya",
+    "Kavya",
+    "Myra",
+    "Anika",
+    "Ira",
+    "Riya",
+    "Priya",
+    "Neha",
+    "Pooja",
+    "Sneha",
+    "Meera",
+    "Isha",
+    "Tara",
+    "Rahul",
+    "Amit",
+    "Vikram",
+    "Sanjay",
+    "Rajesh",
+    "Suresh",
+    "Manoj",
+    "Deepak",
 ]
 LAST_NAMES = [
-    "Sharma", "Verma", "Gupta", "Singh", "Kumar", "Patel", "Reddy", "Rao",
-    "Iyer", "Nair", "Menon", "Joshi", "Mehta", "Shah", "Desai", "Kapoor",
-    "Malhotra", "Chopra", "Bose", "Banerjee", "Mukherjee", "Chatterjee", "Das", "Ghosh",
-    "Agarwal", "Bansal", "Jain", "Saxena", "Tiwari", "Pandey",
+    "Sharma",
+    "Verma",
+    "Gupta",
+    "Singh",
+    "Kumar",
+    "Patel",
+    "Reddy",
+    "Rao",
+    "Iyer",
+    "Nair",
+    "Menon",
+    "Joshi",
+    "Mehta",
+    "Shah",
+    "Desai",
+    "Kapoor",
+    "Malhotra",
+    "Chopra",
+    "Bose",
+    "Banerjee",
+    "Mukherjee",
+    "Chatterjee",
+    "Das",
+    "Ghosh",
+    "Agarwal",
+    "Bansal",
+    "Jain",
+    "Saxena",
+    "Tiwari",
+    "Pandey",
 ]
 
 POST_TEMPLATES = [
@@ -210,9 +271,7 @@ async def _seed_guardians_and_children(
             if not pool:
                 break
             child = pool.pop()
-            await prisma.guardianlink.create(
-                data={"guardianId": guardian.id, "memberId": child.id}
-            )
+            await prisma.guardianlink.create(data={"guardianId": guardian.id, "memberId": child.id})
             children.append(child)
     print(f"Seeded {len(guardians)} guardians linked to {len(children)} children.")
     return guardians, children
@@ -319,9 +378,11 @@ async def _seed_membership_payments(members: list, plans: dict, coupons: list) -
         # A later renewal for members who joined early enough that a renewal would
         # plausibly be due by now.
         if member.createdAt < NOW - timedelta(days=45) and RNG.random() < 0.3:
-            renewal_plan = plans[RNG.choices(
-                [p for p, _ in PLAN_WEIGHTS], weights=[w for _, w in PLAN_WEIGHTS], k=1
-            )[0]]
+            renewal_plan = plans[
+                RNG.choices(
+                    [p for p, _ in PLAN_WEIGHTS], weights=[w for _, w in PLAN_WEIGHTS], k=1
+                )[0]
+            ]
             renewal_at = _random_dt_between(payment_at + timedelta(days=30), NOW)
             await prisma.payment.create(
                 data={
@@ -1128,8 +1189,10 @@ async def main() -> None:
         await _seed_announcement(staff, members)
         await _seed_contact_messages(staff)
 
-        print(f"\nDone. {len(members)} members, {len(guardians)} guardians, "
-              f"{sum(len(v) for v in staff.values())} staff created under @{SEED_DOMAIN}.")
+        print(
+            f"\nDone. {len(members)} members, {len(guardians)} guardians, "
+            f"{sum(len(v) for v in staff.values())} staff created under @{SEED_DOMAIN}."
+        )
     finally:
         await prisma.disconnect()
 

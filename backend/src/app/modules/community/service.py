@@ -12,7 +12,7 @@ from app.modules.community.schemas import (
 )
 from app.modules.notifications import service as notifications_service
 
-_STAFF_ROLES = {Role.ADMIN, Role.MANAGER, Role.IT_HEAD}
+_STAFF_ROLES = {Role.ADMIN, Role.MANAGER, Role.LIBRARIAN, Role.IT_HEAD}
 _MODERATOR_ROLES = {Role.ADMIN, Role.IT_HEAD}
 _REPORTER_ROLES = {Role.MEMBER, Role.MANAGER}
 

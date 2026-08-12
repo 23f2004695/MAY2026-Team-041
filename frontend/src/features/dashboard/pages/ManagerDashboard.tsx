@@ -143,7 +143,7 @@ export function ManagerDashboard() {
     };
   }, [getActiveLoans]);
 
-  async function handleMarkPaymentPaid(notificationId: string) {
+  async function handleDismissPaymentRequest(notificationId: string) {
     await markNotificationRead(notificationId);
     refreshPendingPayments();
   }
@@ -228,7 +228,7 @@ export function ManagerDashboard() {
         <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
       </div>
 
-      <PendingPayments payments={pendingPayments} onMarkPaid={handleMarkPaymentPaid} />
+      <PendingPayments payments={pendingPayments} onDismiss={handleDismissPaymentRequest} />
 
       <AddGuardianCard />
 

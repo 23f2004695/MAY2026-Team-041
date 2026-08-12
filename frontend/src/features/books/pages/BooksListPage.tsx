@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { BookCard, PageHeader, Pagination } from '@/components/common';
-import { NoResults } from '@/components/feedback';
+import { ErrorState, LoadingState, NoResults } from '@/components/feedback';
 import { Badge, Button } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { getErrorMessage } from '@/lib/api';
@@ -12,6 +12,7 @@ import { useAuth } from '@/providers/AuthProvider';
 
 import { BookFilters } from '../components/BookFilters';
 import { WishlistDrawer } from '../components/WishlistDrawer';
+import { PAGE_SIZE } from '../api';
 import { useBooks, useBooksByIds, type BookSort } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
 
@@ -24,7 +25,15 @@ export function BooksListPage() {
   const [page, setPage] = useState(1);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
-  const { items: pageBooks, total, totalPages, refresh } = useBooks(search, category, sort, page);
+  const {
+    items: pageBooks,
+    total,
+    totalPages,
+    refresh,
+    isLoading,
+    isFetching,
+    error: loadError,
+  } = useBooks(search, category, sort, page);
   const wishlistedBooks = useBooksByIds(wishlistIds);
 
   async function handleReserve(bookId: string, title: string) {
@@ -85,7 +94,15 @@ export function BooksListPage() {
         onSortChange={updateSort}
       />
 
-      {pageBooks.length === 0 ? (
+      {isLoading ? (
+        <LoadingState label="Loading books" />
+      ) : loadError ? (
+        <ErrorState
+          className="min-h-48"
+          description={getErrorMessage(loadError, t('common.errors.generic'))}
+          onRetry={() => void refresh()}
+        />
+      ) : pageBooks.length === 0 ? (
         <NoResults
           icon={SearchX}
           title={t('books.empty.title')}
@@ -97,7 +114,10 @@ export function BooksListPage() {
           }
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          aria-busy={isFetching || undefined}
+        >
           {pageBooks.map((book) => (
             <BookCard
               key={book.id}
@@ -122,7 +142,7 @@ export function BooksListPage() {
         currentPage={page}
         totalPages={totalPages}
         totalItems={total}
-        pageSize={20}
+        pageSize={PAGE_SIZE}
         onPageChange={setPage}
       />
 

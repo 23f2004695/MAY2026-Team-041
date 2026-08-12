@@ -44,10 +44,26 @@ async def update_event(event_id: str, data: dict) -> Event:
     return await prisma.event.update(where={"id": event_id}, data=data, include=_INCLUDE)
 
 
+async def update_event_with_capacity_guard(
+    event_id: str, data: dict
+) -> tuple[Event | None, str | None]:
+    """Update under the same lock used by registration capacity checks."""
+    async with prisma.tx() as tx:
+        await tx.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", event_id)
+        event = await tx.event.find_unique(where={"id": event_id}, include=_INCLUDE)
+        if event is None or event.deletedAt is not None:
+            return None, "not_found"
+        requested_capacity = data.get("capacity")
+        if requested_capacity is not None:
+            registrations = len(event.registrations or [])
+            if requested_capacity < registrations:
+                return event, "capacity"
+        updated = await tx.event.update(where={"id": event_id}, data=data, include=_INCLUDE)
+        return updated, None
+
+
 async def soft_delete_event(event_id: str) -> None:
-    await prisma.event.update(
-        where={"id": event_id}, data={"deletedAt": datetime.now(UTC)}
-    )
+    await prisma.event.update(where={"id": event_id}, data={"deletedAt": datetime.now(UTC)})
 
 
 async def find_registration(event_id: str, member_id: str) -> EventRegistration | None:
@@ -57,9 +73,25 @@ async def find_registration(event_id: str, member_id: str) -> EventRegistration 
 
 
 async def create_registration(event_id: str, member_id: str) -> EventRegistration:
-    return await prisma.eventregistration.create(
-        data={"eventId": event_id, "memberId": member_id}
-    )
+    return await prisma.eventregistration.create(data={"eventId": event_id, "memberId": member_id})
+
+
+async def create_registration_if_space(
+    event_id: str, member_id: str
+) -> tuple[Event | None, str | None]:
+    """Atomically register a member, returning an error code when rejected."""
+    async with prisma.tx() as tx:
+        await tx.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", event_id)
+        event = await tx.event.find_unique(where={"id": event_id}, include=_INCLUDE)
+        if event is None or event.deletedAt is not None:
+            return None, "not_found"
+        if any(row.memberId == member_id for row in event.registrations or []):
+            return event, "duplicate"
+        if len(event.registrations or []) >= event.capacity:
+            return event, "capacity"
+        await tx.eventregistration.create(data={"eventId": event_id, "memberId": member_id})
+        updated = await tx.event.find_unique(where={"id": event_id}, include=_INCLUDE)
+        return updated, None
 
 
 async def delete_registration(event_id: str, member_id: str) -> None:
@@ -79,11 +111,16 @@ async def count_total_registrations() -> int:
 
 
 async def list_manager_ids(candidate_ids: list[str]) -> list[str]:
-    # ponytail: any real user (member or manager) is assignable — just confirms the ids
-    # exist, doesn't restrict by role.
     if not candidate_ids:
         return []
-    rows = await prisma.user.find_many(where={"id": {"in": candidate_ids}})
+    rows = await prisma.user.find_many(
+        where={
+            "id": {"in": candidate_ids},
+            "isActive": True,
+            "deletedAt": None,
+            "role": {"name": "manager"},
+        }
+    )
     return [row.id for row in rows]
 
 

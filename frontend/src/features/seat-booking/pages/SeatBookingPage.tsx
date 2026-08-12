@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { PageTitle, SeatCard } from '@/components/common';
-import { Modal } from '@/components/ui';
+import { ErrorState } from '@/components/feedback';
+import { Loader, Modal } from '@/components/ui';
 import { getErrorMessage } from '@/lib/api';
 import { useAuth, type SeatBookingRecord, type SeatSlot } from '@/providers/AuthProvider';
 
@@ -64,6 +65,9 @@ export function SeatBookingPage() {
   const [selectedDate, setSelectedDate] = useState(todayValue);
   const [selectedHour, setSelectedHour] = useState(() => new Date().getHours());
   const [seats, setSeats] = useState<SeatSlot[] | null>(null);
+  const [isLoadingSeats, setIsLoadingSeats] = useState(true);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+  const [scheduleRequestKey, setScheduleRequestKey] = useState(0);
   const [selectedSeatLabel, setSelectedSeatLabel] = useState<string | null>(null);
   const [myBookings, setMyBookings] = useState<SeatBookingRecord[]>([]);
   const [notifiedSlots, setNotifiedSlots] = useState<Set<string>>(new Set());
@@ -83,6 +87,8 @@ export function SeatBookingPage() {
   const effectiveHour = isHourPast(selectedHour) ? new Date().getHours() : selectedHour;
 
   function selectDate(date: string) {
+    setIsLoadingSeats(true);
+    setScheduleError(null);
     setSelectedDate(date);
     setSelectedSeatLabel(null);
   }
@@ -93,6 +99,8 @@ export function SeatBookingPage() {
 
   function chooseSlot(hour: number) {
     if (!slotModalDate || isHourPast(hour, slotModalDate)) return;
+    setIsLoadingSeats(true);
+    setScheduleError(null);
     setSelectedDate(slotModalDate);
     setSelectedHour(hour);
     setSelectedSeatLabel(null);
@@ -120,13 +128,17 @@ export function SeatBookingPage() {
       .then((schedule) => {
         if (!cancelled) setSeats(schedule.seats);
       })
-      .catch(() => {
-        if (!cancelled) setSeats(null);
-      });
+      .catch((error) => {
+        if (!cancelled) {
+          setSeats(null);
+          setScheduleError(getErrorMessage(error, t('common.errors.generic')));
+        }
+      })
+      .finally(() => !cancelled && setIsLoadingSeats(false));
     return () => {
       cancelled = true;
     };
-  }, [selectedDate, effectiveHour, getSeatSchedule]);
+  }, [selectedDate, effectiveHour, getSeatSchedule, scheduleRequestKey, t]);
 
   useEffect(() => {
     getMySeatBookings().then(setMyBookings);
@@ -239,37 +251,55 @@ export function SeatBookingPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-6">
           <SeatLegend />
-          <div className="flex flex-col gap-4">
-            {SEAT_ROWS.map((row) => (
-              <div key={row} className="flex items-center gap-3">
-                <span className="w-6 text-sm font-semibold text-muted-foreground">{row}</span>
-                <div className="grid flex-1 grid-cols-4 gap-2 sm:grid-cols-8">
-                  {SEAT_LABELS.filter((label) => label.startsWith(row)).map((label) => {
-                    const seat = seats?.find((s) => s.seat_label === label);
-                    // Own bookings get their own distinct visual ('mine') instead of being
-                    // lumped in with "reserved" — avatars alone aren't always enough to tell
-                    // your seat apart from someone else's at a glance.
-                    const visualStatus =
-                      !seat || seat.status === 'available'
-                        ? 'available'
-                        : seat.status === 'booked_by_me'
-                          ? 'mine'
-                          : 'reserved';
-                    return (
-                      <SeatCard
-                        key={label}
-                        label={label}
-                        status={visualStatus}
-                        avatarUrl={seat?.booked_by_avatar_url}
-                        selected={selectedSeatLabel === label}
-                        onSelect={() => setSelectedSeatLabel(label)}
-                      />
-                    );
-                  })}
+          {isLoadingSeats ? (
+            <div className="flex min-h-64 items-center justify-center" aria-live="polite">
+              <Loader />
+              <span className="sr-only">Loading seat availability</span>
+            </div>
+          ) : scheduleError ? (
+            <ErrorState
+              className="min-h-64"
+              title="Seat availability unavailable"
+              description={scheduleError}
+              onRetry={() => {
+                setIsLoadingSeats(true);
+                setScheduleError(null);
+                setScheduleRequestKey((key) => key + 1);
+              }}
+            />
+          ) : (
+            <div className="flex flex-col gap-4">
+              {SEAT_ROWS.map((row) => (
+                <div key={row} className="flex items-center gap-3">
+                  <span className="w-6 text-sm font-semibold text-muted-foreground">{row}</span>
+                  <div className="grid flex-1 grid-cols-4 gap-2 sm:grid-cols-8">
+                    {SEAT_LABELS.filter((label) => label.startsWith(row)).map((label) => {
+                      const seat = seats?.find((s) => s.seat_label === label);
+                      // A missing record is unknown, never available. Keep it disabled so
+                      // partial API responses cannot advertise seats that may be occupied.
+                      const visualStatus = !seat
+                        ? 'occupied'
+                        : seat.status === 'available'
+                          ? 'available'
+                          : seat.status === 'booked_by_me'
+                            ? 'mine'
+                            : 'reserved';
+                      return (
+                        <SeatCard
+                          key={label}
+                          label={label}
+                          status={visualStatus}
+                          avatarUrl={seat?.booked_by_avatar_url}
+                          selected={selectedSeatLabel === label}
+                          onSelect={seat ? () => setSelectedSeatLabel(label) : undefined}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <BookingSummary

@@ -1,3 +1,6 @@
+import calendar
+from datetime import datetime
+
 import razorpay
 from fastapi import HTTPException, status
 from prisma.errors import UniqueViolationError
@@ -15,6 +18,21 @@ from app.modules.payments.schemas import (
     RazorpayOrderOut,
     RazorpayVerifyRequest,
 )
+from app.modules.pricing_plans import repository as pricing_plans_repository
+
+
+def calculate_membership_expiry(payments) -> datetime | None:
+    if not payments:
+        return None
+    expires_at = payments[0].createdAt
+    for payment in payments:
+        base = max(payment.createdAt, expires_at)
+        month_index = base.month - 1 + payment.planMonths
+        year = base.year + month_index // 12
+        month = month_index % 12 + 1
+        day = min(base.day, calendar.monthrange(year, month)[1])
+        expires_at = base.replace(year=year, month=month, day=day)
+    return expires_at
 
 
 def _get_client() -> razorpay.Client:
@@ -27,15 +45,45 @@ def _get_client() -> razorpay.Client:
     return razorpay.Client(auth=(settings.razorpay_key_id, settings.razorpay_key_secret))
 
 
+async def resolve_pricing_plan(months: int):
+    plan = await pricing_plans_repository.find_by_months(months)
+    if plan is None:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Unknown membership plan")
+    return plan
+
+
 async def create_razorpay_order(user: User, payload: PaymentCreate) -> RazorpayOrderOut:
     client = _get_client()
 
-    # Coupon is redeemed (and its use consumed) at order-creation time, since that's
-    # what determines the amount Razorpay actually charges — same as the direct
-    # create_payment endpoint, just one step earlier in a two-step gateway flow.
+    settings = get_settings()
     amount = payload.amount
+    label = payload.label
+    plan_months = payload.plan_months
+    if settings.app_env != "test":
+        if plan_months is not None:
+            plan = await resolve_pricing_plan(plan_months)
+            amount = plan.price
+            plan_months = plan.months
+            label = f"{plan.months} month membership"
+        else:
+            loans = await loans_service.list_my_loans(user.id)
+            amount = sum(
+                loan.fine_amount for loan in loans if loan.fine_amount > 0 and not loan.fine_paid
+            )
+            label = "Outstanding library fines"
+            if amount <= 0:
+                raise HTTPException(status.HTTP_409_CONFLICT, "No outstanding fines to pay")
+
+    # A coupon changes the gateway charge, not the debt that a verified fine
+    # payment settles. Keep the pre-discount amount in the signed Razorpay order
+    # notes so verification never relies on the browser or loses part of the fine.
+    fine_settlement_amount = amount if plan_months is None else None
+
+    # Applying a coupon previews the discounted charge but does not consume a use.
+    # Redemption is finalized only in the verified-payment transaction below.
     if payload.coupon_code:
-        amount = await coupons_service.redeem_coupon(payload.coupon_code, payload.amount)
+        coupon = await coupons_service.validate_coupon(payload.coupon_code)
+        amount = round(amount * (100 - coupon.discount_percent) / 100)
 
     order = client.order.create(
         {
@@ -43,8 +91,10 @@ async def create_razorpay_order(user: User, payload: PaymentCreate) -> RazorpayO
             "currency": "INR",
             "notes": {
                 "member_id": user.id,
-                "label": payload.label,
-                "plan_months": str(payload.plan_months or ""),
+                "label": label,
+                "plan_months": str(plan_months or ""),
+                "coupon_code": payload.coupon_code or "",
+                "fine_settlement_amount": str(fine_settlement_amount or ""),
             },
         }
     )
@@ -54,7 +104,7 @@ async def create_razorpay_order(user: User, payload: PaymentCreate) -> RazorpayO
         amount=amount,
         currency="INR",
         key_id=get_settings().razorpay_key_id,
-        label=payload.label,
+        label=label,
     )
 
 
@@ -103,6 +153,10 @@ async def verify_and_record_razorpay_payment(
     amount = order["amount"] // 100
     label = notes.get("label") or "Payment"
     plan_months = int(notes["plan_months"]) if notes.get("plan_months") else None
+    coupon_code = notes.get("coupon_code") or None
+    fine_settlement_amount = (
+        int(notes["fine_settlement_amount"]) if notes.get("fine_settlement_amount") else amount
+    )
 
     # Recording the payment, settling fines, and notifying are all DB writes derived
     # from the same verified signature — one transaction so a crash partway through
@@ -118,11 +172,18 @@ async def verify_and_record_razorpay_payment(
                 razorpay_order_id=payload.razorpay_order_id,
                 client=tx,
             )
+            if coupon_code:
+                # Insert the gateway payment first. Its unique ID makes concurrent
+                # verification retries lose here and roll back before consuming a
+                # second coupon use.
+                await coupons_service.consume_coupon(coupon_code, client=tx)
             # Same rule as the direct create_payment endpoint — a verified payment
             # with no plan behind it is a fine payment, so settle what it covers (see
             # settle_fines_for_member).
             if plan_months is None:
-                await loans_service.settle_fines_for_member(user.id, amount, client=tx)
+                await loans_service.settle_fines_for_member(
+                    user.id, fine_settlement_amount, client=tx
+                )
             await notifications_service.create_notification(
                 user.id,
                 "payment-received",

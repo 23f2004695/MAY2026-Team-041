@@ -43,7 +43,11 @@ export function loadRazorpayCheckout(): Promise<boolean> {
     script.src = CHECKOUT_SCRIPT_SRC;
     script.async = true;
     script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
+    script.onerror = () => {
+      script.remove();
+      loadPromise = null;
+      resolve(false);
+    };
     document.body.appendChild(script);
   });
   return loadPromise;

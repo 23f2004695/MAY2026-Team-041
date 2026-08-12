@@ -172,6 +172,22 @@ test.describe('Role-based route guards', () => {
     await expect(page).toHaveURL('/dashboard');
   });
 
+  test('a member cannot reach manager-only pages by direct URL', async ({ page }) => {
+    await continueAsRole(page, 'member');
+    for (const path of ['/manager/books', '/manager/borrow-history']) {
+      await page.goto(path);
+      await expect(page).toHaveURL('/dashboard');
+    }
+  });
+
+  test('a librarian receives the staff dashboard and manager book workflow', async ({ page }) => {
+    await continueAsRole(page, 'librarian');
+    await expect(page.getByRole('heading', { name: /manager dashboard/i })).toBeVisible();
+    await page.goto('/manager/books');
+    await expect(page).toHaveURL('/manager/books');
+    await expect(page.getByRole('heading', { name: /book/i })).toBeVisible();
+  });
+
   test('an already-authenticated visit to /login redirects to their role home', async ({ page }) => {
     await continueAsRole(page, 'admin');
     await page.goto('/login');
@@ -184,5 +200,25 @@ test.describe('Role-based route guards', () => {
     await page.getByRole('button', { name: 'Log out' }).click();
     await page.goto('/dashboard');
     await expect(page).toHaveURL('/login');
+  });
+
+  test('a 401 during logout cannot refresh and restore the session', async ({ page }) => {
+    await continueAsRole(page, 'member');
+    let refreshRequests = 0;
+    await page.route('**/api/v1/auth/logout', (route) =>
+      route.fulfill({ status: 401, contentType: 'application/json', body: '{"detail":"Expired"}' }),
+    );
+    await page.route('**/api/v1/auth/refresh', (route) => {
+      refreshRequests += 1;
+      return route.fulfill({ status: 500, contentType: 'application/json', body: '{}' });
+    });
+
+    await page.goto('/settings');
+    await page.getByRole('button', { name: 'Log out' }).click();
+    await page.waitForTimeout(200);
+    await page.goto('/dashboard');
+
+    await expect(page).toHaveURL('/login');
+    expect(refreshRequests).toBe(0);
   });
 });

@@ -1,10 +1,11 @@
 import { SearchX, Ticket } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { PageHeader, Pagination, TableToolbar } from '@/components/common';
+import { ErrorState, LoadingState } from '@/components/feedback';
 import { Button, Dialog, EmptyState, SearchBar } from '@/components/ui';
 import { usePagination, useSortedItems } from '@/hooks';
 import { ROUTES } from '@/constants/routes';
@@ -22,11 +23,22 @@ export function ReservationsPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'cancelled'>('all');
   const [sort, setSort] = useState<'newest' | 'oldest' | 'titleAsc' | 'titleDesc'>('newest');
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<unknown>(null);
+
+  const loadReservations = useCallback(() => {
+    setIsLoading(true);
+    setLoadError(null);
+    getMyReservations()
+      .then(setReservations)
+      .catch(setLoadError)
+      .finally(() => setIsLoading(false));
+  }, [getMyReservations]);
 
   useEffect(() => {
-    getMyReservations().then(setReservations);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const timer = setTimeout(loadReservations, 0);
+    return () => clearTimeout(timer);
+  }, [loadReservations]);
 
   const cancellingReservation = reservations.find((entry) => entry.id === cancellingId);
 
@@ -137,7 +149,15 @@ export function ReservationsPage() {
         <h2 id="current-reservations-heading" className="text-lg font-semibold text-foreground">
           {t('reservations.current.heading')}
         </h2>
-        {reservations.length === 0 ? (
+        {isLoading ? (
+          <LoadingState label="Loading reservations" />
+        ) : loadError ? (
+          <ErrorState
+            className="min-h-48"
+            description={getErrorMessage(loadError, t('common.errors.generic'))}
+            onRetry={loadReservations}
+          />
+        ) : reservations.length === 0 ? (
           <EmptyState
             icon={Ticket}
             title={t('reservations.current.emptyTitle')}

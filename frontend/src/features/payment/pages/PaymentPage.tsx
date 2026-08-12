@@ -5,6 +5,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { AnimatedNumber, PageHeader } from '@/components/common';
+import { ErrorState } from '@/components/feedback';
 import { Badge, Button, Card, CardContent, Input, Loader } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { getErrorMessage } from '@/lib/api';
@@ -34,29 +35,39 @@ export function PaymentPage() {
   // amount can't be tampered with via the query string. Fine payments omit it and
   // fall back to a raw `amount` param instead, since fines have no plan behind them.
   const planId = params.get('plan');
-  const rawAmount = Number(params.get('amount')) || 0;
+  const amountParam = params.get('amount');
+  const rawAmount = amountParam === null ? Number.NaN : Number(amountParam);
   const label = params.get('label') ?? t('payment.defaultLabel');
   const isRenewal = params.get('renewal') === '1';
 
   const [plan, setPlan] = useState<PricingPlan | null>(null);
   const [isLoadingPlan, setIsLoadingPlan] = useState(Boolean(planId));
+  const [planError, setPlanError] = useState<string | null>(null);
+  const [planRequestKey, setPlanRequestKey] = useState(0);
 
   useEffect(() => {
     if (!planId) return;
     let cancelled = false;
     getPricingPlans()
       .then((plans) => {
-        if (!cancelled) setPlan(plans.find((item) => item.plan_id === planId) ?? null);
+        if (cancelled) return;
+        const selectedPlan = plans.find((item) => item.plan_id === planId);
+        setPlan(selectedPlan ?? null);
+        if (!selectedPlan) setPlanError('This membership plan is unavailable.');
+      })
+      .catch((error) => {
+        if (!cancelled) setPlanError(getErrorMessage(error, t('common.errors.generic')));
       })
       .finally(() => !cancelled && setIsLoadingPlan(false));
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planId]);
+  }, [planId, planRequestKey]);
 
   const baseAmount = planId ? (plan?.price ?? 0) : rawAmount;
   const months = planId ? plan?.months : undefined;
+  const hasValidAmount = Number.isFinite(baseAmount) && baseAmount > 0;
 
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<CouponValidation | null>(null);
@@ -104,6 +115,13 @@ export function PaymentPage() {
   }, []);
 
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
+  const [isPayingAtLibrary, setIsPayingAtLibrary] = useState(false);
+
+  function retryPlanLoad() {
+    setIsLoadingPlan(true);
+    setPlanError(null);
+    setPlanRequestKey((key) => key + 1);
+  }
 
   function redirectAfterFailure() {
     const planOrAmountParam = planId ? `plan=${planId}` : `amount=${baseAmount}`;
@@ -114,6 +132,7 @@ export function PaymentPage() {
   }
 
   async function handlePayWithRazorpay() {
+    if (!hasValidAmount || planError) return;
     setIsStartingCheckout(true);
     try {
       const scriptLoaded = await loadRazorpayCheckout();
@@ -164,13 +183,29 @@ export function PaymentPage() {
   }
 
   async function handlePayAtLibrary() {
+    if (!hasValidAmount || planError) return;
+    setIsPayingAtLibrary(true);
     try {
-      await payAtLibrary({ amount: baseAmount, label });
+      await payAtLibrary({ amount: baseAmount, label, plan_months: months });
       toast.success(t('payment.payAtLibraryToast'));
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
+    } finally {
+      setIsPayingAtLibrary(false);
     }
+  }
+
+  if (!isLoadingPlan && (planError || !hasValidAmount)) {
+    return (
+      <ErrorState
+        title={planError ? 'Payment details unavailable' : 'Invalid payment amount'}
+        description={
+          planError ?? 'The payment link does not contain a valid positive amount. Return to the originating page and try again.'
+        }
+        onRetry={planId ? retryPlanLoad : undefined}
+      />
+    );
   }
 
   return (
@@ -248,7 +283,7 @@ export function PaymentPage() {
         className="w-full"
         onClick={handlePayWithRazorpay}
         isLoading={isStartingCheckout}
-        disabled={isLoadingPlan}
+        disabled={isLoadingPlan || !hasValidAmount || Boolean(planError)}
       >
         {t('payment.payWithRazorpay')}
       </Button>
@@ -266,7 +301,17 @@ export function PaymentPage() {
             {t('payment.payAtLibraryTitle')}
           </p>
           <p className="text-sm text-muted-foreground">{t('payment.payAtLibraryDescription')}</p>
-          <Button variant="outline" onClick={handlePayAtLibrary}>
+          {appliedCoupon && (
+            <p className="text-xs text-muted-foreground">
+              Coupons apply to online checkout only. Cash requests use the original amount of ₹{baseAmount}.
+            </p>
+          )}
+          <Button
+            variant="outline"
+            onClick={handlePayAtLibrary}
+            isLoading={isPayingAtLibrary}
+            disabled={isLoadingPlan || !hasValidAmount || Boolean(planError)}
+          >
             {t('payment.contactManager')}
           </Button>
         </CardContent>

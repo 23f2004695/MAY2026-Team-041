@@ -85,7 +85,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 ╔══════════════════════════════════════════════════════╗
 ║              MAY2026 Team 041 — API                  ║
 ╠══════════════════════════════════════════════════════╣
-║  DB   : {settings.database_url.split('@')[-1]:<44}║
+║  DB   : {settings.database_url.split("@")[-1]:<44}║
 ║  LLM  : {llm_detail:<44}║
 ║  Redis: {settings.redis_url:<44}║
 ║  Env  : {settings.app_env:<44}║

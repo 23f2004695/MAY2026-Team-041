@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 
+from prisma import Prisma
 from prisma.models import BillingRequest
 
 from app.db.prisma import prisma
@@ -42,3 +43,15 @@ async def decide(request_id: str, *, status: str, decided_by_id: str) -> Billing
         data={"status": status, "decidedById": decided_by_id, "decidedAt": datetime.now(UTC)},
         include=INCLUDE,
     )
+
+
+async def decide_if_pending(
+    request_id: str, *, status: str, decided_by_id: str, client: Prisma
+) -> BillingRequest | None:
+    updated = await client.billingrequest.update_many(
+        where={"id": request_id, "status": "pending"},
+        data={"status": status, "decidedById": decided_by_id, "decidedAt": datetime.now(UTC)},
+    )
+    if updated != 1:
+        return None
+    return await client.billingrequest.find_unique(where={"id": request_id}, include=INCLUDE)

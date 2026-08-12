@@ -6,6 +6,7 @@ from prisma import Prisma
 from prisma.errors import ForeignKeyViolationError
 
 from app.core.mail import send_email_async
+from app.db.prisma import prisma
 from app.modules.loans import repository
 from app.modules.loans.constants import (
     FINE_PER_DAY,
@@ -20,20 +21,36 @@ logger = logging.getLogger(__name__)
 
 
 async def create_loan(
-    created_by_id: str, payload: LoanCreate, *, duration_days: int = LOAN_PERIOD_DAYS
+    created_by_id: str,
+    payload: LoanCreate,
+    *,
+    duration_days: int = LOAN_PERIOD_DAYS,
+    client: Prisma | None = None,
 ) -> LoanOut:
     due_date = datetime.now(UTC) + timedelta(days=duration_days)
     try:
-        loan = await repository.create(
+        loan = await repository.create_if_available(
             book_id=payload.book_id,
             member_id=payload.member_id,
             due_date=due_date,
             created_by_id=created_by_id,
+            client=client,
         )
     except ForeignKeyViolationError as exc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Book or member not found"
         ) from exc
+
+    if loan is None:
+        db = client or prisma
+        if await db.book.find_unique(where={"id": payload.book_id}) is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Book or member not found"
+            )
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="No copies are currently available",
+        )
 
     return LoanOut.from_prisma(loan, now=datetime.now(UTC))
 
@@ -164,6 +181,10 @@ async def send_due_soon_reminders() -> None:
         if loan.dueDate > window_end:
             continue
         if loan.lastRemindedAt is not None and loan.lastRemindedAt > remind_cutoff:
+            continue
+        if not await repository.claim_reminder(
+            loan.id, remind_cutoff=remind_cutoff, claimed_at=now
+        ):
             continue
         # Per-loan, so one unreachable mailbox (or a provider rate limit) doesn't abort
         # the sweep and leave everyone after it un-nudged — but still logged, so a

@@ -10,6 +10,7 @@ export const ROLE_LABEL = {
   admin: 'Admin',
   member: 'Member',
   manager: 'Manager',
+  librarian: 'Librarian',
   'it-head': 'IT Head',
   guardian: 'Guardian',
 } as const;
@@ -18,6 +19,7 @@ export const ROLE_HOME = {
   admin: '/admin',
   member: '/dashboard',
   manager: '/dashboard',
+  librarian: '/dashboard',
   'it-head': '/it-head',
   guardian: '/guardian',
 } as const;

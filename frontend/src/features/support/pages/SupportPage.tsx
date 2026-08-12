@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { PageHeader, Pagination, TableToolbar } from '@/components/common';
+import { ErrorState, LoadingState } from '@/components/feedback';
 import { Button, Select } from '@/components/ui';
 import { usePagination, useSortedItems } from '@/hooks';
 import { getErrorMessage } from '@/lib/api';
@@ -24,12 +25,22 @@ function RaiserView({ role }: { role: 'member' | 'guardian' }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<SupportTicketStatus | 'all'>('all');
   const [sort, setSort] = useState<'newest' | 'oldest'>('newest');
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
-  function refresh() {
-    getMySupportTickets().then(setTickets).catch(() => setTickets([]));
-  }
+  const refresh = useCallback(() => {
+    setIsLoading(true);
+    setLoadError(null);
+    getMySupportTickets()
+      .then(setTickets)
+      .catch(setLoadError)
+      .finally(() => setIsLoading(false));
+  }, [getMySupportTickets]);
 
-  useEffect(refresh, [getMySupportTickets]);
+  useEffect(() => {
+    const timer = setTimeout(refresh, 0);
+    return () => clearTimeout(timer);
+  }, [refresh]);
 
   const filteredTickets = useMemo(
     () =>
@@ -117,7 +128,15 @@ function RaiserView({ role }: { role: 'member' | 'guardian' }) {
 
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold text-foreground">{t('support.history.title')}</h2>
-        {filteredTickets.length === 0 ? (
+        {isLoading ? (
+          <LoadingState label="Loading support tickets" />
+        ) : loadError ? (
+          <ErrorState
+            className="min-h-48"
+            description={getErrorMessage(loadError, t('common.errors.generic'))}
+            onRetry={refresh}
+          />
+        ) : filteredTickets.length === 0 ? (
           <div className="text-sm text-muted-foreground">No matching tickets found.</div>
         ) : (
           <>
@@ -152,14 +171,22 @@ function StaffView() {
   const [tickets, setTickets] = useState<SupportTicketRecord[]>([]);
   const [filter, setFilter] = useState<(typeof STAFF_FILTERS)[number]>('open');
   const [sort, setSort] = useState<TicketSort>('newest');
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<unknown>(null);
 
-  function refresh() {
+  const refresh = useCallback(() => {
+    setIsLoading(true);
+    setLoadError(null);
     getStaffSupportTickets(filter === 'all' ? undefined : filter)
       .then(setTickets)
-      .catch(() => setTickets([]));
-  }
+      .catch(setLoadError)
+      .finally(() => setIsLoading(false));
+  }, [filter, getStaffSupportTickets]);
 
-  useEffect(refresh, [getStaffSupportTickets, filter]);
+  useEffect(() => {
+    const timer = setTimeout(refresh, 0);
+    return () => clearTimeout(timer);
+  }, [refresh]);
 
   const sortedTickets = useSortedItems(tickets, {
     compare: (a, b) => {
@@ -219,9 +246,19 @@ function StaffView() {
         />
       </div>
 
-      <StaffTicketQueue tickets={pagedTickets} onResolve={handleResolve} />
+      {isLoading ? (
+        <LoadingState label="Loading support queue" />
+      ) : loadError ? (
+        <ErrorState
+          className="min-h-48"
+          description={getErrorMessage(loadError, t('common.errors.generic'))}
+          onRetry={refresh}
+        />
+      ) : (
+        <StaffTicketQueue tickets={pagedTickets} onResolve={handleResolve} />
+      )}
 
-      {sortedTickets.length > 0 && (
+      {!isLoading && !loadError && sortedTickets.length > 0 && (
         <Pagination
           currentPage={page}
           totalPages={totalPages}
@@ -237,7 +274,7 @@ function StaffView() {
 export function SupportPage() {
   const { role } = useAuth();
 
-  if (role === 'admin' || role === 'manager' || role === 'it-head') {
+  if (role === 'admin' || role === 'manager' || role === 'librarian' || role === 'it-head') {
     return <StaffView />;
   }
   if (role === 'guardian') {

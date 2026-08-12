@@ -18,7 +18,7 @@ from app.db.prisma import prisma
 DEV_PASSWORD = "DevPreview123!"
 DEV_EMAIL_DOMAIN = "devpreview.internal"
 
-ROLES = ["admin", "member", "manager", "it-head", "guardian"]
+ROLES = ["admin", "member", "manager", "librarian", "it-head", "guardian"]
 
 
 def _email(role: str) -> str:

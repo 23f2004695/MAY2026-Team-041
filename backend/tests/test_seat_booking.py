@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -180,6 +181,21 @@ async def test_same_member_cannot_book_two_seats_in_same_slot(member_user):
             json={"seat_label": "A8", "date": TOMORROW, "hour": 13},
         )
     assert third.status_code == 201
+
+
+async def test_concurrent_different_seats_allow_only_one_booking(member_user):
+    async def book(seat_label: str):
+        async with _client_as(member_user) as client:
+            return await client.post(
+                "/api/v1/seat-booking",
+                json={"seat_label": seat_label, "date": TOMORROW, "hour": 14},
+            )
+
+    responses = await asyncio.gather(book("C7"), book("C8"))
+
+    assert sorted(response.status_code for response in responses) == [201, 409]
+    bookings = await prisma.seatbooking.find_many(where={"memberId": member_user.id, "hour": 14})
+    assert len(bookings) == 1
 
 
 async def test_double_booking_same_slot_conflicts(member_user, other_member_user):
