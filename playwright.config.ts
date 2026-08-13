@@ -23,7 +23,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `docker compose up -d --wait db redis && cd backend && uv run prisma migrate deploy && PYTHONPATH=src uv run python scripts/seed_dev_accounts.py && uv run uvicorn app.main:app --app-dir src --host 127.0.0.1 --port ${backendPort}`,
+      command: `docker compose up -d --wait db redis && cd backend && uv run prisma migrate deploy && PYTHONPATH=src uv run python scripts/seed_dev_accounts.py && PYTHONPATH=src uv run python scripts/seed_e2e_fixtures.py && uv run uvicorn app.main:app --app-dir src --host 127.0.0.1 --port ${backendPort}`,
       url: `${backendURL}/health/ready`,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
