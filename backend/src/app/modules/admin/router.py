@@ -79,7 +79,7 @@ async def send_announcement(
 async def list_admin_members(
     _: Annotated[User, Depends(manage_admin)],
     search: Annotated[str | None, Query(description="Match against full name or email")] = None,
-    role: Annotated[str | None, Query(description="Filter by role name")] = None,
+    role: Annotated[str | None, Query()] = None,
     status: Annotated[str | None, Query(pattern=r"^(active|inactive)$")] = None,
     sort_by: Annotated[str, Query(pattern=r"^(name|joined|role)$")] = "joined",
     sort_dir: Annotated[str, Query(pattern=r"^(asc|desc)$")] = "desc",
