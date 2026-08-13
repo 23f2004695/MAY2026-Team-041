@@ -22,7 +22,7 @@ async def list_books(
         str | None, Query(description="Match against title, author, or description")
     ] = None,
     category: Annotated[str | None, Query(description="Exact category match")] = None,
-    sort: Annotated[BookSort, Query(description="newest | rating | recommended")] = "newest",
+    sort: Annotated[BookSort, Query()] = "newest",
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> BookListResponse:

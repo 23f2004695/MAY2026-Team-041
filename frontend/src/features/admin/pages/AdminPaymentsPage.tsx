@@ -79,7 +79,7 @@ export function AdminPaymentsPage() {
               type="month"
               value={month}
               onChange={(event) => updateMonth(event.target.value)}
-              className="h-10 rounded-md border border-border bg-transparent px-3 text-sm text-foreground"
+              className="h-10 min-w-0 max-w-full rounded-md border border-border bg-transparent px-3 text-sm text-foreground"
               aria-label={t('admin.payments.monthFilter')}
             />
             <ExportButton

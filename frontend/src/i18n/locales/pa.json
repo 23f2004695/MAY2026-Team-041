@@ -733,7 +733,11 @@
       "achievementEarned": "ਤੁਸੀਂ \"{{achievement}}\" ਪ੍ਰਾਪਤੀ ਹਾਸਲ ਕੀਤੀ"
     },
     "upcomingEvents": {
-      "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ"
+      "title": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ",
+      "loading": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ ਲੋਡ ਹੋ ਰਹੇ ਹਨ",
+      "loadErrorTitle": "ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ ਉਪਲਬਧ ਨਹੀਂ ਹਨ",
+      "loadError": "ਅਸੀਂ ਆਉਣ ਵਾਲੇ ਸਮਾਗਮ ਲੋਡ ਨਹੀਂ ਕਰ ਸਕੇ।",
+      "noEvents": "ਕੋਈ ਆਉਣ ਵਾਲਾ ਸਮਾਗਮ ਨਹੀਂ ਹੈ।"
     }
   },
   "managerDashboard": {

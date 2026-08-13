@@ -20,7 +20,7 @@ export function DurationToggle({ plans, active, onChange }: DurationToggleProps)
       <div
         role="tablist"
         aria-label={t('pricing.toggle.ariaLabel')}
-        className="inline-flex rounded-full border border-border bg-secondary/60 p-1"
+        className="grid w-full max-w-72 grid-cols-2 rounded-2xl border border-border bg-secondary/60 p-1 sm:inline-flex sm:w-auto sm:max-w-none sm:rounded-full"
       >
         {plans.map((plan) => {
           const isActive = plan.plan_id === active;
@@ -32,7 +32,7 @@ export function DurationToggle({ plans, active, onChange }: DurationToggleProps)
               aria-selected={isActive}
               onClick={() => onChange(plan.plan_id)}
               className={cn(
-                'relative rounded-full px-4 py-2 text-sm font-medium transition-colors sm:px-5',
+                'relative rounded-full px-3 py-2 text-sm font-medium transition-colors sm:px-5',
                 isActive
                   ? 'text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground',

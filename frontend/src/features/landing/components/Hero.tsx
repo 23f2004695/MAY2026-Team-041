@@ -55,6 +55,7 @@ export function Hero() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Button
               size="lg"
+              className="px-5 sm:px-8"
               trailingIcon={<ArrowRight className="size-4" />}
               onClick={() => navigate(ROUTES.REGISTER)}
             >

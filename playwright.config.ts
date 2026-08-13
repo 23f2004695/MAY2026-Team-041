@@ -6,6 +6,8 @@ const backendPort = process.env.PLAYWRIGHT_BACKEND_PORT ?? '8010';
 const frontendPort = process.env.PLAYWRIGHT_FRONTEND_PORT ?? '5180';
 const backendURL = `http://127.0.0.1:${backendPort}`;
 const frontendURL = `http://127.0.0.1:${frontendPort}`;
+const databaseURL =
+  process.env.DATABASE_URL ?? 'postgresql://app:app@127.0.0.1:5432/app';
 
 export default defineConfig({
   testDir: './frontend/tests/e2e',
@@ -21,13 +23,14 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `docker compose up -d --wait db redis && cd backend && uv run prisma migrate deploy && PYTHONPATH=src uv run python scripts/seed_dev_accounts.py && uv run uvicorn app.main:app --app-dir src --host 127.0.0.1 --port ${backendPort}`,
+      command: `docker compose up -d --wait db redis && cd backend && uv run prisma migrate deploy && PYTHONPATH=src uv run python scripts/seed_dev_accounts.py && PYTHONPATH=src uv run python scripts/seed_e2e_fixtures.py && uv run uvicorn app.main:app --app-dir src --host 127.0.0.1 --port ${backendPort}`,
       url: `${backendURL}/health/ready`,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       env: {
         ...process.env,
         APP_ENV: 'e2e',
+        DATABASE_URL: databaseURL,
         BACKEND_CORS_ORIGINS: JSON.stringify([frontendURL]),
         FRONTEND_URL: frontendURL,
       },

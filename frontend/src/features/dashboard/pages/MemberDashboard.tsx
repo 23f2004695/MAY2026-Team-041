@@ -1,5 +1,5 @@
 import { BookMarked, BookOpen, CalendarCheck, Flame, Star, Ticket } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common
 import { ROUTES } from '@/constants/routes';
 import { LeaveLibraryReviewModal } from '@/features/reviews/components/LeaveLibraryReviewModal';
 import { LibraryReviewCard } from '@/features/reviews/components/LibraryReviewCard';
-import { apiGet } from '@/lib/api';
+import { apiGet, getErrorMessage } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/format';
 import type { DueBook } from '@/mocks/dashboard';
 import {
@@ -66,6 +66,9 @@ export function MemberDashboard() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [seatBookings, setSeatBookings] = useState<SeatBookingRecord[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+  const [eventsError, setEventsError] = useState<string | null>(null);
+  const eventsRequestId = useRef(0);
   const [streak, setStreak] = useState<ReadingStreak>(EMPTY_STREAK);
   const [activeStat, setActiveStat] = useState<MemberStatKey | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -93,13 +96,6 @@ export function MemberDashboard() {
     }).catch(() => {
       if (!cancelled) setSeatBookings([]);
     });
-    apiGet<{ items: EventItem[] }>('/events?page_size=100', token ?? undefined)
-      .then((data) => {
-        if (!cancelled) setEvents(data.items || []);
-      })
-      .catch(() => {
-        if (!cancelled) setEvents([]);
-      });
     getReadingStreak().then((data) => {
       if (!cancelled) setStreak(data);
     }).catch(() => {
@@ -111,6 +107,42 @@ export function MemberDashboard() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  const loadEvents = useCallback(async () => {
+    const requestId = ++eventsRequestId.current;
+    setEventsLoading(true);
+    setEventsError(null);
+
+    try {
+      // The event catalogue is public. Avoid coupling this dashboard card to
+      // access-token refresh when it only needs the event title and date.
+      const data = await apiGet<{ items: EventItem[] }>('/events?page_size=100');
+      if (requestId === eventsRequestId.current) setEvents(data.items ?? []);
+    } catch (error) {
+      if (requestId === eventsRequestId.current) {
+        setEventsError(getErrorMessage(error, t('dashboard.upcomingEvents.loadError')));
+      }
+    } finally {
+      if (requestId === eventsRequestId.current) setEventsLoading(false);
+    }
+  }, [t]);
+
+  useEffect(() => {
+    const initialLoad = window.setTimeout(() => void loadEvents(), 0);
+
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') void loadEvents();
+    };
+    window.addEventListener('focus', refreshWhenVisible);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+
+    return () => {
+      window.clearTimeout(initialLoad);
+      eventsRequestId.current += 1;
+      window.removeEventListener('focus', refreshWhenVisible);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
+  }, [loadEvents]);
 
   const activeLoans = useMemo(() => loans.filter((loan) => loan.status !== 'returned'), [loans]);
   const currentlyBorrowed = useMemo(
@@ -218,7 +250,12 @@ export function MemberDashboard() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <RecentNotifications notifications={notifications.slice(0, 5)} />
-        <UpcomingEvents events={upcomingEvents} />
+        <UpcomingEvents
+          events={upcomingEvents}
+          isLoading={eventsLoading}
+          error={eventsError}
+          onRetry={loadEvents}
+        />
       </div>
 
       <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} />
