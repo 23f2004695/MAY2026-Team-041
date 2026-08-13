@@ -751,7 +751,11 @@
       "achievementEarned": "You earned the \"{{achievement}}\" achievement"
     },
     "upcomingEvents": {
-      "title": "Upcoming Events"
+      "title": "Upcoming Events",
+      "loading": "Loading upcoming events",
+      "loadErrorTitle": "Upcoming events unavailable",
+      "loadError": "We couldn't load upcoming events.",
+      "noEvents": "No upcoming events."
     }
   },
   "managerDashboard": {

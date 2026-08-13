@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
+import { ErrorState, LoadingState } from '@/components/feedback';
 import { Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import type { DashboardEvent } from '@/mocks/dashboard';
@@ -38,7 +39,14 @@ export function RecentNotifications({
   );
 }
 
-export function UpcomingEvents({ events }: { events: DashboardEvent[] }) {
+interface UpcomingEventsProps {
+  events: DashboardEvent[];
+  isLoading?: boolean;
+  error?: string | null;
+  onRetry?: () => void;
+}
+
+export function UpcomingEvents({ events, isLoading, error, onRetry }: UpcomingEventsProps) {
   const { t } = useTranslation();
 
   return (
@@ -47,9 +55,22 @@ export function UpcomingEvents({ events }: { events: DashboardEvent[] }) {
         <CardTitle>{t('dashboard.upcomingEvents.title')}</CardTitle>
       </CardHeader>
       <CardContent>
-        {events.length === 0 ? (
+        {isLoading ? (
+          <LoadingState
+            variant="section"
+            label={t('dashboard.upcomingEvents.loading')}
+            className="min-h-24 p-2"
+          />
+        ) : error ? (
+          <ErrorState
+            title={t('dashboard.upcomingEvents.loadErrorTitle')}
+            description={error}
+            onRetry={onRetry}
+            className="min-h-24 p-2"
+          />
+        ) : events.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {t('dashboard.upcomingEvents.noEvents', { defaultValue: 'No upcoming events.' })}
+            {t('dashboard.upcomingEvents.noEvents')}
           </p>
         ) : (
           <ul className="flex flex-col gap-3">

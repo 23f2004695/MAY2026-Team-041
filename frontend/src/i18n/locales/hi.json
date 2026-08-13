@@ -733,7 +733,11 @@
       "achievementEarned": "आपने \"{{achievement}}\" उपलब्धि अर्जित की"
     },
     "upcomingEvents": {
-      "title": "आगामी आयोजन"
+      "title": "आगामी आयोजन",
+      "loading": "आगामी आयोजन लोड हो रहे हैं",
+      "loadErrorTitle": "आगामी आयोजन उपलब्ध नहीं हैं",
+      "loadError": "हम आगामी आयोजन लोड नहीं कर सके।",
+      "noEvents": "कोई आगामी आयोजन नहीं है।"
     }
   },
   "managerDashboard": {

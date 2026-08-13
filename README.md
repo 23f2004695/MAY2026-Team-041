@@ -192,6 +192,8 @@ make test-frontend
 PostgreSQL. The Playwright configuration starts the Docker database/Redis services,
 applies pending migrations, idempotently seeds the role-preview accounts, and starts
 both the backend (`APP_ENV=e2e`) and frontend when they are not already running.
+The complete suite, including the member-dashboard/event synchronization contract,
+also runs automatically on every pull request and push to `main`.
 
 1. Install Playwright's browser binaries once (skip if already installed):
    ```bash
