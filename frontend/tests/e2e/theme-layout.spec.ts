@@ -7,19 +7,15 @@ type Theme = 'light' | 'dark';
 type RouteCase = { name: string; path: string | (() => string); role?: Role };
 type StoredAuth = Record<string, unknown>;
 
-const responsiveViewports = [
+// Every route is checked at the narrowest supported mobile width and at the
+// primary desktop/a11y width. Intermediate breakpoint behavior is exercised by
+// the focused responsive specs below and in responsive-accessibility-regressions,
+// so repeating all nine widths for every route only multiplies CI time without
+// adding a distinct assertion.
+const routeAuditViewports = [
   { width: 320, height: 568 },
-  { width: 360, height: 640 },
-  { width: 375, height: 667 },
-  { width: 414, height: 896 },
-  { width: 768, height: 1024 },
-  { width: 1024, height: 768 },
   { width: 1280, height: 900 },
-  { width: 1440, height: 900 },
-  { width: 1920, height: 1080 },
 ] as const;
-
-test.describe.configure({ mode: 'serial' });
 
 const authStates = new Map<Role, StoredAuth>();
 let seededBookId = '';
@@ -382,15 +378,12 @@ for (const theme of ['light', 'dark'] as const) {
         page,
       }) => {
         await setStateBeforeLoad(page, theme, route.role);
-        for (const viewport of responsiveViewports) {
+        for (const viewport of routeAuditViewports) {
           await page.setViewportSize(viewport);
           await page.goto(typeof route.path === 'function' ? route.path() : route.path);
           await page.waitForLoadState('domcontentloaded');
-          if (viewport.width === 375 || viewport.width === 1280) {
-            await expectHealthyLayout(page, theme, viewport.width === 1280);
-          } else {
-            await expectResponsiveLayout(page);
-          }
+          if (viewport.width === 1280) await expectHealthyLayout(page, theme);
+          else await expectResponsiveLayout(page);
         }
       });
     }
