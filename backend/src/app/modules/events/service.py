@@ -15,8 +15,12 @@ from app.modules.events.schemas import (
 )
 
 
-async def list_events(*, page: int, page_size: int, member_id: str | None) -> EventListResponse:
-    items, total = await repository.list_events(skip=(page - 1) * page_size, take=page_size)
+async def list_events(
+    *, page: int, page_size: int, member_id: str | None, timeframe: str = "all"
+) -> EventListResponse:
+    items, total = await repository.list_events(
+        skip=(page - 1) * page_size, take=page_size, timeframe=timeframe
+    )
     return EventListResponse(
         items=[EventOut.from_prisma(e, member_id=member_id) for e in items],
         total=total,
@@ -183,8 +187,10 @@ async def get_event_analytics(event_id: str) -> EventAnalytics:
 async def get_attendance_summary() -> AttendanceSummary:
     events_this_month = await repository.count_events_this_month()
     total_registrations = await repository.count_total_registrations()
-    total_events, _ = await repository.list_events(skip=0, take=1000)
-    total_capacity = sum(e.capacity for e in total_events)
+    # Summing capacity over a take=1000 page while counting *every* registration made
+    # the ratio climb past 100% once the library passed a thousand events. Both sides
+    # of the fraction now cover the same set.
+    total_capacity = await repository.sum_capacity()
     avg_rate = total_registrations / total_capacity if total_capacity > 0 else 0.0
     return AttendanceSummary(
         total_events_this_month=events_this_month,

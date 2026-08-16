@@ -52,6 +52,11 @@ async def _db_connection():
     await prisma.communitypost.delete_many(
         where={"author": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
     )
+    # Audit entries reference the actor with no cascade, so they have to go
+    # before the users do (role changes, bans and fine settlement all log now).
+    await prisma.auditlogentry.delete_many(
+        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
+    )
     await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
     await prisma.disconnect()
 
@@ -316,3 +321,38 @@ async def test_ban_and_unban_author(member_user, admin_user):
             "/api/v1/community/posts", json={"content": "posting again", "images": []}
         )
     assert allowed.status_code == 201
+
+
+async def test_banned_author_cannot_edit_an_existing_post(member_user, admin_user):
+    """A ban that only blocks new posts is bypassable: edit an old post instead."""
+    post = await _create_post(member_user, content="original content")
+
+    async with _client_as(admin_user) as client:
+        await client.post(f"/api/v1/community/banned-authors/{member_user.id}")
+
+    async with _client_as(member_user) as client:
+        response = await client.put(
+            f"/api/v1/community/posts/{post['id']}",
+            json={"content": "the content they were banned for", "images": []},
+        )
+
+    assert response.status_code == 403
+
+    # And the original content is untouched.
+    async with _client_as(admin_user) as client:
+        listed = await client.get("/api/v1/community/posts?page_size=100")
+    stored = next(item for item in listed.json()["items"] if item["id"] == post["id"])
+    assert stored["content"] == "original content"
+
+
+async def test_banned_author_cannot_report_posts(member_user, other_member_user, admin_user):
+    """Reporting notifies every moderator — a banned user keeps no channel to them."""
+    post = await _create_post(other_member_user)
+
+    async with _client_as(admin_user) as client:
+        await client.post(f"/api/v1/community/banned-authors/{member_user.id}")
+
+    async with _client_as(member_user) as client:
+        response = await client.post(f"/api/v1/community/posts/{post['id']}/report")
+
+    assert response.status_code == 403

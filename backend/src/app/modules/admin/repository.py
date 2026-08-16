@@ -73,24 +73,63 @@ async def sum_expenses_by_category(*, start: datetime) -> dict[str, int]:
     return totals
 
 
-async def list_plan_payments() -> list[Payment]:
-    return await prisma.payment.find_many(where={"status": "success", "planMonths": {"not": None}})
+async def revenue_by_plan_label() -> list[dict]:
+    """Revenue and count per plan label, grouped in SQL.
+
+    Was: load every successful plan payment ever made and total them in Python.
+    """
+    return await prisma.query_raw(
+        """SELECT label, SUM(amount)::bigint AS amount, COUNT(*)::bigint AS count
+           FROM payments
+           WHERE status = 'success' AND plan_months IS NOT NULL
+           GROUP BY label
+           ORDER BY amount DESC"""
+    )
 
 
 async def list_payments_since(start: datetime) -> list[Payment]:
     return await prisma.payment.find_many(where={"status": "success", "createdAt": {"gte": start}})
 
 
-async def list_expenses(*, start: datetime | None = None) -> list[Expense]:
-    where: dict = {}
-    if start is not None:
-        where["createdAt"] = {"gte": start}
-    return await prisma.expense.find_many(where=where)
+async def list_expenses(*, start: datetime) -> list[Expense]:
+    """Expenses since `start`. Bounded on purpose — the unbounded variant was only
+    ever used to build a category breakdown, which expense_totals_by_category now
+    does in SQL."""
+    return await prisma.expense.find_many(where={"createdAt": {"gte": start}})
 
 
-async def list_member_created_dates() -> list[datetime]:
-    members = await prisma.user.find_many(where={"role": {"name": Role.MEMBER}, "deletedAt": None})
-    return [member.createdAt for member in members]
+async def expense_totals_by_category() -> list[dict]:
+    """Lifetime spend per category, grouped in SQL rather than by loading every row."""
+    return await prisma.query_raw(
+        """SELECT category, SUM(amount)::bigint AS amount
+           FROM expenses
+           GROUP BY category
+           ORDER BY amount DESC"""
+    )
+
+
+async def count_members_by_month(*, since: datetime) -> dict[str, int]:
+    """New members per YYYY-MM since `since`, bucketed in SQL.
+
+    Replaces loading every member row to read one timestamp off each. Grouping in SQL
+    also sidesteps query_raw returning timestamps as strings — the counts come back as
+    numbers and the month is already the key the caller wants.
+    """
+    # $2 arrives as text over the query protocol, and created_at is `timestamp without
+    # time zone` holding UTC — so parse it as timestamptz and convert, rather than
+    # letting Postgres compare a timestamp against a string (it refuses) or silently
+    # reinterpreting an offset.
+    rows = await prisma.query_raw(
+        """SELECT to_char(u.created_at, 'YYYY-MM') AS month, COUNT(*)::bigint AS count
+           FROM users u JOIN roles r ON r.id = u.role_id
+           WHERE r.name = $1
+             AND u.deleted_at IS NULL
+             AND u.created_at >= ($2::timestamptz AT TIME ZONE 'UTC')
+           GROUP BY 1""",
+        Role.MEMBER.value,
+        since,
+    )
+    return {row["month"]: int(row["count"]) for row in rows}
 
 
 async def list_member_ids() -> list[str]:
@@ -186,6 +225,29 @@ async def list_latest_payments(member_ids: list[str]) -> dict[str, Payment]:
     for payment in payments:
         latest.setdefault(payment.userId, payment)
     return latest
+
+
+async def list_membership_payments_by_member(member_ids: list[str]) -> dict[str, list[Payment]]:
+    """All successful plan payments per member, oldest first.
+
+    Ascending order matches what payments.calculate_membership_expiry expects, so the
+    admin view can share that function instead of re-deriving expiry from the single
+    latest payment (which ignored renewals and drifted days off on longer plans).
+    """
+    if not member_ids:
+        return {}
+    payments = await prisma.payment.find_many(
+        where={
+            "userId": {"in": member_ids},
+            "status": "success",
+            "planMonths": {"not": None},
+        },
+        order={"createdAt": "asc"},
+    )
+    grouped: dict[str, list[Payment]] = {}
+    for payment in payments:
+        grouped.setdefault(payment.userId, []).append(payment)
+    return grouped
 
 
 async def list_latest_membership_payments(member_ids: list[str]) -> dict[str, Payment]:

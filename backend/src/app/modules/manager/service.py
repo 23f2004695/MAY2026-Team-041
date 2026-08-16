@@ -127,7 +127,11 @@ async def approve_reservation(
 
 async def reject_reservation(reservation_id: str) -> ReservationOut:
     reservation = await _find_pending_reservation_or_404(reservation_id)
-    updated = await reservations_repository.reject(reservation_id)
+    # The 404 above is only a fast path for the common case. The status guard inside
+    # reject_if_pending is what actually decides the race against approve_reservation.
+    updated = await reservations_repository.reject_if_pending(reservation_id)
+    if updated is None:
+        raise HTTPException(status.HTTP_409_CONFLICT, "This reservation was already decided")
 
     await notifications_service.create_notification(
         reservation.memberId,

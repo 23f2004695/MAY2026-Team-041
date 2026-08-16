@@ -33,6 +33,7 @@ from app.modules.admin.schemas import (
 from app.modules.audit_log import service as audit_log_service
 from app.modules.audit_log.constants import AuditAction
 from app.modules.notifications import service as notifications_service
+from app.modules.payments import service as payments_service
 from app.modules.seat_booking.constants import SEAT_LABELS
 
 TOTAL_SEATS = len(SEAT_LABELS)
@@ -51,7 +52,9 @@ def _previous_month_start(moment: datetime) -> datetime:
 def _trend(current: int, previous: int) -> TrendOut:
     if previous == 0:
         return TrendOut(direction="up", percent=100 if current > 0 else 0)
-    percent = round(abs(current - previous) / previous * 100)
+    # abs() on the divisor too: net profit is the one figure here that can be negative,
+    # and dividing by a signed baseline made a shrinking loss render as "up -50%".
+    percent = round(abs(current - previous) / abs(previous) * 100)
     return TrendOut(direction="up" if current >= previous else "down", percent=percent)
 
 
@@ -179,20 +182,11 @@ async def log_expense(user_id: str, payload: ExpenseCreate) -> ExpenseOut:
 
 
 async def get_revenue_by_plan() -> RevenueByPlanOut:
-    payments = await repository.list_plan_payments()
-
-    totals: dict[str, list[int]] = defaultdict(lambda: [0, 0])
-    for payment in payments:
-        bucket = totals[payment.label]
-        bucket[0] += payment.amount
-        bucket[1] += 1
-
+    rows = await repository.revenue_by_plan_label()
     items = [
-        RevenueByPlanItemOut(label=label, amount=amount, count=count)
-        for label, (amount, count) in totals.items()
+        RevenueByPlanItemOut(label=row["label"], amount=int(row["amount"]), count=int(row["count"]))
+        for row in rows
     ]
-    items.sort(key=lambda item: item.amount, reverse=True)
-
     return RevenueByPlanOut(items=items, total=sum(item.amount for item in items))
 
 
@@ -234,23 +228,16 @@ async def get_profit_and_loss() -> ProfitAndLossOut:
 
 
 async def get_expense_breakdown() -> ExpenseBreakdownOut:
-    expenses = await repository.list_expenses()
-
-    totals: dict[str, int] = defaultdict(int)
-    for expense in expenses:
-        totals[expense.category] += expense.amount
-
-    total = sum(totals.values())
+    rows = await repository.expense_totals_by_category()
+    total = sum(int(row["amount"]) for row in rows)
     items = [
         ExpenseBreakdownItemOut(
-            category=ExpenseCategory(category),
-            amount=amount,
-            percent=round(amount / total * 100, 1) if total else 0,
+            category=ExpenseCategory(row["category"]),
+            amount=int(row["amount"]),
+            percent=round(int(row["amount"]) / total * 100, 1) if total else 0,
         )
-        for category, amount in totals.items()
+        for row in rows
     ]
-    items.sort(key=lambda item: item.amount, reverse=True)
-
     return ExpenseBreakdownOut(items=items, total=total)
 
 
@@ -259,15 +246,9 @@ async def get_membership_growth() -> MembershipGrowthOut:
     month_starts = _recent_month_starts(REPORT_MONTHS, now)
     earliest = month_starts[0]
 
-    created_dates = await repository.list_member_created_dates()
-
-    baseline = 0
-    new_by_month: dict[str, int] = defaultdict(int)
-    for created_at in created_dates:
-        if created_at < earliest:
-            baseline += 1
-        else:
-            new_by_month[_month_key(created_at)] += 1
+    # Two counting queries instead of hydrating every member row into Python.
+    baseline = await repository.count_members(created_before=earliest)
+    new_by_month = await repository.count_members_by_month(since=earliest)
 
     months = []
     running_total = baseline
@@ -318,7 +299,7 @@ async def list_members(
     member_ids = [user.id for user in users]
 
     latest_payments = await repository.list_latest_payments(member_ids)
-    latest_plan_payments = await repository.list_latest_membership_payments(member_ids)
+    plan_payments_by_member = await repository.list_membership_payments_by_member(member_ids)
     progress_counts = await repository.count_reading_progress_by_status(member_ids)
     reported_ids = await repository.find_reported_member_ids(member_ids)
     event_registration_counts = await repository.count_event_registrations(member_ids)
@@ -327,17 +308,17 @@ async def list_members(
     items = []
     for user in users:
         last_payment = latest_payments.get(user.id)
-        plan_payment = latest_plan_payments.get(user.id)
+        plan_payments = plan_payments_by_member.get(user.id) or []
+        plan_payment = plan_payments[-1] if plan_payments else None
 
         plan_expires_at = None
         plan_is_active = False
-        if plan_payment is not None:
-            # ponytail: same 30-days/month approximation as payments/router.py's
-            # get_my_membership — no real membership/plan model exists yet.
-            plan_expires_at = plan_payment.createdAt + timedelta(
-                days=30 * (plan_payment.planMonths or 1)
-            )
-            plan_is_active = plan_expires_at > now
+        if plan_payments:
+            # Shared with the member-facing view rather than approximated locally. The
+            # old `30 * planMonths` on the latest payment alone showed annual plans
+            # expiring five days early and ignored renewals entirely.
+            plan_expires_at = payments_service.calculate_membership_expiry(plan_payments)
+            plan_is_active = plan_expires_at is not None and plan_expires_at > now
 
         counts = progress_counts.get(user.id, {})
 

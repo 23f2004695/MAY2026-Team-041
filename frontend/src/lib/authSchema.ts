@@ -95,6 +95,11 @@ export type EditProfileFormValues = z.infer<typeof editProfileSchema>;
 
 export const changePasswordSchema = z
   .object({
+    // The backend rejects a change that doesn't prove knowledge of the existing
+    // password, so collect it here rather than surfacing a 403 after submit.
+    currentPassword: z
+      .string()
+      .min(1, { message: 'settings.changePassword.currentPasswordRequired' }),
     password: z.string().regex(PASSWORD_PATTERN, { message: 'auth.register.errors.password' }),
     confirmPassword: z.string(),
   })

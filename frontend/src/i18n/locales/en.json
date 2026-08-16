@@ -33,7 +33,8 @@
       "next": "Next page"
     },
     "errors": {
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "translationUnavailable": "That language could not be loaded — showing English for now."
     },
     "emptyState": {
       "noResults": "No results found"
@@ -1029,13 +1030,18 @@
       "description": "Books you borrow will show up here with their dates."
     }
   },
-
   "landing": {
     "hero": {
       "badge": "Community Reading Club & Library Platform",
       "title": "Your library, your community, all in one place.",
       "titlePrefix": "Build Better ",
-      "titleWords": ["Libraries", "Communities", "Learning", "Reading Habits", "Connections"],
+      "titleWords": [
+        "Libraries",
+        "Communities",
+        "Learning",
+        "Reading Habits",
+        "Connections"
+      ],
       "subtitle": "Borrow books, reserve a study seat, join a reading club, and get personalized recommendations, without the paper registers and group chats.",
       "ctaJoin": "Join the Community",
       "ctaBrowse": "Browse Books",
@@ -1927,6 +1933,8 @@
     },
     "changePassword": {
       "title": "Change Password",
+      "currentPassword": "Current password",
+      "currentPasswordRequired": "Enter your current password",
       "newPassword": "New password",
       "confirmPassword": "Confirm new password",
       "updateButton": "Update password",
@@ -1995,7 +2003,6 @@
         "ratingLow": "Lowest rating"
       }
     },
-
     "admin": {
       "pageDescription": "Reviews across the whole catalog",
       "stats": {

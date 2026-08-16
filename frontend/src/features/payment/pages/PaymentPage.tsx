@@ -223,7 +223,11 @@ export function PaymentPage() {
                 <span className="text-lg text-muted-foreground line-through">₹{baseAmount}</span>
               )}
               <span className="text-2xl font-semibold text-foreground">₹</span>
-              <AnimatedNumber value={amount} className="text-4xl font-extrabold text-foreground" />
+              <AnimatedNumber
+                value={amount}
+                className="text-4xl font-extrabold text-foreground"
+                data-testid="payment-amount"
+              />
             </div>
           )}
           <Badge variant="outline">{label}</Badge>

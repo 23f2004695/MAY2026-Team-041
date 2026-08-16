@@ -1,12 +1,13 @@
 from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from prisma.models import User
 
 from app.api.deps import get_current_user
 from app.core.config import get_settings
 from app.core.constants import Role
+from app.core.rate_limit import limiter
 from app.modules.coupons import service as coupons_service
 from app.modules.loans import service as loans_service
 from app.modules.notifications import service as notifications_service
@@ -57,7 +58,9 @@ async def create_payment(
 
 
 @router.post("/pay-at-library", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("10/minute")
 async def pay_at_library(
+    request: Request,
     payload: PaymentCreate,
     user: Annotated[User, Depends(get_current_user)],
 ) -> None:
@@ -84,7 +87,9 @@ async def pay_at_library(
 @router.post(
     "/razorpay/order", response_model=RazorpayOrderOut, status_code=status.HTTP_201_CREATED
 )
+@limiter.limit("10/minute")
 async def create_razorpay_order(
+    request: Request,
     payload: PaymentCreate,
     user: Annotated[User, Depends(get_current_user)],
 ) -> RazorpayOrderOut:
@@ -92,7 +97,9 @@ async def create_razorpay_order(
 
 
 @router.post("/razorpay/verify", response_model=PaymentOut)
+@limiter.limit("10/minute")
 async def verify_razorpay_payment(
+    request: Request,
     payload: RazorpayVerifyRequest,
     user: Annotated[User, Depends(get_current_user)],
 ) -> PaymentOut:

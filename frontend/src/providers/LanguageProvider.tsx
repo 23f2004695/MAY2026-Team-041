@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { toast } from 'sonner';
 
 import i18n from '@/i18n/config';
 import { ensureLanguageLoaded } from '@/i18n/autoTranslate';
@@ -17,18 +18,31 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const timer = setTimeout(() => {
       if (cancelled) return;
       setIsTranslating(true);
+      let failed = false;
       ensureLanguageLoaded(language)
         .catch(() => {
-          // Failed to auto-translate (e.g. backend unreachable) — i18next's
-          // fallbackLng keeps the UI in English instead of breaking.
+          // i18next's fallbackLng keeps the UI readable in English rather than
+          // breaking, but staying silent about it meant a user could pick a language,
+          // watch a spinner, and be left on an English page with no explanation.
+          failed = true;
         })
         .finally(() => {
           if (cancelled) return;
           void i18n.changeLanguage(language);
           const option = LANGUAGES.find((entry) => entry.code === language);
           document.documentElement.lang = language;
-          document.documentElement.dir = option?.dir ?? 'ltr';
+          // Only flip writing direction if the translation actually loaded — RTL
+          // English is harder to read than LTR English.
+          document.documentElement.dir = failed ? 'ltr' : (option?.dir ?? 'ltr');
           setIsTranslating(false);
+          if (failed) {
+            toast.error(
+              i18n.t(
+                'common.errors.translationUnavailable',
+                'That language could not be loaded — showing English for now.',
+              ),
+            );
+          }
         });
     }, 0);
 

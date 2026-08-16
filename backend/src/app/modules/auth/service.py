@@ -144,6 +144,22 @@ async def update_profile(user: User, payload: UpdateProfileRequest) -> TokenResp
     if "phone" in fields_set:
         data["phone"] = payload.phone
     if payload.password is not None:
+        # Changing an existing password requires proving you know it. Possession of a
+        # 15-minute access token is not proof of identity — it can be lifted from a
+        # shared machine or a borrowed session — and without this check that token
+        # became a permanent takeover that also locked the real owner out, because
+        # the tokenVersion bump below kills their sessions.
+        #
+        # A Google-created account has no hash yet: CompleteProfileModal sets its first
+        # password, and there is nothing to confirm against. Only that first set is
+        # exempt; every later change goes through the check.
+        if user.passwordHash is not None and (
+            not payload.current_password
+            or not verify_password(payload.current_password, user.passwordHash)
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Current password is incorrect"
+            )
         data["passwordHash"] = hash_password(payload.password)
         # Invalidate every refresh token issued before this password change in
         # the same write that stores the new password.

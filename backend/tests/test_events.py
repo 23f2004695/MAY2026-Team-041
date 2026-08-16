@@ -95,6 +95,17 @@ def _past_date() -> str:
     return (datetime.now(UTC) - timedelta(days=7)).isoformat()
 
 
+async def _age_event_into_the_past(event_id: str) -> None:
+    """Move an already-created event's date into the past.
+
+    Events can only be *created* with a future date now, so anything needing a finished
+    event has to get there the way real ones do — by being scheduled and then elapsing.
+    """
+    await prisma.event.update(
+        where={"id": event_id}, data={"date": datetime.now(UTC) - timedelta(days=7)}
+    )
+
+
 async def _create_event(manager_user, **overrides) -> dict:
     payload = {
         "title": "Test Event",
@@ -537,10 +548,12 @@ async def test_analytics_for_a_nonexistent_event_is_404(admin_user):
 
 
 async def test_admin_can_view_analytics_for_a_past_event(manager_user, member_user, admin_user):
-    created = await _create_event(manager_user, date=_past_date())
+    created = await _create_event(manager_user)
 
     async with _client_as(member_user) as client:
         await client.post(f"/api/v1/events/{created['id']}/register")
+
+    await _age_event_into_the_past(created["id"])
 
     async with _client_as(admin_user) as client:
         response = await client.get(f"/api/v1/events/{created['id']}/analytics")
@@ -553,3 +566,79 @@ async def test_admin_can_view_analytics_for_a_past_event(manager_user, member_us
     assert body["registrants"][0]["role"] == "member"
     role_counts = {r["role"]: r["count"] for r in body["registrants_by_role"]}
     assert role_counts == {"member": 1}
+
+
+async def test_event_cannot_be_created_with_a_past_date(manager_user):
+    """A past date is always a typo, and it also pins the record to the top of the list."""
+    async with _client_as(manager_user) as client:
+        response = await client.post(
+            "/api/v1/events",
+            json={"title": "Backdated", "location": "Hall", "date": _past_date(), "capacity": 5},
+        )
+
+    assert response.status_code == 422
+
+
+async def test_a_finished_event_can_still_be_edited(manager_user):
+    """Creation rejects past dates; updates must not.
+
+    Events become past ones by elapsing, and the edit form resends every field
+    including `date` — enforcing the future-date rule on update would make a
+    finished event impossible to correct, and would break the dashboard contract
+    that checks an event drops off once its date passes.
+    """
+    created = await _create_event(manager_user)
+    await _age_event_into_the_past(created["id"])
+
+    async with _client_as(manager_user) as client:
+        response = await client.put(
+            f"/api/v1/events/{created['id']}",
+            json={"title": "Corrected title", "date": _past_date()},
+        )
+
+    assert response.status_code == 200
+    assert response.json()["title"] == "Corrected title"
+
+
+async def test_upcoming_timeframe_excludes_events_that_have_already_happened(
+    manager_user, member_user
+):
+    """The list is ordered by date ascending across every event, so without a
+    server-side filter the first page is the *oldest* events and 'upcoming' was empty."""
+    finished = await _create_event(manager_user, title="Finished Event")
+    upcoming = await _create_event(manager_user, title="Upcoming Event")
+    await _age_event_into_the_past(finished["id"])
+
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/events?timeframe=upcoming&page_size=100")
+
+    assert response.status_code == 200
+    ids = [item["id"] for item in response.json()["items"]]
+    assert upcoming["id"] in ids
+    assert finished["id"] not in ids
+
+
+async def test_past_timeframe_returns_only_finished_events(manager_user, member_user):
+    finished = await _create_event(manager_user, title="Finished Event")
+    upcoming = await _create_event(manager_user, title="Upcoming Event")
+    await _age_event_into_the_past(finished["id"])
+
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/events?timeframe=past&page_size=100")
+
+    ids = [item["id"] for item in response.json()["items"]]
+    assert finished["id"] in ids
+    assert upcoming["id"] not in ids
+
+
+async def test_default_timeframe_still_returns_everything(manager_user, member_user):
+    finished = await _create_event(manager_user, title="Finished Event")
+    upcoming = await _create_event(manager_user, title="Upcoming Event")
+    await _age_event_into_the_past(finished["id"])
+
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/events?page_size=100")
+
+    ids = [item["id"] for item in response.json()["items"]]
+    assert finished["id"] in ids
+    assert upcoming["id"] in ids

@@ -475,7 +475,7 @@ async def test_password_change_invalidates_previous_refresh_token(client):
 
     changed = await client.patch(
         "/api/v1/auth/me",
-        json={"password": "NewPassword123!"},
+        json={"password": "NewPassword123!", "current_password": "Password123!"},
         headers={"Authorization": f"Bearer {registered.json()['access_token']}"},
     )
     stale_refresh = await client.post("/api/v1/auth/refresh", json={"refresh_token": old_refresh})
@@ -486,6 +486,63 @@ async def test_password_change_invalidates_previous_refresh_token(client):
         "/api/v1/auth/refresh", json={"refresh_token": changed.json()["refresh_token"]}
     )
     assert fresh_refresh.status_code == 200
+
+
+async def test_password_change_without_current_password_is_rejected(client):
+    """A stolen access token must not be enough to take the account over."""
+    email = _unique_email()
+    registered = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Takeover Target"},
+    )
+    headers = {"Authorization": f"Bearer {registered.json()['access_token']}"}
+
+    response = await client.patch(
+        "/api/v1/auth/me", json={"password": "AttackerPass123!"}, headers=headers
+    )
+
+    assert response.status_code == 403
+    # The original password must still work — the attempt changed nothing.
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": email, "password": "Password123!"}
+    )
+    assert login.status_code == 200
+
+
+async def test_password_change_with_wrong_current_password_is_rejected(client):
+    email = _unique_email()
+    registered = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Wrong Current"},
+    )
+    headers = {"Authorization": f"Bearer {registered.json()['access_token']}"}
+
+    response = await client.patch(
+        "/api/v1/auth/me",
+        json={"password": "AttackerPass123!", "current_password": "NotThePassword!"},
+        headers=headers,
+    )
+
+    assert response.status_code == 403
+    login = await client.post(
+        "/api/v1/auth/login", json={"email": email, "password": "Password123!"}
+    )
+    assert login.status_code == 200
+
+
+async def test_non_password_updates_still_need_no_current_password(client):
+    """The check must not leak into ordinary profile edits."""
+    email = _unique_email()
+    registered = await client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": "Password123!", "full_name": "Profile Editor"},
+    )
+    headers = {"Authorization": f"Bearer {registered.json()['access_token']}"}
+
+    response = await client.patch("/api/v1/auth/me", json={"full_name": "Renamed"}, headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()["user"]["full_name"] == "Renamed"
 
 
 async def test_register_returns_a_refresh_token_too(client):

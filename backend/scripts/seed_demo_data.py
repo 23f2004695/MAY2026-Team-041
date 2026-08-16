@@ -38,7 +38,8 @@ from app.modules.loans.constants import (  # noqa: E402
 from app.modules.seat_booking.constants import SEAT_LABELS  # noqa: E402
 
 SEED_DOMAIN = "seed-demo.example.com"
-DEV_PASSWORD_HASH = hash_password("SeedDemo123!")
+DEV_PASSWORD_HASH = hash_password(os.environ.get("DEV_SEED_PASSWORD", "SeedDemo123!"))
+SEEDABLE_ENVIRONMENTS = {"development", "test", "e2e"}
 RNG = random.Random(20260803)
 
 FIRST_NAMES = [
@@ -1142,6 +1143,13 @@ async def _seed_contact_messages(staff: dict) -> None:
 
 async def main() -> None:
     settings = get_settings()
+    # Same reasoning as seed_dev_accounts.py: this creates staff accounts with a
+    # known password, so it must never run against a real environment.
+    if settings.app_env not in SEEDABLE_ENVIRONMENTS:
+        sys.exit(
+            f"refusing to seed known-password accounts with APP_ENV={settings.app_env!r} — "
+            f"allowed only in {sorted(SEEDABLE_ENVIRONMENTS)}"
+        )
     os.environ.setdefault("DATABASE_URL", settings.database_url)
     await prisma.connect()
 

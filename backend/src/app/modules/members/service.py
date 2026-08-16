@@ -5,6 +5,9 @@ from prisma.errors import ForeignKeyViolationError, UniqueViolationError
 
 from app.core.constants import Role
 from app.core.security import hash_password
+from app.db.prisma import prisma
+from app.modules.audit_log import service as audit_log_service
+from app.modules.audit_log.constants import AuditAction
 from app.modules.members import repository
 from app.modules.members.schemas import (
     MemberCreate,
@@ -17,6 +20,9 @@ from app.modules.members.schemas import (
     ReadingProgressUpsert,
     ReadingStreakOut,
 )
+
+# Constant key: this gates the "is this the last admin" decision globally, not per row.
+_ADMIN_COUNT_LOCK = "members:active-admin-count"
 
 
 async def list_members(
@@ -72,15 +78,7 @@ async def update_member(member_id: str, payload: MemberUpdate, *, actor_id: str)
             status.HTTP_409_CONFLICT,
             "You cannot deactivate or remove your own admin access",
         )
-    if (
-        existing.role.name == Role.ADMIN.value
-        and removes_admin_access
-        and await repository.count_active_admins() <= 1
-    ):
-        raise HTTPException(
-            status.HTTP_409_CONFLICT,
-            "The last active admin cannot be deactivated or reassigned",
-        )
+    guards_last_admin = existing.role.name == Role.ADMIN.value and removes_admin_access
 
     fields_set = payload.model_fields_set
     data: dict = {}
@@ -99,7 +97,45 @@ async def update_member(member_id: str, payload: MemberUpdate, *, actor_id: str)
     if not data:
         return MemberOut.from_prisma(existing)
 
-    updated = await repository.update_member(member_id, data)
+    if guards_last_admin:
+        # Count and write inside one transaction, behind an advisory lock on a constant
+        # key. pg_advisory_xact_lock is transaction-scoped, so taking it outside a
+        # transaction would release it immediately and guard nothing. Without this,
+        # two concurrent requests demoting two different admins both read a count of 2,
+        # both passed, and both committed — leaving zero active admins.
+        async with prisma.tx() as tx:
+            await tx.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", _ADMIN_COUNT_LOCK)
+            if await repository.count_active_admins(client=tx) <= 1:
+                raise HTTPException(
+                    status.HTTP_409_CONFLICT,
+                    "The last active admin cannot be deactivated or reassigned",
+                )
+            updated = await repository.update_member(member_id, data, client=tx)
+    else:
+        updated = await repository.update_member(member_id, data)
+
+    # Recorded after the write succeeds, so the log never claims a change that failed.
+    if payload.role_name is not None and payload.role_name.value != existing.role.name:
+        await audit_log_service.record(
+            actor_id=actor_id,
+            action=AuditAction.MEMBER_ROLE_CHANGED,
+            metadata={
+                "memberId": member_id,
+                "memberEmail": existing.email,
+                "from": existing.role.name,
+                "to": payload.role_name.value,
+            },
+        )
+    if payload.is_active is not None and payload.is_active != existing.isActive:
+        await audit_log_service.record(
+            actor_id=actor_id,
+            action=AuditAction.MEMBER_ACTIVATION_CHANGED,
+            metadata={
+                "memberId": member_id,
+                "memberEmail": existing.email,
+                "isActive": payload.is_active,
+            },
+        )
     return MemberOut.from_prisma(updated)
 
 

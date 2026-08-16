@@ -97,7 +97,7 @@ test.describe('Event registration states', () => {
       registrants: [],
       assigned_managers: [],
     };
-    await page.route('**/api/v1/events?page_size=100', (route) =>
+    await page.route('**/api/v1/events?page_size=100*', (route) =>
       route.fulfill({ json: { items: [event], total: 1 } }),
     );
     await page.route('**/api/v1/events/summary', (route) =>

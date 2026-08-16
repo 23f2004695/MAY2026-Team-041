@@ -33,12 +33,15 @@ async def login(request: Request, payload: LoginRequest) -> TokenResponse:
 
 
 @router.post("/google", response_model=TokenResponse)
-async def google(payload: GoogleLoginRequest) -> TokenResponse:
+@limiter.limit("5/minute")
+async def google(request: Request, payload: GoogleLoginRequest) -> TokenResponse:
     return await service.google_login(payload)
 
 
 @router.patch("/me", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def update_profile(
+    request: Request,
     payload: UpdateProfileRequest,
     user: Annotated[User, Depends(get_current_user)],
 ) -> TokenResponse:
@@ -46,7 +49,8 @@ async def update_profile(
 
 
 @router.post("/refresh", response_model=TokenResponse)
-async def refresh(payload: RefreshRequest) -> TokenResponse:
+@limiter.limit("10/minute")
+async def refresh(request: Request, payload: RefreshRequest) -> TokenResponse:
     return await service.refresh(payload)
 
 
@@ -67,5 +71,6 @@ async def forgot_password(request: Request, payload: ForgotPasswordRequest) -> N
 
 
 @router.post("/reset-password", status_code=status.HTTP_204_NO_CONTENT)
-async def reset_password(payload: ResetPasswordRequest) -> None:
+@limiter.limit("5/minute")
+async def reset_password(request: Request, payload: ResetPasswordRequest) -> None:
     await service.reset_password(payload)
