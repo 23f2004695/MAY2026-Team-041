@@ -31,7 +31,10 @@ class Settings(BaseSettings):
     openai_api_key: str = Field(default="", validation_alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", validation_alias="OPENAI_MODEL")
     # LLM backend: "openai" | "bedrock" | "ollama"
-    llm_mode: str = Field(default="openai", validation_alias="LLM_MODE")
+    # Defaults to ollama to match .env.example: a missing LLM_MODE then falls back to the
+    # free local model rather than silently reaching for a paid API, which is what happened
+    # when this defaulted to "openai" while the template said otherwise.
+    llm_mode: str = Field(default="ollama", validation_alias="LLM_MODE")
     # AWS Bedrock
     aws_region: str = Field(default="us-east-1", validation_alias="AWS_REGION")
     aws_access_key_id: str = Field(default="", validation_alias="AWS_ACCESS_KEY_ID")
