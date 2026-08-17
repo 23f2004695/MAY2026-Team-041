@@ -12,6 +12,8 @@ const ChatbotWidget = lazy(() =>
   import('@/components/layout/ChatbotWidget').then((m) => ({ default: m.ChatbotWidget })),
 );
 
+import { AnnouncementPopup } from '@/features/notifications/components/AnnouncementPopup';
+
 import { ActiveSectionProvider } from './ActiveSectionProvider';
 import { AuthProvider } from './AuthProvider';
 import { LanguageProvider } from './LanguageProvider';
@@ -33,6 +35,10 @@ export function AppProviders({ children }: AppProvidersProps) {
             <AuthProvider>
               <ActiveSectionProvider>
                 {children}
+                {/* Mounted here rather than per-layout so an announcement interrupts every
+                    authenticated screen. It renders null when signed out, since the
+                    notifications query it reads is disabled without a session. */}
+                <AnnouncementPopup />
                 <Suspense fallback={null}>
                   <ChatbotWidget />
                 </Suspense>

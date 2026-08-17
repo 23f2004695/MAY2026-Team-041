@@ -34,6 +34,11 @@ async def list_for_raiser(raised_by_id: str) -> list[SupportTicket]:
     )
 
 
+async def count_by_status(status: str) -> int:
+    """COUNT(*) — dashboards previously fetched every open ticket to call len() on it."""
+    return await prisma.supportticket.count(where={"status": status})
+
+
 async def list_all(*, status: str | None) -> list[SupportTicket]:
     where: dict = {}
     if status is not None:

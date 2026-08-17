@@ -201,11 +201,11 @@ async def _build_reading_goal_out(member_id: str, goal) -> ReadingGoalOut:
 async def get_reading_streak(member_id: str) -> ReadingStreakOut:
     rows = await repository.list_login_activity(member_id)
     login_dates = {row.date.date() for row in rows}
-    current, longest = _compute_streaks(login_dates)
+    current, longest = compute_streaks(login_dates)
     return ReadingStreakOut(current_streak_days=current, longest_streak_days=longest)
 
 
-def _compute_streaks(login_dates: set[date]) -> tuple[int, int]:
+def compute_streaks(login_dates: set[date]) -> tuple[int, int]:
     if not login_dates:
         return 0, 0
 

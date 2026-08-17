@@ -1108,6 +1108,11 @@ async def _seed_announcement(staff: dict, members: list) -> None:
                 "type": "announcement",
                 "message": message,
                 "createdAt": sent_at,
+                # Seeded as already-acknowledged. AnnouncementPopup treats an unread
+                # announcement as one the member still has to cross, so leaving these
+                # unread would greet every seeded member with a blocking modal for an
+                # announcement no admin sent in their session.
+                "read": True,
             }
         )
     await prisma.auditlogentry.create(

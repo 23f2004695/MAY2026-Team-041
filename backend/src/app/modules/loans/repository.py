@@ -80,6 +80,57 @@ async def list_all(*, page: int, page_size: int) -> tuple[list[Loan], int]:
 # due-soon reminder sweep and the outstanding-fines total, not a browsable page. A
 # skip/take here would silently skip reminders or undercount fines owed past whatever
 # page happened to load, instead of just shortening a list.
+# A loan carries a fine when the day it came back — or today, if it is still out —
+# is later than its due date. That is a column-to-column comparison, which Prisma's
+# query builder cannot express, so the two helpers below drop to SQL rather than
+# fetching a superset and discarding rows in Python.
+_FINED_PREDICATE = """
+    COALESCE(l.returned_at, (NOW() AT TIME ZONE 'UTC'))::date > l.due_date::date
+"""
+
+
+async def sum_outstanding_fine_days() -> int:
+    """Total unpaid late-days across every loan, summed in the database.
+
+    The caller multiplies by FINE_PER_DAY so the rate stays defined in one place.
+    Previously this loaded every past-due loan with its book and member relations
+    just to add up a single number for two dashboards.
+    """
+    rows = await prisma.query_raw(
+        f"""SELECT COALESCE(SUM(
+                     COALESCE(l.returned_at, (NOW() AT TIME ZONE 'UTC'))::date
+                     - l.due_date::date
+                   ), 0)::bigint AS days
+            FROM loans l
+            WHERE l.fine_paid = false AND {_FINED_PREDICATE}"""
+    )
+    return int(rows[0]["days"]) if rows else 0
+
+
+async def list_fined(*, skip: int = 0, take: int | None = None) -> list[Loan]:
+    """Loans that actually carry a fine, most overdue first.
+
+    Resolves ids in SQL (where the predicate can be evaluated) and hydrates only
+    those, instead of loading every loan whose due date has passed.
+    """
+    limit_clause = "LIMIT $1 OFFSET $2" if take is not None else "OFFSET $1"
+    params: tuple = (take, skip) if take is not None else (skip,)
+    rows = await prisma.query_raw(
+        f"""SELECT l.id::text AS id
+            FROM loans l
+            WHERE {_FINED_PREDICATE}
+            ORDER BY l.due_date ASC
+            {limit_clause}""",
+        *params,
+    )
+    ids = [row["id"] for row in rows]
+    if not ids:
+        return []
+    loans = await prisma.loan.find_many(where={"id": {"in": ids}}, include=INCLUDE)
+    order = {loan_id: index for index, loan_id in enumerate(ids)}
+    return sorted(loans, key=lambda loan: order[loan.id])
+
+
 async def list_past_due(*, now: datetime) -> list[Loan]:
     """Loans whose due date has passed — the only ones that can carry a fine.
 

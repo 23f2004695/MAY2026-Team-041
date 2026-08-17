@@ -70,14 +70,26 @@ async def list_books(
             page_size=page_size,
         )
 
-    # "rating" and "recommended" both sort by a value computed across the whole
-    # matching set, so paginate in-memory after scoring rather than at the DB level.
+    if sort == "rating":
+        # Ranked and paginated in SQL — only the page's reviews are then loaded for
+        # display, instead of the whole catalogue and every review it has.
+        items, total = await repository.list_books_by_rating(
+            search=search, category=category, skip=(page - 1) * page_size, take=page_size
+        )
+        ratings = await _ratings_by_book([item.id for item in items])
+        return BookListResponse(
+            items=[_book_out(item, ratings) for item in items],
+            total=total,
+            page=page,
+            page_size=page_size,
+        )
+
+    # "recommended" scores every candidate against this member's borrowing history,
+    # so it genuinely needs the whole matching set before it can pick a page.
     all_books = await repository.find_all_matching(search, category)
     ratings = await _ratings_by_book([book.id for book in all_books])
 
-    if sort == "rating":
-        all_books.sort(key=lambda b: ratings.get(b.id, (-1.0, 0))[0], reverse=True)
-    elif sort == "recommended":
+    if sort == "recommended":
         scores: dict[str, int] = {}
         if member_id:
             all_books, scores = await _recommend(member_id, all_books)

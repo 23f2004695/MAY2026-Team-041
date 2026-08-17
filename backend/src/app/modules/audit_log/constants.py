@@ -2,9 +2,12 @@ from enum import StrEnum
 
 
 class AuditAction(StrEnum):
-    # There is no expense approval step in this system, only logging — the old
-    # "expenseApproved" value made the log answer a question nobody could ask.
-    EXPENSE_LOGGED = "expenseLogged"
+    # The stored value is "expenseApproved" even though logging an expense is not an
+    # approval — renaming it would split the audit log in two, because existing rows
+    # keep the old value and the admin log UI, its filter tabs and the profile stats
+    # all match on this exact string. Not worth a data migration for a label; if it
+    # ever is, migrate the rows and update those consumers in the same change.
+    EXPENSE_LOGGED = "expenseApproved"
     REFUND_ISSUED = "refundIssued"
     REFUND_REJECTED = "refundRejected"
     FEE_WAIVED = "feeWaived"

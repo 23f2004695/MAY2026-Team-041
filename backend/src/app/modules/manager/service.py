@@ -90,13 +90,6 @@ async def list_pending_reservations() -> list[PendingReservationOut]:
     return [PendingReservationOut.from_prisma(row) for row in rows]
 
 
-async def _find_pending_reservation_or_404(reservation_id: str):
-    reservation = await reservations_repository.find_by_id(reservation_id)
-    if reservation is None or reservation.status != "pending":
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Pending reservation not found")
-    return reservation
-
-
 async def approve_reservation(
     manager_id: str, reservation_id: str, duration_days: int
 ) -> ReservationOut:
@@ -126,12 +119,15 @@ async def approve_reservation(
 
 
 async def reject_reservation(reservation_id: str) -> ReservationOut:
-    reservation = await _find_pending_reservation_or_404(reservation_id)
-    # The 404 above is only a fast path for the common case. The status guard inside
-    # reject_if_pending is what actually decides the race against approve_reservation.
-    updated = await reservations_repository.reject_if_pending(reservation_id)
-    if updated is None:
-        raise HTTPException(status.HTTP_409_CONFLICT, "This reservation was already decided")
+    async with prisma.tx() as tx:
+        # Same lock key and same re-read-inside-the-transaction as approve_reservation.
+        # Both decisions must serialise against each other, or an approve that read
+        # 'pending' before a rejection committed overwrites it and issues the book.
+        await tx.execute_raw("SELECT pg_advisory_xact_lock(hashtext($1))", reservation_id)
+        reservation = await reservations_repository.find_by_id(reservation_id, client=tx)
+        if reservation is None or reservation.status != "pending":
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Pending reservation not found")
+        updated = await reservations_repository.reject(reservation_id, client=tx)
 
     await notifications_service.create_notification(
         reservation.memberId,

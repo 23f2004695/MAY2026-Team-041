@@ -52,6 +52,55 @@ async def list_books(
 
 # Used by sort modes ("rating"/"recommended") that need every matching book scored
 # before they can be paginated, unlike the DB-level skip/take "newest" sort above.
+async def list_books_by_rating(
+    *, search: str | None, category: str | None, skip: int, take: int
+) -> tuple[list[Book], int]:
+    """A page of books ordered by average rating, ranked and paginated in SQL.
+
+    Rating order used to mean loading the entire matching catalogue plus every review
+    for it, sorting in Python and slicing — on a list endpoint the chat tool also hits.
+    Unreviewed books sort last (NULLS LAST) rather than as if they scored zero.
+    """
+    like = f"%{search}%" if search else None
+    wants_category = bool(category and category.lower() != "all")
+
+    conditions = ["b.deleted_at IS NULL"]
+    params: list = []
+    if like is not None:
+        params.append(like)
+        i = len(params)
+        conditions.append(
+            f"(b.title ILIKE ${i} OR b.author ILIKE ${i} OR b.description ILIKE ${i})"
+        )
+    if wants_category:
+        params.append(category)
+        conditions.append(f"b.category = ${len(params)}")
+    where_sql = " AND ".join(conditions)
+
+    total_rows = await prisma.query_raw(
+        f"SELECT COUNT(*)::bigint AS total FROM books b WHERE {where_sql}", *params
+    )
+    total = int(total_rows[0]["total"]) if total_rows else 0
+
+    params.extend([take, skip])
+    rows = await prisma.query_raw(
+        f"""SELECT b.id::text AS id
+            FROM books b
+            LEFT JOIN reviews rv ON rv.book_id = b.id
+            WHERE {where_sql}
+            GROUP BY b.id
+            ORDER BY AVG(rv.rating) DESC NULLS LAST, b.created_at DESC
+            LIMIT ${len(params) - 1} OFFSET ${len(params)}""",
+        *params,
+    )
+    ids = [row["id"] for row in rows]
+    if not ids:
+        return [], total
+    books = await prisma.book.find_many(where={"id": {"in": ids}})
+    order = {book_id: index for index, book_id in enumerate(ids)}
+    return sorted(books, key=lambda book: order[book.id]), total
+
+
 async def find_all_matching(search: str | None, category: str | None) -> list[Book]:
     return await prisma.book.find_many(where=_list_where(search, category))
 
