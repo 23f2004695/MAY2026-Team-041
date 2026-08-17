@@ -132,6 +132,35 @@
     "collapseSidebar": "Collapse sidebar",
     "expandSidebar": "Expand sidebar"
   },
+  "sidebar": {
+    "promo": {
+      "member": {
+        "title": "Expand Your Knowledge",
+        "description": "Explore thousands of books and resources.",
+        "cta": "Browse Books"
+      },
+      "staff": {
+        "title": "Keep the Shelves Moving",
+        "description": "Issue and return copies, and keep the catalogue current.",
+        "cta": "Manage Catalogue"
+      },
+      "admin": {
+        "title": "Know Your Numbers",
+        "description": "Track revenue, expenses, and membership growth.",
+        "cta": "View Payments"
+      },
+      "itHead": {
+        "title": "Keep Systems Healthy",
+        "description": "Review access requests and platform activity.",
+        "cta": "Open IT Overview"
+      },
+      "guardian": {
+        "title": "Follow Their Progress",
+        "description": "See what your children are reading this month.",
+        "cta": "View Reading Progress"
+      }
+    }
+  },
   "footer": {
     "copyright": "© {{year}} Community Reading Club & Library Management Platform"
   },
