@@ -12,6 +12,11 @@ class Settings(BaseSettings):
     app_name: str = "MAY2026 Team 041 API"
     app_env: str = "development"
     api_prefix: str = "/api/v1"
+    # Apply pending migrations at startup so a freshly pulled branch just runs. Prisma's
+    # `migrate deploy` is idempotent and takes a database-level advisory lock, so several
+    # replicas booting at once is safe. Set AUTO_MIGRATE=false if your deployment applies
+    # migrations as its own step and the app should never touch the schema.
+    auto_migrate: bool = Field(default=True, validation_alias="AUTO_MIGRATE")
     database_url: str = Field(
         default="postgresql://app:app@localhost:5432/app",
         validation_alias="DATABASE_URL",
