@@ -4,8 +4,6 @@ from prisma import Prisma
 from prisma.models import Reservation
 
 from app.db.prisma import prisma
-from app.modules.books import repository as books_repository
-from app.modules.loans import repository as loans_repository
 
 RESERVATION_INCLUDE = {"book": True, "loan": True}
 
@@ -53,27 +51,12 @@ async def list_active_for_member_and_book(member_id: str, book_id: str) -> list[
     )
 
 
-async def list_pending_for_book(book_id: str) -> list[Reservation]:
-    return await prisma.reservation.find_many(
-        where={"bookId": book_id, "status": "pending"},
-        order={"createdAt": "asc"},
-    )
-
-
 async def list_pending_for_books(book_ids: list[str]) -> list[Reservation]:
     """Every pending request across several books at once, in queue order."""
     return await prisma.reservation.find_many(
         where={"bookId": {"in": book_ids}, "status": "pending"},
         order={"createdAt": "asc"},
     )
-
-
-async def count_available_copies(book_id: str) -> int:
-    book = await books_repository.find_by_id(book_id)
-    if book is None:
-        return 0
-    on_loan = await loans_repository.count_active_for_book(book_id)
-    return max(0, book.totalCopies - on_loan)
 
 
 async def create_reservation(*, member_id: str, book_id: str) -> Reservation:
@@ -127,17 +110,17 @@ async def approve(
     )
 
 
-async def reject_if_pending(reservation_id: str) -> Reservation | None:
-    """Reject only while still pending, reporting whether this call was the one that did it.
+async def reject(reservation_id: str, *, client: Prisma | None = None) -> Reservation:
+    """Mark a pending reservation rejected.
 
-    An unconditional update raced approve_reservation, which takes an advisory lock this
-    path never acquired: a concurrent approve+reject could leave the row 'rejected' with
-    a Loan already created and loanId set — the book issued against a declined request.
-    Making the status the guard means exactly one of the two decisions wins.
+    Callers must hold the same advisory lock approve() runs under. A status guard alone
+    is not enough: approve's own write is unconditional, so an approve that read
+    'pending' before a rejection committed would silently overwrite it and leave the
+    book issued against a declined request.
     """
-    updated = await prisma.reservation.update_many(
-        where={"id": reservation_id, "status": "pending"}, data={"status": "rejected"}
+    db = client or prisma
+    return await db.reservation.update(
+        where={"id": reservation_id},
+        data={"status": "rejected"},
+        include=RESERVATION_INCLUDE,
     )
-    if updated == 0:
-        return None
-    return await find_by_id(reservation_id)

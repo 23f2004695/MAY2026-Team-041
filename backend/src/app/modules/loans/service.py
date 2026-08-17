@@ -83,15 +83,16 @@ async def list_my_loans(member_id: str, *, client: Prisma | None = None) -> list
 async def list_fines() -> list[LoanOut]:
     # Includes returned-but-still-unpaid loans, not just currently-overdue ones — a
     # member who returns a book late still owes the fine until it's marked paid.
+    # The "is it actually fined" test now happens in SQL, so nothing is hydrated
+    # only to be filtered back out here.
     now = datetime.now(UTC)
-    rows = await repository.list_past_due(now=now)
-    out = [LoanOut.from_prisma(row, now=now) for row in rows]
-    return [item for item in out if item.days_late > 0]
+    rows = await repository.list_fined()
+    return [LoanOut.from_prisma(row, now=now) for row in rows]
 
 
 async def sum_outstanding_fines() -> int:
-    fines = await list_fines()
-    return sum(item.fine_amount for item in fines if not item.fine_paid)
+    """Total unpaid fines, aggregated in the database rather than by loading loans."""
+    return await repository.sum_outstanding_fine_days() * FINE_PER_DAY
 
 
 async def settle_fines_for_member(

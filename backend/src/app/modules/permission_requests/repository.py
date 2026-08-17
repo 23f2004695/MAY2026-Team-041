@@ -11,6 +11,11 @@ INCLUDE = {"requestedBy": True, "decidedBy": True}
 LIST_LIMIT = 200
 
 
+async def count_pending() -> int:
+    """COUNT(*) — see support_tickets.count_by_status."""
+    return await prisma.permissionrequest.count(where={"status": "pending"})
+
+
 async def list_pending() -> list[PermissionRequest]:
     return await prisma.permissionrequest.find_many(
         where={"status": "pending"}, include=INCLUDE, order={"createdAt": "asc"}, take=LIST_LIMIT

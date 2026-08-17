@@ -1,9 +1,9 @@
-from collections import defaultdict
+import asyncio
 from dataclasses import dataclass
 
 from app.modules.leaderboard import repository
 from app.modules.leaderboard.schemas import LeaderboardEntryOut
-from app.modules.members.service import _compute_streaks
+from app.modules.members.service import compute_streaks
 
 LEADERBOARD_LIMIT = 50
 
@@ -23,52 +23,41 @@ class MemberStats:
 
 
 async def get_leaderboard(current_user_id: str) -> list[LeaderboardEntryOut]:
-    members = await repository.list_member_users()
+    """Rank members by activity score.
+
+    Every count is aggregated in SQL and the six queries run concurrently. The previous
+    version loaded six whole tables — including one login-activity row per member per
+    day, for all time — and counted them in Python on every page view.
+    """
+    (
+        members,
+        completed_counts,
+        review_counts,
+        event_counts,
+        returns,
+        login_dates_per_member,
+    ) = await asyncio.gather(
+        repository.list_member_users(),
+        repository.count_completed_progress_by_member(),
+        repository.count_reviews_by_member(),
+        repository.count_attended_events_by_member(),
+        repository.count_returns_by_member(),
+        repository.list_recent_login_dates(),
+    )
     if not members:
         return []
-
-    completed_progress = await repository.list_completed_progress()
-    reviews = await repository.list_reviews()
-    events = await repository.list_event_registrations()
-    returned_loans = await repository.list_returned_loans()
-    login_activities = await repository.list_login_activities()
-
-    # Aggregate counts per member
-    completed_counts: dict[str, int] = defaultdict(int)
-    for p in completed_progress:
-        completed_counts[p.memberId] += 1
-
-    review_counts: dict[str, int] = defaultdict(int)
-    for r in reviews:
-        review_counts[r.memberId] += 1
-
-    event_counts: dict[str, int] = defaultdict(int)
-    for e in events:
-        event_counts[e.memberId] += 1
-
-    on_time_returns: dict[str, int] = defaultdict(int)
-    late_returns: dict[str, int] = defaultdict(int)
-    for loan in returned_loans:
-        if loan.returnedAt and loan.dueDate and loan.returnedAt <= loan.dueDate:
-            on_time_returns[loan.memberId] += 1
-        else:
-            late_returns[loan.memberId] += 1
-
-    login_dates_per_member: dict[str, set] = defaultdict(set)
-    for activity in login_activities:
-        if activity.date:
-            login_dates_per_member[activity.memberId].add(activity.date.date())
+    on_time_returns, late_returns = returns
 
     # Build intermediate records
     member_stats: list[MemberStats] = []
     for m in members:
         m_id = m.id
-        books_completed = completed_counts[m_id]
-        reviews_cnt = review_counts[m_id]
-        events_cnt = event_counts[m_id]
-        on_time_cnt = on_time_returns[m_id]
-        late_cnt = late_returns[m_id]
-        current_streak, _ = _compute_streaks(login_dates_per_member[m_id])
+        books_completed = completed_counts.get(m_id, 0)
+        reviews_cnt = review_counts.get(m_id, 0)
+        events_cnt = event_counts.get(m_id, 0)
+        on_time_cnt = on_time_returns.get(m_id, 0)
+        late_cnt = late_returns.get(m_id, 0)
+        current_streak, _ = compute_streaks(login_dates_per_member.get(m_id, set()))
 
         # Scoring:
         # Complete a book: 100
@@ -117,8 +106,10 @@ async def get_leaderboard(current_user_id: str) -> list[LeaderboardEntryOut]:
         )
     )
 
+    # Rank across everyone, then return only the top slice. "reading_champion" depends
+    # on rank 1, so the cut has to happen after ranking, not before.
     results = []
-    for rank, stats in enumerate(member_stats, start=1):
+    for rank, stats in enumerate(member_stats[:LEADERBOARD_LIMIT], start=1):
         badges = []
         if stats.books_completed >= 10:
             badges.append("bookworm")

@@ -1945,6 +1945,12 @@
     "unreadBadge_one": "{{count}} ਨਾ ਪੜ੍ਹੀ ਹੋਈ",
     "unreadBadge_other": "{{count}} ਨਾ ਪੜ੍ਹੀਆਂ ਹੋਈਆਂ",
     "filterAriaLabel": "ਸੂਚਨਾਵਾਂ ਫਿਲਟਰ ਕਰੋ",
+    "announcementPopup": {
+      "title": "ਐਲਾਨ",
+      "acknowledge": "ਸਮਝ ਗਏ",
+      "remaining_one": "{{count}} ਐਲਾਨ ਵੇਖਣਾ ਬਾਕੀ ਹੈ",
+      "remaining_other": "{{count}} ਐਲਾਨ ਵੇਖਣੇ ਬਾਕੀ ਹਨ"
+    },
     "filters": {
       "all": "ਸਭ",
       "unread": "ਨਾ ਪੜ੍ਹੀਆਂ ਹੋਈਆਂ"

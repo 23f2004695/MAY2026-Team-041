@@ -15,6 +15,8 @@ export interface ModalProps {
   footer?: ReactNode;
   className?: string;
   dismissible?: boolean;
+  /** Escape and backdrop clicks no longer close the modal — see Overlay's `blocking`. */
+  blocking?: boolean;
 }
 
 export function Modal({
@@ -26,6 +28,7 @@ export function Modal({
   footer,
   className,
   dismissible = true,
+  blocking = false,
 }: ModalProps) {
   const titleId = useId();
   const { t } = useTranslation();
@@ -36,6 +39,7 @@ export function Modal({
       onClose={onClose}
       labelledBy={title ? titleId : undefined}
       panelClassName="m-auto"
+      blocking={blocking}
     >
       <div
         id={id}

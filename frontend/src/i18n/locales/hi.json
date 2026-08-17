@@ -1943,6 +1943,12 @@
     "unreadBadge_one": "{{count}} अपठित",
     "unreadBadge_other": "{{count}} अपठित",
     "filterAriaLabel": "सूचनाएँ फ़िल्टर करें",
+    "announcementPopup": {
+      "title": "घोषणा",
+      "acknowledge": "समझ गया",
+      "remaining_one": "{{count}} घोषणा देखनी बाकी है",
+      "remaining_other": "{{count}} घोषणाएँ देखनी बाकी हैं"
+    },
     "filters": {
       "all": "सभी",
       "unread": "अपठित"

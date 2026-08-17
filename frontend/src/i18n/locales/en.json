@@ -2065,6 +2065,12 @@
     "unreadBadge_other": "{{count}} unread",
     "markAllAsRead": "Mark all as read",
     "filterAriaLabel": "Filter notifications",
+    "announcementPopup": {
+      "title": "Announcement",
+      "acknowledge": "Got it",
+      "remaining_one": "{{count}} announcement to review",
+      "remaining_other": "{{count}} announcements to review"
+    },
     "filters": {
       "all": "All",
       "unread": "Unread"

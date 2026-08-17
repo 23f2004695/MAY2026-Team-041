@@ -112,7 +112,7 @@ async def test_logging_an_expense_creates_an_entry(admin_user):
     assert response.status_code == 201
 
     entries = await _get_audit_log(admin_user)
-    entry = _find(entries, "expenseLogged", 120)
+    entry = _find(entries, "expenseApproved", 120)
     assert entry["params"]["category"] == "marketing"
     assert entry["actor_id"] == admin_user.id
     assert entry["actor_name"] == admin_user.fullName
