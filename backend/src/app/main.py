@@ -2,8 +2,10 @@ import asyncio
 import contextlib
 import logging
 import os
+import sys
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -66,12 +68,53 @@ async def _due_soon_reminder_loop() -> None:
         await asyncio.sleep(REMINDER_LOOP_INTERVAL_SECONDS)
 
 
+SCHEMA_PATH = Path(__file__).resolve().parent.parent.parent / "prisma" / "schema.prisma"
+
+
+async def _apply_pending_migrations(database_url: str) -> None:
+    """Bring the schema up to date before anything serves traffic.
+
+    Pulling a branch that added a migration used to leave the database behind until
+    someone remembered to run `prisma migrate deploy` by hand — the symptom was a pile
+    of unrelated-looking test and request failures. `migrate deploy` is idempotent and
+    holds an advisory lock for the duration, so this is safe to run on every boot and
+    with several instances starting at once.
+    """
+    process = await asyncio.create_subprocess_exec(
+        sys.executable,
+        "-m",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        str(SCHEMA_PATH),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.STDOUT,
+        env={**os.environ, "DATABASE_URL": database_url},
+    )
+    stdout, _ = await process.communicate()
+    output = stdout.decode(errors="replace").strip()
+
+    if process.returncode != 0:
+        # Serving against a schema the code does not match produces failures that look
+        # like anything but a migration problem, so refuse to start instead.
+        logger.error("prisma migrate deploy failed: %s", output)
+        raise RuntimeError("Database migrations failed; refusing to start")
+
+    if "No pending migrations" in output:
+        logger.info("database schema already up to date")
+    else:
+        logger.info("applied pending database migrations")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     reminder_task: asyncio.Task | None = None
     if settings.app_env != "test":
         os.environ.setdefault("DATABASE_URL", settings.database_url)
+        if settings.auto_migrate:
+            await _apply_pending_migrations(settings.database_url)
         await prisma.connect()
         reminder_task = asyncio.create_task(_due_soon_reminder_loop())
 
