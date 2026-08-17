@@ -2,7 +2,7 @@ import { BookOpen, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, ScrollRestoration } from 'react-router-dom';
 
-import { Footer, Sidebar, TopBar } from '@/components/layout';
+import { Footer, Sidebar, SidebarPromo, TopBar } from '@/components/layout';
 import { Button } from '@/components/ui';
 import type { NavItem } from '@/constants/navigation';
 import { cn } from '@/lib/cn';
@@ -81,6 +81,7 @@ export function AppShellLayout({ items }: AppShellLayoutProps) {
             </Button>
           </div>
           <Sidebar id="app-sidebar-nav" items={items} collapsed={collapsed} />
+          {!collapsed && <SidebarPromo />}
         </aside>
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar items={items} />

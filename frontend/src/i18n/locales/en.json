@@ -132,6 +132,35 @@
     "collapseSidebar": "Collapse sidebar",
     "expandSidebar": "Expand sidebar"
   },
+  "sidebar": {
+    "promo": {
+      "member": {
+        "title": "Expand Your Knowledge",
+        "description": "Explore thousands of books and resources.",
+        "cta": "Browse Books"
+      },
+      "staff": {
+        "title": "Keep the Shelves Moving",
+        "description": "Issue and return copies, and keep the catalogue current.",
+        "cta": "Manage Catalogue"
+      },
+      "admin": {
+        "title": "Know Your Numbers",
+        "description": "Track revenue, expenses, and membership growth.",
+        "cta": "View Payments"
+      },
+      "itHead": {
+        "title": "Keep Systems Healthy",
+        "description": "Review access requests and platform activity.",
+        "cta": "Open IT Overview"
+      },
+      "guardian": {
+        "title": "Follow Their Progress",
+        "description": "See what your children are reading this month.",
+        "cta": "View Reading Progress"
+      }
+    }
+  },
   "footer": {
     "copyright": "© {{year}} Community Reading Club & Library Management Platform"
   },
@@ -1067,7 +1096,7 @@
       "headingHighlight": "modern",
       "headingSuffix": "library needs",
       "subheading": "One platform for borrowing, discovery, community, and the day-to-day running of the library.",
-      "imgAlt": "Illustration of students using digital library search, QR borrowing, seat booking, AI recommendations, and reading challenges",
+      "imgAlt": "Illustration of students using digital library search, borrowing, seat booking, AI recommendations, and reading challenges",
       "items": {
         "digitalLibrary": {
           "title": "Digital Library",

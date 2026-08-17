@@ -51,7 +51,11 @@
 
   --color-foreground: #e2e8f0;
   --color-muted: #94a3b8;
-  --color-muted-foreground: #7c8ba1;
+  /* Was #7c8ba1 — exactly 4.97:1 on --color-surface, which left no headroom: any
+     translucent tint over that surface (SidebarPromo's dark:bg-primary/10 composites to
+     #25203d) dropped it to 4.48:1 and failed axe's 4.5:1 check on every app-shell page.
+     #8b98ac clears 5.3:1 through the tint and 5.9:1 on bare surface. */
+  --color-muted-foreground: #8b98ac;
 
   --color-secondary: #1b2536;
   --color-secondary-foreground: #e2e8f0;
