@@ -126,7 +126,9 @@
   },
   "topBar": {
     "openNavigation": "ਨੇਵੀਗੇਸ਼ਨ ਖੋਲ੍ਹੋ",
-    "menu": "ਮੀਨੂ"
+    "menu": "ਮੀਨੂ",
+    "collapseSidebar": "ਸਾਈਡਬਾਰ ਛੋਟਾ ਕਰੋ",
+    "expandSidebar": "ਸਾਈਡਬਾਰ ਵੱਡਾ ਕਰੋ"
   },
   "footer": {
     "copyright": "© {{year}} ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਲਾਇਬ੍ਰੇਰੀ ਪ੍ਰਬੰਧਨ ਪਲੇਟਫਾਰਮ"

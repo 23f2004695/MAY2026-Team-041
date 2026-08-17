@@ -128,7 +128,9 @@
   },
   "topBar": {
     "openNavigation": "Open navigation",
-    "menu": "Menu"
+    "menu": "Menu",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar"
   },
   "footer": {
     "copyright": "© {{year}} Community Reading Club & Library Management Platform"

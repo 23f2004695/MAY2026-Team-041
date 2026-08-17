@@ -126,7 +126,9 @@
   },
   "topBar": {
     "openNavigation": "नेविगेशन खोलें",
-    "menu": "मेनू"
+    "menu": "मेनू",
+    "collapseSidebar": "साइडबार छोटा करें",
+    "expandSidebar": "साइडबार बड़ा करें"
   },
   "footer": {
     "copyright": "© {{year}} कम्युनिटी रीडिंग क्लब एंड लाइब्रेरी मैनेजमेंट प्लेटफ़ॉर्म"
