@@ -41,6 +41,11 @@ async def _db_connection():
     yield
     domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
     await prisma.permissionrequest.delete_many(where={"requestedBy": domain_filter})
+    # Audit entries reference the actor with no cascade, so they have to go
+    # before the users do (role changes, bans and fine settlement all log now).
+    await prisma.auditlogentry.delete_many(
+        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
+    )
     await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
 

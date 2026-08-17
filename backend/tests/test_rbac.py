@@ -46,6 +46,11 @@ def _unique_email() -> str:
 async def _db_connection():
     await prisma.connect()
     yield
+    # Audit entries reference the actor with no cascade, so they have to go
+    # before the users do (role changes, bans and fine settlement all log now).
+    await prisma.auditlogentry.delete_many(
+        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
+    )
     await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
     await prisma.disconnect()
 

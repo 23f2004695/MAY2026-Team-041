@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
+import { useMembershipQuery } from '@/features/payment/hooks/useMembershipQuery';
 import { LeaveLibraryReviewModal } from '@/features/reviews/components/LeaveLibraryReviewModal';
 import { LibraryReviewCard } from '@/features/reviews/components/LibraryReviewCard';
 import { apiGet, getErrorMessage } from '@/lib/api';
@@ -13,7 +14,6 @@ import type { DueBook } from '@/mocks/dashboard';
 import {
   useAuth,
   type LoanRecord,
-  type Membership,
   type ReadingStreak,
   type Reservation,
   type SeatBookingRecord,
@@ -50,7 +50,6 @@ export function MemberDashboard() {
   const {
     token,
     fullName,
-    getMembership,
     getMyLoans,
     getMyReservations,
     getMySeatBookings,
@@ -61,7 +60,7 @@ export function MemberDashboard() {
   // the bell already has cached.
   const { notifications } = useNotificationsQuery();
 
-  const [membership, setMembership] = useState<Membership | null>(null);
+  const { membership } = useMembershipQuery();
   const [loans, setLoans] = useState<LoanRecord[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [seatBookings, setSeatBookings] = useState<SeatBookingRecord[]>([]);
@@ -76,11 +75,6 @@ export function MemberDashboard() {
   useEffect(() => {
     let cancelled = false;
 
-    getMembership().then((data) => {
-      if (!cancelled) setMembership(data);
-    }).catch(() => {
-      if (!cancelled) setMembership(null);
-    });
     getMyLoans().then((data) => {
       if (!cancelled) setLoans(data);
     }).catch(() => {

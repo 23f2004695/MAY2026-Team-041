@@ -31,4 +31,10 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/live', timeout=3)" || exit 1
 
-CMD ["uv", "run", "uvicorn", "app.main:app", "--app-dir", "src", "--host", "0.0.0.0", "--port", "8000"]
+# --proxy-headers makes uvicorn read the client address from X-Forwarded-For instead of
+# reporting the proxy's own IP. Without it every request behind a load balancer shares
+# one rate-limit bucket, which turns the brute-force limit into a way to lock out all
+# users at once. FORWARDED_ALLOW_IPS must list only the proxies you actually run —
+# trusting "*" lets any client spoof the header and bypass rate limiting entirely.
+ENV FORWARDED_ALLOW_IPS="127.0.0.1"
+CMD ["sh", "-c", "uv run uvicorn app.main:app --app-dir src --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips \"$FORWARDED_ALLOW_IPS\""]

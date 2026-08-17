@@ -12,13 +12,27 @@ _INCLUDE = {
 }
 
 
-async def list_events(*, skip: int, take: int) -> tuple[list[Event], int]:
-    where = {"deletedAt": None}
+async def list_events(*, skip: int, take: int, timeframe: str = "all") -> tuple[list[Event], int]:
+    """List events, optionally restricted to upcoming or past ones.
+
+    The timeframe filter has to happen here, not in the caller. Ordering is by date
+    ascending across every event, so filtering a page client-side means filtering the
+    *oldest* events: past a hundred finished events the "upcoming" view went empty
+    while upcoming events sat unfetched on later pages.
+    """
+    where: dict = {"deletedAt": None}
+    now = datetime.now(UTC)
+    if timeframe == "upcoming":
+        where["date"] = {"gte": now}
+    elif timeframe == "past":
+        where["date"] = {"lt": now}
+
     return await paginate(
         prisma.event,
         where=where,
         include=_INCLUDE,
-        order={"date": "asc"},
+        # Upcoming reads soonest-first; past reads most-recent-first.
+        order={"date": "desc" if timeframe == "past" else "asc"},
         skip=skip,
         take=take,
     )
@@ -109,6 +123,14 @@ async def count_events_this_month() -> int:
 
 async def count_total_registrations() -> int:
     return await prisma.eventregistration.count()
+
+
+async def sum_capacity() -> int:
+    """Total seats across every live event, aggregated in SQL rather than in Python."""
+    rows = await prisma.query_raw(
+        "SELECT COALESCE(SUM(capacity), 0)::bigint AS total FROM events WHERE deleted_at IS NULL"
+    )
+    return int(rows[0]["total"]) if rows else 0
 
 
 async def list_manager_ids(candidate_ids: list[str]) -> list[str]:

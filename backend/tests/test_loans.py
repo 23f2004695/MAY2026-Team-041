@@ -44,6 +44,11 @@ async def _db_connection():
     domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
     await prisma.loan.delete_many(where={"member": domain_filter})
     await prisma.notification.delete_many(where={"user": domain_filter})
+    # Audit entries reference the actor with no cascade, so they have to go
+    # before the users do (role changes, bans and fine settlement all log now).
+    await prisma.auditlogentry.delete_many(
+        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
+    )
     await prisma.user.delete_many(where=domain_filter)
     await prisma.book.delete_many(where={"title": {"startswith": TEST_BOOK_TITLE_PREFIX}})
     await prisma.disconnect()

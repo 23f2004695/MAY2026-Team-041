@@ -37,7 +37,7 @@ test.describe('Payment — coupons', () => {
 
     await expect(page.getByText(`Coupon ${code} applied — 20% off`)).toBeVisible();
     await expect(page.getByText('₹500', { exact: true })).toBeVisible(); // struck-through original
-    await expect(page.locator('.text-4xl.font-extrabold.text-foreground')).toHaveText('400');
+    await expect(page.getByTestId('payment-amount')).toHaveText('400');
   });
 
   test('shows an inline error for an unknown coupon code', async ({ page }) => {
@@ -49,7 +49,7 @@ test.describe('Payment — coupons', () => {
 
     await expect(page.getByText('Coupon not found')).toBeVisible();
     // No discount applied — the amount shown is still the full one.
-    await expect(page.locator('.text-4xl.font-extrabold.text-foreground')).toHaveText('500');
+    await expect(page.getByTestId('payment-amount')).toHaveText('500');
   });
 
   test('removing an applied coupon restores the coupon input and full amount', async ({
@@ -68,7 +68,7 @@ test.describe('Payment — coupons', () => {
     await page.getByRole('button', { name: 'Remove' }).click();
 
     await expect(page.getByPlaceholder('Have a coupon code?')).toBeVisible();
-    await expect(page.locator('.text-4xl.font-extrabold.text-foreground')).toHaveText('200');
+    await expect(page.getByTestId('payment-amount')).toHaveText('200');
   });
 });
 

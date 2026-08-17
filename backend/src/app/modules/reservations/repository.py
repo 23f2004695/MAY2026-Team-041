@@ -127,7 +127,17 @@ async def approve(
     )
 
 
-async def reject(reservation_id: str) -> Reservation:
-    return await prisma.reservation.update(
-        where={"id": reservation_id}, data={"status": "rejected"}, include=RESERVATION_INCLUDE
+async def reject_if_pending(reservation_id: str) -> Reservation | None:
+    """Reject only while still pending, reporting whether this call was the one that did it.
+
+    An unconditional update raced approve_reservation, which takes an advisory lock this
+    path never acquired: a concurrent approve+reject could leave the row 'rejected' with
+    a Loan already created and loanId set — the book issued against a declined request.
+    Making the status the guard means exactly one of the two decisions wins.
+    """
+    updated = await prisma.reservation.update_many(
+        where={"id": reservation_id, "status": "pending"}, data={"status": "rejected"}
     )
+    if updated == 0:
+        return None
+    return await find_by_id(reservation_id)

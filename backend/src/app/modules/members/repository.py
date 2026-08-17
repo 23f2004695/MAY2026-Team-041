@@ -1,6 +1,7 @@
 from contextlib import suppress
 from datetime import UTC, datetime
 
+from prisma import Prisma
 from prisma.errors import UniqueViolationError
 from prisma.models import LoginActivity, ReadingGoal, ReadingProgress, Role, User
 
@@ -91,12 +92,14 @@ async def create_member(
     )
 
 
-async def update_member(member_id: str, data: dict) -> User:
-    return await prisma.user.update(where={"id": member_id}, data=data, include=MEMBER_INCLUDE)
+async def update_member(member_id: str, data: dict, *, client: Prisma | None = None) -> User:
+    db = client or prisma
+    return await db.user.update(where={"id": member_id}, data=data, include=MEMBER_INCLUDE)
 
 
-async def count_active_admins() -> int:
-    return await prisma.user.count(
+async def count_active_admins(*, client: Prisma | None = None) -> int:
+    db = client or prisma
+    return await db.user.count(
         where={"isActive": True, "deletedAt": None, "role": {"name": AppRole.ADMIN.value}}
     )
 

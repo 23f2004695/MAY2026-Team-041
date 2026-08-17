@@ -16,8 +16,11 @@ Flow:
 from __future__ import annotations
 
 import json
+import logging
+from contextvars import ContextVar
 from typing import Any
 
+from fastapi import HTTPException
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
@@ -44,8 +47,18 @@ from app.modules.support_tickets import service as support_tickets_service
 from app.modules.support_tickets.constants import TicketCategory
 from app.modules.support_tickets.schemas import SupportTicketCreate
 
+logger = logging.getLogger(__name__)
+
 # ── Per-request context injected before each agent call ──────────────────────
-_ctx: dict[str, Any] = {}
+# A ContextVar, not a plain dict. Tools read this while the agent is suspended at an
+# await, so with module-level state any concurrent request would overwrite it and the
+# suspended request's tools would resume reading the *other* caller's member_id and
+# role — a cross-user data leak, and a privilege escalation through the STAFF_ROLES
+# checks below. ContextVar values are per-task, so each request sees only its own.
+# Always replace the whole dict via .set(); never mutate the value in place. The
+# default is None rather than {} so there is exactly one shared empty state that
+# nothing can accidentally write into.
+_ctx: ContextVar[dict[str, Any] | None] = ContextVar("chat_ctx", default=None)
 
 STAFF_ROLES = {
     Role.ADMIN.value,
@@ -85,12 +98,34 @@ def _build_llm() -> BaseChatModel:
 
 
 # ── Context helpers ───────────────────────────────────────────────────────────
+def _current() -> dict[str, Any]:
+    return _ctx.get() or {}
+
+
 def _role() -> str:
-    return _ctx.get("role", Role.MEMBER.value)
+    return _current().get("role", Role.MEMBER.value)
 
 
 def _member_id() -> str:
-    return _ctx.get("member_id", "")
+    return _current().get("member_id", "")
+
+
+def _user_name() -> str:
+    return _current().get("user_name", "")
+
+
+def _tool_error(action: str, exc: Exception) -> str:
+    """Surface expected, user-actionable failures; hide everything else.
+
+    Services raise HTTPException with text already written for users ("No copies are
+    currently available"), so that is safe to pass through. Anything else — Prisma
+    errors, constraint names, provider internals — must not reach the model, which
+    relays tool output to the user more or less verbatim.
+    """
+    if isinstance(exc, HTTPException):
+        return f"{action}: {exc.detail}"
+    logger.exception("chat tool failed: %s", action)
+    return f"{action}: something went wrong on our side. Please try again."
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -101,7 +136,9 @@ def _member_id() -> str:
 @tool
 async def get_upcoming_events(query: str = "") -> str:
     """Fetch upcoming library events. Always call with query=""."""
-    result = await events_service.list_events(page=1, page_size=10, member_id=_member_id())
+    result = await events_service.list_events(
+        page=1, page_size=10, member_id=_member_id(), timeframe="upcoming"
+    )
     if not result.items:
         return "No upcoming events found."
     return json.dumps(
@@ -279,7 +316,7 @@ async def get_my_support_tickets(query: str = "") -> str:
     class _FakeUser:
         id = _member_id()
         role = type("R", (), {"name": _role()})()
-        fullName = _ctx.get("user_name", "")
+        fullName = _user_name()
 
     items = await support_tickets_service.list_my_tickets(_FakeUser())
     if not items:
@@ -397,7 +434,7 @@ async def reserve_book(book_id: str) -> str:
             f" Queue position: {reservation.queue_position}." if reservation.queue_position else ""
         )
     except Exception as exc:
-        return f"Could not reserve book: {exc}"
+        return _tool_error("Could not reserve book", exc)
 
 
 @tool
@@ -415,7 +452,7 @@ async def cancel_reservation(reservation_id: str) -> str:
         await reservations_service.cancel_reservation(_member_id(), reservation_id)
         return "Reservation cancelled successfully."
     except Exception as exc:
-        return f"Could not cancel reservation: {exc}"
+        return _tool_error("Could not cancel reservation", exc)
 
 
 @tool
@@ -449,7 +486,7 @@ async def book_seat(seat_label: str, date: str, hour: int) -> str:
         )
         return f"Seat {result.seat_label} booked for {result.date} at {result.hour:02d}:00."
     except Exception as exc:
-        return f"Could not book seat: {exc}"
+        return _tool_error("Could not book seat", exc)
 
 
 @tool
@@ -463,7 +500,7 @@ async def cancel_seat_booking(booking_id: str) -> str:
         await seat_booking_service.cancel_booking(_FakeUser(), booking_id)
         return "Seat booking cancelled successfully."
     except Exception as exc:
-        return f"Could not cancel booking: {exc}"
+        return _tool_error("Could not cancel booking", exc)
 
 
 @tool
@@ -473,7 +510,9 @@ async def register_for_event(event_id: str) -> str:
 
     try:
         if not re.match(r"^[0-9a-f-]{36}$", event_id, re.IGNORECASE):
-            events = await events_service.list_events(page=1, page_size=20, member_id=_member_id())
+            events = await events_service.list_events(
+                page=1, page_size=20, member_id=_member_id(), timeframe="upcoming"
+            )
             match = next((e for e in events.items if event_id.lower() in e.title.lower()), None)
             if not match:
                 return f"Could not find an event matching '{event_id}'."
@@ -481,7 +520,7 @@ async def register_for_event(event_id: str) -> str:
         registered_event = await events_service.register(event_id, _member_id())
         return f"Registered for '{registered_event.title}' successfully."
     except Exception as exc:
-        return f"Could not register for event: {exc}"
+        return _tool_error("Could not register for event", exc)
 
 
 @tool
@@ -491,7 +530,7 @@ async def unregister_from_event(event_id: str) -> str:
         result = await events_service.unregister(event_id, _member_id())
         return f"Unregistered from '{result.title}' successfully."
     except Exception as exc:
-        return f"Could not unregister: {exc}"
+        return _tool_error("Could not unregister", exc)
 
 
 @tool
@@ -501,7 +540,7 @@ async def raise_support_ticket(category: str, description: str) -> str:
     class _FakeUser:
         id = _member_id()
         role = type("R", (), {"name": _role()})()
-        fullName = _ctx.get("user_name", "")
+        fullName = _user_name()
 
     try:
         result = await support_tickets_service.create_ticket(
@@ -510,7 +549,7 @@ async def raise_support_ticket(category: str, description: str) -> str:
         )
         return f"Support ticket raised (ID: {result.id}). Status: {result.status}."
     except Exception as exc:
-        return f"Could not raise ticket: {exc}"
+        return _tool_error("Could not raise ticket", exc)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -620,7 +659,7 @@ async def return_loan(loan_id: str) -> str:
         result = await loans_service.return_loan(loan_id)
         return f"Loan for '{result.book_title}' marked as returned."
     except Exception as exc:
-        return f"Could not return loan: {exc}"
+        return _tool_error("Could not return loan", exc)
 
 
 @tool
@@ -632,7 +671,7 @@ async def send_loan_reminder(loan_id: str) -> str:
         await loans_service.send_reminder(loan_id)
         return "Reminder sent successfully."
     except Exception as exc:
-        return f"Could not send reminder: {exc}"
+        return _tool_error("Could not send reminder", exc)
 
 
 # ── Tools list ────────────────────────────────────────────────────────────────
@@ -713,14 +752,16 @@ async def run_chat(
         return ChatResponse(reply=block.reply, source="rag")
 
     # 2. TAG + LLM via LangGraph ReAct agent
-    _ctx["member_id"] = member_id
-    _ctx["role"] = role
-    _ctx["user_name"] = user_name
+    _ctx.set({"member_id": member_id, "role": role, "user_name": user_name})
 
     try:
         llm = _build_llm()
-    except Exception as exc:
-        return ChatResponse(reply=f"LLM backend could not be initialised: {exc}", source="error")
+    except Exception:
+        logger.exception("LLM backend could not be initialised")
+        return ChatResponse(
+            reply="The assistant is unavailable right now. Please try again shortly.",
+            source="error",
+        )
 
     agent = create_react_agent(llm, TOOLS)
 
@@ -800,5 +841,8 @@ async def run_chat(
         ]
         is_tag = any(kw in message.lower() for kw in tag_keywords)
         return ChatResponse(reply=final, source="tag" if is_tag else "llm")
-    except Exception as exc:  # noqa: BLE001
-        return ChatResponse(reply=f"Something went wrong: {exc}", source="error")
+    except Exception:
+        logger.exception("chat agent invocation failed")
+        return ChatResponse(
+            reply="Something went wrong handling that. Please try again.", source="error"
+        )

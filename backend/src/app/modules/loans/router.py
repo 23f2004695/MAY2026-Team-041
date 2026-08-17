@@ -48,8 +48,8 @@ async def return_loan(loan_id: str, _: Annotated[User, Depends(manage_loans)]) -
 
 
 @router.post("/{loan_id}/mark-fine-paid", response_model=LoanOut)
-async def mark_fine_paid(loan_id: str, _: Annotated[User, Depends(manage_loans)]) -> LoanOut:
-    return await service.mark_fine_paid(loan_id)
+async def mark_fine_paid(loan_id: str, staff: Annotated[User, Depends(manage_loans)]) -> LoanOut:
+    return await service.mark_fine_paid(loan_id, actor_id=staff.id)
 
 
 @router.post("/{loan_id}/remind", status_code=status.HTTP_204_NO_CONTENT)

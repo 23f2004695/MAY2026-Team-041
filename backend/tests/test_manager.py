@@ -59,6 +59,11 @@ async def _db_connection():
     await prisma.reservation.delete_many(where={"member": domain_filter})
     await prisma.seatbooking.delete_many(where={"member": domain_filter})
     await prisma.book.delete_many(where={"title": {"startswith": TEST_TITLE_MARKER}})
+    # Audit entries reference the actor with no cascade, so they have to go
+    # before the users do (role changes, bans and fine settlement all log now).
+    await prisma.auditlogentry.delete_many(
+        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
+    )
     await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
 
@@ -561,3 +566,67 @@ async def test_book_availability_search_matches_title_or_author(manager_user):
     body = response.json()
     assert body["total"] == 1
     assert unique_marker in body["items"][0]["title"]
+
+
+async def test_rejecting_an_already_approved_reservation_does_not_undo_the_loan(
+    manager_user, member_user
+):
+    """Reject used to be an unconditional write with no status guard and no lock.
+
+    Approve takes an advisory lock and creates a Loan; reject took neither, so the two
+    could interleave and leave the row 'rejected' while the book was already issued.
+    """
+    book_id = await _create_book(manager_user)
+    reservation_id = await _request_reservation(member_user, book_id)
+
+    async with _client_as(manager_user) as client:
+        approved = await client.post(
+            f"/api/v1/manager/reservations/{reservation_id}/approve",
+            json={"duration_days": 3},
+        )
+        assert approved.status_code == 200
+
+        rejected = await client.post(f"/api/v1/manager/reservations/{reservation_id}/reject")
+
+    # The decision already made stands, and the caller is told rather than silently winning.
+    assert rejected.status_code in (404, 409)
+
+    reservation = await prisma.reservation.find_unique(where={"id": reservation_id})
+    assert reservation is not None
+    assert reservation.status == "approved"
+    assert reservation.loanId is not None
+
+
+async def test_concurrent_approve_and_reject_leave_one_consistent_outcome(
+    manager_user, member_user
+):
+    book_id = await _create_book(manager_user)
+    reservation_id = await _request_reservation(member_user, book_id)
+
+    async def approve():
+        async with _client_as(manager_user) as client:
+            return await client.post(
+                f"/api/v1/manager/reservations/{reservation_id}/approve",
+                json={"duration_days": 3},
+            )
+
+    async def reject():
+        async with _client_as(manager_user) as client:
+            return await client.post(f"/api/v1/manager/reservations/{reservation_id}/reject")
+
+    approve_response, reject_response = await asyncio.gather(
+        approve(), reject(), return_exceptions=True
+    )
+
+    statuses = [
+        r.status_code for r in (approve_response, reject_response) if hasattr(r, "status_code")
+    ]
+    # Exactly one decision may succeed.
+    assert statuses.count(200) == 1
+
+    reservation = await prisma.reservation.find_unique(where={"id": reservation_id})
+    assert reservation is not None
+    assert reservation.status in ("approved", "rejected")
+    # A rejected reservation must never carry a loan.
+    if reservation.status == "rejected":
+        assert reservation.loanId is None

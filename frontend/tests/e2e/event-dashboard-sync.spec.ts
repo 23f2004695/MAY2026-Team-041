@@ -112,7 +112,7 @@ test.describe('Member dashboard event synchronization', () => {
       releaseResponse = resolve;
     });
 
-    await page.route('**/api/v1/events?page_size=100', async (route) => {
+    await page.route('**/api/v1/events?page_size=100*', async (route) => {
       await responseGate;
       await route.fulfill({
         json: { items: [eventAt('delayed', 'Delayed reading circle', 1)], total: 1 },
@@ -129,7 +129,7 @@ test.describe('Member dashboard event synchronization', () => {
 
   test('distinguishes an API failure from empty data and retries successfully', async ({ page }) => {
     let attempts = 0;
-    await page.route('**/api/v1/events?page_size=100', (route) => {
+    await page.route('**/api/v1/events?page_size=100*', (route) => {
       attempts += 1;
       if (attempts === 1) {
         return route.fulfill({
@@ -167,7 +167,7 @@ test.describe('Member dashboard event synchronization', () => {
       eventAt('future-5', 'Future day 5', 5),
       eventAt('future-4', 'Future day 4', 4),
     ];
-    await page.route('**/api/v1/events?page_size=100', (route) =>
+    await page.route('**/api/v1/events?page_size=100*', (route) =>
       route.fulfill({ json: { items, total: items.length } }),
     );
 
@@ -202,7 +202,7 @@ test.describe('Member dashboard event synchronization', () => {
       releaseFirst = resolve;
     });
 
-    await page.route('**/api/v1/events?page_size=100', async (route) => {
+    await page.route('**/api/v1/events?page_size=100*', async (route) => {
       requestNumber += 1;
       if (requestNumber === 1) {
         markFirstStarted?.();
@@ -230,7 +230,7 @@ test.describe('Member dashboard event synchronization', () => {
 
   test('uses the public event feed without leaking the access token', async ({ page }) => {
     let authorizationHeader: string | undefined;
-    await page.route('**/api/v1/events?page_size=100', (route) => {
+    await page.route('**/api/v1/events?page_size=100*', (route) => {
       authorizationHeader = route.request().headers().authorization;
       return route.fulfill({
         json: { items: [eventAt('public', 'Public event feed', 1)], total: 1 },
@@ -243,7 +243,7 @@ test.describe('Member dashboard event synchronization', () => {
   });
 
   test('localizes loading, error, and empty states', async ({ page }) => {
-    await page.route('**/api/v1/events?page_size=100', (route) =>
+    await page.route('**/api/v1/events?page_size=100*', (route) =>
       route.fulfill({ json: { items: [], total: 0 } }),
     );
     await continueAsRole(page, 'member');

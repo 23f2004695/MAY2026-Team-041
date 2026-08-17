@@ -2,6 +2,8 @@ from fastapi import HTTPException, status
 from prisma.models import User
 
 from app.core.constants import Role
+from app.modules.audit_log import service as audit_log_service
+from app.modules.audit_log.constants import AuditAction
 from app.modules.community import repository
 from app.modules.community.schemas import (
     BannedAuthorOut,
@@ -61,6 +63,7 @@ async def create_post(user: User, payload: PostCreate) -> PostOut:
 
 async def update_post(user: User, post_id: str, payload: PostCreate) -> PostOut:
     post = await _get_post_or_404(post_id)
+    await _ensure_not_banned(user)
     if post.authorId != user.id:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "You can only edit your own posts")
     updated = await repository.update_post(post_id, _post_data(payload))
@@ -93,6 +96,7 @@ async def toggle_save(user: User, post_id: str) -> PostOut:
 
 async def report_post(user: User, post_id: str) -> PostOut:
     post = await _get_post_or_404(post_id)
+    await _ensure_not_banned(user)
     if _role(user) not in _REPORTER_ROLES:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "You cannot report posts")
     if post.authorId == user.id:
@@ -133,6 +137,7 @@ async def delete_comment(user: User, comment_id: str) -> None:
 
 
 async def report_comment(user: User, comment_id: str) -> None:
+    await _ensure_not_banned(user)
     comment = await repository.find_comment(comment_id)
     if comment is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Comment not found")
@@ -157,9 +162,19 @@ async def ban_author(user: User, target_user_id: str) -> None:
     if target_user_id == user.id:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "You cannot ban yourself")
     await repository.ban_user(target_user_id)
+    await audit_log_service.record(
+        actor_id=user.id,
+        action=AuditAction.COMMUNITY_USER_BANNED,
+        metadata={"targetUserId": target_user_id},
+    )
 
 
 async def unban_author(user: User, target_user_id: str) -> None:
     if _role(user) not in _MODERATOR_ROLES:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "You cannot unban authors")
     await repository.unban_user(target_user_id)
+    await audit_log_service.record(
+        actor_id=user.id,
+        action=AuditAction.COMMUNITY_USER_UNBANNED,
+        metadata={"targetUserId": target_user_id},
+    )

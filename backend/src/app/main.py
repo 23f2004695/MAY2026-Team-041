@@ -119,6 +119,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.add_middleware(GZipMiddleware, minimum_size=1000)
 
+    # No CSP here: this app serves JSON, not documents, so a policy belongs on whatever
+    # serves the built frontend. These four are the ones that still matter for an API —
+    # they stop MIME sniffing, framing, and referrer leakage to third parties, and pin
+    # clients to HTTPS once they have seen the header.
+    @app.middleware("http")
+    async def security_headers(request: Request, call_next):  # type: ignore[no-untyped-def]
+        response = await call_next(request)
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        # Only meaningful over HTTPS, and harmful if sent while still on plain HTTP in
+        # local development — browsers would refuse http://localhost afterwards.
+        if settings.app_env == "production":
+            response.headers.setdefault(
+                "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+            )
+        return response
+
     app.state.limiter = limiter
     # slowapi's own documented handler is typed for RateLimitExceeded specifically,
     # narrower than add_exception_handler's general Exception signature — safe at

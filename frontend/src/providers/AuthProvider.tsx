@@ -56,6 +56,9 @@ export interface UpdateProfilePayload {
   full_name?: string;
   phone?: string;
   password?: string;
+  // Required by the backend when `password` is set on an account that already has
+  // one. Omitted only by CompleteProfileModal, where the Google account has none yet.
+  current_password?: string;
   avatar_url?: string;
 }
 

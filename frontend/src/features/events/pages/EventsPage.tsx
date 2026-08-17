@@ -89,13 +89,19 @@ export function EventsPage() {
   const activeEvent = events.find((e) => e.id === activeEventId) ?? null;
   const now = new Date().getTime();
 
-  useEffect(fetchEvents, [token, t]);
+  // timeFilter is a dependency because the server does the filtering now: events are
+  // paginated by date across the whole table, so filtering a fetched page client-side
+  // meant filtering the oldest 100 events and showing nothing under "Upcoming".
+  useEffect(fetchEvents, [token, t, timeFilter]);
 
   function fetchEvents() {
     setLoading(true);
     setLoadError(null);
     Promise.all([
-      apiGet<EventListResponse>('/events?page_size=100', token ?? undefined),
+      apiGet<EventListResponse>(
+        `/events?page_size=100&timeframe=${timeFilter}`,
+        token ?? undefined,
+      ),
       apiGet<AttendanceSummary>('/events/summary'),
     ])
       .then(([list, s]) => {
@@ -139,13 +145,9 @@ export function EventsPage() {
 
 
   const visibleEvents = useMemo(() => {
-    const filtered = events.filter((event) => {
-      if (timeFilter === 'upcoming') return new Date(event.date).getTime() >= now;
-      if (timeFilter === 'past') return new Date(event.date).getTime() < now;
-      return true;
-    });
-
-    return [...filtered].sort((a, b) => {
+    // No timeframe filter here — the server already applied it. Sorting stays local
+    // because it only reorders what this page received.
+    return [...events].sort((a, b) => {
       const statusDiff =
         STATUS_PRIORITY[getEventStatus(a.date, now)] - STATUS_PRIORITY[getEventStatus(b.date, now)];
       if (statusDiff !== 0) return statusDiff;
@@ -162,7 +164,7 @@ export function EventsPage() {
           return new Date(a.date).getTime() - new Date(b.date).getTime();
       }
     });
-  }, [events, timeFilter, eventSort, now]);
+  }, [events, eventSort, now]);
 
   const { page, setPage, totalPages, pageItems: pagedEvents } = usePagedList(
     visibleEvents,

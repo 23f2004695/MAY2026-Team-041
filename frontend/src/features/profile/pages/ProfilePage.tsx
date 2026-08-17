@@ -29,14 +29,16 @@ import {
   type LoanRecord,
   type ManagerDashboardStats,
   type MemberRecord,
-  type Membership,
-  type PaymentRecord,
   type PermissionRequestRecord,
   type ReadingProgressEntry,
   type SupportTicketRecord,
 } from '@/providers/AuthProvider';
 
 import { AuditLog } from '@/features/admin/components/AuditLog';
+import {
+  useMembershipQuery,
+  useMyPaymentsQuery,
+} from '@/features/payment/hooks/useMembershipQuery';
 import { BookSeatForMemberModal } from '@/features/dashboard/components/BookSeatForMemberModal';
 import { IssueBookForMemberModal } from '@/features/dashboard/components/IssueBookForMemberModal';
 import { NewRegistrations } from '@/features/dashboard/components/NewRegistrations';
@@ -388,22 +390,18 @@ function MemberProfile() {
     fullName,
     email,
     userId,
-    getMembership,
     getMyReadingProgress,
-    getMyPayments,
     getLeaderboard,
     getMyLoans,
   } = useAuth();
-  const [membership, setMembership] = useState<Membership | null>(null);
+  const { membership } = useMembershipQuery();
+  const { payments } = useMyPaymentsQuery();
   const [progress, setProgress] = useState<ReadingProgressEntry[]>([]);
-  const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [loans, setLoans] = useState<LoanRecord[]>([]);
   const [myLeaderboardEntry, setMyLeaderboardEntry] = useState<LeaderboardEntry | null>(null);
 
   useEffect(() => {
-    getMembership().then(setMembership).catch(() => setMembership(null));
     getMyReadingProgress().then(setProgress).catch(() => setProgress([]));
-    getMyPayments().then(setPayments).catch(() => setPayments([]));
     getMyLoans().then(setLoans).catch(() => setLoans([]));
     getLeaderboard()
       .then((entries) => {

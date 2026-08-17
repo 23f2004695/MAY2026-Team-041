@@ -7,6 +7,8 @@ from prisma.errors import ForeignKeyViolationError
 
 from app.core.mail import send_email_async
 from app.db.prisma import prisma
+from app.modules.audit_log import service as audit_log_service
+from app.modules.audit_log.constants import AuditAction
 from app.modules.loans import repository
 from app.modules.loans.constants import (
     FINE_PER_DAY,
@@ -132,13 +134,21 @@ async def return_loan(loan_id: str) -> LoanOut:
     return LoanOut.from_prisma(row, now=datetime.now(UTC))
 
 
-async def mark_fine_paid(loan_id: str) -> LoanOut:
+async def mark_fine_paid(loan_id: str, *, actor_id: str) -> LoanOut:
     existing = await repository.find_by_id(loan_id)
     if existing is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Loan not found")
 
     row = await repository.mark_fine_paid(loan_id)
-    return LoanOut.from_prisma(row, now=datetime.now(UTC))
+    out = LoanOut.from_prisma(row, now=datetime.now(UTC))
+    # Staff clearing a fine moves money off the books with no gateway record behind it,
+    # so it belongs in the audit log next to the other financial decisions.
+    await audit_log_service.record(
+        actor_id=actor_id,
+        action=AuditAction.FINE_MARKED_PAID,
+        metadata={"loanId": loan_id, "memberId": existing.memberId, "amount": out.fine_amount},
+    )
+    return out
 
 
 def _reminder_message(loan) -> str:

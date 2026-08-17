@@ -45,6 +45,7 @@ export function SettingsPage() {
   } = useForm<ChangePasswordFormValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
+      currentPassword: '',
       password: '',
       confirmPassword: '',
     },
@@ -52,7 +53,10 @@ export function SettingsPage() {
 
   async function onChangePasswordSubmit(values: ChangePasswordFormValues) {
     try {
-      await updateProfile({ password: values.password });
+      await updateProfile({
+        password: values.password,
+        current_password: values.currentPassword,
+      });
       toast.success(t('settings.changePassword.successToast', 'Password updated successfully'));
       resetPasswordForm();
     } catch (err) {
@@ -142,6 +146,17 @@ export function SettingsPage() {
             className="flex max-w-md flex-col gap-4"
             noValidate
           >
+            <Input
+              label={t('settings.changePassword.currentPassword', 'Current password')}
+              type="password"
+              autoComplete="current-password"
+              error={
+                passwordErrors.currentPassword?.message
+                  ? t(passwordErrors.currentPassword.message)
+                  : undefined
+              }
+              {...registerPassword('currentPassword')}
+            />
             <Input
               label={t('settings.changePassword.newPassword')}
               type="password"

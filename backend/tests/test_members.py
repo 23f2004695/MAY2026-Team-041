@@ -40,6 +40,11 @@ async def _make_user(role_name: str):
 async def _db_connection():
     await prisma.connect()
     yield
+    # Audit entries reference the actor with no cascade, so they have to go
+    # before the users do (role changes, bans and fine settlement all log now).
+    await prisma.auditlogentry.delete_many(
+        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
+    )
     await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
     await prisma.disconnect()
 
@@ -317,7 +322,9 @@ async def test_admin_cannot_deactivate_or_demote_self(admin_user):
 async def test_last_active_admin_cannot_be_removed(admin_user, monkeypatch):
     target = await _make_user(Role.ADMIN)
 
-    async def one_admin() -> int:
+    # Accepts `client` because the guard now counts inside the same transaction that
+    # performs the write, behind an advisory lock.
+    async def one_admin(*, client=None) -> int:
         return 1
 
     monkeypatch.setattr(repository, "count_active_admins", one_admin)
