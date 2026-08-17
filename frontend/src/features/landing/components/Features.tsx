@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-import featuresIllustration from '@/assets/features.png';
+import featuresIllustration from '@/assets/digital-library.png';
 import { FeatureCard, Section, SectionHeading } from '@/components/common';
 import { features } from '@/mocks/landing';
 
