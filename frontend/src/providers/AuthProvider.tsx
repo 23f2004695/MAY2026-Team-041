@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react';
 
+import type { Book } from '@/features/books/types';
 import * as reviewsApi from '@/features/reviews/api';
 import type { BookReviews, RatingBreakdownEntry, Review, ReviewPayload } from '@/features/reviews/types';
 import {
@@ -425,6 +426,39 @@ export interface SupportTicketPayload {
   description: string;
 }
 
+export type RecommendationQuestionId = 'author' | 'era' | 'story_type' | 'popularity';
+
+export interface RecommendationQuizOption {
+  id: string;
+  label: string;
+}
+
+export interface RecommendationQuizQuestion {
+  id: RecommendationQuestionId;
+  prompt: string;
+  options: RecommendationQuizOption[];
+}
+
+export interface RecommendationQuiz {
+  questions: RecommendationQuizQuestion[];
+}
+
+// Partial — a question the member skipped (or that wasn't offered) simply isn't a key
+// here; the backend treats a missing answer the same as an explicit "no preference".
+export type RecommendationAnswers = Partial<Record<RecommendationQuestionId, string>>;
+
+export interface RecommendationItem {
+  book: Book;
+  score: number;
+  reasons: string[];
+}
+
+export interface RecommendationResult {
+  items: RecommendationItem[];
+  relaxed: boolean;
+  message: string;
+}
+
 export interface ResolveTicketPayload {
   resolution_note: string;
 }
@@ -822,6 +856,8 @@ interface AuthContextValue extends AuthState {
   getAdminMembers: (query?: AdminMemberQuery) => Promise<AdminMemberListResponse>;
   updateAdminMember: (memberId: string, payload: AdminMemberUpdatePayload) => Promise<void>;
   getAdminPayments: (query?: AdminPaymentQuery) => Promise<AdminPaymentListResponse>;
+  getRecommendationQuiz: () => Promise<RecommendationQuiz>;
+  submitRecommendationQuiz: (answers: RecommendationAnswers) => Promise<RecommendationResult>;
   createSupportTicket: (payload: SupportTicketPayload) => Promise<SupportTicketRecord>;
   getMySupportTickets: () => Promise<SupportTicketRecord[]>;
   getStaffSupportTickets: (status?: SupportTicketStatus) => Promise<SupportTicketRecord[]>;
@@ -1301,6 +1337,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiPut(`/members/${memberId}`, payload, stateRef.current.token);
   }
 
+  async function getRecommendationQuiz(): Promise<RecommendationQuiz> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<RecommendationQuiz>('/recommendations/quiz', stateRef.current.token);
+  }
+
+  async function submitRecommendationQuiz(
+    answers: RecommendationAnswers,
+  ): Promise<RecommendationResult> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<RecommendationResult>(
+      '/recommendations/quiz',
+      answers,
+      stateRef.current.token,
+    );
+  }
+
   async function createSupportTicket(payload: SupportTicketPayload): Promise<SupportTicketRecord> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<SupportTicketRecord>('/support-tickets', payload, stateRef.current.token);
@@ -1678,6 +1730,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getAdminMembers,
       updateAdminMember,
       getAdminPayments,
+      getRecommendationQuiz,
+      submitRecommendationQuiz,
       createSupportTicket,
       getMySupportTickets,
       getStaffSupportTickets,

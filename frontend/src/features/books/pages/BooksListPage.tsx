@@ -1,4 +1,4 @@
-import { Heart, SearchX } from 'lucide-react';
+import { Heart, SearchX, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -11,6 +11,7 @@ import { getErrorMessage } from '@/lib/api';
 import { useAuth } from '@/providers/AuthProvider';
 
 import { BookFilters } from '../components/BookFilters';
+import { FindMyNextBookModal } from '../components/FindMyNextBookModal';
 import { WishlistDrawer } from '../components/WishlistDrawer';
 import { PAGE_SIZE } from '../api';
 import { useBooks, useBooksByIds, type BookSort } from '../hooks/useBooks';
@@ -18,12 +19,13 @@ import { useWishlist } from '../hooks/useWishlist';
 
 export function BooksListPage() {
   const { t } = useTranslation();
-  const { reserveBook } = useAuth();
+  const { role, reserveBook } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [sort, setSort] = useState<BookSort>('newest');
   const [page, setPage] = useState(1);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
   const { wishlistIds, isWishlisted, toggleWishlist } = useWishlist();
   const {
     items: pageBooks,
@@ -74,14 +76,25 @@ export function BooksListPage() {
         title={t('books.pageTitle')}
         description={t('books.pageDescription')}
         actions={
-          <Button
-            variant="outline"
-            leadingIcon={<Heart className="size-4" />}
-            onClick={() => setIsWishlistOpen(true)}
-          >
-            {t('books.wishlist.button')}
-            {wishlistIds.length > 0 && <Badge variant="danger">{wishlistIds.length}</Badge>}
-          </Button>
+          <>
+            {role === 'member' && (
+              <Button
+                variant="outline"
+                leadingIcon={<Sparkles className="size-4" />}
+                onClick={() => setIsQuizOpen(true)}
+              >
+                {t('books.quiz.button')}
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              leadingIcon={<Heart className="size-4" />}
+              onClick={() => setIsWishlistOpen(true)}
+            >
+              {t('books.wishlist.button')}
+              {wishlistIds.length > 0 && <Badge variant="danger">{wishlistIds.length}</Badge>}
+            </Button>
+          </>
         }
       />
 
@@ -152,6 +165,10 @@ export function BooksListPage() {
         books={wishlistedBooks}
         onRemove={toggleWishlist}
       />
+
+      {role === 'member' && (
+        <FindMyNextBookModal open={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+      )}
     </div>
   );
 }
