@@ -2,6 +2,7 @@ import asyncio
 import contextlib
 import logging
 import os
+import subprocess
 import sys
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
@@ -47,6 +48,14 @@ from app.modules.seat_booking.router import router as seat_booking_router
 from app.modules.support_tickets.router import router as support_tickets_router
 from app.modules.translate.router import router as translate_router
 
+# Windows' console defaults to a legacy codepage (cp1252 here) that can't encode the
+# box-drawing characters in the startup banner below, crashing print() with
+# UnicodeEncodeError before the app ever serves a request. Force UTF-8 on stdout/stderr
+# so that and any other non-ASCII output (e.g. the ₹ sign in log messages) is safe
+# regardless of the host console's codepage. A no-op on platforms already UTF-8.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 configure_logging()
 logger = logging.getLogger(__name__)
 
@@ -71,6 +80,16 @@ async def _due_soon_reminder_loop() -> None:
 SCHEMA_PATH = Path(__file__).resolve().parent.parent.parent / "prisma" / "schema.prisma"
 
 
+def _run_migrate_deploy(database_url: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, "-m", "prisma", "migrate", "deploy", "--schema", str(SCHEMA_PATH)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        env={**os.environ, "DATABASE_URL": database_url},
+    )
+
+
 async def _apply_pending_migrations(database_url: str) -> None:
     """Bring the schema up to date before anything serves traffic.
 
@@ -79,23 +98,19 @@ async def _apply_pending_migrations(database_url: str) -> None:
     of unrelated-looking test and request failures. `migrate deploy` is idempotent and
     holds an advisory lock for the duration, so this is safe to run on every boot and
     with several instances starting at once.
-    """
-    process = await asyncio.create_subprocess_exec(
-        sys.executable,
-        "-m",
-        "prisma",
-        "migrate",
-        "deploy",
-        "--schema",
-        str(SCHEMA_PATH),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.STDOUT,
-        env={**os.environ, "DATABASE_URL": database_url},
-    )
-    stdout, _ = await process.communicate()
-    output = stdout.decode(errors="replace").strip()
 
-    if process.returncode != 0:
+    Runs via `subprocess.run` in a worker thread rather than
+    `asyncio.create_subprocess_exec` — the latter needs a ProactorEventLoop on Windows,
+    but uvicorn's `--reload` supervisor forces its worker subprocess onto a
+    SelectorEventLoop there (see uvicorn/loops/asyncio.py: `use_subprocess=True` picks
+    SelectorEventLoop even on win32), which raises `NotImplementedError` on any asyncio
+    subprocess call. `subprocess.run` doesn't go through the event loop's subprocess
+    transport at all, so it works under either loop type.
+    """
+    result = await asyncio.to_thread(_run_migrate_deploy, database_url)
+    output = result.stdout.strip()
+
+    if result.returncode != 0:
         # Serving against a schema the code does not match produces failures that look
         # like anything but a migration problem, so refuse to start instead.
         logger.error("prisma migrate deploy failed: %s", output)

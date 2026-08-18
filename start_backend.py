@@ -3,17 +3,18 @@ import os
 import sys
 
 try:
-    # Start PostgreSQL
+    # Start PostgreSQL and Redis (rate limiting + chat history both need Redis up)
     subprocess.run(
-        ["docker", "compose", "up", "-d", "--wait", "db"],
+        ["docker", "compose", "up", "-d", "--wait", "db", "redis"],
         check=True,
     )
 
     # Move to the backend directory
     os.chdir("backend")
 
-    # Apply pending database migrations
-    subprocess.run(["uv", "run", "prisma", "migrate", "deploy"], check=True)
+    # Migrations are applied by the app itself on startup (see app.main's
+    # _apply_pending_migrations, gated by AUTO_MIGRATE) — running `prisma migrate
+    # deploy` here too was pure redundancy: same check, twice, on every boot.
 
     # Start the FastAPI server
     subprocess.run(
