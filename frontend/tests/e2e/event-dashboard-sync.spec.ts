@@ -248,7 +248,8 @@ test.describe('Member dashboard event synchronization', () => {
     );
     await continueAsRole(page, 'member');
 
-    await page.getByLabel('Language').selectOption('hi');
+    await page.getByLabel('Language').click();
+    await page.getByRole('option', { name: 'हिन्दी' }).click();
     await expect(page.getByRole('heading', { name: 'आगामी आयोजन' })).toBeVisible();
     await expect(page.getByText('कोई आगामी आयोजन नहीं है।')).toBeVisible();
   });
