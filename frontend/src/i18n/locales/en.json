@@ -1573,6 +1573,23 @@
     },
     "summary": {
       "empty": "No summary available for this book yet."
+    },
+    "quiz": {
+      "button": "Find My Next Book",
+      "title": "Find My Next Book",
+      "loading": "Preparing your questions…",
+      "loadError": "Couldn't load the quiz. Please try again.",
+      "retry": "Try again",
+      "notEnoughBooksTitle": "Not enough books yet",
+      "notEnoughBooksDescription": "There aren't enough books in the library to create recommendations yet.",
+      "questionProgress": "Question {{current}} of {{total}}",
+      "back": "Back",
+      "next": "Next",
+      "seeRecommendations": "See my recommendations",
+      "finding": "Finding your recommendations…",
+      "submitError": "Couldn't get recommendations. Please try again.",
+      "resultsTitle": "Your Recommendations",
+      "done": "Done"
     }
   },
   "events": {

@@ -2,6 +2,13 @@ import subprocess
 import os
 import sys
 
+# Windows' console defaults to a legacy codepage that can't encode the emoji in this
+# script's own status messages below, which turns an informative failure (e.g. "uvicorn
+# exited with code 1") into an opaque UnicodeEncodeError instead. Same fix as
+# backend/src/app/main.py; a no-op on platforms already UTF-8.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 try:
     # Start PostgreSQL and Redis (rate limiting + chat history both need Redis up)
     subprocess.run(

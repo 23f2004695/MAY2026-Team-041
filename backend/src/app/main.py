@@ -42,6 +42,7 @@ from app.modules.notifications.router import router as notifications_router
 from app.modules.payments.router import router as payments_router
 from app.modules.permission_requests.router import router as permission_requests_router
 from app.modules.pricing_plans.router import router as pricing_plans_router
+from app.modules.recommendations.router import router as recommendations_router
 from app.modules.reservations.router import router as reservations_router
 from app.modules.reviews.router import router as reviews_router
 from app.modules.seat_booking.router import router as seat_booking_router
@@ -217,6 +218,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(guardian_router, prefix=settings.api_prefix)
     app.include_router(manager_router, prefix=settings.api_prefix)
     app.include_router(reservations_router, prefix=settings.api_prefix)
+    app.include_router(recommendations_router, prefix=settings.api_prefix)
     app.include_router(translate_router, prefix=settings.api_prefix)
     app.include_router(community_router, prefix=settings.api_prefix)
     app.include_router(contact_router, prefix=settings.api_prefix)
