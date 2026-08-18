@@ -80,6 +80,9 @@ model User {
 
   bookRecordsLogged BookRecord[] @relation("BookRecordLoggedBy")
 
+  libraryVisits         LibraryVisit[] @relation("LibraryVisitMember")
+  recordedLibraryVisits LibraryVisit[] @relation("LibraryVisitRecordedBy")
+
   @@map("users")
 }
 
@@ -570,4 +573,21 @@ model Loan {
   reservation Reservation?
 
   @@map("loans")
+}
+
+model LibraryVisit {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId     String    @map("member_id") @db.Uuid
+  member       User      @relation("LibraryVisitMember", fields: [memberId], references: [id], onDelete: Cascade)
+  checkedInAt  DateTime  @default(now()) @map("checked_in_at")
+  checkedOutAt DateTime? @map("checked_out_at")
+  recordedById String    @map("recorded_by_id") @db.Uuid
+  recordedBy   User      @relation("LibraryVisitRecordedBy", fields: [recordedById], references: [id])
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@index([memberId])
+  @@index([checkedOutAt])
+  @@index([memberId, checkedOutAt])
+  @@map("library_visits")
 }

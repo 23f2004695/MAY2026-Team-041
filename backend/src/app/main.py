@@ -48,14 +48,17 @@ from app.modules.reviews.router import router as reviews_router
 from app.modules.seat_booking.router import router as seat_booking_router
 from app.modules.support_tickets.router import router as support_tickets_router
 from app.modules.translate.router import router as translate_router
+from app.modules.visits.router import router as visits_router
 
 # Windows' console defaults to a legacy codepage (cp1252 here) that can't encode the
 # box-drawing characters in the startup banner below, crashing print() with
 # UnicodeEncodeError before the app ever serves a request. Force UTF-8 on stdout/stderr
 # so that and any other non-ASCII output (e.g. the ₹ sign in log messages) is safe
 # regardless of the host console's codepage. A no-op on platforms already UTF-8.
-sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
 
 configure_logging()
 logger = logging.getLogger(__name__)
@@ -236,6 +239,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(loans_router, prefix=settings.api_prefix)
     app.include_router(it_head_router, prefix=settings.api_prefix)
     app.include_router(leaderboard_router, prefix=settings.api_prefix)
+    app.include_router(visits_router, prefix=settings.api_prefix)
     return app
 
 

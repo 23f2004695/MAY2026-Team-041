@@ -129,7 +129,7 @@ export const achievements: Achievement[] = [
   { id: 'firstBook', icon: BookOpen, colorClass: 'bg-success/10 text-success' },
   { id: 'bookWorm', icon: BookMarked, colorClass: 'bg-warning/10 text-warning' },
   { id: 'topReader', icon: Star, colorClass: 'bg-info/10 text-info' },
-  { id: 'monthlyChampion', icon: Trophy, colorClass: 'bg-primary/10 text-primary' },
+  { id: 'monthlyChampion', icon: Trophy, colorClass: 'bg-primary/15 text-foreground' },
 ];
 
 export interface ReadingChallengeStep {

@@ -104,8 +104,12 @@ test.describe('Register', () => {
     // Registering logs you in immediately, and /register is a PublicRoute that redirects
     // an authenticated visitor away — clear the session so the second attempt actually
     // reaches the form instead of bouncing straight back to /payment.
-    await page.evaluate(() => localStorage.clear());
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
     await page.goto('/register');
+    await expect(page).toHaveURL('/register');
     await fillRegisterForm(page, values);
     await page.getByLabel('I agree to the terms of service').check();
     await page.getByRole('button', { name: 'Create account' }).click();

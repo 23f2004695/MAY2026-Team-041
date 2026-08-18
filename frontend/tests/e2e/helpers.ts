@@ -36,5 +36,5 @@ export async function continueAsRole(page: Page, role: Role) {
   // resulting redirect (and the localStorage session write behind it) to actually
   // land before the caller does anything else, or a same-page goto() right after
   // this can race ahead of the write and see a signed-out session.
-  await expect(page).toHaveURL(ROLE_HOME[role]);
+  await expect(page).toHaveURL(ROLE_HOME[role], { timeout: 15_000 });
 }

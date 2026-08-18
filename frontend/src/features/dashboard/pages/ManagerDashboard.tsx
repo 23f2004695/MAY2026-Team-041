@@ -25,6 +25,7 @@ import { useNotificationsQuery } from '../../notifications/hooks/useNotification
 import { ActiveLoans } from '../components/ActiveLoans';
 import { AddGuardianCard } from '../components/AddGuardianCard';
 import { BookSeatForMemberModal } from '../components/BookSeatForMemberModal';
+import { CheckInCheckOutCard } from '../components/CheckInCheckOutCard';
 import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
 import { IssueBookForMemberModal } from '../components/IssueBookForMemberModal';
 import { ManagerStatModal, type ManagerStatKey } from '../components/ManagerStatModal';
@@ -210,6 +211,8 @@ export function ManagerDashboard() {
           />
         ))}
       </div>
+
+      <CheckInCheckOutCard />
 
       <PendingReservations
         requests={pendingReservations}

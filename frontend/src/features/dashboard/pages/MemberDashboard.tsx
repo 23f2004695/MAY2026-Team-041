@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { Badge } from '@/components/ui';
+import { cn } from '@/lib/cn';
 import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import { useMembershipQuery } from '@/features/payment/hooks/useMembershipQuery';
@@ -14,6 +16,7 @@ import type { DueBook } from '@/mocks/dashboard';
 import {
   useAuth,
   type LoanRecord,
+  type MemberVisitStatus,
   type ReadingStreak,
   type Reservation,
   type SeatBookingRecord,
@@ -54,6 +57,7 @@ export function MemberDashboard() {
     getMyReservations,
     getMySeatBookings,
     getReadingStreak,
+    getMyVisitStatus,
   } = useAuth();
 
   // Shared with the notification bell and panel — this page no longer refetches a list
@@ -69,6 +73,7 @@ export function MemberDashboard() {
   const [eventsError, setEventsError] = useState<string | null>(null);
   const eventsRequestId = useRef(0);
   const [streak, setStreak] = useState<ReadingStreak>(EMPTY_STREAK);
+  const [visitStatus, setVisitStatus] = useState<MemberVisitStatus | null>(null);
   const [activeStat, setActiveStat] = useState<MemberStatKey | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
@@ -95,6 +100,11 @@ export function MemberDashboard() {
     }).catch(() => {
       if (!cancelled) setStreak(EMPTY_STREAK);
     });
+    getMyVisitStatus().then((data) => {
+      if (!cancelled) setVisitStatus(data);
+    }).catch(() => {
+      if (!cancelled) setVisitStatus(null);
+    });
 
     return () => {
       cancelled = true;
@@ -119,7 +129,8 @@ export function MemberDashboard() {
     } finally {
       if (requestId === eventsRequestId.current) setEventsLoading(false);
     }
-  }, [t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const initialLoad = window.setTimeout(() => void loadEvents(), 0);
@@ -190,7 +201,30 @@ export function MemberDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={t('dashboard.welcomeBack', { name: (fullName ?? '').split(' ')[0] || 'there' })}
+        title={
+          <span className="inline-flex flex-wrap items-center gap-2.5">
+            <span>{t('dashboard.welcomeBack', { name: (fullName ?? '').split(' ')[0] || 'there' })}</span>
+            <Badge
+              variant={visitStatus?.is_in_library ? 'success' : 'outline'}
+              className="gap-1.5 text-xs font-normal"
+              title={
+                visitStatus?.is_in_library && visitStatus.checked_in_at
+                  ? `Checked in at ${formatDate(visitStatus.checked_in_at)}`
+                  : visitStatus?.last_checked_out_at
+                  ? `Left at ${formatDate(visitStatus.last_checked_out_at)}`
+                  : undefined
+              }
+            >
+              <span
+                className={cn(
+                  'size-2 rounded-full',
+                  visitStatus?.is_in_library ? 'bg-emerald-500 animate-pulse' : 'bg-muted-foreground/50',
+                )}
+              />
+              {visitStatus?.is_in_library ? 'In Library' : 'Not in Library'}
+            </Badge>
+          </span>
+        }
         description={membership ? membership.plan_label : t('dashboard.subscription.noPlan')}
       />
 

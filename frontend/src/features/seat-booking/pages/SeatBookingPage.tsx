@@ -283,13 +283,17 @@ export function SeatBookingPage() {
                           ? 'available'
                           : seat.status === 'booked_by_me'
                             ? 'mine'
-                            : 'reserved';
+                            : seat.status === 'booked_for_child'
+                              ? 'booked_for_child'
+                              : 'reserved';
                       return (
                         <SeatCard
                           key={label}
                           label={label}
                           status={visualStatus}
                           avatarUrl={seat?.booked_by_avatar_url}
+                          childName={seat?.booked_for_child_name}
+                          guardianName={seat?.booked_by_guardian_name}
                           selected={selectedSeatLabel === label}
                           onSelect={seat ? () => setSelectedSeatLabel(label) : undefined}
                         />

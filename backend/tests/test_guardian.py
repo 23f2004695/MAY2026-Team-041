@@ -1,11 +1,17 @@
+# pyright: reportAttributeAccessIssue=false
+# pyright: reportGeneralTypeIssues=false
+# pyright: reportOptionalMemberAccess=false
+
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 os.environ["APP_ENV"] = "test"
 
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from prisma.models import User
 
 from app.core.config import get_settings
 from app.core.constants import Role
@@ -25,19 +31,21 @@ def _unique_email() -> str:
 
 @pytest_asyncio.fixture(scope="module", autouse=True)
 async def _db_connection():
-    await prisma.connect()
+    db: Any = prisma
+    await db.connect()
     yield
     domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
-    await prisma.readingprogress.delete_many(where={"member": domain_filter})
-    await prisma.guardianlink.delete_many(where={"member": domain_filter})
-    await prisma.loan.delete_many(where={"member": domain_filter})
-    await prisma.payment.delete_many(where={"user": domain_filter})
-    await prisma.notification.delete_many(where={"user": domain_filter})
-    await prisma.seatbooking.delete_many(where={"member": domain_filter})
-    await prisma.seatnotifyrequest.delete_many(where={"member": domain_filter})
-    await prisma.book.delete_many(where={"title": {"startswith": "Guardian Test Book"}})
-    await prisma.user.delete_many(where=domain_filter)
-    await prisma.disconnect()
+    await db.readingprogress.delete_many(where={"member": domain_filter})
+    await db.guardianlink.delete_many(where={"member": domain_filter})
+    await db.loan.delete_many(where={"member": domain_filter})
+    await db.payment.delete_many(where={"user": domain_filter})
+    await db.notification.delete_many(where={"user": domain_filter})
+    await db.seatbooking.delete_many(where={"member": domain_filter})
+    await db.seatnotifyrequest.delete_many(where={"member": domain_filter})
+    await db.libraryvisit.delete_many(where={"member": domain_filter})
+    await db.book.delete_many(where={"title": {"startswith": "Guardian Test Book"}})
+    await db.user.delete_many(where=domain_filter)
+    await db.disconnect()
 
 
 @pytest_asyncio.fixture
@@ -47,7 +55,7 @@ async def client():
         yield client
 
 
-async def _make_user(role_name: str) -> object:
+async def _make_user(role_name: str) -> User:
     role = await repository.upsert_role(role_name)
     return await repository.create_member(
         email=_unique_email(),
@@ -59,7 +67,7 @@ async def _make_user(role_name: str) -> object:
     )
 
 
-async def _login(client: AsyncClient, user) -> str:
+async def _login(client: AsyncClient, user: User) -> str:
     response = await client.post(
         "/api/v1/auth/login", json={"email": user.email, "password": "Password123!"}
     )
@@ -255,6 +263,7 @@ async def test_pay_child_fines_creates_cash_request_without_settling(client):
     print("\nPay Child Fines Response:", response.status_code, response.text)
     assert response.status_code == 204
     updated_loan = await prisma.loan.find_unique(where={"id": loan.id})
+    assert updated_loan is not None
     assert updated_loan.finePaid is False
     assert await prisma.payment.find_first(where={"userId": child.id}) is None
     notification = await prisma.notification.find_first(
@@ -324,6 +333,7 @@ async def test_renew_child_subscription_creates_cash_request_without_membership(
     payment = await prisma.payment.find_first(where={"userId": child.id, "planMonths": 1})
     assert payment is None
     plan = await prisma.pricingplan.find_unique(where={"planId": "1m"})
+    assert plan is not None
     notification = await prisma.notification.find_first(
         where={"userId": manager.id, "type": "payment-pending"},
         order={"createdAt": "desc"},
@@ -358,6 +368,168 @@ async def test_book_seat_for_child(client):
     assert booking.seatLabel == "A1"
 
 
+async def test_guardian_sees_seat_booked_for_child_persist_across_login_session(client):
+    """Test guardian child seat booking persistence and identification across sessions."""
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+    other_member = await _make_user(Role.MEMBER)
+
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+
+    guardian_token1 = await _login(client, guardian)
+    tomorrow = (datetime.now(UTC) + timedelta(days=1)).date()
+
+    # Guardian books seat D1 for child
+    booked_res = await client.post(
+        f"/api/v1/guardian/children/{child.id}/seat-bookings",
+        json={"seat_label": "D1", "date": tomorrow.isoformat(), "hour": 11},
+        headers={"Authorization": f"Bearer {guardian_token1}"},
+    )
+    assert booked_res.status_code == 201
+    booking_id = booked_res.json()["id"]
+
+    # Guardian logs out / simulates new session by logging in again
+    guardian_token2 = await _login(client, guardian)
+
+    # Schedule viewed by Guardian after new login session
+    schedule_res = await client.get(
+        "/api/v1/seat-booking/schedule",
+        params={"date": tomorrow.isoformat(), "hour": 11},
+        headers={"Authorization": f"Bearer {guardian_token2}"},
+    )
+    assert schedule_res.status_code == 200
+    seats = schedule_res.json()["seats"]
+    seat_d1 = next(s for s in seats if s["seat_label"] == "D1")
+    assert seat_d1["status"] == "booked_for_child"
+    assert seat_d1["booked_for_child_id"] == child.id
+    assert seat_d1["booked_for_child_name"] == child.fullName
+    assert seat_d1["booking_id"] == booking_id
+
+    # Schedule viewed by another member (non-guardian)
+    other_token = await _login(client, other_member)
+    other_schedule = await client.get(
+        "/api/v1/seat-booking/schedule",
+        params={"date": tomorrow.isoformat(), "hour": 11},
+        headers={"Authorization": f"Bearer {other_token}"},
+    )
+    assert other_schedule.status_code == 200
+    other_seat_d1 = next(s for s in other_schedule.json()["seats"] if s["seat_label"] == "D1")
+    assert other_seat_d1["status"] == "reserved"
+    assert other_seat_d1["booked_for_child_id"] is None
+
+    # Guardian cancels child's booking
+    cancel_res = await client.delete(
+        f"/api/v1/seat-booking/{booking_id}",
+        headers={"Authorization": f"Bearer {guardian_token2}"},
+    )
+    assert cancel_res.status_code == 204
+
+    # Verify seat D1 is available again
+    freed_schedule = await client.get(
+        "/api/v1/seat-booking/schedule",
+        params={"date": tomorrow.isoformat(), "hour": 11},
+        headers={"Authorization": f"Bearer {guardian_token2}"},
+    )
+    freed_seat_d1 = next(s for s in freed_schedule.json()["seats"] if s["seat_label"] == "D1")
+    assert freed_seat_d1["status"] == "available"
+
+
+async def test_guardian_multiple_children_shows_correct_child_names_on_seats(client):
+    """Test that multiple linked children's bookings show their respective child names."""
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child_a = await _make_user(Role.MEMBER)
+    child_b = await _make_user(Role.MEMBER)
+
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child_a)
+    await _link(client, admin_token, guardian, child_b)
+
+    guardian_token = await _login(client, guardian)
+    tomorrow = (datetime.now(UTC) + timedelta(days=1)).date()
+
+    res_a = await client.post(
+        f"/api/v1/guardian/children/{child_a.id}/seat-bookings",
+        json={"seat_label": "D2", "date": tomorrow.isoformat(), "hour": 12},
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert res_a.status_code == 201
+
+    res_b = await client.post(
+        f"/api/v1/guardian/children/{child_b.id}/seat-bookings",
+        json={"seat_label": "D3", "date": tomorrow.isoformat(), "hour": 12},
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert res_b.status_code == 201
+
+    schedule_res = await client.get(
+        "/api/v1/seat-booking/schedule",
+        params={"date": tomorrow.isoformat(), "hour": 12},
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert schedule_res.status_code == 200
+    seats = schedule_res.json()["seats"]
+
+    seat_d2 = next(s for s in seats if s["seat_label"] == "D2")
+    assert seat_d2["status"] == "booked_for_child"
+    assert seat_d2["booked_for_child_id"] == child_a.id
+    assert seat_d2["booked_for_child_name"] == child_a.fullName
+
+    seat_d3 = next(s for s in seats if s["seat_label"] == "D3")
+    assert seat_d3["status"] == "booked_for_child"
+    assert seat_d3["booked_for_child_id"] == child_b.id
+    assert seat_d3["booked_for_child_name"] == child_b.fullName
+
+
+async def test_child_notified_and_identifies_guardian_booking(client):
+    """Test child receives notification and sees guardian name when booked by guardian."""
+    admin = await _make_user(Role.ADMIN)
+    guardian = await _make_user(Role.GUARDIAN)
+    child = await _make_user(Role.MEMBER)
+
+    admin_token = await _login(client, admin)
+    await _link(client, admin_token, guardian, child)
+
+    guardian_token = await _login(client, guardian)
+    tomorrow = (datetime.now(UTC) + timedelta(days=1)).date()
+
+    # Guardian books seat D4 for child
+    res = await client.post(
+        f"/api/v1/guardian/children/{child.id}/seat-bookings",
+        json={"seat_label": "D4", "date": tomorrow.isoformat(), "hour": 14},
+        headers={"Authorization": f"Bearer {guardian_token}"},
+    )
+    assert res.status_code == 201
+
+    # Child logs in
+    child_token = await _login(client, child)
+
+    # Child checks notifications
+    notif_res = await client.get(
+        "/api/v1/notifications/me",
+        headers={"Authorization": f"Bearer {child_token}"},
+    )
+    assert notif_res.status_code == 200
+    guardian_notifs = [n for n in notif_res.json() if n["type"] == "seat-booked-by-guardian"]
+    assert len(guardian_notifs) >= 1
+    assert guardian.fullName in guardian_notifs[0]["message"]
+    assert "D4" in guardian_notifs[0]["message"]
+
+    # Child views schedule for slot
+    sched_res = await client.get(
+        "/api/v1/seat-booking/schedule",
+        params={"date": tomorrow.isoformat(), "hour": 14},
+        headers={"Authorization": f"Bearer {child_token}"},
+    )
+    assert sched_res.status_code == 200
+    seat_d4 = next(s for s in sched_res.json()["seats"] if s["seat_label"] == "D4")
+    assert seat_d4["status"] == "booked_by_me"
+    assert seat_d4["booked_by_guardian_id"] == guardian.id
+    assert seat_d4["booked_by_guardian_name"] == guardian.fullName
+
+
 async def test_seat_booking_for_child_rejects_unlinked_child(client):
     guardian = await _make_user(Role.GUARDIAN)
     stranger = await _make_user(Role.MEMBER)
@@ -382,6 +554,11 @@ async def test_guardian_can_list_child_payments(client):
     guardian_token = await _login(client, guardian)
 
     plan = await prisma.pricingplan.find_unique(where={"planId": "1m"})
+    if plan is None:
+        plan = await prisma.pricingplan.create(
+            data={"planId": "1m", "price": 1000, "months": 1}
+        )
+    assert plan is not None
     await prisma.payment.create(
         data={
             "userId": child.id,

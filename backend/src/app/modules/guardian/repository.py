@@ -14,3 +14,10 @@ async def list_children(guardian_id: str) -> list[User]:
         where={"guardianId": guardian_id}, include={"member": {"include": CHILD_INCLUDE}}
     )
     return [link.member for link in links]
+
+
+async def find_guardian_for_child(member_id: str) -> User | None:
+    link = await prisma.guardianlink.find_first(
+        where={"memberId": member_id}, include={"guardian": {"include": {"role": True}}}
+    )
+    return link.guardian if link else None

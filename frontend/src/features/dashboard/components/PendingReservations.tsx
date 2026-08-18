@@ -123,6 +123,9 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
                   </div>
                   <div className="flex items-center gap-2">
                     <Select
+                      aria-label={t('managerDashboard.pendingReservations.durationLabel', {
+                        defaultValue: 'Loan duration',
+                      })}
                       value={String(durationFor(request.id))}
                       onChange={(event) =>
                         setDurationByRequest((prev) => ({

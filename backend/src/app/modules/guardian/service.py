@@ -155,7 +155,16 @@ async def book_seat_for_child(
     guardian_id: str, child_id: str, payload: SeatBookingCreate
 ) -> SeatBookingOut:
     child = await _find_child_or_403(guardian_id, child_id)
-    return await seat_booking_service.book_seat(child, payload)
+    guardian = await members_repository.find_by_id(guardian_id)
+    booking_out = await seat_booking_service.book_seat(child, payload)
+    if guardian:
+        await notifications_service.create_notification(
+            child.id,
+            "seat-booked-by-guardian",
+            f"Seat {payload.seat_label} was booked for you by your guardian ({guardian.fullName}) "
+            f"for {payload.date.isoformat()} at {payload.hour:02d}:00.",
+        )
+    return booking_out
 
 
 async def request_seat_notify_for_child(

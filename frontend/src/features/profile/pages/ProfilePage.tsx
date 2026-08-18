@@ -24,6 +24,7 @@ import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
   useAuth,
   type AuditLogEntry,
+  type ChildVisitStatus,
   type GuardianChild,
   type LeaderboardEntry,
   type LoanRecord,
@@ -143,11 +144,13 @@ function AdminProfile() {
 // instead of fabricated per-child data (mirrors GuardianDashboardPage).
 function GuardianProfile() {
   const { t } = useTranslation();
-  const { fullName, email, getGuardianChildren } = useAuth();
+  const { fullName, email, getGuardianChildren, getChildrenVisitStatus } = useAuth();
   const [realChildren, setRealChildren] = useState<GuardianChild[]>([]);
+  const [childrenVisitStatus, setChildrenVisitStatus] = useState<ChildVisitStatus[]>([]);
 
   useEffect(() => {
     getGuardianChildren().then(setRealChildren).catch(() => setRealChildren([]));
+    getChildrenVisitStatus().then(setChildrenVisitStatus).catch(() => setChildrenVisitStatus([]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -225,7 +228,7 @@ function GuardianProfile() {
         />
       </div>
 
-      <ChildrenPresence children={mappedChildren} />
+      <ChildrenPresence children={childrenVisitStatus} />
       <BorrowedBooksByChild books={borrowedBooks} children={mappedChildren} />
     </div>
   );

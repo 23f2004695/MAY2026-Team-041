@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Route } from '@playwright/test';
 
 import { continueAsRole } from './helpers';
 
@@ -46,7 +46,7 @@ test.describe('Payment validation', () => {
   });
 
   test('shows a recoverable error when a membership plan cannot be loaded', async ({ page }) => {
-    await page.route('**/api/v1/pricing-plans', (route) =>
+    await page.route('**/api/v1/pricing-plans', (route: Route) =>
       route.fulfill({
         status: 500,
         contentType: 'application/json',
@@ -66,7 +66,7 @@ test.describe('Seat availability states', () => {
     page,
   }) => {
     await continueAsRole(page, 'member');
-    await page.route('**/api/v1/seat-booking/schedule?*', (route) =>
+    await page.route('**/api/v1/seat-booking/schedule?*', (route: Route) =>
       route.fulfill({
         status: 503,
         contentType: 'application/json',
@@ -97,10 +97,10 @@ test.describe('Event registration states', () => {
       registrants: [],
       assigned_managers: [],
     };
-    await page.route('**/api/v1/events?page_size=100*', (route) =>
+    await page.route('**/api/v1/events?page_size=100*', (route: Route) =>
       route.fulfill({ json: { items: [event], total: 1 } }),
     );
-    await page.route('**/api/v1/events/summary', (route) =>
+    await page.route('**/api/v1/events/summary', (route: Route) =>
       route.fulfill({
         json: { total_events_this_month: 1, total_attendees: 10, average_attendance_rate: 1 },
       }),
@@ -118,7 +118,7 @@ test.describe('Event registration states', () => {
 test.describe('Event management', () => {
   test('only requests eligible managers for event assignment', async ({ page }) => {
     let managerQueryWasUsed = false;
-    await page.route('**/api/v1/members?*', async (route) => {
+    await page.route('**/api/v1/members?*', async (route: Route) => {
       const url = new URL(route.request().url());
       managerQueryWasUsed =
         url.searchParams.get('role') === 'manager' &&
@@ -158,9 +158,9 @@ test.describe('Administrative safety and recovery', () => {
   test('dashboard API failures render retryable errors instead of empty success states', async ({
     page,
   }) => {
-    await page.route('**/api/v1/admin/dashboard', (route) => route.fulfill({ status: 500 }));
-    await page.route('**/api/v1/billing-requests', (route) => route.fulfill({ status: 500 }));
-    await page.route('**/api/v1/admin/audit-log**', (route) => route.fulfill({ status: 500 }));
+    await page.route('**/api/v1/admin/dashboard', (route: Route) => route.fulfill({ status: 500 }));
+    await page.route('**/api/v1/billing-requests', (route: Route) => route.fulfill({ status: 500 }));
+    await page.route('**/api/v1/admin/audit-log**', (route: Route) => route.fulfill({ status: 500 }));
     await continueAsRole(page, 'admin');
 
     await expect(page.getByText('Something went wrong')).toHaveCount(3);
@@ -171,7 +171,7 @@ test.describe('Administrative safety and recovery', () => {
     page,
   }) => {
     let updateRequests = 0;
-    await page.route('**/api/v1/members/*', async (route) => {
+    await page.route('**/api/v1/members/*', async (route: Route) => {
       if (route.request().method() === 'PUT') updateRequests += 1;
       await route.continue();
     });
@@ -196,7 +196,7 @@ test.describe('Administrative safety and recovery', () => {
 
 test('public translation demo remains usable without authentication', async ({ page }) => {
   let requestWasAuthenticated = false;
-  await page.route('**/api/v1/translate', async (route) => {
+  await page.route('**/api/v1/translate', async (route: Route) => {
     requestWasAuthenticated = Boolean(route.request().headers().authorization);
     await route.fulfill({ json: { translated: 'पुस्तकालय में आपका स्वागत है' } });
   });

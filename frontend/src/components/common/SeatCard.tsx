@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/cn';
 
-export type SeatStatus = 'available' | 'reserved' | 'occupied' | 'mine';
+export type SeatStatus = 'available' | 'reserved' | 'occupied' | 'mine' | 'booked_for_child';
 
 export interface SeatCardProps {
   label: string;
@@ -11,8 +11,10 @@ export interface SeatCardProps {
   className?: string;
   selected?: boolean;
   onSelect?: () => void;
-  /** Only meaningful for status === 'reserved' or 'mine' — shown instead of the status icon. */
+  /** Only meaningful for status === 'reserved', 'mine', or 'booked_for_child' — shown instead of the status icon. */
   avatarUrl?: string | null;
+  childName?: string | null;
+  guardianName?: string | null;
 }
 
 const statusClasses: Record<SeatStatus, string> = {
@@ -21,8 +23,9 @@ const statusClasses: Record<SeatStatus, string> = {
   occupied: 'border-danger/30 bg-danger/10 text-danger',
   // Deliberately its own color (not the amber used for "reserved by someone else") —
   // two members can end up with visually similar avatars, so the seat itself needs to
-  // read as "yours" at a glance without the person having to inspect the avatar.
+  // read as "yours" or "your child's" at a glance without the person having to inspect the avatar.
   mine: 'border-primary/50 bg-primary/10 text-primary',
+  booked_for_child: 'border-primary/50 bg-primary/10 text-primary',
 };
 
 // Distinct icon shapes per status — color alone (statusClasses above) isn't a reliable
@@ -32,36 +35,43 @@ const statusIcons: Record<SeatStatus, typeof Armchair> = {
   reserved: Clock,
   occupied: X,
   mine: CheckCircle2,
+  booked_for_child: CheckCircle2,
 };
 
-export function SeatCard({ label, status, className, selected, onSelect, avatarUrl }: SeatCardProps) {
+export function SeatCard({ label, status, className, selected, onSelect, avatarUrl, childName, guardianName }: SeatCardProps) {
   const { t } = useTranslation();
-  const statusText = t(`landing.seatAvailability.${status}`);
+  const statusText =
+    status === 'booked_for_child'
+      ? childName
+        ? `Booked for ${childName}`
+        : 'Booked for Child'
+      : status === 'mine' && guardianName
+      ? `Booked by Guardian (${guardianName})`
+      : t(`landing.seatAvailability.${status}`, { defaultValue: status });
   const StatusIcon = statusIcons[status];
 
-  const isMine = status === 'mine';
-  const hasAvatar = (status === 'reserved' || isMine) && Boolean(avatarUrl);
+  const isMineOrChild = status === 'mine' || status === 'booked_for_child';
+  const hasAvatar = (status === 'reserved' || isMineOrChild) && Boolean(avatarUrl);
 
   const classes = cn(
     'flex flex-col items-center gap-1 rounded-md border p-2 text-xs font-medium',
     statusClasses[status],
     // A thicker, always-on ring on top of the primary-colored background/border above —
-    // reserved-by-others seats never get this, so it stays a reliable "this one is yours"
+    // reserved-by-others seats never get this, so it stays a reliable "this one is yours/your child's"
     // signal even before the seat is selected.
-    isMine && 'ring-2 ring-primary/70',
+    isMineOrChild && 'ring-2 ring-primary/70',
     selected && 'ring-2 ring-primary ring-offset-1',
     className,
   );
 
-  // Reserved/mine seats identify who holds them via avatar instead of the generic clock
+  // Reserved/mine/child seats identify who holds them via avatar instead of the generic clock
   // icon + seat label — the seat number is still announced via aria-label/title below,
   // it's just not shown visually since the avatar alone is enough to read as "taken".
-  // For your own seat, the avatar also gets a small checkmark badge in the corner so it
-  // doesn't rely on you recognizing your own avatar among a grid of similar-looking ones.
+  // For your own/child seat, the avatar also gets a small checkmark badge in the corner.
   const marker = hasAvatar ? (
     <span className="relative inline-flex">
       <img src={avatarUrl ?? ''} alt="" aria-hidden="true" className="size-10 rounded-full object-cover" />
-      {isMine && (
+      {isMineOrChild && (
         <CheckCircle2
           aria-hidden="true"
           className="absolute -bottom-1 -right-1 size-4 rounded-full bg-surface text-primary"
