@@ -115,7 +115,9 @@ async def test_schedule_has_the_right_shape(member_user):
     assert response.status_code == 200
     body = response.json()
     assert len(body["seats"]) == 32
-    assert {seat["status"] for seat in body["seats"]} <= {"available", "reserved", "booked_by_me"}
+    assert {seat["status"] for seat in body["seats"]} <= {
+        "available", "reserved", "booked_by_me", "booked_for_child"
+    }
     # Not "all seats are available" — this suite runs against the same live dev
     # database real manual testing uses, so a seat can legitimately already be
     # booked by someone else. C1 is untouched by every other test in this file,
