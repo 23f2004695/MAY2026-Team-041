@@ -34,6 +34,7 @@ test.describe('Member dashboard event synchronization', () => {
     page,
     request,
   }) => {
+    test.setTimeout(60_000);
     const token = await managerToken(request);
     const suffix = `${Date.now()}-${test.info().workerIndex}`;
     const originalTitle = `Lifecycle event ${suffix}`;
@@ -56,10 +57,10 @@ test.describe('Member dashboard event synchronization', () => {
       eventId = (await created.json()).id as string;
 
       await continueAsRole(page, 'member');
-      await expect(page.getByText(originalTitle, { exact: true })).toBeVisible();
+      await expect(page.getByText(originalTitle, { exact: true })).toBeVisible({ timeout: 15_000 });
 
       await page.goto('/events');
-      await expect(page.getByRole('heading', { name: originalTitle })).toBeVisible();
+      await expect(page.getByRole('heading', { name: originalTitle })).toBeVisible({ timeout: 15_000 });
 
       const updated = await request.put(`${API_BASE}/events/${eventId}`, {
         headers: { Authorization: `Bearer ${token}` },

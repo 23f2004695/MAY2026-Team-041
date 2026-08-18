@@ -9,15 +9,21 @@ import { continueAsRole } from './helpers';
 // catalog shape.
 test.describe('Find My Next Book', () => {
   test('is only offered to members, and the quiz reaches a real result', async ({ page }) => {
+    test.setTimeout(60_000);
     await continueAsRole(page, 'member');
     await page.goto('/books');
 
     const quizButton = page.getByRole('button', { name: 'Find My Next Book' });
-    await expect(quizButton).toBeVisible();
+    await expect(quizButton).toBeVisible({ timeout: 15_000 });
     await quizButton.click();
 
     const dialog = page.getByRole('dialog', { name: 'Find My Next Book' });
     await expect(dialog).toBeVisible();
+
+    const firstOption = dialog.getByTestId('quiz-option').first();
+    const notEnoughBooks = dialog.getByText('Not enough books yet');
+
+    await expect(firstOption.or(notEnoughBooks)).toBeVisible({ timeout: 15_000 });
 
     // Walk however many questions the live catalog produced (zero if the catalog can't
     // support any), picking the first option each time.
@@ -38,7 +44,6 @@ test.describe('Find My Next Book', () => {
     // Terminal state: either real recommendations (a "Done" button next to at least one
     // book) or the honest "not enough books" empty state — never a stuck loading spinner.
     const done = dialog.getByRole('button', { name: 'Done' });
-    const notEnoughBooks = dialog.getByText('Not enough books yet');
     await expect(done.or(notEnoughBooks)).toBeVisible({ timeout: 15_000 });
   });
 

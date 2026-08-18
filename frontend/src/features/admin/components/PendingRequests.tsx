@@ -147,7 +147,7 @@ export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
           <>
             <ul className="flex flex-col gap-3">
               {paginatedItems.map((request) => (
-                <div
+                <li
                   key={request.id}
                   className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
@@ -180,7 +180,7 @@ export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
                       {t('common.actions.approve')}
                     </Button>
                   </div>
-                </div>
+                </li>
               ))}
             </ul>
             <Pagination

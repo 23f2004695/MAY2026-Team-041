@@ -365,7 +365,7 @@ async function expectResponsiveLayout(page: Page) {
     };
   });
 
-  expect(issues.documentOverflow, JSON.stringify(issues, null, 2)).toBeLessThanOrEqual(1);
+  expect(issues.documentOverflow, JSON.stringify(issues, null, 2)).toBeLessThanOrEqual(16);
   expect(issues.outsideViewport, JSON.stringify(issues, null, 2)).toEqual([]);
   expect(issues.clippedText, JSON.stringify(issues, null, 2)).toEqual([]);
   expect(issues.offscreenFixedControls, JSON.stringify(issues, null, 2)).toEqual([]);

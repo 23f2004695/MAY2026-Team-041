@@ -1,5 +1,5 @@
 import { BookOpen, PartyPopper, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -32,20 +32,44 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
   const [answers, setAnswers] = useState<RecommendationAnswers>({});
   const [result, setResult] = useState<RecommendationResult | null>(null);
 
-  const [wasOpen, setWasOpen] = useState(open);
-  if (open !== wasOpen) {
-    setWasOpen(open);
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (open) {
       setPhase('loading');
       setQuiz(null);
       setQuestionIndex(0);
       setAnswers({});
       setResult(null);
-      loadQuiz();
     }
   }
 
+  useEffect(() => {
+    if (!open) return;
+
+    let ignore = false;
+    getRecommendationQuiz()
+      .then((response) => {
+        if (ignore) return;
+        setQuiz(response);
+        setQuestionIndex(0);
+        setAnswers({});
+        setResult(null);
+        setPhase('quiz');
+      })
+      .catch((error: unknown) => {
+        if (ignore) return;
+        toast.error(getErrorMessage(error, t('books.quiz.loadError')));
+        setPhase('load_error');
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [open, getRecommendationQuiz, t]);
+
   async function loadQuiz() {
+    setPhase('loading');
     try {
       const response = await getRecommendationQuiz();
       setQuiz(response);
@@ -106,11 +130,14 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
         )}
 
         {phase === 'quiz' && quiz && quiz.questions.length === 0 && (
-          <EmptyState
-            icon={BookOpen}
-            title={t('books.quiz.notEnoughBooksTitle')}
-            description={t('books.quiz.notEnoughBooksDescription')}
-          />
+          <>
+            <EmptyState
+              icon={BookOpen}
+              title={t('books.quiz.notEnoughBooksTitle')}
+              description={t('books.quiz.notEnoughBooksDescription')}
+            />
+            <Button onClick={onClose}>{t('books.quiz.done')}</Button>
+          </>
         )}
 
         {phase === 'quiz' && quiz && quiz.questions.length > 0 && (
@@ -210,7 +237,7 @@ function ResultsStep({ result, onClose }: ResultsStepProps) {
   if (result.items.length === 0) {
     return (
       <>
-        <EmptyState icon={BookOpen} title={t('books.quiz.resultsTitle')} description={result.message} />
+        <EmptyState icon={BookOpen} title={t('books.quiz.notEnoughBooksTitle')} description={result.message} />
         <Button onClick={onClose}>{t('books.quiz.done')}</Button>
       </>
     );

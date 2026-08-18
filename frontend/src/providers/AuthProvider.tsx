@@ -208,15 +208,19 @@ export interface BannedAuthor {
   full_name: string;
 }
 
-export type SeatSlotStatus = 'available' | 'reserved' | 'booked_by_me';
+export type SeatSlotStatus = 'available' | 'reserved' | 'booked_by_me' | 'booked_for_child';
 
 export interface SeatSlot {
   seat_label: string;
   status: SeatSlotStatus;
   booking_id: string | null;
-  // Populated when status === 'reserved' or 'booked_by_me' — the avatar of whoever
-  // holds that seat (someone else, or you), shown in place of a plain color swatch.
+  // Populated when status === 'reserved', 'booked_by_me', or 'booked_for_child' — the avatar of whoever
+  // holds that seat (someone else, you, or your child), shown in place of a plain color swatch.
   booked_by_avatar_url: string | null;
+  booked_for_child_id?: string | null;
+  booked_for_child_name?: string | null;
+  booked_by_guardian_id?: string | null;
+  booked_by_guardian_name?: string | null;
 }
 
 export interface SeatSchedule {
@@ -245,6 +249,35 @@ export interface AppNotificationRecord {
   message: string;
   read: boolean;
   created_at: string;
+}
+
+export interface LibraryVisitRecord {
+  id: string;
+  member_id: string;
+  member_name: string;
+  member_email: string;
+  checked_in_at: string;
+  checked_out_at: string | null;
+  recorded_by_id: string;
+  recorded_by_name: string | null;
+  is_currently_inside: boolean;
+}
+
+export interface MemberVisitStatus {
+  member_id: string;
+  is_in_library: boolean;
+  checked_in_at: string | null;
+  last_checked_out_at: string | null;
+  latest_visit_id: string | null;
+}
+
+export interface ChildVisitStatus {
+  child_id: string;
+  child_name: string;
+  child_email: string;
+  is_in_library: boolean;
+  checked_in_at: string | null;
+  last_checked_out_at: string | null;
 }
 
 export type ExpenseCategory = 'staffSalaries' | 'bookProcurement' | 'utilities' | 'marketing';
@@ -874,6 +907,11 @@ interface AuthContextValue extends AuthState {
   linkGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
   getManagerBooks: (query?: ManagerBookQuery) => Promise<ManagerBookListResponse>;
   getPendingReservations: () => Promise<PendingReservationRequest[]>;
+  checkInMember: (memberId: string) => Promise<LibraryVisitRecord>;
+  checkOutMember: (memberId: string) => Promise<LibraryVisitRecord>;
+  getCurrentlyInLibrary: () => Promise<LibraryVisitRecord[]>;
+  getMyVisitStatus: () => Promise<MemberVisitStatus>;
+  getChildrenVisitStatus: () => Promise<ChildVisitStatus[]>;
   approveReservation: (id: string, durationDays: LoanDurationDays) => Promise<Reservation>;
   rejectReservation: (id: string) => Promise<Reservation>;
   getActiveLoans: () => Promise<LoanRecord[]>;
@@ -1639,6 +1677,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function checkInMember(memberId: string): Promise<LibraryVisitRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryVisitRecord>('/visits/check-in', { member_id: memberId }, stateRef.current.token);
+  }
+
+  async function checkOutMember(memberId: string): Promise<LibraryVisitRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryVisitRecord>('/visits/check-out', { member_id: memberId }, stateRef.current.token);
+  }
+
+  async function getCurrentlyInLibrary(): Promise<LibraryVisitRecord[]> {
+    if (!stateRef.current.token) return [];
+    return apiGet<LibraryVisitRecord[]>('/visits/active', stateRef.current.token);
+  }
+
+  async function getMyVisitStatus(): Promise<MemberVisitStatus> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<MemberVisitStatus>('/visits/my-status', stateRef.current.token);
+  }
+
+  async function getChildrenVisitStatus(): Promise<ChildVisitStatus[]> {
+    if (!stateRef.current.token) return [];
+    return apiGet<ChildVisitStatus[]>('/visits/children-status', stateRef.current.token);
+  }
+
   // Registered once — refreshAccessToken reads stateRef.current (like every function
   // above), so it never goes stale and doesn't need to re-register on state changes.
   useEffect(() => {
@@ -1775,6 +1838,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getITHeadDashboard,
       getBookRecords,
       createBookRecord,
+      checkInMember,
+      checkOutMember,
+      getCurrentlyInLibrary,
+      getMyVisitStatus,
+      getChildrenVisitStatus,
       clearPostAuthRedirect,
       logout,
     }),
