@@ -16,7 +16,7 @@ export function Footer({ minimal }: FooterProps) {
   if (minimal) {
     return (
       <footer className="border-t border-border bg-surface px-6 py-4 text-sm text-muted-foreground">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-6xl text-center">
           © 2026 Community Reading Club & Library Management Platform.
         </div>
       </footer>
