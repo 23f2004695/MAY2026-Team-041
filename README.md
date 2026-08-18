@@ -93,6 +93,23 @@ make db-migrate
 > an authentication error. Change `POSTGRES_PORT` and `DATABASE_URL` in `.env` to an
 > unused port (e.g. 5433) and re-run the steps above.
 
+Enable the repo's git hooks (one-time, per machine):
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Someone else's PR that changes `backend/prisma/schema.prisma` (a new model, a new
+field) leaves your local Prisma client stale the moment you `git pull`/merge it in —
+`from prisma.models import X` starts failing with `ImportError`, even though the code
+is otherwise correct, until something runs `prisma generate` again. Pending
+*migrations* are applied automatically on every backend startup regardless (see
+`AUTO_MIGRATE` in `backend/src/app/core/config.py`), but client codegen has no
+equivalent hook inside the app itself — the import happens before the app's own
+startup code ever runs. With `core.hooksPath` set, `.githooks/post-merge` and
+`.githooks/post-checkout` detect when `schema.prisma` changed in what you just
+pulled/merged/checked out and run `make db-generate` for you automatically.
+
 ## Development
 
 Open the app at http://localhost:5173 once both are running. Pick whichever way of
