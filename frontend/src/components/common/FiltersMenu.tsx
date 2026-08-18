@@ -80,7 +80,7 @@ export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: Fi
           id={panelId}
           role="dialog"
           aria-label={triggerLabel}
-          className="absolute right-0 z-20 mt-1.5 w-64 rounded-lg border border-border bg-surface p-3 shadow-panel"
+          className="absolute left-0 z-20 mt-1.5 w-64 max-w-[calc(100vw-1.5rem)] rounded-lg border border-border bg-surface p-3 shadow-panel"
         >
           <div className="flex flex-col gap-4">
             {filters.map((filter) => (
