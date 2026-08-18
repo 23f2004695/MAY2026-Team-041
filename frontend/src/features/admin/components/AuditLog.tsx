@@ -113,30 +113,30 @@ export function AuditLog({ entries }: { entries: AuditLogEntry[] }) {
         <TableToolbar
           filters={[
             {
-              label: 'Type',
+              label: t('admin.auditLog.filters.typeLabel'),
               value: filter,
               onChange: (value) => {
                 setFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
-                { value: 'credits', label: 'Credits' },
-                { value: 'debits', label: 'Debits' },
-                { value: 'refunds', label: 'Refunds' },
+                { value: 'all', label: t('admin.auditLog.filters.typeOptions.all') },
+                { value: 'credits', label: t('admin.auditLog.filters.typeOptions.credits') },
+                { value: 'debits', label: t('admin.auditLog.filters.typeOptions.debits') },
+                { value: 'refunds', label: t('admin.auditLog.filters.typeOptions.refunds') },
               ],
             },
           ]}
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sort,
             onChange: (value) => {
               setSort(value);
               setPage(1);
             },
             options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
+              { value: 'newest', label: t('admin.auditLog.sort.newestFirst') },
+              { value: 'oldest', label: t('admin.auditLog.sort.oldestFirst') },
             ],
           }}
           onReset={resetToolbar}

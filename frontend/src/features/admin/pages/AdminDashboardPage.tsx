@@ -249,29 +249,29 @@ export function AdminDashboardPage() {
             <TableToolbar
               filters={[
                 {
-                  label: 'Category',
+                  label: t('admin.reports.filters.categoryLabel'),
                   value: reportFilter,
                   onChange: (value) => {
                     setReportFilter(value);
                     setPage(1);
                   },
                   options: [
-                    { value: 'all', label: 'All' },
-                    { value: 'financial', label: 'Financial' },
-                    { value: 'membership', label: 'Membership' },
+                    { value: 'all', label: t('admin.reports.filters.categoryOptions.all') },
+                    { value: 'financial', label: t('admin.reports.filters.categoryOptions.financial') },
+                    { value: 'membership', label: t('admin.reports.filters.categoryOptions.membership') },
                   ],
                 },
               ]}
               sort={{
-                label: 'Sort',
+                label: t('common.actions.sort'),
                 value: reportSort,
                 onChange: (value) => {
                   setReportSort(value);
                   setPage(1);
                 },
                 options: [
-                  { value: 'name-asc', label: 'Name A–Z' },
-                  { value: 'name-desc', label: 'Name Z–A' },
+                  { value: 'name-asc', label: t('admin.reports.sort.nameAsc') },
+                  { value: 'name-desc', label: t('admin.reports.sort.nameDesc') },
                 ],
               }}
               onReset={() => {
@@ -307,7 +307,7 @@ export function AdminDashboardPage() {
       <QuickActionsCard
         actions={[
           {
-            label: 'Create Event',
+            label: t('events.form.createTitle'),
             icon: CalendarPlus,
             onClick: () => setCreateEventOpen(true),
           },

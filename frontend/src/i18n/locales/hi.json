@@ -22,7 +22,9 @@
       "viewReport": "रिपोर्ट देखें",
       "cancel": "रद्द करें",
       "close": "बंद करें",
-      "reset": "रीसेट करें"
+      "reset": "रीसेट करें",
+      "filters": "फ़िल्टर",
+      "sort": "क्रमबद्ध करें"
     },
     "pagination": {
       "showing": "{{total}} में से {{start}}–{{end}} दिखाए जा रहे हैं",
@@ -358,7 +360,27 @@
       "approveToast": "{{name}} का अनुरोध स्वीकृत किया जा रहा है",
       "confirmApproveTitle": "क्या इस अनुरोध को स्वीकृत करें?",
       "confirmRejectTitle": "क्या इस अनुरोध को अस्वीकार करें?",
-      "confirmDescription": "{{name}} का {{amount}} का अनुरोध। यह क्रिया वापस नहीं ली जा सकती।"
+      "confirmDescription": "{{name}} का {{amount}} का अनुरोध। यह क्रिया वापस नहीं ली जा सकती।",
+      "filters": {
+        "statusLabel": "स्थिति",
+        "statusOptions": {
+          "all": "सभी",
+          "pending": "लंबित",
+          "approved": "स्वीकृत",
+          "rejected": "अस्वीकृत"
+        },
+        "typeLabel": "प्रकार",
+        "typeOptions": {
+          "all": "सभी"
+        }
+      },
+      "sort": {
+        "newestFirst": "सबसे नया पहले",
+        "oldestFirst": "सबसे पुराना पहले",
+        "amountHighToLow": "राशि: अधिक से कम",
+        "amountLowToHigh": "राशि: कम से अधिक",
+        "memberName": "सदस्य का नाम"
+      }
     },
     "waiveFine": {
       "title": "जुर्माना माफ करें",
@@ -384,6 +406,19 @@
         "announcementSent_one": "{{count}} सदस्य को घोषणा भेजी गई",
         "announcementSent_other": "{{count}} सदस्यों को घोषणा भेजी गई",
         "couponGenerated": "कूपन {{code}} बनाया गया ({{percent}}% छूट, {{maxUses}} उपयोग)"
+      },
+      "filters": {
+        "typeLabel": "प्रकार",
+        "typeOptions": {
+          "all": "सभी",
+          "credits": "क्रेडिट",
+          "debits": "डेबिट",
+          "refunds": "रिफंड"
+        }
+      },
+      "sort": {
+        "newestFirst": "सबसे नया पहले",
+        "oldestFirst": "सबसे पुराना पहले"
       }
     },
     "reports": {
@@ -410,6 +445,18 @@
         "newMembers_other": "{{count}} नए सदस्य",
         "totalMembers_one": "{{count}} कुल सदस्य",
         "totalMembers_other": "{{count}} कुल सदस्य"
+      },
+      "filters": {
+        "categoryLabel": "श्रेणी",
+        "categoryOptions": {
+          "all": "सभी",
+          "financial": "वित्तीय",
+          "membership": "सदस्यता"
+        }
+      },
+      "sort": {
+        "nameAsc": "नाम A–Z",
+        "nameDesc": "नाम Z–A"
       }
     },
     "quickActions": {
@@ -516,7 +563,19 @@
       "grantedToast": "{{name}} का अनुरोध स्वीकृत किया गया",
       "deniedToast": "{{name}} का अनुरोध अस्वीकार किया गया",
       "deactivateToast": "{{name}} को निष्क्रिय किया गया",
-      "reactivateToast": "{{name}} को पुनः सक्रिय किया गया"
+      "reactivateToast": "{{name}} को पुनः सक्रिय किया गया",
+      "filters": {
+        "statusLabel": "स्थिति",
+        "all": "सभी",
+        "active": "सक्रिय",
+        "disabled": "अक्षम",
+        "roleLabel": "भूमिका"
+      },
+      "sort": {
+        "nameAsc": "नाम A–Z",
+        "nameDesc": "नाम Z–A",
+        "newestFirst": "सबसे नया पहले"
+      }
     },
     "issueResolution": {
       "title": "समस्या समाधान",
@@ -538,7 +597,16 @@
       "from": "{{name}} द्वारा रिपोर्ट किया गया",
       "resolve": "हल करें",
       "resolutionNoteLabel": "समाधान नोट",
-      "resolveToast": "{{name}} की समस्या हल कर दी गई"
+      "resolveToast": "{{name}} की समस्या हल कर दी गई",
+      "filters": {
+        "statusLabel": "स्थिति",
+        "all": "सभी"
+      },
+      "sort": {
+        "newestFirst": "सबसे नया पहले",
+        "oldestFirst": "सबसे पुराना पहले",
+        "category": "श्रेणी"
+      }
     },
     "bookRecords": {
       "title": "पुस्तक रिकॉर्ड",
@@ -547,7 +615,16 @@
         "donated": "दान की गई",
         "purchased": "खरीदी गई"
       },
-      "empty": "अभी तक कोई पुस्तक रिकॉर्ड परिवर्तन दर्ज नहीं किया गया है।"
+      "empty": "अभी तक कोई पुस्तक रिकॉर्ड परिवर्तन दर्ज नहीं किया गया है।",
+      "filters": {
+        "typeLabel": "प्रकार",
+        "all": "सभी"
+      },
+      "sort": {
+        "newestFirst": "सबसे नया पहले",
+        "oldestFirst": "सबसे पुराना पहले",
+        "title": "पुस्तक शीर्षक"
+      }
     },
     "feeStatus": {
       "title": "शुल्क स्थिति",
@@ -557,6 +634,16 @@
         "paid": "भुगतान हो गया",
         "due": "देय",
         "overdue": "अतिदेय"
+      },
+      "filters": {
+        "statusLabel": "स्थिति",
+        "all": "सभी",
+        "pending": "लंबित"
+      },
+      "sort": {
+        "amountLowToHigh": "राशि: कम से अधिक",
+        "amountHighToLow": "राशि: अधिक से कम",
+        "memberName": "सदस्य का नाम"
       }
     },
     "lateFines": {
@@ -572,7 +659,16 @@
       "sendReminder": "याद दिलाएं",
       "markPaid": "भुगतान हुआ चिह्नित करें",
       "reminderToast": "{{name}} को जुर्माने की याद दिलाई गई",
-      "markedPaidToast": "{{name}} का जुर्माना भुगतान हुआ चिह्नित किया गया"
+      "markedPaidToast": "{{name}} का जुर्माना भुगतान हुआ चिह्नित किया गया",
+      "filters": {
+        "statusLabel": "स्थिति",
+        "all": "सभी"
+      },
+      "sort": {
+        "amountLowToHigh": "राशि: कम से अधिक",
+        "amountHighToLow": "राशि: अधिक से कम",
+        "memberName": "सदस्य का नाम"
+      }
     },
     "quickActions": {
       "logBookChange": "पुस्तक रिकॉर्ड दर्ज करें",
@@ -823,7 +919,11 @@
       "emptyTitle": "कोई लंबित नकद भुगतान नहीं",
       "emptyDescription": "काउंटर पर भुगतान करने वाले सदस्य यहाँ दिखाई देंगे।",
       "markPaid": "भुगतान प्राप्त चिह्नित करें",
-      "markPaidToast": "भुगतान प्राप्त के रूप में चिह्नित किया गया"
+      "markPaidToast": "भुगतान प्राप्त के रूप में चिह्नित किया गया",
+      "sort": {
+        "newestFirst": "सबसे नया पहले",
+        "oldestFirst": "सबसे पुराना पहले"
+      }
     },
     "quickActions": {
       "bookSeatForMember": "सदस्य के लिए सीट बुक करें",
@@ -855,7 +955,19 @@
       "reminderToast": "{{name}} को रिमाइंडर भेजा गया",
       "returnedToast": "{{name}} की पुस्तक वापस चिह्नित की गई",
       "sendReminder": "रिमाइंडर भेजें",
-      "title": "उधार पर दी गई पुस्तकें"
+      "title": "उधार पर दी गई पुस्तकें",
+      "filters": {
+        "statusLabel": "स्थिति",
+        "all": "सभी",
+        "dueToday": "आज देय",
+        "overdue": "अतिदेय",
+        "activeLoans": "सक्रिय ऋण"
+      },
+      "sort": {
+        "dueDate": "नियत तारीख",
+        "memberName": "सदस्य का नाम",
+        "bookTitle": "पुस्तक शीर्षक"
+      }
     },
     "addGuardian": {
       "description": "अपने खातों को लिंक करने के लिए एक सक्रिय, पंजीकृत छात्र और अभिभावक खोजें।",
@@ -966,7 +1078,13 @@
       "reject": "अस्वीकार करें",
       "rejectToast": "{{name}} का अनुरोध अस्वीकार किया गया",
       "requestedBy": "{{name}} द्वारा अनुरोधित",
-      "title": "लंबित उधार अनुरोध"
+      "title": "लंबित उधार अनुरोध",
+      "sort": {
+        "newestFirst": "सबसे नया पहले",
+        "oldestFirst": "सबसे पुराना पहले",
+        "bookTitle": "पुस्तक शीर्षक",
+        "memberName": "सदस्य का नाम"
+      }
     },
     "registerMember": {
       "emailLabel": "ईमेल",
@@ -994,7 +1112,13 @@
       "badge": "कम्युनिटी रीडिंग क्लब एंड लाइब्रेरी प्लेटफ़ॉर्म",
       "title": "आपकी लाइब्रेरी, आपकी कम्युनिटी, सब एक ही जगह।",
       "titlePrefix": "बेहतर ",
-      "titleWords": ["पुस्तकालय", "समुदाय", "शिक्षा", "पढ़ने की आदतें", "जुड़ाव"],
+      "titleWords": [
+        "पुस्तकालय",
+        "समुदाय",
+        "शिक्षा",
+        "पढ़ने की आदतें",
+        "जुड़ाव"
+      ],
       "subtitle": "किताबें उधार लें, स्टडी सीट बुक करें, एक रीडिंग क्लब से जुड़ें, और बिना पेपर रजिस्टर और ग्रुप चैट के व्यक्तिगत सिफारिशें पाएँ।",
       "ctaJoin": "कम्युनिटी से जुड़ें",
       "ctaBrowse": "पुस्तकें ब्राउज़ करें",
@@ -1515,6 +1639,14 @@
       "submitError": "सिफ़ारिशें नहीं मिल सकीं। कृपया फिर से कोशिश करें।",
       "resultsTitle": "आपकी सिफ़ारिशें",
       "done": "हो गया"
+    },
+    "categories": {
+      "fiction": "फिक्शन",
+      "nonFiction": "नॉन-फिक्शन",
+      "science": "विज्ञान",
+      "technology": "तकनीक",
+      "biography": "जीवनी",
+      "selfHelp": "सेल्फ़-हेल्प"
     }
   },
   "events": {
@@ -1606,6 +1738,20 @@
       "position": "क्रम में #{{position}}",
       "eta": "आपकी बारी आने में ~{{days}} दिन",
       "etaReady": "एक प्रति उपलब्ध है, प्रबंधक की मंज़ूरी बाकी है"
+    },
+    "filters": {
+      "statusLabel": "स्थिति",
+      "all": "सभी",
+      "pending": "लंबित",
+      "approved": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "cancelled": "रद्द"
+    },
+    "sort": {
+      "newest": "नवीनतम",
+      "oldest": "पुराना",
+      "titleAsc": "शीर्षक A–Z",
+      "titleDesc": "शीर्षक Z–A"
     }
   },
   "seatBooking": {
@@ -1733,7 +1879,18 @@
       "streakBonus": "7-दिन स्ट्रिक (+50 अंक)",
       "lateReturn": "देर से वापसी दंड (-10 अंक)"
     },
-    "hoursSuffix": "{{hours}} घं."
+    "hoursSuffix": "{{hours}} घं.",
+    "show": {
+      "label": "दिखाएँ",
+      "top50": "टॉप 50",
+      "everyone": "सभी"
+    },
+    "sort": {
+      "highestScore": "उच्चतम स्कोर",
+      "lowestScore": "न्यूनतम स्कोर",
+      "nameAsc": "नाम A–Z",
+      "nameDesc": "नाम Z–A"
+    }
   },
   "community": {
     "pageTitle": "कम्युनिटी",
@@ -1745,7 +1902,8 @@
     "filters": {
       "all": "सभी पोस्ट",
       "saved": "सहेजी गई",
-      "reported": "रिपोर्ट की गई"
+      "reported": "रिपोर्ट की गई",
+      "groupLabel": "फ़िल्टर"
     },
     "empty": {
       "title": "अभी तक कोई पोस्ट नहीं",
@@ -1808,6 +1966,11 @@
       "status": "24 घंटे के लिए बैन",
       "title": "बैन किए गए उपयोगकर्ता",
       "unban": "अनबैन करें"
+    },
+    "sort": {
+      "newest": "नवीनतम",
+      "oldest": "पुराना",
+      "mostLiked": "सबसे पसंदीदा"
     }
   },
   "translateDemo": {
@@ -1940,7 +2103,6 @@
         "ratingLow": "न्यूनतम रेटिंग"
       }
     },
-
     "summary": {
       "totalReviews_one": "{{count}} समीक्षा",
       "totalReviews_other": "{{count}} समीक्षाएँ",
@@ -2092,6 +2254,13 @@
       "submitResolution": "हल के रूप में चिह्नित करें",
       "emptyTitle": "यहाँ कोई टिकट नहीं",
       "emptyDescription": "अभी इस फ़िल्टर से कुछ मेल नहीं खाता।"
+    },
+    "filters": {
+      "statusLabel": "स्थिति"
+    },
+    "sort": {
+      "newest": "नवीनतम",
+      "oldest": "पुराना"
     }
   },
   "profile": {

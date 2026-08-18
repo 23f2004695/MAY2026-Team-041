@@ -53,31 +53,31 @@ export function BookRecords({ records }: { records: BookRecordEntry[] }) {
         <TableToolbar
           filters={[
             {
-              label: 'Type',
+              label: t('itHead.bookRecords.filters.typeLabel'),
               value: typeFilter,
               onChange: (value) => {
                 setTypeFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
-                { value: 'lost', label: 'Lost' },
-                { value: 'donated', label: 'Donated' },
-                { value: 'purchased', label: 'Purchased' },
+                { value: 'all', label: t('itHead.bookRecords.filters.all') },
+                { value: 'lost', label: t(typeLabelKey.lost) },
+                { value: 'donated', label: t(typeLabelKey.donated) },
+                { value: 'purchased', label: t(typeLabelKey.purchased) },
               ],
             },
           ]}
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
-              { value: 'title', label: 'Book Title' },
+              { value: 'newest', label: t('itHead.bookRecords.sort.newestFirst') },
+              { value: 'oldest', label: t('itHead.bookRecords.sort.oldestFirst') },
+              { value: 'title', label: t('itHead.bookRecords.sort.title') },
             ],
           }}
           onReset={() => {

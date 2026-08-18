@@ -24,7 +24,9 @@
       "viewReport": "View report",
       "cancel": "Cancel",
       "close": "Close",
-      "reset": "Reset"
+      "reset": "Reset",
+      "filters": "Filters",
+      "sort": "Sort"
     },
     "pagination": {
       "showing": "Showing {{start}}–{{end}} of {{total}}",
@@ -387,7 +389,27 @@
       "approveToast": "Approving request from {{name}}",
       "confirmApproveTitle": "Approve this request?",
       "confirmRejectTitle": "Reject this request?",
-      "confirmDescription": "{{name}}'s request for {{amount}}. This action cannot be undone."
+      "confirmDescription": "{{name}}'s request for {{amount}}. This action cannot be undone.",
+      "filters": {
+        "statusLabel": "Status",
+        "statusOptions": {
+          "all": "All",
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected"
+        },
+        "typeLabel": "Type",
+        "typeOptions": {
+          "all": "All"
+        }
+      },
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First",
+        "amountHighToLow": "Amount High to Low",
+        "amountLowToHigh": "Amount Low to High",
+        "memberName": "Member Name"
+      }
     },
     "waiveFine": {
       "title": "Waive Fine",
@@ -413,6 +435,19 @@
         "announcementSent_one": "Sent an announcement to {{count}} member",
         "announcementSent_other": "Sent an announcement to {{count}} members",
         "couponGenerated": "Generated coupon {{code}} ({{percent}}% off, {{maxUses}} uses)"
+      },
+      "filters": {
+        "typeLabel": "Type",
+        "typeOptions": {
+          "all": "All",
+          "credits": "Credits",
+          "debits": "Debits",
+          "refunds": "Refunds"
+        }
+      },
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First"
       }
     },
     "reports": {
@@ -439,6 +474,18 @@
         "newMembers_other": "{{count}} new members",
         "totalMembers_one": "{{count}} total member",
         "totalMembers_other": "{{count}} total members"
+      },
+      "filters": {
+        "categoryLabel": "Category",
+        "categoryOptions": {
+          "all": "All",
+          "financial": "Financial",
+          "membership": "Membership"
+        }
+      },
+      "sort": {
+        "nameAsc": "Name A–Z",
+        "nameDesc": "Name Z–A"
       }
     },
     "quickActions": {
@@ -535,7 +582,19 @@
       "grantedToast": "Granted {{name}}'s request",
       "deniedToast": "Denied {{name}}'s request",
       "deactivateToast": "Deactivated {{name}}",
-      "reactivateToast": "Reactivated {{name}}"
+      "reactivateToast": "Reactivated {{name}}",
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All",
+        "active": "Active",
+        "disabled": "Disabled",
+        "roleLabel": "Role"
+      },
+      "sort": {
+        "nameAsc": "Name A–Z",
+        "nameDesc": "Name Z–A",
+        "newestFirst": "Newest First"
+      }
     },
     "issueResolution": {
       "title": "Issue Resolution",
@@ -557,7 +616,16 @@
       "from": "Reported by {{name}}",
       "resolve": "Resolve",
       "resolutionNoteLabel": "Resolution note",
-      "resolveToast": "Resolved the issue from {{name}}"
+      "resolveToast": "Resolved the issue from {{name}}",
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All"
+      },
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First",
+        "category": "Category"
+      }
     },
     "bookRecords": {
       "title": "Book Records",
@@ -566,7 +634,16 @@
         "donated": "Donated",
         "purchased": "Purchased"
       },
-      "empty": "No book record changes logged yet."
+      "empty": "No book record changes logged yet.",
+      "filters": {
+        "typeLabel": "Type",
+        "all": "All"
+      },
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First",
+        "title": "Book Title"
+      }
     },
     "feeStatus": {
       "title": "Fee Status",
@@ -576,6 +653,16 @@
         "paid": "Paid",
         "due": "Due",
         "overdue": "Overdue"
+      },
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All",
+        "pending": "Pending"
+      },
+      "sort": {
+        "amountLowToHigh": "Amount Low to High",
+        "amountHighToLow": "Amount High to Low",
+        "memberName": "Member Name"
       }
     },
     "lateFines": {
@@ -591,7 +678,16 @@
       "sendReminder": "Send Reminder",
       "markPaid": "Mark Paid",
       "reminderToast": "Sent a fine reminder to {{name}}",
-      "markedPaidToast": "Marked {{name}}'s fine as paid"
+      "markedPaidToast": "Marked {{name}}'s fine as paid",
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All"
+      },
+      "sort": {
+        "amountLowToHigh": "Amount Low to High",
+        "amountHighToLow": "Amount High to Low",
+        "memberName": "Member Name"
+      }
     },
     "quickActions": {
       "logBookChange": "Log Book Change",
@@ -842,7 +938,11 @@
       "emptyTitle": "No pending cash payments",
       "emptyDescription": "Members who choose to pay at the counter will show up here.",
       "markPaid": "Mark as Paid",
-      "markPaidToast": "Payment marked as received"
+      "markPaidToast": "Payment marked as received",
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First"
+      }
     },
     "quickActions": {
       "bookSeatForMember": "Book Seat for Member",
@@ -934,7 +1034,13 @@
       "approve": "Approve",
       "reject": "Reject",
       "approveToast": "Approved {{name}}'s request",
-      "rejectToast": "Declined {{name}}'s request"
+      "rejectToast": "Declined {{name}}'s request",
+      "sort": {
+        "newestFirst": "Newest First",
+        "oldestFirst": "Oldest First",
+        "bookTitle": "Book Title",
+        "memberName": "Member Name"
+      }
     },
     "activeLoans": {
       "title": "Books Out on Loan",
@@ -946,7 +1052,19 @@
       "sendReminder": "Send Reminder",
       "markReturned": "Mark Returned",
       "returnedToast": "Marked {{name}}'s book as returned",
-      "reminderToast": "Reminder sent to {{name}}"
+      "reminderToast": "Reminder sent to {{name}}",
+      "filters": {
+        "statusLabel": "Status",
+        "all": "All",
+        "dueToday": "Due Today",
+        "overdue": "Overdue",
+        "activeLoans": "Active Loans"
+      },
+      "sort": {
+        "dueDate": "Due Date",
+        "memberName": "Member Name",
+        "bookTitle": "Book Title"
+      }
     },
     "books": {
       "pageTitle": "Books",
@@ -1590,6 +1708,14 @@
       "submitError": "Couldn't get recommendations. Please try again.",
       "resultsTitle": "Your Recommendations",
       "done": "Done"
+    },
+    "categories": {
+      "fiction": "Fiction",
+      "nonFiction": "Non-Fiction",
+      "science": "Science",
+      "technology": "Technology",
+      "biography": "Biography",
+      "selfHelp": "Self-Help"
     }
   },
   "events": {
@@ -1712,7 +1838,21 @@
       "description": "This will cancel your reservation for \"{{book}}\".",
       "confirmLabel": "Cancel reservation"
     },
-    "cancelSuccessToast": "Cancelled your reservation for \"{{book}}\""
+    "cancelSuccessToast": "Cancelled your reservation for \"{{book}}\"",
+    "filters": {
+      "statusLabel": "Status",
+      "all": "All",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "titleAsc": "Title A–Z",
+      "titleDesc": "Title Z–A"
+    }
   },
   "seatBooking": {
     "pageTitle": "Seat Booking",
@@ -1839,7 +1979,18 @@
       "streakBonus": "7-day streak (+50 pts)",
       "lateReturn": "Late return penalty (-10 pts)"
     },
-    "hoursSuffix": "{{hours}}h"
+    "hoursSuffix": "{{hours}}h",
+    "show": {
+      "label": "Show",
+      "top50": "Top 50",
+      "everyone": "Everyone"
+    },
+    "sort": {
+      "highestScore": "Highest Score",
+      "lowestScore": "Lowest Score",
+      "nameAsc": "Name A–Z",
+      "nameDesc": "Name Z–A"
+    }
   },
   "community": {
     "pageTitle": "Community",
@@ -1851,7 +2002,8 @@
     "filters": {
       "all": "All Posts",
       "saved": "Saved",
-      "reported": "Reported"
+      "reported": "Reported",
+      "groupLabel": "Filter"
     },
     "adminStats": {
       "totalPosts": "Total Posts",
@@ -1915,6 +2067,11 @@
       "title": "Banned Users",
       "status": "Banned for 24 hours",
       "unban": "Unban"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "mostLiked": "Most liked"
     }
   },
   "settings": {
@@ -2219,6 +2376,13 @@
         "newest": "Newest first",
         "oldest": "Oldest first"
       }
+    },
+    "filters": {
+      "statusLabel": "Status"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest"
     }
   },
   "profile": {

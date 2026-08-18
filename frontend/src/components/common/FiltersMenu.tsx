@@ -1,5 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useClickOutside } from '@/hooks';
 import { cn } from '@/lib/cn';
@@ -22,7 +23,9 @@ export interface FiltersMenuProps {
   className?: string;
 }
 
-export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: FiltersMenuProps) {
+export function FiltersMenu({ filters, triggerLabel, className }: FiltersMenuProps) {
+  const { t } = useTranslation();
+  const label = triggerLabel ?? t('common.actions.filters');
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -65,7 +68,7 @@ export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: Fi
         )}
       >
         <SlidersHorizontal className="size-4" aria-hidden="true" />
-        {triggerLabel}
+        {label}
         {activeCount > 0 && (
           <span
             className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-primary ring-2 ring-surface"
@@ -79,8 +82,8 @@ export function FiltersMenu({ filters, triggerLabel = 'Filters', className }: Fi
           ref={panelRef}
           id={panelId}
           role="dialog"
-          aria-label={triggerLabel}
-          className="absolute right-0 z-20 mt-1.5 w-64 rounded-lg border border-border bg-surface p-3 shadow-panel"
+          aria-label={label}
+          className="absolute left-0 z-20 mt-1.5 w-64 max-w-[calc(100vw-1.5rem)] rounded-lg border border-border bg-surface p-3 shadow-panel"
         >
           <div className="flex flex-col gap-4">
             {filters.map((filter) => (

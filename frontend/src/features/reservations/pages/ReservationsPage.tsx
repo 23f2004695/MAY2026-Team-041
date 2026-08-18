@@ -112,37 +112,36 @@ export function ReservationsPage() {
       <TableToolbar
         filters={[
           {
-            label: 'Status',
+            label: t('reservations.filters.statusLabel'),
             value: statusFilter,
             onChange: (value) => {
               setStatusFilter(value as 'all' | 'pending' | 'approved' | 'rejected' | 'cancelled');
               setPage(1);
             },
             options: [
-              { value: 'all', label: 'All' },
-              { value: 'pending', label: 'Pending' },
-              { value: 'approved', label: 'Approved' },
-              { value: 'rejected', label: 'Rejected' },
-              { value: 'cancelled', label: 'Cancelled' },
+              { value: 'all', label: t('reservations.filters.all') },
+              { value: 'pending', label: t('reservations.filters.pending') },
+              { value: 'approved', label: t('reservations.filters.approved') },
+              { value: 'rejected', label: t('reservations.filters.rejected') },
+              { value: 'cancelled', label: t('reservations.filters.cancelled') },
             ],
           },
         ]}
         sort={{
-          label: 'Sort',
+          label: t('common.actions.sort'),
           value: sort,
           onChange: (value) => {
             setSort(value as 'newest' | 'oldest' | 'titleAsc' | 'titleDesc');
             setPage(1);
           },
           options: [
-            { value: 'newest', label: 'Newest' },
-            { value: 'oldest', label: 'Oldest' },
-            { value: 'titleAsc', label: 'Title A–Z' },
-            { value: 'titleDesc', label: 'Title Z–A' },
+            { value: 'newest', label: t('reservations.sort.newest') },
+            { value: 'oldest', label: t('reservations.sort.oldest') },
+            { value: 'titleAsc', label: t('reservations.sort.titleAsc') },
+            { value: 'titleDesc', label: t('reservations.sort.titleDesc') },
           ],
         }}
         onReset={resetFilters}
-        resetLabel="Reset"
       />
 
       <section aria-labelledby="current-reservations-heading" className="flex flex-col gap-3">
