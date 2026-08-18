@@ -93,46 +93,46 @@ export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
         <TableToolbar
           filters={[
             {
-              label: 'Status',
+              label: t('admin.pendingRequests.filters.statusLabel'),
               value: statusFilter,
               onChange: (value) => {
                 setStatusFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
-                { value: 'pending', label: 'Pending' },
-                { value: 'approved', label: 'Approved' },
-                { value: 'rejected', label: 'Rejected' },
+                { value: 'all', label: t('admin.pendingRequests.filters.statusOptions.all') },
+                { value: 'pending', label: t('admin.pendingRequests.filters.statusOptions.pending') },
+                { value: 'approved', label: t('admin.pendingRequests.filters.statusOptions.approved') },
+                { value: 'rejected', label: t('admin.pendingRequests.filters.statusOptions.rejected') },
               ],
             },
             {
-              label: 'Type',
+              label: t('admin.pendingRequests.filters.typeLabel'),
               value: typeFilter,
               onChange: (value) => {
                 setTypeFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
+                { value: 'all', label: t('admin.pendingRequests.filters.typeOptions.all') },
                 { value: 'refund', label: t(typeLabelKey.refund) },
                 { value: 'fee_waiver', label: t(typeLabelKey.fee_waiver) },
               ],
             },
           ]}
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
-              { value: 'amount-high', label: 'Amount High to Low' },
-              { value: 'amount-low', label: 'Amount Low to High' },
-              { value: 'member', label: 'Member Name' },
+              { value: 'newest', label: t('admin.pendingRequests.sort.newestFirst') },
+              { value: 'oldest', label: t('admin.pendingRequests.sort.oldestFirst') },
+              { value: 'amount-high', label: t('admin.pendingRequests.sort.amountHighToLow') },
+              { value: 'amount-low', label: t('admin.pendingRequests.sort.amountLowToHigh') },
+              { value: 'member', label: t('admin.pendingRequests.sort.memberName') },
             ],
           }}
           onReset={resetToolbar}

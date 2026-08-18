@@ -69,29 +69,29 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
         <TableToolbar
           filters={[
             {
-              label: 'Status',
+              label: t('itHead.lateFines.filters.statusLabel'),
               value: statusFilter,
               onChange: (value) => {
                 setStatusFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
-                { value: 'unpaid', label: 'Unpaid' },
+                { value: 'all', label: t('itHead.lateFines.filters.all') },
+                { value: 'unpaid', label: t('itHead.lateFines.status.unpaid') },
               ],
             },
           ]}
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'amount', label: 'Amount Low to High' },
-              { value: 'amount-desc', label: 'Amount High to Low' },
-              { value: 'member', label: 'Member Name' },
+              { value: 'amount', label: t('itHead.lateFines.sort.amountLowToHigh') },
+              { value: 'amount-desc', label: t('itHead.lateFines.sort.amountHighToLow') },
+              { value: 'member', label: t('itHead.lateFines.sort.memberName') },
             ],
           }}
           onReset={() => {

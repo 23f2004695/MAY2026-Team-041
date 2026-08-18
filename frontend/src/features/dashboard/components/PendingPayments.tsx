@@ -40,15 +40,15 @@ export function PendingPayments({ payments, onDismiss }: PendingPaymentsProps) {
       <CardContent className="flex flex-col gap-3">
         <TableToolbar
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
+              { value: 'newest', label: t('managerDashboard.payments.sort.newestFirst') },
+              { value: 'oldest', label: t('managerDashboard.payments.sort.oldestFirst') },
             ],
           }}
           onReset={() => {

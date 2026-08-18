@@ -56,31 +56,31 @@ export function IssueResolution({ tickets, onResolveClick }: IssueResolutionProp
         <TableToolbar
           filters={[
             {
-              label: 'Status',
+              label: t('itHead.issueResolution.filters.statusLabel'),
               value: statusFilter,
               onChange: (value) => {
                 setStatusFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
-                { value: 'open', label: 'Open' },
-                { value: 'resolved', label: 'Resolved' },
-                { value: 'closed', label: 'Closed' },
+                { value: 'all', label: t('itHead.issueResolution.filters.all') },
+                { value: 'open', label: t('itHead.issueResolution.status.open') },
+                { value: 'resolved', label: t('itHead.issueResolution.status.resolved') },
+                { value: 'closed', label: t('itHead.issueResolution.status.closed') },
               ],
             },
           ]}
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
-              { value: 'category', label: 'Category' },
+              { value: 'newest', label: t('itHead.issueResolution.sort.newestFirst') },
+              { value: 'oldest', label: t('itHead.issueResolution.sort.oldestFirst') },
+              { value: 'category', label: t('itHead.issueResolution.sort.category') },
             ],
           }}
           onReset={() => {

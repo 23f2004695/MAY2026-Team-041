@@ -89,27 +89,27 @@ export function AccessControl({ members, permissionRequests, onChanged }: Access
         <TableToolbar
           filters={[
             {
-              label: 'Status',
+              label: t('itHead.accessControl.filters.statusLabel'),
               value: statusFilter,
               onChange: (value) => {
                 setStatusFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
-                { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Disabled' },
+                { value: 'all', label: t('itHead.accessControl.filters.all') },
+                { value: 'active', label: t('itHead.accessControl.filters.active') },
+                { value: 'inactive', label: t('itHead.accessControl.filters.disabled') },
               ],
             },
             {
-              label: 'Role',
+              label: t('itHead.accessControl.filters.roleLabel'),
               value: roleFilter,
               onChange: (value) => {
                 setRoleFilter(value);
                 setPage(1);
               },
               options: [
-                { value: 'all', label: 'All' },
+                { value: 'all', label: t('itHead.accessControl.filters.all') },
                 ...Array.from(new Set(members.map((member) => member.role.name))).map((role) => ({
                   value: role,
                   label: t(`auth.login.roles.${role}`),
@@ -118,16 +118,16 @@ export function AccessControl({ members, permissionRequests, onChanged }: Access
             },
           ]}
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'name', label: 'Name A–Z' },
-              { value: 'name-desc', label: 'Name Z–A' },
-              { value: 'created', label: 'Newest First' },
+              { value: 'name', label: t('itHead.accessControl.sort.nameAsc') },
+              { value: 'name-desc', label: t('itHead.accessControl.sort.nameDesc') },
+              { value: 'created', label: t('itHead.accessControl.sort.newestFirst') },
             ],
           }}
           onReset={() => {

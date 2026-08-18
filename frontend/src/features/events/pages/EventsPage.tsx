@@ -197,7 +197,7 @@ export function EventsPage() {
         actions={
           canManage ? (
             <Button leadingIcon={<CalendarPlus className="size-4" />} onClick={() => setCreateOpen(true)}>
-              Create Event
+              {t('events.form.createTitle')}
             </Button>
           ) : undefined
         }

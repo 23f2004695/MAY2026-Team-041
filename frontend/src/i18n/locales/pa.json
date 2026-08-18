@@ -22,7 +22,9 @@
       "viewReport": "ਰਿਪੋਰਟ ਵੇਖੋ",
       "cancel": "ਰੱਦ ਕਰੋ",
       "close": "ਬੰਦ ਕਰੋ",
-      "reset": "ਰੀਸੈੱਟ ਕਰੋ"
+      "reset": "ਰੀਸੈੱਟ ਕਰੋ",
+      "filters": "ਫਿਲਟਰ",
+      "sort": "ਕ੍ਰਮਬੱਧ ਕਰੋ"
     },
     "pagination": {
       "showing": "{{total}} ਵਿੱਚੋਂ {{start}}–{{end}} ਵਿਖਾਏ ਜਾ ਰਹੇ ਹਨ",
@@ -358,7 +360,27 @@
       "approveToast": "{{name}} ਦੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ",
       "confirmApproveTitle": "ਕੀ ਇਸ ਬੇਨਤੀ ਨੂੰ ਮਨਜ਼ੂਰ ਕਰਨਾ ਹੈ?",
       "confirmRejectTitle": "ਕੀ ਇਸ ਬੇਨਤੀ ਨੂੰ ਰੱਦ ਕਰਨਾ ਹੈ?",
-      "confirmDescription": "{{name}} ਦੀ {{amount}} ਦੀ ਬੇਨਤੀ। ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।"
+      "confirmDescription": "{{name}} ਦੀ {{amount}} ਦੀ ਬੇਨਤੀ। ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ।",
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "statusOptions": {
+          "all": "ਸਭ",
+          "pending": "ਬਕਾਇਆ",
+          "approved": "ਮਨਜ਼ੂਰ",
+          "rejected": "ਅਸਵੀਕਾਰ"
+        },
+        "typeLabel": "ਕਿਸਮ",
+        "typeOptions": {
+          "all": "ਸਭ"
+        }
+      },
+      "sort": {
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldestFirst": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ",
+        "amountHighToLow": "ਰਕਮ: ਵੱਧ ਤੋਂ ਘੱਟ",
+        "amountLowToHigh": "ਰਕਮ: ਘੱਟ ਤੋਂ ਵੱਧ",
+        "memberName": "ਮੈਂਬਰ ਦਾ ਨਾਮ"
+      }
     },
     "waiveFine": {
       "title": "ਜੁਰਮਾਨਾ ਮੁਆਫ਼ ਕਰੋ",
@@ -384,6 +406,19 @@
         "announcementSent_one": "{{count}} ਮੈਂਬਰ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ",
         "announcementSent_other": "{{count}} ਮੈਂਬਰਾਂ ਨੂੰ ਐਲਾਨ ਭੇਜਿਆ ਗਿਆ",
         "couponGenerated": "ਕੂਪਨ {{code}} ਬਣਾਇਆ ਗਿਆ ({{percent}}% ਛੋਟ, {{maxUses}} ਵਰਤੋਂ)"
+      },
+      "filters": {
+        "typeLabel": "ਕਿਸਮ",
+        "typeOptions": {
+          "all": "ਸਭ",
+          "credits": "ਕ੍ਰੈਡਿਟ",
+          "debits": "ਡੈਬਿਟ",
+          "refunds": "ਰਿਫੰਡ"
+        }
+      },
+      "sort": {
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldestFirst": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ"
       }
     },
     "reports": {
@@ -410,6 +445,18 @@
         "newMembers_other": "{{count}} ਨਵੇਂ ਮੈਂਬਰ",
         "totalMembers_one": "{{count}} ਕੁੱਲ ਮੈਂਬਰ",
         "totalMembers_other": "{{count}} ਕੁੱਲ ਮੈਂਬਰ"
+      },
+      "filters": {
+        "categoryLabel": "ਸ਼੍ਰੇਣੀ",
+        "categoryOptions": {
+          "all": "ਸਭ",
+          "financial": "ਵਿੱਤੀ",
+          "membership": "ਮੈਂਬਰਸ਼ਿਪ"
+        }
+      },
+      "sort": {
+        "nameAsc": "ਨਾਮ A–Z",
+        "nameDesc": "ਨਾਮ Z–A"
       }
     },
     "quickActions": {
@@ -516,7 +563,19 @@
       "grantedToast": "{{name}} ਦੀ ਬੇਨਤੀ ਮਨਜ਼ੂਰ ਕੀਤੀ ਗਈ",
       "deniedToast": "{{name}} ਦੀ ਬੇਨਤੀ ਇਨਕਾਰ ਕੀਤੀ ਗਈ",
       "deactivateToast": "{{name}} ਨੂੰ ਨਾ-ਸਰਗਰਮ ਕੀਤਾ ਗਿਆ",
-      "reactivateToast": "{{name}} ਨੂੰ ਮੁੜ-ਸਰਗਰਮ ਕੀਤਾ ਗਿਆ"
+      "reactivateToast": "{{name}} ਨੂੰ ਮੁੜ-ਸਰਗਰਮ ਕੀਤਾ ਗਿਆ",
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "all": "ਸਭ",
+        "active": "ਸਰਗਰਮ",
+        "disabled": "ਅਯੋਗ",
+        "roleLabel": "ਭੂਮਿਕਾ"
+      },
+      "sort": {
+        "nameAsc": "ਨਾਮ A–Z",
+        "nameDesc": "ਨਾਮ Z–A",
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ"
+      }
     },
     "issueResolution": {
       "title": "ਸਮੱਸਿਆ ਹੱਲ",
@@ -538,7 +597,16 @@
       "from": "{{name}} ਵੱਲੋਂ ਰਿਪੋਰਟ ਕੀਤਾ ਗਿਆ",
       "resolve": "ਹੱਲ ਕਰੋ",
       "resolutionNoteLabel": "ਹੱਲ ਨੋਟ",
-      "resolveToast": "{{name}} ਦੀ ਸਮੱਸਿਆ ਹੱਲ ਕਰ ਦਿੱਤੀ ਗਈ"
+      "resolveToast": "{{name}} ਦੀ ਸਮੱਸਿਆ ਹੱਲ ਕਰ ਦਿੱਤੀ ਗਈ",
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "all": "ਸਭ"
+      },
+      "sort": {
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldestFirst": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ",
+        "category": "ਸ਼੍ਰੇਣੀ"
+      }
     },
     "bookRecords": {
       "title": "ਕਿਤਾਬਾਂ ਦੇ ਰਿਕਾਰਡ",
@@ -547,7 +615,16 @@
         "donated": "ਦਾਨ ਕੀਤੀ",
         "purchased": "ਖਰੀਦੀ"
       },
-      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਕਿਤਾਬ ਰਿਕਾਰਡ ਬਦਲਾਅ ਦਰਜ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।"
+      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਕਿਤਾਬ ਰਿਕਾਰਡ ਬਦਲਾਅ ਦਰਜ ਨਹੀਂ ਕੀਤਾ ਗਿਆ।",
+      "filters": {
+        "typeLabel": "ਕਿਸਮ",
+        "all": "ਸਭ"
+      },
+      "sort": {
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldestFirst": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ",
+        "title": "ਕਿਤਾਬ ਦਾ ਸਿਰਲੇਖ"
+      }
     },
     "feeStatus": {
       "title": "ਫੀਸ ਸਥਿਤੀ",
@@ -557,6 +634,16 @@
         "paid": "ਅਦਾ ਕੀਤੀ",
         "due": "ਬਕਾਇਆ",
         "overdue": "ਮਿਆਦ ਲੰਘੀ"
+      },
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "all": "ਸਭ",
+        "pending": "ਬਕਾਇਆ"
+      },
+      "sort": {
+        "amountLowToHigh": "ਰਕਮ: ਘੱਟ ਤੋਂ ਵੱਧ",
+        "amountHighToLow": "ਰਕਮ: ਵੱਧ ਤੋਂ ਘੱਟ",
+        "memberName": "ਮੈਂਬਰ ਦਾ ਨਾਮ"
       }
     },
     "lateFines": {
@@ -572,7 +659,16 @@
       "sendReminder": "ਯਾਦ ਦਹਾਨੀ ਭੇਜੋ",
       "markPaid": "ਅਦਾ ਕੀਤੀ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕਰੋ",
       "reminderToast": "{{name}} ਨੂੰ ਜੁਰਮਾਨੇ ਦੀ ਯਾਦ ਦਹਾਨੀ ਭੇਜੀ ਗਈ",
-      "markedPaidToast": "{{name}} ਦਾ ਜੁਰਮਾਨਾ ਅਦਾ ਕੀਤੀ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕੀਤਾ ਗਿਆ"
+      "markedPaidToast": "{{name}} ਦਾ ਜੁਰਮਾਨਾ ਅਦਾ ਕੀਤੀ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕੀਤਾ ਗਿਆ",
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "all": "ਸਭ"
+      },
+      "sort": {
+        "amountLowToHigh": "ਰਕਮ: ਘੱਟ ਤੋਂ ਵੱਧ",
+        "amountHighToLow": "ਰਕਮ: ਵੱਧ ਤੋਂ ਘੱਟ",
+        "memberName": "ਮੈਂਬਰ ਦਾ ਨਾਮ"
+      }
     },
     "quickActions": {
       "logBookChange": "ਕਿਤਾਬ ਰਿਕਾਰਡ ਦਰਜ ਕਰੋ",
@@ -823,7 +919,11 @@
       "emptyTitle": "ਕੋਈ ਬਕਾਇਆ ਨਕਦ ਭੁਗਤਾਨ ਨਹੀਂ",
       "emptyDescription": "ਕਾਊਂਟਰ 'ਤੇ ਭੁਗਤਾਨ ਕਰਨ ਵਾਲੇ ਮੈਂਬਰ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ।",
       "markPaid": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕਰੋ",
-      "markPaidToast": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕੀਤਾ ਗਿਆ"
+      "markPaidToast": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਵਜੋਂ ਨਿਸ਼ਾਨਬੱਧ ਕੀਤਾ ਗਿਆ",
+      "sort": {
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldestFirst": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ"
+      }
     },
     "quickActions": {
       "bookSeatForMember": "ਮੈਂਬਰ ਲਈ ਸੀਟ ਬੁੱਕ ਕਰੋ",
@@ -855,7 +955,19 @@
       "reminderToast": "{{name}} ਨੂੰ ਰਿਮਾਈਂਡਰ ਭੇਜਿਆ ਗਿਆ",
       "returnedToast": "{{name}} ਦੀ ਕਿਤਾਬ ਵਾਪਸ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤੀ ਗਈ",
       "sendReminder": "ਰਿਮਾਈਂਡਰ ਭੇਜੋ",
-      "title": "ਉਧਾਰ 'ਤੇ ਦਿੱਤੀਆਂ ਕਿਤਾਬਾਂ"
+      "title": "ਉਧਾਰ 'ਤੇ ਦਿੱਤੀਆਂ ਕਿਤਾਬਾਂ",
+      "filters": {
+        "statusLabel": "ਸਥਿਤੀ",
+        "all": "ਸਭ",
+        "dueToday": "ਅੱਜ ਬਕਾਇਆ",
+        "overdue": "ਮਿਆਦ ਪੁੱਗੀ",
+        "activeLoans": "ਸਰਗਰਮ ਲੋਨ"
+      },
+      "sort": {
+        "dueDate": "ਨਿਯਤ ਮਿਤੀ",
+        "memberName": "ਮੈਂਬਰ ਦਾ ਨਾਮ",
+        "bookTitle": "ਕਿਤਾਬ ਦਾ ਸਿਰਲੇਖ"
+      }
     },
     "addGuardian": {
       "description": "ਆਪਣੇ ਖਾਤਿਆਂ ਨੂੰ ਲਿੰਕ ਕਰਨ ਲਈ ਇੱਕ ਸਰਗਰਮ, ਰਜਿਸਟਰਡ ਵਿਦਿਆਰਥੀ ਅਤੇ ਸਰਪ੍ਰਸਤ ਖੋਜੋ।",
@@ -966,7 +1078,13 @@
       "reject": "ਅਸਵੀਕਾਰ ਕਰੋ",
       "rejectToast": "{{name}} ਦੀ ਬੇਨਤੀ ਅਸਵੀਕਾਰ ਕੀਤੀ ਗਈ",
       "requestedBy": "{{name}} ਦੁਆਰਾ ਬੇਨਤੀ ਕੀਤੀ ਗਈ",
-      "title": "ਬਕਾਇਆ ਉਧਾਰ ਬੇਨਤੀਆਂ"
+      "title": "ਬਕਾਇਆ ਉਧਾਰ ਬੇਨਤੀਆਂ",
+      "sort": {
+        "newestFirst": "ਸਭ ਤੋਂ ਨਵਾਂ ਪਹਿਲਾਂ",
+        "oldestFirst": "ਸਭ ਤੋਂ ਪੁਰਾਣਾ ਪਹਿਲਾਂ",
+        "bookTitle": "ਕਿਤਾਬ ਦਾ ਸਿਰਲੇਖ",
+        "memberName": "ਮੈਂਬਰ ਦਾ ਨਾਮ"
+      }
     },
     "registerMember": {
       "emailLabel": "ਈਮੇਲ",
@@ -994,7 +1112,13 @@
       "badge": "ਕਮਿਊਨਿਟੀ ਰੀਡਿੰਗ ਕਲੱਬ ਅਤੇ ਲਾਇਬ੍ਰੇਰੀ ਪਲੇਟਫਾਰਮ",
       "title": "ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ, ਤੁਹਾਡੀ ਕਮਿਊਨਿਟੀ, ਸਭ ਇੱਕ ਥਾਂ 'ਤੇ।",
       "titlePrefix": "ਬਿਹਤਰ ",
-      "titleWords": ["ਲਾਇਬ੍ਰੇਰੀਆਂ", "ਭਾਈਚਾਰੇ", "ਸਿੱਖਿਆ", "ਪੜ੍ਹਨ ਦੀਆਂ ਆਦਤਾਂ", "ਸੰਪਰਕ"],
+      "titleWords": [
+        "ਲਾਇਬ੍ਰੇਰੀਆਂ",
+        "ਭਾਈਚਾਰੇ",
+        "ਸਿੱਖਿਆ",
+        "ਪੜ੍ਹਨ ਦੀਆਂ ਆਦਤਾਂ",
+        "ਸੰਪਰਕ"
+      ],
       "subtitle": "ਕਿਤਾਬਾਂ ਉਧਾਰ ਲਓ, ਸਟੱਡੀ ਸੀਟ ਬੁੱਕ ਕਰੋ, ਇੱਕ ਰੀਡਿੰਗ ਕਲੱਬ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ, ਅਤੇ ਕਾਗਜ਼ੀ ਰਜਿਸਟਰਾਂ ਅਤੇ ਗਰੁੱਪ ਚੈਟਾਂ ਤੋਂ ਬਿਨਾਂ ਨਿੱਜੀ ਸਿਫਾਰਸ਼ਾਂ ਪ੍ਰਾਪਤ ਕਰੋ।",
       "ctaJoin": "ਕਮਿਊਨਿਟੀ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
       "ctaBrowse": "ਕਿਤਾਬਾਂ ਬ੍ਰਾਊਜ਼ ਕਰੋ",
@@ -1515,6 +1639,14 @@
       "submitError": "ਸਿਫ਼ਾਰਸ਼ਾਂ ਨਹੀਂ ਮਿਲ ਸਕੀਆਂ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
       "resultsTitle": "ਤੁਹਾਡੀਆਂ ਸਿਫ਼ਾਰਸ਼ਾਂ",
       "done": "ਹੋ ਗਿਆ"
+    },
+    "categories": {
+      "fiction": "ਫਿਕਸ਼ਨ",
+      "nonFiction": "ਨਾਨ-ਫਿਕਸ਼ਨ",
+      "science": "ਵਿਗਿਆਨ",
+      "technology": "ਤਕਨਾਲੋਜੀ",
+      "biography": "ਜੀਵਨੀ",
+      "selfHelp": "ਸੈਲਫ਼-ਹੈਲਪ"
     }
   },
   "events": {
@@ -1606,6 +1738,20 @@
       "position": "ਕਤਾਰ ਵਿੱਚ #{{position}}",
       "eta": "ਤੁਹਾਡੀ ਵਾਰੀ ਆਉਣ ਵਿੱਚ ~{{days}} ਦਿਨ",
       "etaReady": "ਇੱਕ ਕਾਪੀ ਖਾਲੀ ਹੈ, ਮੈਨੇਜਰ ਦੀ ਮਨਜ਼ੂਰੀ ਬਾਕੀ ਹੈ"
+    },
+    "filters": {
+      "statusLabel": "ਸਥਿਤੀ",
+      "all": "ਸਭ",
+      "pending": "ਬਕਾਇਆ",
+      "approved": "ਮਨਜ਼ੂਰ",
+      "rejected": "ਅਸਵੀਕਾਰ",
+      "cancelled": "ਰੱਦ"
+    },
+    "sort": {
+      "newest": "ਨਵੀਨਤਮ",
+      "oldest": "ਪੁਰਾਣਾ",
+      "titleAsc": "ਸਿਰਲੇਖ A–Z",
+      "titleDesc": "ਸਿਰਲੇਖ Z–A"
     }
   },
   "seatBooking": {
@@ -1733,7 +1879,18 @@
       "streakBonus": "7-ਦਿਨ ਸਟ੍ਰੀਕ (+50 ਪੁਆਇੰਟ)",
       "lateReturn": "ਦੇਰੀ ਨਾਲ ਵਾਪਸੀ ਜ਼ੁਰਮਾਨਾ (-10 ਪੁਆਇੰਟ)"
     },
-    "hoursSuffix": "{{hours}} ਘੰਟੇ"
+    "hoursSuffix": "{{hours}} ਘੰਟੇ",
+    "show": {
+      "label": "ਦਿਖਾਓ",
+      "top50": "ਟਾਪ 50",
+      "everyone": "ਸਾਰੇ"
+    },
+    "sort": {
+      "highestScore": "ਸਭ ਤੋਂ ਵੱਧ ਸਕੋਰ",
+      "lowestScore": "ਸਭ ਤੋਂ ਘੱਟ ਸਕੋਰ",
+      "nameAsc": "ਨਾਮ A–Z",
+      "nameDesc": "ਨਾਮ Z–A"
+    }
   },
   "community": {
     "pageTitle": "ਕਮਿਊਨਿਟੀ",
@@ -1745,7 +1902,8 @@
     "filters": {
       "all": "ਸਾਰੀਆਂ ਪੋਸਟਾਂ",
       "saved": "ਸੰਭਾਲੀਆਂ ਗਈਆਂ",
-      "reported": "ਰਿਪੋਰਟ ਕੀਤੀ ਗਈ"
+      "reported": "ਰਿਪੋਰਟ ਕੀਤੀ ਗਈ",
+      "groupLabel": "ਫਿਲਟਰ"
     },
     "empty": {
       "title": "ਅਜੇ ਤੱਕ ਕੋਈ ਪੋਸਟ ਨਹੀਂ",
@@ -1808,6 +1966,11 @@
       "status": "24 ਘੰਟਿਆਂ ਲਈ ਬੈਨ",
       "title": "ਬੈਨ ਕੀਤੇ ਯੂਜ਼ਰ",
       "unban": "ਅਨਬੈਨ ਕਰੋ"
+    },
+    "sort": {
+      "newest": "ਨਵੀਨਤਮ",
+      "oldest": "ਪੁਰਾਣਾ",
+      "mostLiked": "ਸਭ ਤੋਂ ਪਸੰਦੀਦਾ"
     }
   },
   "translateDemo": {
@@ -1942,7 +2105,6 @@
         "ratingLow": "ਘੱਟਤਮ ਰੇਟਿੰਗ"
       }
     },
-
     "summary": {
       "totalReviews_one": "{{count}} ਸਮੀਖਿਆ",
       "totalReviews_other": "{{count}} ਸਮੀਖਿਆਵਾਂ",
@@ -2094,6 +2256,13 @@
       "submitResolution": "ਹੱਲ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰੋ",
       "emptyTitle": "ਇੱਥੇ ਕੋਈ ਟਿਕਟ ਨਹੀਂ",
       "emptyDescription": "ਹੁਣੇ ਇਸ ਫਿਲਟਰ ਨਾਲ ਕੁਝ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।"
+    },
+    "filters": {
+      "statusLabel": "ਸਥਿਤੀ"
+    },
+    "sort": {
+      "newest": "ਨਵੀਨਤਮ",
+      "oldest": "ਪੁਰਾਣਾ"
     }
   },
   "profile": {

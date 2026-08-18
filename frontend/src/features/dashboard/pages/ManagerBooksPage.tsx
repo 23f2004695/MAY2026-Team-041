@@ -34,6 +34,16 @@ const CATEGORIES = [
   'Self-Help',
 ] as const;
 
+// Translation key for each non-"all" category — see books.categories in en.json.
+const CATEGORY_KEYS: Partial<Record<(typeof CATEGORIES)[number], string>> = {
+  Fiction: 'fiction',
+  'Non-Fiction': 'nonFiction',
+  Science: 'science',
+  Technology: 'technology',
+  Biography: 'biography',
+  'Self-Help': 'selfHelp',
+};
+
 // "Unavailable" splits into two operationally different cases: a copy out on a loan
 // with a known due date, versus one with no return date on file at all (e.g. zero
 // total copies, or tied up some other way loans don't track) — the latter usually
@@ -134,7 +144,9 @@ export function ManagerBooksPage() {
               options: CATEGORIES.map((value) => ({
                 value,
                 label:
-                  value === 'all' ? t('managerDashboard.books.filters.allCategories') : value,
+                  value === 'all'
+                    ? t('managerDashboard.books.filters.allCategories')
+                    : t(`books.categories.${CATEGORY_KEYS[value]}`, value),
               })),
             },
             {

@@ -255,34 +255,33 @@ export function LeaderboardPage() {
           <TableToolbar
             filters={[
               {
-                label: 'Show',
+                label: t('leaderboard.show.label'),
                 value: view,
                 onChange: (value) => {
                   setView(value as LeaderboardView);
                   setPage(1);
                 },
                 options: [
-                  { value: 'top50', label: 'Top 50' },
-                  { value: 'all', label: 'Everyone' },
+                  { value: 'top50', label: t('leaderboard.show.top50') },
+                  { value: 'all', label: t('leaderboard.show.everyone') },
                 ],
               },
             ]}
             sort={{
-              label: 'Sort',
+              label: t('common.actions.sort'),
               value: sort,
               onChange: (value) => {
                 setSort(value as LeaderboardSort);
                 setPage(1);
               },
               options: [
-                { value: 'scoreHigh', label: 'Highest Score' },
-                { value: 'scoreLow', label: 'Lowest Score' },
-                { value: 'nameAsc', label: 'Name A–Z' },
-                { value: 'nameDesc', label: 'Name Z–A' },
+                { value: 'scoreHigh', label: t('leaderboard.sort.highestScore') },
+                { value: 'scoreLow', label: t('leaderboard.sort.lowestScore') },
+                { value: 'nameAsc', label: t('leaderboard.sort.nameAsc') },
+                { value: 'nameDesc', label: t('leaderboard.sort.nameDesc') },
               ],
             }}
             onReset={resetFilters}
-            resetLabel="Reset"
           />
 
           {visibleEntries.length === 0 ? (

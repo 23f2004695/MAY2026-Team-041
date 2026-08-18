@@ -148,7 +148,6 @@ export function MyBorrowHistoryPage() {
               ],
             }}
             onReset={resetFilters}
-            resetLabel="Reset"
           />
 
           {filteredLoans.length === 0 ? (

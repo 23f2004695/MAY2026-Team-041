@@ -80,17 +80,17 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
       <CardContent className="flex flex-col gap-3">
         <TableToolbar
           sort={{
-            label: 'Sort',
+            label: t('common.actions.sort'),
             value: sortValue,
             onChange: (value) => {
               setSortValue(value);
               setPage(1);
             },
             options: [
-              { value: 'newest', label: 'Newest First' },
-              { value: 'oldest', label: 'Oldest First' },
-              { value: 'book', label: 'Book Title' },
-              { value: 'member', label: 'Member Name' },
+              { value: 'newest', label: t('managerDashboard.pendingReservations.sort.newestFirst') },
+              { value: 'oldest', label: t('managerDashboard.pendingReservations.sort.oldestFirst') },
+              { value: 'book', label: t('managerDashboard.pendingReservations.sort.bookTitle') },
+              { value: 'member', label: t('managerDashboard.pendingReservations.sort.memberName') },
             ],
           }}
           onReset={() => {

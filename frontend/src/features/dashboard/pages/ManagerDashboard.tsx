@@ -235,7 +235,7 @@ export function ManagerDashboard() {
       <QuickActionsCard
         actions={[
           {
-            label: 'Create Event',
+            label: t('events.form.createTitle'),
             icon: CalendarPlus,
             onClick: () => setCreateEventOpen(true),
           },
