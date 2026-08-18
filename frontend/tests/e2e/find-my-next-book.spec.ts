@@ -41,10 +41,10 @@ test.describe('Find My Next Book', () => {
       await next.click();
     }
 
-    // Terminal state: either real recommendations (a "Done" button next to at least one
-    // book) or the honest "not enough books" empty state — never a stuck loading spinner.
+    // Terminal state: either real recommendations or the "not enough books" empty state,
+    // both of which present the "Done" action button — never a stuck loading spinner.
     const done = dialog.getByRole('button', { name: 'Done' });
-    await expect(done.or(notEnoughBooks)).toBeVisible({ timeout: 15_000 });
+    await expect(done).toBeVisible({ timeout: 15_000 });
   });
 
   test('is not offered to non-member roles', async ({ page }) => {

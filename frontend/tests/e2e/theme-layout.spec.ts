@@ -106,7 +106,7 @@ const authenticatedRoutes: RouteCase[] = [
 async function setStateBeforeLoad(page: Page, theme: Theme, role?: Role) {
   const authState = role ? authStates.get(role) : undefined;
   await page.addInitScript(
-    ({ selectedTheme, storedAuth }) => {
+    ({ selectedTheme, storedAuth }: { selectedTheme: Theme; storedAuth?: StoredAuth }) => {
       localStorage.setItem('theme', JSON.stringify(selectedTheme));
       if (storedAuth) localStorage.setItem('mock-auth', JSON.stringify(storedAuth));
       else localStorage.removeItem('mock-auth');
@@ -130,7 +130,7 @@ async function revealScrollAnimations(page: Page) {
     return stops;
   });
   for (const position of scrollStops) {
-    await page.evaluate((top) => window.scrollTo({ top, left: 0, behavior: 'auto' }), position);
+    await page.evaluate((top: number) => window.scrollTo({ top, left: 0, behavior: 'auto' }), position);
     await page.waitForTimeout(80);
   }
   // A newly intersecting staggered group can report its pre-animation opacity
@@ -405,9 +405,9 @@ for (const theme of ['light', 'dark'] as const) {
         .locator('..');
       await banner.scrollIntoViewIfNeeded();
 
-      const dimensions = await banner.evaluate((element) => {
+      const dimensions = await banner.evaluate((element: HTMLElement) => {
         const rect = element.getBoundingClientRect();
-        const count = Array.from(element.querySelectorAll('span')).find(
+        const count = Array.from(element.querySelectorAll<HTMLElement>('span')).find(
           (candidate) => candidate.textContent?.trim() === '2K+',
         );
         return {
