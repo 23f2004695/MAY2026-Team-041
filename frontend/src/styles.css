@@ -35,6 +35,12 @@
   --color-ink-foreground: #fdf4ff;
   --color-ink-muted: #f0abfc;
 
+  /* A 3rd categorical chart color (identity, not status) — validated against
+     styles.css's own surfaces via the dataviz skill's palette checker (CVD
+     separation + lightness band both pass in light and dark with this single
+     value, so unlike primary/info it needs no per-mode override). */
+  --color-teal: #0d9488;
+
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;

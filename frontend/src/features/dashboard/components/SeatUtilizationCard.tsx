@@ -34,6 +34,7 @@ export function SeatUtilizationCard({ hours }: { hours: SeatUtilizationHour[] })
           color="var(--color-primary)"
           valueFormatter={(v) => `${v}%`}
           ariaLabel={t('managerDashboard.seatUtilization.title')}
+          axisSuffix="%"
         />
         {peak && (
           <div className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-3">

@@ -44,6 +44,7 @@ function MoneyTrendBody({ statKey, months }: { statKey: Exclude<StatKey, 'totalM
         color={MONEY_COLOR[statKey]}
         valueFormatter={formatCurrency}
         ariaLabel={t(STAT_TITLE_KEYS[statKey])}
+        axisPrefix="₹"
       />
       <div className="flex flex-col gap-1.5 border-t border-border pt-3 text-sm">
         {months.map((m) => (

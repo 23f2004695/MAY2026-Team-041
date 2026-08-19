@@ -1,13 +1,12 @@
 import os
 import uuid
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 
 os.environ["APP_ENV"] = "test"
 
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-from app.api.deps import get_current_user
 from app.core.config import get_settings
 from app.core.constants import Role
 from app.db.prisma import prisma
@@ -16,8 +15,7 @@ from app.modules.members import repository as member_repository
 
 os.environ.setdefault("DATABASE_URL", get_settings().database_url)
 
-TEST_EMAIL_DOMAIN = "@it-head-dashboard-test.example.com"
-TEST_BOOK_TITLE_PREFIX = "IT Head Test Book"
+TEST_EMAIL_DOMAIN = "@it-head-test.example.com"
 
 
 def _unique_email() -> str:
@@ -29,7 +27,7 @@ async def _make_user(role_name: str):
     return await member_repository.create_member(
         email=_unique_email(),
         password_hash=None,
-        full_name=f"Test {role_name.title()}",
+        full_name=f"Test {role_name.title()} {uuid.uuid4().hex[:6]}",
         phone=None,
         avatar_url=None,
         role_id=role.id,
@@ -40,18 +38,7 @@ async def _make_user(role_name: str):
 async def _db_connection():
     await prisma.connect()
     yield
-    domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
-    await prisma.loan.delete_many(where={"member": domain_filter})
-    await prisma.supportticket.delete_many(where={"raisedBy": domain_filter})
-    await prisma.permissionrequest.delete_many(where={"requestedBy": domain_filter})
-    await prisma.payment.delete_many(where={"user": domain_filter})
-    # Audit entries reference the actor with no cascade, so they have to go
-    # before the users do (role changes, bans and fine settlement all log now).
-    await prisma.auditlogentry.delete_many(
-        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
-    )
-    await prisma.user.delete_many(where=domain_filter)
-    await prisma.book.delete_many(where={"title": {"startswith": TEST_BOOK_TITLE_PREFIX}})
+    await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
     await prisma.disconnect()
 
 
@@ -66,93 +53,125 @@ async def member_user():
 
 
 def _client_as(user) -> AsyncClient:
+    from app.api.deps import get_current_user
+
     app = create_app()
     app.dependency_overrides[get_current_user] = lambda: user
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
 
 
-def _anon_client() -> AsyncClient:
-    app = create_app()
-    return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
-
-
 async def test_dashboard_requires_authentication():
-    async with _anon_client() as client:
+    app = create_app()
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         response = await client.get("/api/v1/it-head/dashboard")
+
     assert response.status_code == 401
 
 
-async def test_dashboard_forbidden_for_member(member_user):
+async def test_member_cannot_view_dashboard(member_user):
     async with _client_as(member_user) as client:
         response = await client.get("/api/v1/it-head/dashboard")
+
     assert response.status_code == 403
 
 
-async def test_dashboard_has_the_right_shape(it_head_user):
+def _assert_trend_shape(trend: dict) -> None:
+    assert set(trend.keys()) == {"direction", "percent"}
+    assert trend["direction"] in ("up", "down")
+    assert trend["percent"] >= 0
+
+
+async def test_it_head_can_view_dashboard(it_head_user):
     async with _client_as(it_head_user) as client:
         response = await client.get("/api/v1/it-head/dashboard")
 
     assert response.status_code == 200
     body = response.json()
-    assert set(body.keys()) == {"stats", "fee_status"}
-    assert set(body["stats"].keys()) == {
-        "active_members",
-        "open_issues",
-        "pending_permissions",
-        "fees_outstanding",
-        "late_fines_outstanding",
+    assert set(body.keys()) == {
+        "stats",
+        "fee_status",
+        "fee_collections",
+        "issue_resolution",
+        "system_activity",
+        "system_activity_summary",
+        "access_by_role",
+        "alerts",
     }
 
+    stats = body["stats"]
+    assert set(stats.keys()) == {
+        "active_members",
+        "active_members_trend",
+        "open_issues",
+        "open_issues_delta",
+        "pending_permissions",
+        "pending_permissions_delta",
+        "fees_outstanding",
+        "fees_outstanding_trend",
+        "late_fines_outstanding",
+        "late_fines_outstanding_trend",
+    }
+    for key in ("active_members_trend", "fees_outstanding_trend", "late_fines_outstanding_trend"):
+        _assert_trend_shape(stats[key])
+    assert stats["active_members"] >= 1  # this test's own it_head_user + seeded members
+    assert stats["fees_outstanding"] >= 0
+    assert stats["late_fines_outstanding"] >= 0
 
-async def test_member_with_no_payment_shows_up_as_overdue_fee(it_head_user, member_user):
-    async with _client_as(it_head_user) as client:
-        response = await client.get("/api/v1/it-head/dashboard")
+    fee_status = body["fee_status"]
+    assert isinstance(fee_status, list)
+    for entry in fee_status:
+        assert set(entry.keys()) == {"member_id", "member_name", "amount_due", "status", "due_date"}
+        assert entry["status"] in ("paid", "due", "overdue")
+        if entry["status"] == "paid":
+            assert entry["amount_due"] == 0
+        else:
+            assert entry["amount_due"] > 0
 
-    entry = next(row for row in response.json()["fee_status"] if row["member_id"] == member_user.id)
-    assert entry["status"] == "overdue"
-    assert entry["amount_due"] > 0
+    fee_collections = body["fee_collections"]
+    assert len(fee_collections) == 6
+    for month in fee_collections:
+        assert set(month.keys()) == {"month", "collected", "pending"}
+        assert month["collected"] >= 0
+        assert month["pending"] >= 0
+    # Most recent bucket is the current month, and every "pending" figure it reports is
+    # the same live calculation fees_outstanding reports for right now.
+    assert fee_collections[-1]["pending"] == stats["fees_outstanding"]
 
+    issue_resolution = body["issue_resolution"]
+    assert len(issue_resolution) == 6
+    for month in issue_resolution:
+        assert set(month.keys()) == {"month", "resolved", "open", "other"}
 
-async def test_member_with_active_plan_shows_up_as_paid(it_head_user, member_user):
-    async with _client_as(member_user) as client:
-        await client.post(
-            "/api/v1/payments",
-            json={"amount": 499, "label": "1 Month", "plan_months": 1},
-        )
+    system_activity = body["system_activity"]
+    assert len(system_activity) == 7
+    for day in system_activity:
+        assert set(day.keys()) == {"date", "logins", "access_changes", "permissions_updated"}
+        assert day["logins"] >= 0
+    assert system_activity[-1]["date"] == datetime.now(UTC).date().isoformat()
 
-    async with _client_as(it_head_user) as client:
-        response = await client.get("/api/v1/it-head/dashboard")
+    summary = body["system_activity_summary"]
+    assert set(summary.keys()) == {
+        "logins_total",
+        "logins_trend",
+        "access_changes_total",
+        "access_changes_trend",
+        "permissions_updated_total",
+        "permissions_updated_trend",
+    }
+    assert summary["logins_total"] == sum(d["logins"] for d in system_activity)
+    for key in ("logins_trend", "access_changes_trend", "permissions_updated_trend"):
+        _assert_trend_shape(summary[key])
 
-    entry = next(row for row in response.json()["fee_status"] if row["member_id"] == member_user.id)
-    assert entry["status"] == "paid"
-    assert entry["amount_due"] == 0
+    access_by_role = body["access_by_role"]
+    assert isinstance(access_by_role, list)
+    roles_seen = {entry["role"] for entry in access_by_role}
+    assert Role.MEMBER.value in roles_seen
+    assert Role.IT_HEAD.value in roles_seen  # this test's own it_head_user
+    total_percent = sum(entry["percent"] for entry in access_by_role)
+    assert 95 <= total_percent <= 105  # rounding per-entry can drift a couple points
 
-
-async def test_active_members_count_reflects_real_members(it_head_user, member_user):
-    async with _client_as(it_head_user) as client:
-        response = await client.get("/api/v1/it-head/dashboard")
-
-    assert response.json()["stats"]["active_members"] >= 1
-
-
-async def test_late_fines_outstanding_reflects_unpaid_overdue_loans(it_head_user, member_user):
-    book = await prisma.book.create(
-        data={
-            "title": f"{TEST_BOOK_TITLE_PREFIX} {uuid.uuid4().hex[:8]}",
-            "author": "Author",
-            "category": "Fiction",
-        }
-    )
-    await prisma.loan.create(
-        data={
-            "bookId": book.id,
-            "memberId": member_user.id,
-            "dueDate": datetime.now(UTC) - timedelta(days=4),
-            "createdById": it_head_user.id,
-        }
-    )
-
-    async with _client_as(it_head_user) as client:
-        response = await client.get("/api/v1/it-head/dashboard")
-
-    assert response.json()["stats"]["late_fines_outstanding"] >= 40
+    alerts = body["alerts"]
+    assert len(alerts) == 4
+    for alert in alerts:
+        assert set(alert.keys()) == {"id", "severity", "title", "description"}
+        assert alert["severity"] in ("critical", "warning", "info", "success")

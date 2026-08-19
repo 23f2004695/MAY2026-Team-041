@@ -1,7 +1,7 @@
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { MultiLineTrendChart } from '@/components/common';
+import { ComboBarLineChart } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import { formatCurrency, formatMonth } from '@/lib/format';
@@ -85,9 +85,6 @@ export function OverdueFinesOverview({ months }: { months: OverdueFinesMonth[] }
         <CardTitle>{t('managerDashboard.overdueFines.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        {/* Overdue book counts aren't in the chart itself — a count series next to two
-            currency series on one axis would read as one of them being tiny or huge for
-            no real reason. Kept as its own summary number instead. */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <StatCell
             label={t('managerDashboard.overdueFines.totalOverdue')}
@@ -118,22 +115,32 @@ export function OverdueFinesOverview({ months }: { months: OverdueFinesMonth[] }
             goodDirection="up"
           />
         </div>
-        <MultiLineTrendChart
+        <ComboBarLineChart
           ariaLabel={t('managerDashboard.overdueFines.title')}
+          lineAxisPrefix="₹"
           data={months.map((m) => ({
             label: formatMonth(m.month),
-            values: { generated: m.fines_generated, collected: m.fines_collected },
+            values: {
+              overdue: m.overdue_books,
+              generated: m.fines_generated,
+              collected: m.fines_collected,
+            },
           }))}
-          series={[
+          barSeries={{
+            key: 'overdue',
+            label: t('managerDashboard.overdueFines.totalOverdue'),
+            color: 'var(--color-primary)',
+          }}
+          lineSeries={[
             {
               key: 'generated',
-              label: t('managerDashboard.overdueFines.finesGenerated'),
-              color: 'var(--color-danger)',
+              label: `${t('managerDashboard.overdueFines.finesGenerated')} (₹)`,
+              color: 'var(--color-info)',
             },
             {
               key: 'collected',
-              label: t('managerDashboard.overdueFines.finesCollected'),
-              color: 'var(--color-success)',
+              label: `${t('managerDashboard.overdueFines.finesCollected')} (₹)`,
+              color: 'var(--color-teal)',
             },
           ]}
         />

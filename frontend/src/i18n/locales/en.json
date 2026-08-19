@@ -579,7 +579,51 @@
       "openIssues": "Open Issues",
       "pendingPermissions": "Pending Permissions",
       "feesOutstanding": "Fees Outstanding",
-      "lateFinesOutstanding": "Late Fines Outstanding"
+      "lateFinesOutstanding": "Late Fines Outstanding",
+      "fromYesterday": "from yesterday",
+      "noChange": "No change"
+    },
+    "feeCollections": {
+      "title": "Fee Collections Overview",
+      "collected": "Collected",
+      "pending": "Pending"
+    },
+    "issueResolutionOverview": {
+      "title": "Issue Resolution Overview",
+      "resolved": "Resolved",
+      "open": "Open",
+      "other": "Other"
+    },
+    "systemActivity": {
+      "title": "System Activity",
+      "logins": "Logins",
+      "accessChanges": "Access Changes",
+      "permissionsUpdated": "Permissions Updated",
+      "loginsChartLabel": "Logins over the last 7 days"
+    },
+    "accessByRole": {
+      "title": "Access by Role",
+      "totalMembers": "{{count}} Total Members",
+      "total": "Total",
+      "roles": {
+        "member": "Members",
+        "guardian": "Guardians",
+        "manager": "Managers",
+        "librarian": "Librarians",
+        "it-head": "IT Admins",
+        "admin": "Admins"
+      }
+    },
+    "feeStatusSummary": {
+      "title": "Fee Status Summary",
+      "totalOutstanding": "Total Outstanding",
+      "currentOutstanding": "Current Outstanding",
+      "lateFines": "Late Fines",
+      "topOverdue": "Top Overdue Members",
+      "empty": "No members currently overdue."
+    },
+    "systemAlerts": {
+      "title": "System Alerts"
     },
     "accessControl": {
       "title": "Access Control",

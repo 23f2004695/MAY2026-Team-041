@@ -245,6 +245,7 @@ export function AdminDashboardPage() {
                       .map((m) => ({ label: formatMonth(m.month), value: m.revenue }))}
                     valueFormatter={formatCurrency}
                     ariaLabel={t('admin.dashboard.revenueOverview')}
+                    axisPrefix="₹"
                   />
                 </CardContent>
               </Card>

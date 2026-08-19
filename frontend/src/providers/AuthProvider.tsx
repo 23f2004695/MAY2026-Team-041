@@ -568,10 +568,15 @@ export interface LoanRecord {
 
 export interface ITHeadStats {
   active_members: number;
+  active_members_trend: AdminTrend;
   open_issues: number;
+  open_issues_delta: number;
   pending_permissions: number;
+  pending_permissions_delta: number;
   fees_outstanding: number;
+  fees_outstanding_trend: AdminTrend;
   late_fines_outstanding: number;
+  late_fines_outstanding_trend: AdminTrend;
 }
 
 export interface FeeStatusEntryRecord {
@@ -582,9 +587,57 @@ export interface FeeStatusEntryRecord {
   due_date: string | null;
 }
 
+export interface FeeCollectionMonth {
+  month: string;
+  collected: number;
+  pending: number;
+}
+
+export interface IssueResolutionMonth {
+  month: string;
+  resolved: number;
+  open: number;
+  other: number;
+}
+
+export interface SystemActivityDay {
+  date: string;
+  logins: number;
+  access_changes: number;
+  permissions_updated: number;
+}
+
+export interface SystemActivitySummary {
+  logins_total: number;
+  logins_trend: AdminTrend;
+  access_changes_total: number;
+  access_changes_trend: AdminTrend;
+  permissions_updated_total: number;
+  permissions_updated_trend: AdminTrend;
+}
+
+export interface RoleBreakdownEntry {
+  role: string;
+  count: number;
+  percent: number;
+}
+
+export interface ITHeadAlert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info' | 'success';
+  title: string;
+  description: string;
+}
+
 export interface ITHeadDashboard {
   stats: ITHeadStats;
   fee_status: FeeStatusEntryRecord[];
+  fee_collections: FeeCollectionMonth[];
+  issue_resolution: IssueResolutionMonth[];
+  system_activity: SystemActivityDay[];
+  system_activity_summary: SystemActivitySummary;
+  access_by_role: RoleBreakdownEntry[];
+  alerts: ITHeadAlert[];
 }
 
 export interface ExpensePayload {

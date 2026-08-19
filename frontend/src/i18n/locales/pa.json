@@ -560,7 +560,51 @@
       "openIssues": "ਬਕਾਇਆ ਸਮੱਸਿਆਵਾਂ",
       "pendingPermissions": "ਬਕਾਇਆ ਅਨੁਮਤੀਆਂ",
       "feesOutstanding": "ਬਕਾਇਆ ਫੀਸ",
-      "lateFinesOutstanding": "ਬਕਾਇਆ ਦੇਰੀ ਜੁਰਮਾਨਾ"
+      "lateFinesOutstanding": "ਬਕਾਇਆ ਦੇਰੀ ਜੁਰਮਾਨਾ",
+      "fromYesterday": "ਕੱਲ੍ਹ ਤੋਂ",
+      "noChange": "ਕੋਈ ਬਦਲਾਅ ਨਹੀਂ"
+    },
+    "feeCollections": {
+      "title": "ਫੀਸ ਵਸੂਲੀ ਸੰਖੇਪ",
+      "collected": "ਵਸੂਲੀ",
+      "pending": "ਬਕਾਇਆ"
+    },
+    "issueResolutionOverview": {
+      "title": "ਸਮੱਸਿਆ ਹੱਲ ਸੰਖੇਪ",
+      "resolved": "ਹੱਲ ਹੋਈਆਂ",
+      "open": "ਬਕਾਇਆ",
+      "other": "ਹੋਰ"
+    },
+    "systemActivity": {
+      "title": "ਸਿਸਟਮ ਸਰਗਰਮੀ",
+      "logins": "ਲੌਗਇਨ",
+      "accessChanges": "ਪਹੁੰਚ ਤਬਦੀਲੀਆਂ",
+      "permissionsUpdated": "ਅਪਡੇਟ ਹੋਈਆਂ ਅਨੁਮਤੀਆਂ",
+      "loginsChartLabel": "ਪਿਛਲੇ 7 ਦਿਨਾਂ ਦੇ ਲੌਗਇਨ"
+    },
+    "accessByRole": {
+      "title": "ਭੂਮਿਕਾ ਅਨੁਸਾਰ ਪਹੁੰਚ",
+      "totalMembers": "ਕੁੱਲ {{count}} ਮੈਂਬਰ",
+      "total": "ਕੁੱਲ",
+      "roles": {
+        "member": "ਮੈਂਬਰ",
+        "guardian": "ਸਰਪ੍ਰਸਤ",
+        "manager": "ਮੈਨੇਜਰ",
+        "librarian": "ਲਾਇਬ੍ਰੇਰੀਅਨ",
+        "it-head": "ਆਈਟੀ ਐਡਮਿਨ",
+        "admin": "ਐਡਮਿਨ"
+      }
+    },
+    "feeStatusSummary": {
+      "title": "ਫੀਸ ਸਥਿਤੀ ਸੰਖੇਪ",
+      "totalOutstanding": "ਕੁੱਲ ਬਕਾਇਆ",
+      "currentOutstanding": "ਮੌਜੂਦਾ ਬਕਾਇਆ",
+      "lateFines": "ਦੇਰੀ ਜੁਰਮਾਨਾ",
+      "topOverdue": "ਸਭ ਤੋਂ ਵੱਧ ਬਕਾਇਆ ਵਾਲੇ ਮੈਂਬਰ",
+      "empty": "ਇਸ ਵੇਲੇ ਕੋਈ ਮੈਂਬਰ ਬਕਾਇਆ ਨਹੀਂ ਹੈ।"
+    },
+    "systemAlerts": {
+      "title": "ਸਿਸਟਮ ਚੇਤਾਵਨੀਆਂ"
     },
     "accessControl": {
       "title": "ਪਹੁੰਚ ਕੰਟਰੋਲ",

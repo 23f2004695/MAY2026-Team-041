@@ -560,7 +560,51 @@
       "openIssues": "लंबित समस्याएँ",
       "pendingPermissions": "लंबित अनुमतियाँ",
       "feesOutstanding": "बकाया शुल्क",
-      "lateFinesOutstanding": "बकाया विलंब जुर्माना"
+      "lateFinesOutstanding": "बकाया विलंब जुर्माना",
+      "fromYesterday": "कल से",
+      "noChange": "कोई बदलाव नहीं"
+    },
+    "feeCollections": {
+      "title": "शुल्क संग्रह अवलोकन",
+      "collected": "एकत्रित",
+      "pending": "लंबित"
+    },
+    "issueResolutionOverview": {
+      "title": "समस्या समाधान अवलोकन",
+      "resolved": "समाधान हुई",
+      "open": "लंबित",
+      "other": "अन्य"
+    },
+    "systemActivity": {
+      "title": "सिस्टम गतिविधि",
+      "logins": "लॉगिन",
+      "accessChanges": "पहुँच परिवर्तन",
+      "permissionsUpdated": "अनुमतियाँ अपडेट",
+      "loginsChartLabel": "पिछले 7 दिनों में लॉगिन"
+    },
+    "accessByRole": {
+      "title": "भूमिका अनुसार पहुँच",
+      "totalMembers": "कुल {{count}} सदस्य",
+      "total": "कुल",
+      "roles": {
+        "member": "सदस्य",
+        "guardian": "अभिभावक",
+        "manager": "प्रबंधक",
+        "librarian": "लाइब्रेरियन",
+        "it-head": "आईटी एडमिन",
+        "admin": "एडमिन"
+      }
+    },
+    "feeStatusSummary": {
+      "title": "शुल्क स्थिति सारांश",
+      "totalOutstanding": "कुल बकाया",
+      "currentOutstanding": "वर्तमान बकाया",
+      "lateFines": "विलंब जुर्माना",
+      "topOverdue": "सबसे अधिक बकायादार सदस्य",
+      "empty": "फ़िलहाल कोई सदस्य बकायादार नहीं है।"
+    },
+    "systemAlerts": {
+      "title": "सिस्टम अलर्ट"
     },
     "accessControl": {
       "title": "एक्सेस नियंत्रण",
