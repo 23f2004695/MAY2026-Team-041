@@ -237,6 +237,7 @@ export function ManagerDashboard() {
           </CardHeader>
           <CardContent>
             <MultiLineTrendChart
+              ariaLabel={t('managerDashboard.libraryActivity.title')}
               data={stats.library_activity.map((day) => ({
                 label: formatWeekday(day.date),
                 values: { issued: day.issued, returned: day.returned },
@@ -268,6 +269,7 @@ export function ManagerDashboard() {
             </CardHeader>
             <CardContent>
               <MultiBarChart
+                ariaLabel={t('managerDashboard.memberActivity.title')}
                 data={stats.member_activity.map((m) => ({
                   label: formatMonth(m.month),
                   values: { new: m.new_members, active: m.active_members },

@@ -244,6 +244,7 @@ export function AdminDashboardPage() {
                       .slice(revenuePeriod === 'last3' ? -3 : -6)
                       .map((m) => ({ label: formatMonth(m.month), value: m.revenue }))}
                     valueFormatter={formatCurrency}
+                    ariaLabel={t('admin.dashboard.revenueOverview')}
                   />
                 </CardContent>
               </Card>

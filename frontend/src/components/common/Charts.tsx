@@ -11,6 +11,9 @@ export interface TrendLineChartProps {
   color?: string;
   valueFormatter?: (value: number) => string;
   className?: string;
+  /** Accessible name for the chart — the svg carries role="img", so axe/screen readers
+   * need this to describe what it's a chart of (e.g. the card's own title text). */
+  ariaLabel: string;
 }
 
 const CHART_WIDTH = 320;
@@ -46,6 +49,7 @@ export function TrendLineChart({
   color = 'var(--color-primary)',
   valueFormatter,
   className,
+  ariaLabel,
 }: TrendLineChartProps) {
   if (data.length === 0) return null;
 
@@ -72,6 +76,7 @@ export function TrendLineChart({
         preserveAspectRatio="none"
         className="h-36 w-full"
         role="img"
+        aria-label={ariaLabel}
       >
         {showZeroLine && (
           <line
@@ -128,13 +133,21 @@ export interface MultiLineTrendChartProps {
   data: MultiTrendPoint[];
   series: MultiTrendSeries[];
   className?: string;
+  /** Accessible name for the chart — the svg carries role="img", so axe/screen readers
+   * need this to describe what it's a chart of (e.g. the card's own title text). */
+  ariaLabel: string;
 }
 
 // Same smooth-curve construction as TrendLineChart, but for two or more series sharing
 // one axis (e.g. issued vs. returned) — no area fill, since overlapping fills between
 // series read as noise rather than signal, plus a legend since color is now the only
 // way to tell series apart.
-export function MultiLineTrendChart({ data, series, className }: MultiLineTrendChartProps) {
+export function MultiLineTrendChart({
+  data,
+  series,
+  className,
+  ariaLabel,
+}: MultiLineTrendChartProps) {
   if (data.length === 0 || series.length === 0) return null;
 
   const allValues = data.flatMap((d) => series.map((s) => d.values[s.key] ?? 0));
@@ -166,6 +179,7 @@ export function MultiLineTrendChart({ data, series, className }: MultiLineTrendC
         preserveAspectRatio="none"
         className="h-36 w-full"
         role="img"
+        aria-label={ariaLabel}
       >
         {seriesCoords.map(({ series: s, coords }) => (
           <g key={s.key}>
@@ -204,6 +218,9 @@ export interface MultiBarChartProps {
   data: MultiTrendPoint[];
   series: MultiTrendSeries[];
   className?: string;
+  /** Accessible name for the chart — the svg carries role="img", so axe/screen readers
+   * need this to describe what it's a chart of (e.g. the card's own title text). */
+  ariaLabel: string;
 }
 
 const BAR_GROUP_GAP = 6;
@@ -211,7 +228,7 @@ const BAR_GROUP_GAP = 6;
 // Same MultiTrendPoint/MultiTrendSeries shape as MultiLineTrendChart, grouped bars
 // instead of lines — a trend made of few, discrete periods (e.g. months) usually reads
 // better as bars than as a curve implying continuous movement between points.
-export function MultiBarChart({ data, series, className }: MultiBarChartProps) {
+export function MultiBarChart({ data, series, className, ariaLabel }: MultiBarChartProps) {
   if (data.length === 0 || series.length === 0) return null;
 
   const allValues = data.flatMap((d) => series.map((s) => d.values[s.key] ?? 0));
@@ -236,6 +253,7 @@ export function MultiBarChart({ data, series, className }: MultiBarChartProps) {
         preserveAspectRatio="none"
         className="h-36 w-full"
         role="img"
+        aria-label={ariaLabel}
       >
         {data.map((point, groupIndex) => {
           const groupX = CHART_PADDING + groupIndex * groupWidth + BAR_GROUP_GAP / 2;

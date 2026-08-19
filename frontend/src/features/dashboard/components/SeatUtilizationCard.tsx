@@ -33,6 +33,7 @@ export function SeatUtilizationCard({ hours }: { hours: SeatUtilizationHour[] })
           data={hours.map((h) => ({ label: formatHour(h.hour), value: h.percent }))}
           color="var(--color-primary)"
           valueFormatter={(v) => `${v}%`}
+          ariaLabel={t('managerDashboard.seatUtilization.title')}
         />
         {peak && (
           <div className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-3">

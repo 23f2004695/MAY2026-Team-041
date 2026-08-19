@@ -119,6 +119,7 @@ export function OverdueFinesOverview({ months }: { months: OverdueFinesMonth[] }
           />
         </div>
         <MultiLineTrendChart
+          ariaLabel={t('managerDashboard.overdueFines.title')}
           data={months.map((m) => ({
             label: formatMonth(m.month),
             values: { generated: m.fines_generated, collected: m.fines_collected },

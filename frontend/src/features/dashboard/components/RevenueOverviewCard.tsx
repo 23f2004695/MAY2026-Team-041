@@ -31,6 +31,7 @@ export function RevenueOverviewCard({ months }: { months: RevenueMonth[] }) {
           data={months.map((m) => ({ label: formatMonth(m.month), value: m.total }))}
           color="var(--color-success)"
           valueFormatter={formatCurrency}
+          ariaLabel={t('managerDashboard.revenue.title')}
         />
         <div className="grid grid-cols-3 gap-3 border-t border-border pt-3">
           <StatCell label={t('managerDashboard.revenue.total')} value={formatCurrency(total)} />
