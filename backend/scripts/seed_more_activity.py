@@ -191,7 +191,10 @@ async def _top_up_member(member, books: list, issuers: list) -> None:
             "createdAt": borrowed_at,
         }
     )
-    print(f"  Added 3 borrowed-book loans (2 active, 1 on-time) + 1 late loan (₹{fine_amount} unpaid fine).")
+    print(
+        f"  Added 3 borrowed-book loans (2 active, 1 on-time) + 1 late loan"
+        f" (₹{fine_amount} unpaid fine)."
+    )
 
     # Leaderboard achievement: a real 7-day login streak. get_leaderboard's
     # compute_streaks counts backward from today, so 7 consecutive days ending today
@@ -208,7 +211,10 @@ async def _top_up_member(member, books: list, issuers: list) -> None:
             data={"memberId": member.id, "date": datetime(day.year, day.month, day.day, tzinfo=UTC)}
         )
         added += 1
-    print(f"  Added {added} login-activity day(s) — completes a 7-day streak (unlocks the leaderboard's '7_day_streak' badge).")
+    print(
+        f"  Added {added} login-activity day(s) — completes a 7-day streak"
+        f" (unlocks the leaderboard's '7_day_streak' badge)."
+    )
 
 
 async def main() -> None:

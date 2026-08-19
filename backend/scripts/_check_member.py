@@ -15,7 +15,9 @@ async def main():
     try:
         user = await prisma.user.find_unique(where={"email": "member0316@seed-demo.example.com"})
         print(user)
-        total_members = await prisma.user.count(where={"email": {"endswith": "@seed-demo.example.com"}})
+        total_members = await prisma.user.count(
+            where={"email": {"endswith": "@seed-demo.example.com"}}
+        )
         print("total seed-demo users:", total_members)
         seats = await prisma.seatbooking.count()
         print("total seat bookings:", seats)
