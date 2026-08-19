@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReviewCard, Section, SectionHeading } from '@/components/common';
-import { getAllLibraryReviews, type LibraryReview } from '@/lib/libraryReviews';
+import { useAuth, type LibraryReviewRecord } from '@/providers/AuthProvider';
 import { useActiveSection } from '@/providers/ActiveSectionProvider';
 
 import { Marquee } from './Marquee';
@@ -12,15 +12,14 @@ const SECTION_ID = 'testimonials';
 export function Testimonials() {
   const { t } = useTranslation();
   const { setActiveSection } = useActiveSection();
-  const [reviewsList, setReviewsList] = useState<LibraryReview[]>(getAllLibraryReviews);
+  const { getApprovedLibraryReviews } = useAuth();
+  const [reviewsList, setReviewsList] = useState<LibraryReviewRecord[]>([]);
 
   useEffect(() => {
-    function handleUpdate() {
-      setReviewsList(getAllLibraryReviews());
-    }
-    window.addEventListener('library_reviews_updated', handleUpdate);
-    return () => window.removeEventListener('library_reviews_updated', handleUpdate);
-  }, []);
+    getApprovedLibraryReviews()
+      .then(setReviewsList)
+      .catch(() => setReviewsList([]));
+  }, [getApprovedLibraryReviews]);
 
   // Marks "testimonials" as the active nav section only while it's actually visible in the
   // viewport, so the "Reviews" header link highlights on scroll — not just on the home route.
@@ -40,6 +39,10 @@ export function Testimonials() {
     };
   }, [setActiveSection]);
 
+  // No fabricated placeholder testimonials — the section simply doesn't render until at
+  // least one real member review has been approved.
+  if (reviewsList.length === 0) return null;
+
   return (
     <Section id="testimonials" ariaLabelledBy="testimonials-heading">
       <SectionHeading
@@ -49,26 +52,16 @@ export function Testimonials() {
       />
 
       <Marquee gap={16} duration={30}>
-        {reviewsList.map((item) => {
-          const isCustom = item.id.startsWith('review_');
-          const roleText = isCustom
-            ? item.role
-            : t(`landing.testimonials.items.${item.id}.role`, { defaultValue: item.role });
-          const quoteText = isCustom
-            ? item.quote
-            : t(`landing.testimonials.items.${item.id}.quote`, { defaultValue: item.quote });
-
-          return (
-            <div key={item.id} className="w-72 sm:w-80">
-              <ReviewCard
-                name={item.name}
-                role={roleText}
-                quote={quoteText}
-                rating={item.rating}
-              />
-            </div>
-          );
-        })}
+        {reviewsList.map((item) => (
+          <div key={item.id} className="w-72 sm:w-80">
+            <ReviewCard
+              name={item.member_name}
+              role={t(`auth.login.roles.${item.member_role}`, { defaultValue: item.member_role })}
+              quote={item.comment}
+              rating={item.rating}
+            />
+          </div>
+        ))}
       </Marquee>
     </Section>
   );

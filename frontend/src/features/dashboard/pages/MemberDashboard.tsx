@@ -77,6 +77,7 @@ export function MemberDashboard() {
   const [visitStatus, setVisitStatus] = useState<MemberVisitStatus | null>(null);
   const [activeStat, setActiveStat] = useState<MemberStatKey | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -299,7 +300,7 @@ export function MemberDashboard() {
         />
       </div>
 
-      <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} />
+      <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} refreshKey={reviewRefreshKey} />
 
       <QuickActionsCard
         title={t('dashboard.quickActions.title')}
@@ -330,6 +331,7 @@ export function MemberDashboard() {
       <LeaveLibraryReviewModal
         open={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
+        onSubmitted={() => setReviewRefreshKey((key) => key + 1)}
       />
 
       <MemberStatModal

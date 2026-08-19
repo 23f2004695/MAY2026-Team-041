@@ -34,6 +34,7 @@ from app.modules.events.router import router as events_router
 from app.modules.guardian.router import router as guardian_router
 from app.modules.it_head.router import router as it_head_router
 from app.modules.leaderboard.router import router as leaderboard_router
+from app.modules.library_reviews.router import router as library_reviews_router
 from app.modules.loans.router import router as loans_router
 from app.modules.loans.service import send_due_soon_reminders
 from app.modules.manager.router import router as manager_router
@@ -277,6 +278,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(it_head_router, prefix=settings.api_prefix)
     app.include_router(leaderboard_router, prefix=settings.api_prefix)
     app.include_router(visits_router, prefix=settings.api_prefix)
+    app.include_router(library_reviews_router, prefix=settings.api_prefix)
     return app
 
 

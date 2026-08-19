@@ -774,6 +774,22 @@ export interface BillingRequestRecord {
   decided_at: string | null;
 }
 
+export interface LibraryReviewPayload {
+  rating: number;
+  comment: string;
+}
+
+export interface LibraryReviewRecord {
+  id: string;
+  rating: number;
+  comment: string;
+  status: 'pending' | 'approved' | 'rejected';
+  member_id: string;
+  member_name: string;
+  member_role: string;
+  created_at: string;
+}
+
 export interface MemberSummary {
   id: string;
   full_name: string;
@@ -1027,6 +1043,12 @@ interface AuthContextValue extends AuthState {
   approveBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
   rejectBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
   waiveFine: (payload: WaiveFinePayload) => Promise<BillingRequestRecord>;
+  getApprovedLibraryReviews: () => Promise<LibraryReviewRecord[]>;
+  getMyLibraryReview: () => Promise<LibraryReviewRecord | null>;
+  submitLibraryReview: (payload: LibraryReviewPayload) => Promise<LibraryReviewRecord>;
+  getPendingLibraryReviews: () => Promise<LibraryReviewRecord[]>;
+  approveLibraryReview: (reviewId: string) => Promise<LibraryReviewRecord>;
+  rejectLibraryReview: (reviewId: string) => Promise<LibraryReviewRecord>;
   getPricingPlans: () => Promise<PricingPlan[]>;
   updatePricingPlan: (id: string, payload: PricingPlanUpdatePayload) => Promise<PricingPlan>;
   createMember: (payload: CreateMemberPayload) => Promise<CreatedMember>;
@@ -1656,6 +1678,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiPost<BillingRequestRecord>('/billing-requests/waive-fine', payload, stateRef.current.token);
   }
 
+  // Public — the homepage's "What Our Members Say" reads this without needing a session.
+  async function getApprovedLibraryReviews(): Promise<LibraryReviewRecord[]> {
+    return apiGet<LibraryReviewRecord[]>(
+      '/library-reviews/approved',
+      stateRef.current.token ?? undefined,
+    );
+  }
+
+  async function getMyLibraryReview(): Promise<LibraryReviewRecord | null> {
+    if (!stateRef.current.token) return null;
+    return apiGet<LibraryReviewRecord | null>('/library-reviews/me', stateRef.current.token);
+  }
+
+  async function submitLibraryReview(payload: LibraryReviewPayload): Promise<LibraryReviewRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryReviewRecord>('/library-reviews', payload, stateRef.current.token);
+  }
+
+  async function getPendingLibraryReviews(): Promise<LibraryReviewRecord[]> {
+    if (!stateRef.current.token) return [];
+    return apiGet<LibraryReviewRecord[]>('/library-reviews', stateRef.current.token);
+  }
+
+  async function approveLibraryReview(reviewId: string): Promise<LibraryReviewRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryReviewRecord>(
+      `/library-reviews/${reviewId}/approve`,
+      undefined,
+      stateRef.current.token,
+    );
+  }
+
+  async function rejectLibraryReview(reviewId: string): Promise<LibraryReviewRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryReviewRecord>(
+      `/library-reviews/${reviewId}/reject`,
+      undefined,
+      stateRef.current.token,
+    );
+  }
+
   // Public — the Pricing page and Payment page read prices here without needing a session.
   async function getPricingPlans(): Promise<PricingPlan[]> {
     return apiGet<PricingPlan[]>('/pricing-plans', stateRef.current.token ?? undefined);
@@ -1923,6 +1986,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       approveBillingRequest,
       rejectBillingRequest,
       waiveFine,
+      getApprovedLibraryReviews,
+      getMyLibraryReview,
+      submitLibraryReview,
+      getPendingLibraryReviews,
+      approveLibraryReview,
+      rejectLibraryReview,
       getPricingPlans,
       updatePricingPlan,
       createMember,

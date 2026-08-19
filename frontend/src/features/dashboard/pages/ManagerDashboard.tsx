@@ -237,6 +237,7 @@ export function ManagerDashboard() {
           </CardHeader>
           <CardContent>
             <MultiLineTrendChart
+              className="max-w-2xl"
               ariaLabel={t('managerDashboard.libraryActivity.title')}
               showPointLabels
               data={stats.library_activity.map((day) => ({
