@@ -73,6 +73,7 @@ export function GuardianDashboardPage() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [activeStat, setActiveStat] = useState<GuardianStatKey | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [reviewRefreshKey, setReviewRefreshKey] = useState(0);
 
   function refreshChildren() {
     getGuardianChildren().then(setRealChildren).catch(() => setRealChildren([]));
@@ -159,7 +160,7 @@ export function GuardianDashboardPage() {
 
       <ChildrenReadingProgress realChildren={realChildren} />
 
-      <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} />
+      <LibraryReviewCard onOpenModal={() => setIsReviewModalOpen(true)} refreshKey={reviewRefreshKey} />
 
       <QuickActionsCard
         actions={[
@@ -189,6 +190,7 @@ export function GuardianDashboardPage() {
       <LeaveLibraryReviewModal
         open={isReviewModalOpen}
         onClose={() => setIsReviewModalOpen(false)}
+        onSubmitted={() => setReviewRefreshKey((key) => key + 1)}
       />
 
       <RaiseTicketModal

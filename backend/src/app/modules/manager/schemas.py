@@ -9,11 +9,65 @@ from app.modules.seat_booking.constants import SEAT_LABELS
 DurationDays = Literal[3, 5, 7, 10]
 
 
+class DailyLibraryActivityOut(BaseModel):
+    date: date_type
+    issued: int
+    returned: int
+
+
+class MostBorrowedBookOut(BaseModel):
+    book_id: str
+    title: str
+    count: int
+
+
+class MostBorrowedBooksOut(BaseModel):
+    this_month: list[MostBorrowedBookOut]
+    last_3_months: list[MostBorrowedBookOut]
+    last_6_months: list[MostBorrowedBookOut]
+
+
+class MemberActivityMonthOut(BaseModel):
+    month: str  # "2026-08"
+    new_members: int
+    # Distinct members with >=1 loan created that month. There's no unambiguous existing
+    # definition of "returning member" (returning from what gap?), so that series from
+    # the original mockup isn't included — would be inventing a metric, not reading one.
+    active_members: int
+
+
+class SeatUtilizationHourOut(BaseModel):
+    hour: int
+    percent: int
+
+
+class OverdueFinesMonthOut(BaseModel):
+    month: str
+    # Loans whose due date fell in this month and were (or still are) late — a proxy for
+    # "became overdue this month", since the app doesn't keep daily overdue snapshots.
+    overdue_books: int
+    fines_generated: int
+    fines_collected: int
+
+
+class RevenueMonthOut(BaseModel):
+    month: str
+    total: int
+
+
 class ManagerDashboardStatsOut(BaseModel):
     seats_booked_today: int
     books_issued_today: int
     new_registrations_today: int
     pending_tasks: int
+    # Last 7 calendar days including today, oldest first — real counts from Loan.borrowedAt
+    # / Loan.returnedAt, not a fixed window like the *_today fields above.
+    library_activity: list[DailyLibraryActivityOut]
+    most_borrowed_books: MostBorrowedBooksOut
+    member_activity: list[MemberActivityMonthOut]
+    seat_utilization: list[SeatUtilizationHourOut]
+    overdue_fines: list[OverdueFinesMonthOut]
+    revenue: list[RevenueMonthOut]
 
 
 class ManagerSeatBookingCreate(BaseModel):

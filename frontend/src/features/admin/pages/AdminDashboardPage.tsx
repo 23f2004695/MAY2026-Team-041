@@ -1,20 +1,28 @@
 import {
+  ArrowRight,
   BadgeIndianRupee,
+  BarChart3,
   CalendarPlus,
   HandCoins,
   IndianRupee,
   Megaphone,
+  PieChart,
   ReceiptText,
+  Star,
   TrendingDown,
   TrendingUp,
   UserPlus,
   Users,
   Wallet,
+  type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  IconBadge,
+  type IconBadgeTone,
+  MultiSegmentDonut,
   PageHeader,
   Pagination,
   QuickActionsCard,
@@ -44,7 +52,9 @@ import { CashFlowBreakdown } from '../components/CashFlowBreakdown';
 import { InviteMemberModal } from '../components/InviteMemberModal';
 import { LiveSeatStatus } from '../components/LiveSeatStatus';
 import { LogExpenseModal } from '../components/LogExpenseModal';
+import { PendingLibraryReviewsModal } from '../components/PendingLibraryReviewsModal';
 import { PendingRequests } from '../components/PendingRequests';
+import { RecentActivities } from '../components/RecentActivities';
 import { ReportModal, type ReportKey } from '../components/ReportModal';
 import { SeatOccupancySummary } from '../components/SeatOccupancySummary';
 import { StatTrendModal, type StatKey } from '../components/StatTrendModal';
@@ -56,11 +66,23 @@ function expenseSentiment(trend: AdminTrend): 'positive' | 'negative' {
   return trend.direction === 'up' ? 'negative' : 'positive';
 }
 
-const REPORTS: { key: ReportKey; labelKey: string }[] = [
-  { key: 'revenueByPlan', labelKey: 'admin.reports.items.revenueByPlan' },
-  { key: 'profitAndLoss', labelKey: 'admin.reports.items.profitAndLoss' },
-  { key: 'expenseBreakdown', labelKey: 'admin.reports.items.expenseBreakdown' },
-  { key: 'membershipGrowth', labelKey: 'admin.reports.items.membershipGrowth' },
+// Fixed per category, same reasoning as AccessByRoleCard's ROLE_COLORS — a category
+// with ₹0 spent this period still gets a stable color if it picks up spend later.
+// Avoids danger/success: BudgetExpenses (elsewhere on this page) already uses those
+// for over-budget/on-track status on these same categories, so reusing them here as
+// plain identity color would clash with that meaning.
+const EXPENSE_CATEGORY_COLORS: Record<ExpenseCategory, string> = {
+  staffSalaries: 'var(--color-primary)',
+  bookProcurement: 'var(--color-info)',
+  utilities: 'var(--color-teal)',
+  marketing: 'var(--color-warning)',
+};
+
+const REPORTS: { key: ReportKey; labelKey: string; icon: LucideIcon; tone: IconBadgeTone }[] = [
+  { key: 'revenueByPlan', labelKey: 'admin.reports.items.revenueByPlan', icon: IndianRupee, tone: 'success' },
+  { key: 'profitAndLoss', labelKey: 'admin.reports.items.profitAndLoss', icon: BarChart3, tone: 'warning' },
+  { key: 'expenseBreakdown', labelKey: 'admin.reports.items.expenseBreakdown', icon: PieChart, tone: 'primary-tint' },
+  { key: 'membershipGrowth', labelKey: 'admin.reports.items.membershipGrowth', icon: TrendingUp, tone: 'info' },
 ];
 
 export function AdminDashboardPage() {
@@ -82,6 +104,7 @@ export function AdminDashboardPage() {
   const [isInviteMemberOpen, setIsInviteMemberOpen] = useState(false);
   const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
   const [createEventOpen, setCreateEventOpen] = useState(false);
+  const [isPendingReviewsOpen, setIsPendingReviewsOpen] = useState(false);
   const [activeReport, setActiveReport] = useState<ReportKey | null>(null);
   const [activeStat, setActiveStat] = useState<StatKey | null>(null);
   const [reportFilter, setReportFilter] = useState('all');
@@ -207,6 +230,33 @@ export function AdminDashboardPage() {
             />
           </div>
 
+          {dashboard.budget.length > 0 && (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('admin.reports.items.expenseBreakdown')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <MultiSegmentDonut
+                    centerValue={formatCurrency(
+                      dashboard.budget.reduce((sum, category) => sum + category.spent, 0),
+                    )}
+                    centerLabel={t('admin.budget.overallLabel')}
+                    valueFormatter={formatCurrency}
+                    segments={dashboard.budget.map((category) => ({
+                      key: category.category,
+                      label: t(`admin.budget.categories.${category.category}`),
+                      value: category.spent,
+                      color: EXPENSE_CATEGORY_COLORS[category.category],
+                    }))}
+                  />
+                </CardContent>
+              </Card>
+
+              <RecentActivities entries={auditLog} />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <CashFlowBreakdown sources={dashboard.cash_flow} />
             <BudgetExpenses categories={dashboard.budget} onLogExpense={setLoggingCategory} />
@@ -282,12 +332,27 @@ export function AdminDashboardPage() {
               resetLabel={t('common.actions.reset')}
             />
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {paginatedItems.map((report) => (
-                <div key={report.key} className="flex items-center justify-between text-sm">
-                  <span className="text-foreground">{t(report.labelKey)}</span>
-                  <Button size="sm" variant="ghost" onClick={() => setActiveReport(report.key)}>
+                <div
+                  key={report.key}
+                  className="flex items-center gap-3 rounded-lg border border-border p-3"
+                >
+                  <IconBadge icon={report.icon} tone={report.tone} shape="square" size={11} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground">{t(report.labelKey)}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {t(`admin.reports.descriptions.${report.key}`)}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="shrink-0 gap-1 text-primary hover:bg-transparent hover:underline"
+                    onClick={() => setActiveReport(report.key)}
+                  >
                     {t('common.actions.viewReport')}
+                    <ArrowRight className="size-4" />
                   </Button>
                 </div>
               ))}
@@ -341,7 +406,17 @@ export function AdminDashboardPage() {
             icon: HandCoins,
             onClick: () => setIsWaiveFineOpen(true),
           },
+          {
+            label: t('admin.quickActions.reviewLibraryReviews'),
+            icon: Star,
+            onClick: () => setIsPendingReviewsOpen(true),
+          },
         ]}
+      />
+
+      <PendingLibraryReviewsModal
+        open={isPendingReviewsOpen}
+        onClose={() => setIsPendingReviewsOpen(false)}
       />
 
       <ReportModal reportKey={activeReport} onClose={() => setActiveReport(null)} />

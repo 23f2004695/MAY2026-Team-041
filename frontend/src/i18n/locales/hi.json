@@ -264,6 +264,20 @@
   "admin": {
     "pageTitle": "एडमिन डैशबोर्ड",
     "pageDescription": "व्यवसाय प्रदर्शन, नकदी प्रवाह और प्लेटफ़ॉर्म प्रबंधन",
+    "dashboard": {
+      "revenueOverview": "राजस्व अवलोकन",
+      "revenuePeriod": {
+        "label": "राजस्व अवधि",
+        "last3": "पिछले 3 महीने",
+        "last6": "पिछले 6 महीने"
+      }
+    },
+    "recentActivities": {
+      "title": "हाल की गतिविधियाँ",
+      "empty": "अभी तक कोई हालिया गतिविधि नहीं है।",
+      "viewAll": "सभी गतिविधियाँ देखें",
+      "genericAction": "{{action}}"
+    },
     "members": {
       "pageTitle": "सदस्य",
       "pageDescription": "सभी पंजीकृत खाते, उनकी योजनाएँ, गतिविधि और स्थिति।",
@@ -393,6 +407,16 @@
       "submit": "जुर्माना माफ करें",
       "successToast": "{{name}} का जुर्माना माफ किया गया"
     },
+    "pendingLibraryReviews": {
+      "title": "लंबित लाइब्रेरी समीक्षाएँ",
+      "empty": "स्वीकृति के लिए कोई समीक्षा लंबित नहीं है।",
+      "from": "{{name}} से",
+      "approveToast": "{{name}} की समीक्षा स्वीकृत — अब होमपेज पर लाइव है",
+      "rejectToast": "{{name}} की समीक्षा अस्वीकृत की गई",
+      "confirmApproveTitle": "क्या इस समीक्षा को स्वीकृत करें?",
+      "confirmRejectTitle": "क्या इस समीक्षा को अस्वीकृत करें?",
+      "confirmDescription": "{{name}} की समीक्षा। स्वीकृत करने पर यह होमपेज पर 'हमारे सदस्य क्या कहते हैं' में दिखाई देगी।"
+    },
     "auditLog": {
       "title": "वित्तीय गतिविधि लॉग",
       "empty": "अभी तक कोई वित्तीय गतिविधि नहीं।",
@@ -428,6 +452,12 @@
         "profitAndLoss": "लाभ और हानि सारांश",
         "expenseBreakdown": "व्यय विवरण",
         "membershipGrowth": "सदस्यता वृद्धि"
+      },
+      "descriptions": {
+        "revenueByPlan": "प्रत्येक सदस्यता योजना से उत्पन्न राजस्व",
+        "profitAndLoss": "आय, व्यय और शुद्ध लाभ का सारांश",
+        "expenseBreakdown": "पुस्तकालय के सभी व्ययों का विस्तृत विवरण",
+        "membershipGrowth": "सदस्य पंजीकरण, नवीनीकरण और वृद्धि रुझान"
       },
       "empty": "अभी तक कोई डेटा नहीं।",
       "paymentsCount_one": "{{count}} भुगतान",
@@ -465,7 +495,8 @@
       "inviteMember": "सदस्य आमंत्रित करें",
       "announcement": "घोषणा",
       "viewGrowthReport": "वृद्धि रिपोर्ट देखें",
-      "waiveFine": "जुर्माना माफ करें"
+      "waiveFine": "जुर्माना माफ करें",
+      "reviewLibraryReviews": "लाइब्रेरी समीक्षाएँ जाँचें"
     },
     "inviteMember": {
       "title": "सदस्य आमंत्रित करें",
@@ -546,7 +577,51 @@
       "openIssues": "लंबित समस्याएँ",
       "pendingPermissions": "लंबित अनुमतियाँ",
       "feesOutstanding": "बकाया शुल्क",
-      "lateFinesOutstanding": "बकाया विलंब जुर्माना"
+      "lateFinesOutstanding": "बकाया विलंब जुर्माना",
+      "fromYesterday": "कल से",
+      "noChange": "कोई बदलाव नहीं"
+    },
+    "feeCollections": {
+      "title": "शुल्क संग्रह अवलोकन",
+      "collected": "एकत्रित",
+      "pending": "लंबित"
+    },
+    "issueResolutionOverview": {
+      "title": "समस्या समाधान अवलोकन",
+      "resolved": "समाधान हुई",
+      "open": "लंबित",
+      "other": "अन्य"
+    },
+    "systemActivity": {
+      "title": "सिस्टम गतिविधि",
+      "logins": "लॉगिन",
+      "accessChanges": "पहुँच परिवर्तन",
+      "permissionsUpdated": "अनुमतियाँ अपडेट",
+      "loginsChartLabel": "पिछले 7 दिनों में लॉगिन"
+    },
+    "accessByRole": {
+      "title": "भूमिका अनुसार पहुँच",
+      "totalMembers": "कुल {{count}} सदस्य",
+      "total": "कुल",
+      "roles": {
+        "member": "सदस्य",
+        "guardian": "अभिभावक",
+        "manager": "प्रबंधक",
+        "librarian": "लाइब्रेरियन",
+        "it-head": "आईटी एडमिन",
+        "admin": "एडमिन"
+      }
+    },
+    "feeStatusSummary": {
+      "title": "शुल्क स्थिति सारांश",
+      "totalOutstanding": "कुल बकाया",
+      "currentOutstanding": "वर्तमान बकाया",
+      "lateFines": "विलंब जुर्माना",
+      "topOverdue": "सबसे अधिक बकायादार सदस्य",
+      "empty": "फ़िलहाल कोई सदस्य बकायादार नहीं है।"
+    },
+    "systemAlerts": {
+      "title": "सिस्टम अलर्ट"
     },
     "accessControl": {
       "title": "एक्सेस नियंत्रण",
@@ -787,6 +862,9 @@
       "noPlan": "आपके पास अभी तक कोई सक्रिय योजना नहीं है",
       "fineOwed": "बकाया जुर्माना: {{amount}}",
       "noFine": "कोई बकाया जुर्माना नहीं",
+      "outstandingFine": "बकाया जुर्माना",
+      "statusActive": "सक्रिय",
+      "statusInactive": "निष्क्रिय",
       "renew": "अपग्रेड करें",
       "viewPlans": "योजनाएँ देखें",
       "payFine": "जुर्माना भरें",
@@ -805,8 +883,12 @@
     },
     "stats": {
       "booksBorrowed": "उधार ली गई पुस्तकें",
+      "booksBorrowedSubtitle": "अभी चेक-आउट की गई",
       "booksReserved": "आरक्षित पुस्तकें",
+      "booksReservedSubtitle": "जब चाहें तैयार",
       "seatBookings": "सीट बुकिंग",
+      "seatBookingsSubtitle": "आगामी बुकिंग",
+      "readingStreakSubtitle": "इसे जारी रखें!",
       "readingPoints": "पठन अंक"
     },
     "statModal": {
@@ -875,6 +957,44 @@
       "booksIssuedToday": "आज जारी की गई पुस्तकें",
       "newRegistrationsToday": "आज के नए पंजीकरण",
       "pendingTasks": "लंबित कार्य"
+    },
+    "libraryActivity": {
+      "title": "लाइब्रेरी गतिविधि (पिछले 7 दिन)",
+      "issued": "जारी की गई पुस्तकें",
+      "returned": "वापस की गई पुस्तकें"
+    },
+    "mostBorrowedBooks": {
+      "title": "सबसे ज़्यादा उधार ली गई पुस्तकें",
+      "empty": "इस अवधि में अभी तक कोई पुस्तक उधार नहीं ली गई।",
+      "axisLabel": "उधार लिए जाने की संख्या",
+      "periodLabel": "समय अवधि",
+      "thisMonth": "इस महीने",
+      "last3Months": "पिछले 3 महीने",
+      "last6Months": "पिछले 6 महीने",
+      "seeMore": "और देखें"
+    },
+    "memberActivity": {
+      "title": "सदस्य गतिविधि (पिछले 6 महीने)",
+      "newMembers": "नए सदस्य",
+      "activeMembers": "सक्रिय सदस्य"
+    },
+    "seatUtilization": {
+      "title": "सीट उपयोग (आज)",
+      "peakTime": "व्यस्ततम समय",
+      "averageUtilization": "औसत उपयोग {{percent}}%"
+    },
+    "revenue": {
+      "title": "राजस्व अवलोकन (पिछले 6 महीने)",
+      "total": "कुल राजस्व",
+      "thisMonth": "इस महीने",
+      "avgMonthly": "औसत मासिक"
+    },
+    "overdueFines": {
+      "title": "बकाया और जुर्माना अवलोकन (पिछले 3 महीने)",
+      "totalOverdue": "कुल बकाया पुस्तकें",
+      "finesGenerated": "उत्पन्न जुर्माना",
+      "finesCollected": "वसूला गया जुर्माना",
+      "collectionRate": "वसूली दर"
     },
     "statModal": {
       "seatsBookedToday": {
@@ -1085,6 +1205,11 @@
         "bookTitle": "पुस्तक शीर्षक",
         "memberName": "सदस्य का नाम"
       }
+    },
+    "recentNotifications": {
+      "title": "हाल की सूचनाएं",
+      "empty": "अभी तक कोई हालिया सूचना नहीं है।",
+      "viewAll": "सभी सूचनाएं देखें"
     },
     "registerMember": {
       "emailLabel": "ईमेल",
@@ -2069,9 +2194,11 @@
     "libraryReviewCard": {
       "title": "अपने लाइब्रेरी अनुभव को रेट करें",
       "existingTitle": "आपकी लाइब्रेरी समीक्षा",
-      "description": "हमारे प्लेटफ़ॉर्म के बारे में अपने विचार साझा करें! आपकी समीक्षा हमारे होमपेज पर 'हमारे सदस्य क्या कहते हैं' में प्रदर्शित की जाएगी।",
+      "description": "हमारे प्लेटफ़ॉर्म के बारे में अपने विचार साझा करें! स्वीकृत समीक्षाएँ हमारे होमपेज पर 'हमारे सदस्य क्या कहते हैं' में प्रदर्शित की जाती हैं।",
       "button": "समीक्षा लिखें",
-      "editButton": "समीक्षा संपादित करें"
+      "editButton": "समीक्षा संपादित करें",
+      "pending": "एडमिन की स्वीकृति का इंतज़ार",
+      "rejectedNotShown": "होमपेज के लिए स्वीकृत नहीं"
     },
     "libraryReviewModal": {
       "title": "हमारी लाइब्रेरी को रेट और रिव्यू करें",
@@ -2081,7 +2208,7 @@
       "placeholder": "आपको हमारी लाइब्रेरी, संग्रह, सीट आरक्षण या माहौल के बारे में सबसे अच्छा क्या लगता है?",
       "submitButton": "समीक्षा जमा करें",
       "errorMinLength": "कृपया कम से कम 5 अक्षरों की समीक्षा लिखें।",
-      "successToast": "हमारी लाइब्रेरी की समीक्षा करने के लिए धन्यवाद! आपकी समीक्षा होमपेज पर दिखाई देगी।"
+      "successToast": "धन्यवाद! होमपेज पर दिखने से पहले आपकी समीक्षा एडमिन की स्वीकृति का इंतज़ार कर रही है।"
     },
     "member": {
       "ratedBooksHeading": "मेरी रेट की गई पुस्तकें",

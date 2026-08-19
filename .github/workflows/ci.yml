@@ -112,8 +112,22 @@ jobs:
           uv sync
           uv run prisma generate --schema prisma/schema.prisma
 
+      # Own timeout + retry: apt's azure.archive.ubuntu.com mirror (pulled in by
+      # --with-deps) occasionally hangs rather than failing fast, which used to silently
+      # burn the whole job's 30-minute budget on a dead mirror with zero output. Bounded
+      # here to 10 min total so a stuck attempt fails fast and a flaky one self-heals.
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        timeout-minutes: 10
+        run: |
+          for i in 1 2 3; do
+            if npx playwright install --with-deps chromium; then
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 10s..."
+            sleep 10
+          done
+          echo "Chromium install failed after 3 attempts"
+          exit 1
 
       # playwright.config.ts starts isolated PostgreSQL/Redis containers, applies
       # migrations, seeds role accounts, and launches both application servers.

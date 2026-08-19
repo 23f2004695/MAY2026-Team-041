@@ -568,10 +568,15 @@ export interface LoanRecord {
 
 export interface ITHeadStats {
   active_members: number;
+  active_members_trend: AdminTrend;
   open_issues: number;
+  open_issues_delta: number;
   pending_permissions: number;
+  pending_permissions_delta: number;
   fees_outstanding: number;
+  fees_outstanding_trend: AdminTrend;
   late_fines_outstanding: number;
+  late_fines_outstanding_trend: AdminTrend;
 }
 
 export interface FeeStatusEntryRecord {
@@ -582,9 +587,57 @@ export interface FeeStatusEntryRecord {
   due_date: string | null;
 }
 
+export interface FeeCollectionMonth {
+  month: string;
+  collected: number;
+  pending: number;
+}
+
+export interface IssueResolutionMonth {
+  month: string;
+  resolved: number;
+  open: number;
+  other: number;
+}
+
+export interface SystemActivityDay {
+  date: string;
+  logins: number;
+  access_changes: number;
+  permissions_updated: number;
+}
+
+export interface SystemActivitySummary {
+  logins_total: number;
+  logins_trend: AdminTrend;
+  access_changes_total: number;
+  access_changes_trend: AdminTrend;
+  permissions_updated_total: number;
+  permissions_updated_trend: AdminTrend;
+}
+
+export interface RoleBreakdownEntry {
+  role: string;
+  count: number;
+  percent: number;
+}
+
+export interface ITHeadAlert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info' | 'success';
+  title: string;
+  description: string;
+}
+
 export interface ITHeadDashboard {
   stats: ITHeadStats;
   fee_status: FeeStatusEntryRecord[];
+  fee_collections: FeeCollectionMonth[];
+  issue_resolution: IssueResolutionMonth[];
+  system_activity: SystemActivityDay[];
+  system_activity_summary: SystemActivitySummary;
+  access_by_role: RoleBreakdownEntry[];
+  alerts: ITHeadAlert[];
 }
 
 export interface ExpensePayload {
@@ -721,6 +774,22 @@ export interface BillingRequestRecord {
   decided_at: string | null;
 }
 
+export interface LibraryReviewPayload {
+  rating: number;
+  comment: string;
+}
+
+export interface LibraryReviewRecord {
+  id: string;
+  rating: number;
+  comment: string;
+  status: 'pending' | 'approved' | 'rejected';
+  member_id: string;
+  member_name: string;
+  member_role: string;
+  created_at: string;
+}
+
 export interface MemberSummary {
   id: string;
   full_name: string;
@@ -734,11 +803,63 @@ export interface MemberSearchOptions {
   activeOnly?: boolean;
 }
 
+export interface DailyLibraryActivity {
+  date: string;
+  issued: number;
+  returned: number;
+}
+
+export interface MostBorrowedBook {
+  book_id: string;
+  title: string;
+  count: number;
+}
+
+export interface MostBorrowedBooksByPeriod {
+  this_month: MostBorrowedBook[];
+  last_3_months: MostBorrowedBook[];
+  last_6_months: MostBorrowedBook[];
+}
+
+export interface MemberActivityMonth {
+  month: string;
+  new_members: number;
+  active_members: number;
+}
+
+export interface SeatUtilizationHour {
+  hour: number;
+  percent: number;
+}
+
+export interface OverdueFinesMonth {
+  month: string;
+  overdue_books: number;
+  fines_generated: number;
+  fines_collected: number;
+}
+
+export interface RevenueMonth {
+  month: string;
+  total: number;
+}
+
 export interface ManagerDashboardStats {
   seats_booked_today: number;
   books_issued_today: number;
   new_registrations_today: number;
   pending_tasks: number;
+  /** Last 7 calendar days including today, oldest first. */
+  library_activity: DailyLibraryActivity[];
+  most_borrowed_books: MostBorrowedBooksByPeriod;
+  /** Last 6 months, oldest first. */
+  member_activity: MemberActivityMonth[];
+  /** Today, one entry per open hour. */
+  seat_utilization: SeatUtilizationHour[];
+  /** Last 3 months, oldest first. */
+  overdue_fines: OverdueFinesMonth[];
+  /** Last 6 months, oldest first. */
+  revenue: RevenueMonth[];
 }
 
 export interface ManagerSeatBookingPayload {
@@ -922,6 +1043,12 @@ interface AuthContextValue extends AuthState {
   approveBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
   rejectBillingRequest: (requestId: string) => Promise<BillingRequestRecord>;
   waiveFine: (payload: WaiveFinePayload) => Promise<BillingRequestRecord>;
+  getApprovedLibraryReviews: () => Promise<LibraryReviewRecord[]>;
+  getMyLibraryReview: () => Promise<LibraryReviewRecord | null>;
+  submitLibraryReview: (payload: LibraryReviewPayload) => Promise<LibraryReviewRecord>;
+  getPendingLibraryReviews: () => Promise<LibraryReviewRecord[]>;
+  approveLibraryReview: (reviewId: string) => Promise<LibraryReviewRecord>;
+  rejectLibraryReview: (reviewId: string) => Promise<LibraryReviewRecord>;
   getPricingPlans: () => Promise<PricingPlan[]>;
   updatePricingPlan: (id: string, payload: PricingPlanUpdatePayload) => Promise<PricingPlan>;
   createMember: (payload: CreateMemberPayload) => Promise<CreatedMember>;
@@ -1551,6 +1678,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiPost<BillingRequestRecord>('/billing-requests/waive-fine', payload, stateRef.current.token);
   }
 
+  // Public — the homepage's "What Our Members Say" reads this without needing a session.
+  async function getApprovedLibraryReviews(): Promise<LibraryReviewRecord[]> {
+    return apiGet<LibraryReviewRecord[]>(
+      '/library-reviews/approved',
+      stateRef.current.token ?? undefined,
+    );
+  }
+
+  async function getMyLibraryReview(): Promise<LibraryReviewRecord | null> {
+    if (!stateRef.current.token) return null;
+    return apiGet<LibraryReviewRecord | null>('/library-reviews/me', stateRef.current.token);
+  }
+
+  async function submitLibraryReview(payload: LibraryReviewPayload): Promise<LibraryReviewRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryReviewRecord>('/library-reviews', payload, stateRef.current.token);
+  }
+
+  async function getPendingLibraryReviews(): Promise<LibraryReviewRecord[]> {
+    if (!stateRef.current.token) return [];
+    return apiGet<LibraryReviewRecord[]>('/library-reviews', stateRef.current.token);
+  }
+
+  async function approveLibraryReview(reviewId: string): Promise<LibraryReviewRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryReviewRecord>(
+      `/library-reviews/${reviewId}/approve`,
+      undefined,
+      stateRef.current.token,
+    );
+  }
+
+  async function rejectLibraryReview(reviewId: string): Promise<LibraryReviewRecord> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<LibraryReviewRecord>(
+      `/library-reviews/${reviewId}/reject`,
+      undefined,
+      stateRef.current.token,
+    );
+  }
+
   // Public — the Pricing page and Payment page read prices here without needing a session.
   async function getPricingPlans(): Promise<PricingPlan[]> {
     return apiGet<PricingPlan[]>('/pricing-plans', stateRef.current.token ?? undefined);
@@ -1818,6 +1986,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       approveBillingRequest,
       rejectBillingRequest,
       waiveFine,
+      getApprovedLibraryReviews,
+      getMyLibraryReview,
+      submitLibraryReview,
+      getPendingLibraryReviews,
+      approveLibraryReview,
+      rejectLibraryReview,
       getPricingPlans,
       updatePricingPlan,
       createMember,
