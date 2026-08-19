@@ -748,6 +748,8 @@ export interface MultiSegmentDonutProps {
   centerValue: string;
   centerLabel: string;
   className?: string;
+  /** Formats each segment's legend value, e.g. formatCurrency. Defaults to the raw number. */
+  valueFormatter?: (value: number) => string;
 }
 
 const DONUT_RADIUS = 40;
@@ -757,7 +759,13 @@ const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
 // FillRateDonut (a single percent-of-100 arc) — each segment is its own stroke-dasharray
 // slice, offset by the running total of everything drawn before it, going clockwise from
 // 12 o'clock (the shared -rotate-90 on the svg matches FillRateDonut's convention).
-export function MultiSegmentDonut({ segments, centerValue, centerLabel, className }: MultiSegmentDonutProps) {
+export function MultiSegmentDonut({
+  segments,
+  centerValue,
+  centerLabel,
+  className,
+  valueFormatter = String,
+}: MultiSegmentDonutProps) {
   const total = segments.reduce((sum, s) => sum + s.value, 0);
   let cursor = 0;
 
@@ -804,7 +812,7 @@ export function MultiSegmentDonut({ segments, centerValue, centerLabel, classNam
               <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: segment.color }} />
               {segment.label}
             </span>
-            <span className="font-medium text-foreground">{segment.value}</span>
+            <span className="font-medium text-foreground">{valueFormatter(segment.value)}</span>
           </li>
         ))}
       </ul>
