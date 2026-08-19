@@ -266,6 +266,20 @@
   "admin": {
     "pageTitle": "Admin Dashboard",
     "pageDescription": "Business performance, cash flow, and platform management",
+    "dashboard": {
+      "revenueOverview": "Revenue Overview",
+      "revenuePeriod": {
+        "label": "Revenue period",
+        "last3": "Last 3 Months",
+        "last6": "Last 6 Months"
+      }
+    },
+    "recentActivities": {
+      "title": "Recent Activities",
+      "empty": "No recent activity yet.",
+      "viewAll": "View all activities",
+      "genericAction": "{{action}}"
+    },
     "members": {
       "pageTitle": "Members",
       "pageDescription": "All registered accounts, their plans, activity, and standing.",
@@ -806,6 +820,9 @@
       "noPlan": "You don't have an active plan yet",
       "fineOwed": "Fine owed: {{amount}}",
       "noFine": "No outstanding fine",
+      "outstandingFine": "Outstanding Fine",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
       "renew": "Upgrade",
       "viewPlans": "View Plans",
       "renewalPaymentLabel": "{{plan}} — Upgrade",
@@ -824,8 +841,12 @@
     },
     "stats": {
       "booksBorrowed": "Books Borrowed",
+      "booksBorrowedSubtitle": "Currently checked out",
       "booksReserved": "Books Reserved",
+      "booksReservedSubtitle": "Ready when you are",
       "seatBookings": "Seat Bookings",
+      "seatBookingsSubtitle": "Upcoming bookings",
+      "readingStreakSubtitle": "Keep it going!",
       "readingPoints": "Reading Points"
     },
     "statModal": {
@@ -894,6 +915,11 @@
       "booksIssuedToday": "Books Issued Today",
       "newRegistrationsToday": "New Registrations Today",
       "pendingTasks": "Pending Tasks"
+    },
+    "libraryActivity": {
+      "title": "Library Activity (Last 7 Days)",
+      "issued": "Books Issued",
+      "returned": "Books Returned"
     },
     "statModal": {
       "seatsBookedToday": {
@@ -1041,6 +1067,11 @@
         "bookTitle": "Book Title",
         "memberName": "Member Name"
       }
+    },
+    "recentNotifications": {
+      "title": "Recent Notifications",
+      "empty": "No recent notifications yet.",
+      "viewAll": "View all notifications"
     },
     "activeLoans": {
       "title": "Books Out on Loan",

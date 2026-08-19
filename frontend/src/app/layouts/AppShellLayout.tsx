@@ -7,6 +7,7 @@ import { Button } from '@/components/ui';
 import type { NavItem } from '@/constants/navigation';
 import { cn } from '@/lib/cn';
 import { useLocalStorageState } from '@/lib/useLocalStorageState';
+import { NotificationsPanelProvider } from '@/providers/NotificationsPanelProvider';
 import { PageHeadingProvider } from '@/providers/PageHeadingProvider';
 
 export interface AppShellLayoutProps {
@@ -24,6 +25,7 @@ export function AppShellLayout({ items }: AppShellLayoutProps) {
     // Wraps TopBar and the Outlet together: the TopBar registers the heading slot, and the
     // page rendered by the Outlet portals its PageHeader/PageTitle heading into it.
     <PageHeadingProvider>
+      <NotificationsPanelProvider>
       <div className="flex min-h-screen">
         <a
           href="#app-main-content"
@@ -93,6 +95,7 @@ export function AppShellLayout({ items }: AppShellLayoutProps) {
           <Footer minimal />
         </div>
       </div>
+      </NotificationsPanelProvider>
     </PageHeadingProvider>
   );
 }

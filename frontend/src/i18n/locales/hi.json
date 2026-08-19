@@ -264,6 +264,20 @@
   "admin": {
     "pageTitle": "एडमिन डैशबोर्ड",
     "pageDescription": "व्यवसाय प्रदर्शन, नकदी प्रवाह और प्लेटफ़ॉर्म प्रबंधन",
+    "dashboard": {
+      "revenueOverview": "राजस्व अवलोकन",
+      "revenuePeriod": {
+        "label": "राजस्व अवधि",
+        "last3": "पिछले 3 महीने",
+        "last6": "पिछले 6 महीने"
+      }
+    },
+    "recentActivities": {
+      "title": "हाल की गतिविधियाँ",
+      "empty": "अभी तक कोई हालिया गतिविधि नहीं है।",
+      "viewAll": "सभी गतिविधियाँ देखें",
+      "genericAction": "{{action}}"
+    },
     "members": {
       "pageTitle": "सदस्य",
       "pageDescription": "सभी पंजीकृत खाते, उनकी योजनाएँ, गतिविधि और स्थिति।",
@@ -787,6 +801,9 @@
       "noPlan": "आपके पास अभी तक कोई सक्रिय योजना नहीं है",
       "fineOwed": "बकाया जुर्माना: {{amount}}",
       "noFine": "कोई बकाया जुर्माना नहीं",
+      "outstandingFine": "बकाया जुर्माना",
+      "statusActive": "सक्रिय",
+      "statusInactive": "निष्क्रिय",
       "renew": "अपग्रेड करें",
       "viewPlans": "योजनाएँ देखें",
       "payFine": "जुर्माना भरें",
@@ -805,8 +822,12 @@
     },
     "stats": {
       "booksBorrowed": "उधार ली गई पुस्तकें",
+      "booksBorrowedSubtitle": "अभी चेक-आउट की गई",
       "booksReserved": "आरक्षित पुस्तकें",
+      "booksReservedSubtitle": "जब चाहें तैयार",
       "seatBookings": "सीट बुकिंग",
+      "seatBookingsSubtitle": "आगामी बुकिंग",
+      "readingStreakSubtitle": "इसे जारी रखें!",
       "readingPoints": "पठन अंक"
     },
     "statModal": {
@@ -875,6 +896,11 @@
       "booksIssuedToday": "आज जारी की गई पुस्तकें",
       "newRegistrationsToday": "आज के नए पंजीकरण",
       "pendingTasks": "लंबित कार्य"
+    },
+    "libraryActivity": {
+      "title": "लाइब्रेरी गतिविधि (पिछले 7 दिन)",
+      "issued": "जारी की गई पुस्तकें",
+      "returned": "वापस की गई पुस्तकें"
     },
     "statModal": {
       "seatsBookedToday": {
@@ -1085,6 +1111,11 @@
         "bookTitle": "पुस्तक शीर्षक",
         "memberName": "सदस्य का नाम"
       }
+    },
+    "recentNotifications": {
+      "title": "हाल की सूचनाएं",
+      "empty": "अभी तक कोई हालिया सूचना नहीं है।",
+      "viewAll": "सभी सूचनाएं देखें"
     },
     "registerMember": {
       "emailLabel": "ईमेल",

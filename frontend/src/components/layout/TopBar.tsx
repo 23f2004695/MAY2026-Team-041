@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bell, Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,6 +7,7 @@ import type { NavItem } from '@/constants/navigation';
 import { NotificationsPanel } from '@/features/notifications/components/NotificationsPanel';
 import { useUnreadNotifications } from '@/features/notifications/hooks/useUnreadNotifications';
 import { cn } from '@/lib/cn';
+import { useNotificationsPanel } from '@/providers/NotificationsPanelProvider';
 import { usePageHeadingSlot } from '@/providers/PageHeadingProvider';
 
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -24,6 +25,13 @@ export function TopBar({ items }: TopBarProps) {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { unreadCount, justArrived, refresh } = useUnreadNotifications();
   const headingSlot = usePageHeadingSlot();
+  const notificationsPanel = useNotificationsPanel();
+
+  useEffect(() => {
+    notificationsPanel?.registerOpen(() => setNotificationsOpen(true));
+    return () => notificationsPanel?.registerOpen(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     // sticky/z-30 matches the sidebar's, so the two stay pinned together as one frame

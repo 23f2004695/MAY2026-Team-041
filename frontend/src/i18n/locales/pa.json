@@ -264,6 +264,20 @@
   "admin": {
     "pageTitle": "ਐਡਮਿਨ ਡੈਸ਼ਬੋਰਡ",
     "pageDescription": "ਕਾਰੋਬਾਰੀ ਪ੍ਰਦਰਸ਼ਨ, ਨਕਦੀ ਪ੍ਰਵਾਹ ਅਤੇ ਪਲੇਟਫਾਰਮ ਪ੍ਰਬੰਧਨ",
+    "dashboard": {
+      "revenueOverview": "ਮਾਲੀਆ ਸੰਖੇਪ",
+      "revenuePeriod": {
+        "label": "ਮਾਲੀਆ ਅਵਧੀ",
+        "last3": "ਪਿਛਲੇ 3 ਮਹੀਨੇ",
+        "last6": "ਪਿਛਲੇ 6 ਮਹੀਨੇ"
+      }
+    },
+    "recentActivities": {
+      "title": "ਹਾਲੀਆ ਗਤੀਵਿਧੀਆਂ",
+      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਹਾਲੀਆ ਗਤੀਵਿਧੀ ਨਹੀਂ।",
+      "viewAll": "ਸਾਰੀਆਂ ਗਤੀਵਿਧੀਆਂ ਵੇਖੋ",
+      "genericAction": "{{action}}"
+    },
     "members": {
       "pageTitle": "ਮੈਂਬਰ",
       "pageDescription": "ਸਾਰੇ ਰਜਿਸਟਰਡ ਖਾਤੇ, ਉਹਨਾਂ ਦੀਆਂ ਯੋਜਨਾਵਾਂ, ਗਤੀਵਿਧੀ ਅਤੇ ਸਥਿਤੀ।",
@@ -787,6 +801,9 @@
       "noPlan": "ਤੁਹਾਡੇ ਕੋਲ ਅਜੇ ਕੋਈ ਸਰਗਰਮ ਯੋਜਨਾ ਨਹੀਂ ਹੈ",
       "fineOwed": "ਬਕਾਇਆ ਜੁਰਮਾਨਾ: {{amount}}",
       "noFine": "ਕੋਈ ਬਕਾਇਆ ਜੁਰਮਾਨਾ ਨਹੀਂ",
+      "outstandingFine": "ਬਕਾਇਆ ਜੁਰਮਾਨਾ",
+      "statusActive": "ਸਰਗਰਮ",
+      "statusInactive": "ਨਾ-ਸਰਗਰਮ",
       "renew": "ਅੱਪਗ੍ਰੇਡ ਕਰੋ",
       "viewPlans": "ਯੋਜਨਾਵਾਂ ਵੇਖੋ",
       "payFine": "ਜੁਰਮਾਨਾ ਭਰੋ",
@@ -805,8 +822,12 @@
     },
     "stats": {
       "booksBorrowed": "ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
+      "booksBorrowedSubtitle": "ਹੁਣੇ ਚੈੱਕ-ਆਊਟ ਕੀਤੀਆਂ",
       "booksReserved": "ਰਿਜ਼ਰਵ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
+      "booksReservedSubtitle": "ਜਦੋਂ ਤੁਸੀਂ ਤਿਆਰ ਹੋਵੋ",
       "seatBookings": "ਸੀਟ ਬੁਕਿੰਗਾਂ",
+      "seatBookingsSubtitle": "ਆਉਣ ਵਾਲੀਆਂ ਬੁਕਿੰਗਾਂ",
+      "readingStreakSubtitle": "ਇਸਨੂੰ ਜਾਰੀ ਰੱਖੋ!",
       "readingPoints": "ਰੀਡਿੰਗ ਪੁਆਇੰਟ"
     },
     "statModal": {
@@ -875,6 +896,11 @@
       "booksIssuedToday": "ਅੱਜ ਜਾਰੀ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
       "newRegistrationsToday": "ਅੱਜ ਦੀਆਂ ਨਵੀਆਂ ਰਜਿਸਟ੍ਰੇਸ਼ਨਾਂ",
       "pendingTasks": "ਬਕਾਇਆ ਕੰਮ"
+    },
+    "libraryActivity": {
+      "title": "ਲਾਇਬ੍ਰੇਰੀ ਗਤੀਵਿਧੀ (ਪਿਛਲੇ 7 ਦਿਨ)",
+      "issued": "ਜਾਰੀ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
+      "returned": "ਵਾਪਸ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ"
     },
     "statModal": {
       "seatsBookedToday": {
@@ -1085,6 +1111,11 @@
         "bookTitle": "ਕਿਤਾਬ ਦਾ ਸਿਰਲੇਖ",
         "memberName": "ਮੈਂਬਰ ਦਾ ਨਾਮ"
       }
+    },
+    "recentNotifications": {
+      "title": "ਹਾਲੀਆ ਸੂਚਨਾਵਾਂ",
+      "empty": "ਹਾਲੇ ਤੱਕ ਕੋਈ ਹਾਲੀਆ ਸੂਚਨਾ ਨਹੀਂ।",
+      "viewAll": "ਸਾਰੀਆਂ ਸੂਚਨਾਵਾਂ ਵੇਖੋ"
     },
     "registerMember": {
       "emailLabel": "ਈਮੇਲ",

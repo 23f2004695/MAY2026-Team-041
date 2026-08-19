@@ -63,7 +63,7 @@ export interface NotificationCardProps {
   className?: string;
 }
 
-const typeIcon: Record<NotificationType, LucideIcon> = {
+export const notificationTypeIcon: Record<NotificationType, LucideIcon> = {
   'book-due': BookMarked,
   'reservation-ready': BellRing,
   'new-book': Gift,
@@ -104,7 +104,7 @@ export function NotificationCard({
   // (see NotificationsPanel's `as NotificationType` cast) — not something TS can
   // actually guarantee matches this union, so fall back rather than crash on an
   // unrecognized value.
-  const Icon = typeIcon[type] ?? BellRing;
+  const Icon = notificationTypeIcon[type] ?? BellRing;
   const { t } = useTranslation();
 
   return (
