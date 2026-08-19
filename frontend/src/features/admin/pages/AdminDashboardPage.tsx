@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import {
   IconBadge,
   type IconBadgeTone,
-  MultiSegmentDonut,
+  MultiSegmentPie,
   PageHeader,
   Pagination,
   QuickActionsCard,
@@ -74,7 +74,7 @@ function expenseSentiment(trend: AdminTrend): 'positive' | 'negative' {
 const EXPENSE_CATEGORY_COLORS: Record<ExpenseCategory, string> = {
   staffSalaries: 'var(--color-primary)',
   bookProcurement: 'var(--color-info)',
-  utilities: 'var(--color-teal)',
+  utilities: 'var(--color-success)',
   marketing: 'var(--color-warning)',
 };
 
@@ -233,21 +233,19 @@ export function AdminDashboardPage() {
           {dashboard.budget.length > 0 && (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>{t('admin.reports.items.expenseBreakdown')}</CardTitle>
+                  <span className="text-xs font-medium text-muted-foreground">Month-To-Date (MTD)</span>
                 </CardHeader>
                 <CardContent>
-                  <MultiSegmentDonut
-                    centerValue={formatCurrency(
-                      dashboard.budget.reduce((sum, category) => sum + category.spent, 0),
-                    )}
-                    centerLabel={t('admin.budget.overallLabel')}
+                  <MultiSegmentPie
+                    ariaLabel={t('admin.reports.items.expenseBreakdown')}
                     valueFormatter={formatCurrency}
                     segments={dashboard.budget.map((category) => ({
                       key: category.category,
                       label: t(`admin.budget.categories.${category.category}`),
                       value: category.spent,
-                      color: EXPENSE_CATEGORY_COLORS[category.category],
+                      color: EXPENSE_CATEGORY_COLORS[category.category] || '#3b82f6',
                     }))}
                   />
                 </CardContent>

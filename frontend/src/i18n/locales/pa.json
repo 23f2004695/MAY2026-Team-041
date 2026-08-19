@@ -142,7 +142,7 @@
       "staff": {
         "title": "ਸ਼ੈਲਫ਼ਾਂ ਚਲਦੀਆਂ ਰੱਖੋ",
         "description": "ਕਿਤਾਬਾਂ ਜਾਰੀ ਤੇ ਵਾਪਸ ਲਓ, ਅਤੇ ਕੈਟਲਾਗ ਅੱਪਡੇਟ ਰੱਖੋ।",
-        "cta": "ਕੈਟਲਾਗ ਪ੍ਰਬੰਧਿਤ ਕਰੋ"
+        "cta": "ਲਾਇਬ੍ਰੇਰੀ ਗਤੀਵਿਧੀ ਵੇਖੋ"
       },
       "admin": {
         "title": "ਆਪਣੇ ਅੰਕੜੇ ਜਾਣੋ",
@@ -1809,6 +1809,11 @@
     "details": {
       "defaultTitle": "ਸਮਾਗਮ ਵੇਰਵੇ",
       "edit": "ਸੋਧੋ",
+      "delete": "ਹਟਾਓ",
+      "deleteConfirmTitle": "ਸਮਾਗਮ ਹਟਾਓ?",
+      "deleteConfirmDescription": "ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ “{{title}}” ਨੂੰ ਹਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ? ਇਹ ਕਾਰਵਾਈ ਵਾਪਸ ਨਹੀਂ ਲਈ ਜਾ ਸਕਦੀ।",
+      "deleteSuccessToast": "ਸਮਾਗਮ “{{title}}” ਹਟਾ ਦਿੱਤਾ ਗਿਆ",
+      "deleteError": "ਸਮਾਗਮ ਹਟਾਉਣ ਵਿੱਚ ਅਸਫਲ",
       "attending": "{{capacity}} ਵਿੱਚੋਂ {{attendees}} ਹਾਜ਼ਰ",
       "registrationTitle": "ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
       "registered": "ਤੁਸੀਂ ਰਜਿਸਟਰ ਹੋ ਚੁੱਕੇ ਹੋ",

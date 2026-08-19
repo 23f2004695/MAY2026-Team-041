@@ -145,7 +145,7 @@
       "staff": {
         "title": "Keep the Shelves Moving",
         "description": "Issue and return copies, and keep the catalogue current.",
-        "cta": "Manage Catalogue"
+        "cta": "View Library Activity"
       },
       "admin": {
         "title": "Know Your Numbers",
@@ -1974,6 +1974,11 @@
     "details": {
       "defaultTitle": "Event details",
       "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirmTitle": "Delete Event?",
+      "deleteConfirmDescription": "Are you sure you want to delete “{{title}}”? This action cannot be undone.",
+      "deleteSuccessToast": "Event “{{title}}” deleted",
+      "deleteError": "Failed to delete event",
       "attending": "{{attendees}}/{{capacity}} attending",
       "registrationTitle": "Registration",
       "registered": "You’re registered",

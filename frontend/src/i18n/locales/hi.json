@@ -142,7 +142,7 @@
       "staff": {
         "title": "शेल्फ़ चलती रहें",
         "description": "किताबें जारी और वापस लें, और कैटलॉग अद्यतन रखें।",
-        "cta": "कैटलॉग प्रबंधित करें"
+        "cta": "लाइब्रेरी गतिविधि देखें"
       },
       "admin": {
         "title": "अपने आंकड़े जानें",
@@ -1809,6 +1809,11 @@
     "details": {
       "defaultTitle": "आयोजन विवरण",
       "edit": "संपादित करें",
+      "delete": "हटाएँ",
+      "deleteConfirmTitle": "आयोजन हटाएँ?",
+      "deleteConfirmDescription": "क्या आप निश्चित रूप से “{{title}}” को हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+      "deleteSuccessToast": "आयोजन “{{title}}” हटा दिया गया",
+      "deleteError": "आयोजन हटाने में विफल",
       "attending": "{{attendees}}/{{capacity}} उपस्थित",
       "registrationTitle": "पंजीकरण",
       "registered": "आप पंजीकृत हैं",

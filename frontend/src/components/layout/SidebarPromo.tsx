@@ -51,11 +51,19 @@ export function SidebarPromo() {
       <p className="mt-1 text-xs leading-snug text-muted-foreground">
         {t(`sidebar.promo.${promo.variant}.description`)}
       </p>
-      {/* A Link styled as a button (buttonVariants) rather than a Button with a navigate
-          handler, so it keeps real anchor behaviour — middle-click, open in new tab. */}
-      <Link to={promo.to} className={buttonVariants({ size: 'sm', className: 'mt-3 w-full' })}>
-        {t(`sidebar.promo.${promo.variant}.cta`)}
-      </Link>
+      {promo.variant === 'staff' ? (
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('open-library-activity-modal'))}
+          className={buttonVariants({ size: 'sm', className: 'mt-3 w-full cursor-pointer' })}
+        >
+          {t(`sidebar.promo.${promo.variant}.cta`)}
+        </button>
+      ) : (
+        <Link to={promo.to} className={buttonVariants({ size: 'sm', className: 'mt-3 w-full' })}>
+          {t(`sidebar.promo.${promo.variant}.cta`)}
+        </Link>
+      )}
       <Art className="mt-3 w-full" />
     </div>
   );
