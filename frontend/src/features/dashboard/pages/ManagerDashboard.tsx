@@ -230,36 +230,48 @@ export function ManagerDashboard() {
         ))}
       </div>
 
-      {stats && stats.library_activity.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('managerDashboard.libraryActivity.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <MultiLineTrendChart
-              className="max-w-2xl"
-              ariaLabel={t('managerDashboard.libraryActivity.title')}
-              showPointLabels
-              data={stats.library_activity.map((day) => ({
-                label: formatWeekday(day.date),
-                values: { issued: day.issued, returned: day.returned },
-              }))}
-              series={[
-                {
-                  key: 'issued',
-                  label: t('managerDashboard.libraryActivity.issued'),
-                  color: 'var(--color-primary)',
-                },
-                {
-                  key: 'returned',
-                  label: t('managerDashboard.libraryActivity.returned'),
-                  color: 'var(--color-info)',
-                },
-              ]}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <WalkInAssistance
+          requests={NO_WALK_INS}
+          onBookSeat={() => setIsBookSeatOpen(true)}
+          onIssueBook={() => setIsIssueBookOpen(true)}
+        />
+        <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {stats && stats.library_activity.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('managerDashboard.libraryActivity.title')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MultiLineTrendChart
+                ariaLabel={t('managerDashboard.libraryActivity.title')}
+                showPointLabels
+                data={stats.library_activity.map((day) => ({
+                  label: formatWeekday(day.date),
+                  values: { issued: day.issued, returned: day.returned },
+                }))}
+                series={[
+                  {
+                    key: 'issued',
+                    label: t('managerDashboard.libraryActivity.issued'),
+                    color: 'var(--color-primary)',
+                  },
+                  {
+                    key: 'returned',
+                    label: t('managerDashboard.libraryActivity.returned'),
+                    color: 'var(--color-info)',
+                  },
+                ]}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        <CheckInCheckOutCard />
+      </div>
 
       {stats && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -303,8 +315,6 @@ export function ManagerDashboard() {
         </div>
       )}
 
-      <CheckInCheckOutCard />
-
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PendingReservations
           requests={pendingReservations}
@@ -315,15 +325,6 @@ export function ManagerDashboard() {
       </div>
 
       <ActiveLoans loans={activeLoans} onReturn={handleReturnLoan} onRemind={sendFineReminder} />
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <WalkInAssistance
-          requests={NO_WALK_INS}
-          onBookSeat={() => setIsBookSeatOpen(true)}
-          onIssueBook={() => setIsIssueBookOpen(true)}
-        />
-        <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
-      </div>
 
       <PendingPayments payments={pendingPayments} onDismiss={handleDismissPaymentRequest} />
 
