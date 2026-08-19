@@ -242,7 +242,14 @@ export function ManagerDashboard() {
 
       <CheckInCheckOutCard />
 
-
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <WalkInAssistance
+          requests={NO_WALK_INS}
+          onBookSeat={() => setIsBookSeatOpen(true)}
+          onIssueBook={() => setIsIssueBookOpen(true)}
+        />
+        <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
+      </div>
 
       {stats && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -296,15 +303,6 @@ export function ManagerDashboard() {
       </div>
 
       <ActiveLoans loans={activeLoans} onReturn={handleReturnLoan} onRemind={sendFineReminder} />
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <WalkInAssistance
-          requests={NO_WALK_INS}
-          onBookSeat={() => setIsBookSeatOpen(true)}
-          onIssueBook={() => setIsIssueBookOpen(true)}
-        />
-        <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
-      </div>
 
       <PendingPayments payments={pendingPayments} onDismiss={handleDismissPaymentRequest} />
 
