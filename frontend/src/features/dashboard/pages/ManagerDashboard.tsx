@@ -10,10 +10,10 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MultiBarChart, MultiLineTrendChart, PageHeader, QuickActionsCard } from '@/components/common';
+import { MultiBarChart, PageHeader, QuickActionsCard } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { CreateEventModal } from '@/features/events/components/CreateEventModal';
-import { formatMonth, formatWeekday } from '@/lib/format';
+import { formatMonth } from '@/lib/format';
 import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
   useAuth,
@@ -30,6 +30,7 @@ import { BookSeatForMemberModal } from '../components/BookSeatForMemberModal';
 import { CheckInCheckOutCard } from '../components/CheckInCheckOutCard';
 import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
 import { IssueBookForMemberModal } from '../components/IssueBookForMemberModal';
+import { LibraryActivityModal } from '../components/LibraryActivityModal';
 import { ManagerStatModal, type ManagerStatKey } from '../components/ManagerStatModal';
 import { MemberStatCard, type MemberStatTone } from '../components/MemberStatCard';
 import { MostBorrowedBooks } from '../components/MostBorrowedBooks';
@@ -82,7 +83,16 @@ export function ManagerDashboard() {
   const [createEventOpen, setCreateEventOpen] = useState(false);
   const [isBillingRequestOpen, setIsBillingRequestOpen] = useState(false);
   const [isRequestPermissionOpen, setIsRequestPermissionOpen] = useState(false);
+  const [isLibraryActivityOpen, setIsLibraryActivityOpen] = useState(false);
   const [activeStat, setActiveStat] = useState<ManagerStatKey | null>(null);
+
+  useEffect(() => {
+    function handleOpenActivity() {
+      setIsLibraryActivityOpen(true);
+    }
+    window.addEventListener('open-library-activity-modal', handleOpenActivity);
+    return () => window.removeEventListener('open-library-activity-modal', handleOpenActivity);
+  }, []);
 
   function refreshStats() {
     getManagerDashboard()
@@ -230,36 +240,9 @@ export function ManagerDashboard() {
         ))}
       </div>
 
-      {stats && stats.library_activity.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('managerDashboard.libraryActivity.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <MultiLineTrendChart
-              className="max-w-2xl"
-              ariaLabel={t('managerDashboard.libraryActivity.title')}
-              showPointLabels
-              data={stats.library_activity.map((day) => ({
-                label: formatWeekday(day.date),
-                values: { issued: day.issued, returned: day.returned },
-              }))}
-              series={[
-                {
-                  key: 'issued',
-                  label: t('managerDashboard.libraryActivity.issued'),
-                  color: 'var(--color-primary)',
-                },
-                {
-                  key: 'returned',
-                  label: t('managerDashboard.libraryActivity.returned'),
-                  color: 'var(--color-info)',
-                },
-              ]}
-            />
-          </CardContent>
-        </Card>
-      )}
+      <CheckInCheckOutCard />
+
+
 
       {stats && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -302,8 +285,6 @@ export function ManagerDashboard() {
           <RevenueOverviewCard months={stats.revenue} />
         </div>
       )}
-
-      <CheckInCheckOutCard />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PendingReservations
@@ -411,6 +392,12 @@ export function ManagerDashboard() {
         open={createEventOpen}
         onClose={() => setCreateEventOpen(false)}
         onSaved={() => setCreateEventOpen(false)}
+      />
+
+      <LibraryActivityModal
+        open={isLibraryActivityOpen}
+        onClose={() => setIsLibraryActivityOpen(false)}
+        activity={stats?.library_activity || []}
       />
     </div>
   );

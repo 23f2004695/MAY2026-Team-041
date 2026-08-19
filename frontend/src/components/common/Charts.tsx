@@ -819,3 +819,105 @@ export function MultiSegmentDonut({
     </div>
   );
 }
+
+export interface MultiSegmentPieProps {
+  segments: DonutSegment[];
+  ariaLabel?: string;
+  className?: string;
+  valueFormatter?: (value: number) => string;
+}
+
+export function MultiSegmentPie({
+  segments,
+  ariaLabel = 'Pie chart',
+  className,
+  valueFormatter = String,
+}: MultiSegmentPieProps) {
+  const total = segments.reduce((sum, s) => sum + s.value, 0);
+
+  let currentAngle = -Math.PI / 2; // Start at 12 o'clock
+
+  const slices = segments
+    .filter((s) => s.value > 0)
+    .map((segment) => {
+      const sliceAngle = total > 0 ? (segment.value / total) * 2 * Math.PI : 0;
+      const startAngle = currentAngle;
+      const endAngle = startAngle + sliceAngle;
+      currentAngle = endAngle;
+
+      const cx = 50;
+      const cy = 50;
+      const r = 45;
+
+      const x1 = cx + r * Math.cos(startAngle);
+      const y1 = cy + r * Math.sin(startAngle);
+      const x2 = cx + r * Math.cos(endAngle);
+      const y2 = cy + r * Math.sin(endAngle);
+
+      const largeArcFlag = sliceAngle > Math.PI ? 1 : 0;
+      const isFull = sliceAngle >= 2 * Math.PI - 0.0001;
+
+      const d = isFull
+        ? ''
+        : `M ${cx} ${cy} L ${x1.toFixed(3)} ${y1.toFixed(3)} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2.toFixed(3)} ${y2.toFixed(3)} Z`;
+
+      return {
+        ...segment,
+        d,
+        isFull,
+        r,
+        cx,
+        cy,
+      };
+    });
+
+  return (
+    <div className={cn('flex flex-col items-center gap-4', className)}>
+      <div
+        className="relative flex size-44 shrink-0 items-center justify-center p-1"
+        role="img"
+        aria-label={`${ariaLabel}. ${segments.map((s) => `${s.label} ${s.value}`).join(', ')}`}
+      >
+        <svg className="size-full overflow-visible" viewBox="0 0 100 100">
+          {total > 0 &&
+            slices.map((slice) =>
+              slice.isFull ? (
+                <circle
+                  key={slice.key}
+                  cx={slice.cx}
+                  cy={slice.cy}
+                  r={slice.r}
+                  fill={slice.color}
+                  stroke="none"
+                />
+              ) : (
+                <path
+                  key={slice.key}
+                  d={slice.d}
+                  fill={slice.color}
+                  stroke="none"
+                  strokeLinejoin="round"
+                  className="transition-opacity hover:opacity-90"
+                />
+              ),
+            )}
+        </svg>
+      </div>
+      <ul className="flex w-full flex-col gap-2">
+        {segments.map((segment) => (
+          <li key={segment.key} className="flex items-center justify-between gap-2 text-xs">
+            <span className="inline-flex items-center gap-2 text-muted-foreground">
+              <span
+                className="size-3 shrink-0 rounded-sm border border-black/20 shadow-xs"
+                style={{ backgroundColor: segment.color }}
+              />
+              <span className="font-medium text-foreground">{segment.label}</span>
+            </span>
+            <span className="font-semibold text-foreground">{valueFormatter(segment.value)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+

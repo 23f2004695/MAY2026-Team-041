@@ -3,7 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { Pagination } from '@/components/common';
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, EmptyState } from '@/components/ui';
+import { usePagination } from '@/hooks';
 import { getErrorMessage } from '@/lib/api';
 import { downloadCsv } from '@/lib/export';
 import { formatDate } from '@/lib/format';
@@ -22,6 +24,8 @@ export function CheckInCheckOutCard() {
   const [activeVisits, setActiveVisits] = useState<LibraryVisitRecord[]>([]);
   const [isLoadingVisits, setIsLoadingVisits] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(activeVisits, 5);
 
   const refreshActiveVisits = useCallback(async () => {
     try {
@@ -197,30 +201,39 @@ export function CheckInCheckOutCard() {
               description="No members are currently checked into the library."
             />
           ) : (
-            <ul className="flex flex-col gap-2">
-              {activeVisits.map((visit) => (
-                <li
-                  key={visit.id}
-                  className="flex flex-col gap-2 rounded-lg border border-border p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <p className="font-medium text-foreground">{visit.member_name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {visit.member_email} · Checked in at {formatDate(visit.checked_in_at)}
-                    </p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    leadingIcon={<LogOut className="size-3.5" />}
-                    disabled={isSubmitting}
-                    onClick={() => handleCheckOut(visit.member_id, visit.member_name)}
+            <div className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-2">
+                {paginatedItems.map((visit) => (
+                  <li
+                    key={visit.id}
+                    className="flex flex-col gap-2 rounded-lg border border-border p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
                   >
-                    Check Out
-                  </Button>
-                </li>
-              ))}
-            </ul>
+                    <div>
+                      <p className="font-medium text-foreground">{visit.member_name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {visit.member_email} · Checked in at {formatDate(visit.checked_in_at)}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      leadingIcon={<LogOut className="size-3.5" />}
+                      disabled={isSubmitting}
+                      onClick={() => handleCheckOut(visit.member_id, visit.member_name)}
+                    >
+                      Check Out
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                totalItems={totalItems}
+                pageSize={5}
+              />
+            </div>
           )}
         </div>
       </CardContent>
