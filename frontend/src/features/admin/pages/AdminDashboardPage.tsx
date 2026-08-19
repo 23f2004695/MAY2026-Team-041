@@ -20,11 +20,12 @@ import {
   QuickActionsCard,
   StatisticCard,
   TableToolbar,
+  TrendLineChart,
 } from '@/components/common';
 import { ErrorState, LoadingState } from '@/components/feedback';
 import { usePagination } from '@/hooks';
-import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { formatCurrency } from '@/lib/format';
+import { Button, Card, CardContent, CardHeader, CardTitle, Select } from '@/components/ui';
+import { formatCurrency, formatMonth } from '@/lib/format';
 import {
   type AdminDashboard,
   type AdminTrend,
@@ -45,6 +46,7 @@ import { InviteMemberModal } from '../components/InviteMemberModal';
 import { LiveSeatStatus } from '../components/LiveSeatStatus';
 import { LogExpenseModal } from '../components/LogExpenseModal';
 import { PendingRequests } from '../components/PendingRequests';
+import { RecentActivities } from '../components/RecentActivities';
 import { ReportModal, type ReportKey } from '../components/ReportModal';
 import { SeatOccupancySummary } from '../components/SeatOccupancySummary';
 import { StatTrendModal, type StatKey } from '../components/StatTrendModal';
@@ -56,6 +58,8 @@ function expenseSentiment(trend: AdminTrend): 'positive' | 'negative' {
   return trend.direction === 'up' ? 'negative' : 'positive';
 }
 
+type RevenuePeriod = 'last3' | 'last6';
+
 const REPORTS: { key: ReportKey; labelKey: string }[] = [
   { key: 'revenueByPlan', labelKey: 'admin.reports.items.revenueByPlan' },
   { key: 'profitAndLoss', labelKey: 'admin.reports.items.profitAndLoss' },
@@ -65,8 +69,12 @@ const REPORTS: { key: ReportKey; labelKey: string }[] = [
 
 export function AdminDashboardPage() {
   const { t } = useTranslation();
-  const { getAdminDashboard, getBillingRequests, getAuditLog } = useAuth();
+  const { getAdminDashboard, getBillingRequests, getAuditLog, getProfitAndLossReport } = useAuth();
   const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
+  const [revenueMonths, setRevenueMonths] = useState<{ month: string; revenue: number }[] | null>(
+    null,
+  );
+  const [revenuePeriod, setRevenuePeriod] = useState<RevenuePeriod>('last6');
   const [billingRequests, setBillingRequests] = useState<BillingRequestRecord[]>([]);
   const [auditLog, setAuditLog] = useState<AuditLogEntry[]>([]);
   const [dashboardLoading, setDashboardLoading] = useState(true);
@@ -132,6 +140,13 @@ export function AdminDashboardPage() {
   useEffect(refresh, [getAdminDashboard]);
   useEffect(refreshBillingRequests, [getBillingRequests]);
   useEffect(refreshAuditLog, [getAuditLog]);
+  useEffect(() => {
+    // ponytail: silent-fail into "card just doesn't render" — this widget is
+    // supplementary, the rest of the dashboard shouldn't hold an error banner for it.
+    getProfitAndLossReport()
+      .then((report) => setRevenueMonths(report.months))
+      .catch(() => {});
+  }, [getProfitAndLossReport]);
 
   const visibleReports = useMemo(() => {
     const reportEntries = REPORTS.filter((report) => {
@@ -206,6 +221,36 @@ export function AdminDashboardPage() {
               selected={activeStat === 'totalMembers'}
             />
           </div>
+
+          {revenueMonths && revenueMonths.length > 0 && (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <Card>
+                <CardHeader className="flex-row items-center justify-between gap-2">
+                  <CardTitle>{t('admin.dashboard.revenueOverview')}</CardTitle>
+                  <Select
+                    aria-label={t('admin.dashboard.revenuePeriod.label')}
+                    className="h-9 w-auto"
+                    value={revenuePeriod}
+                    onChange={(e) => setRevenuePeriod(e.target.value as RevenuePeriod)}
+                    options={[
+                      { value: 'last3', label: t('admin.dashboard.revenuePeriod.last3') },
+                      { value: 'last6', label: t('admin.dashboard.revenuePeriod.last6') },
+                    ]}
+                  />
+                </CardHeader>
+                <CardContent>
+                  <TrendLineChart
+                    data={revenueMonths
+                      .slice(revenuePeriod === 'last3' ? -3 : -6)
+                      .map((m) => ({ label: formatMonth(m.month), value: m.revenue }))}
+                    valueFormatter={formatCurrency}
+                  />
+                </CardContent>
+              </Card>
+
+              <RecentActivities entries={auditLog} />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <CashFlowBreakdown sources={dashboard.cash_flow} />

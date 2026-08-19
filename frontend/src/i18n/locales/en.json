@@ -921,6 +921,39 @@
       "issued": "Books Issued",
       "returned": "Books Returned"
     },
+    "mostBorrowedBooks": {
+      "title": "Most Borrowed Books",
+      "empty": "No books borrowed yet in this period.",
+      "axisLabel": "Number of Times Borrowed",
+      "periodLabel": "Time period",
+      "thisMonth": "This Month",
+      "last3Months": "Last 3 Months",
+      "last6Months": "Last 6 Months",
+      "seeMore": "See more"
+    },
+    "memberActivity": {
+      "title": "Member Activity (Last 6 Months)",
+      "newMembers": "New Members",
+      "activeMembers": "Active Members"
+    },
+    "seatUtilization": {
+      "title": "Seat Utilization (Today)",
+      "peakTime": "Peak Time",
+      "averageUtilization": "{{percent}}% average utilization"
+    },
+    "revenue": {
+      "title": "Revenue Overview (Last 6 Months)",
+      "total": "Total Revenue",
+      "thisMonth": "This Month",
+      "avgMonthly": "Avg. Monthly"
+    },
+    "overdueFines": {
+      "title": "Overdue & Fines Overview (Last 3 Months)",
+      "totalOverdue": "Total Overdue Books",
+      "finesGenerated": "Fines Generated",
+      "finesCollected": "Fines Collected",
+      "collectionRate": "Collection Rate"
+    },
     "statModal": {
       "seatsBookedToday": {
         "description": "Walk-in seats booked at the counter today. Book another one for a member from here."

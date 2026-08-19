@@ -118,13 +118,64 @@ async def test_manager_can_view_dashboard_stats(manager_user):
 
     assert response.status_code == 200
     body = response.json()
+    list_fields = {
+        "library_activity",
+        "member_activity",
+        "seat_utilization",
+        "overdue_fines",
+        "revenue",
+    }
+    non_int_fields = list_fields | {"most_borrowed_books"}
     assert set(body.keys()) == {
         "seats_booked_today",
         "books_issued_today",
         "new_registrations_today",
         "pending_tasks",
-    }
-    assert all(isinstance(value, int) for value in body.values())
+    } | non_int_fields
+    int_fields = {k: v for k, v in body.items() if k not in non_int_fields}
+    assert all(isinstance(value, int) for value in int_fields.values())
+    assert all(isinstance(body[field], list) for field in list_fields)
+    assert isinstance(body["most_borrowed_books"], dict)
+
+    activity = body["library_activity"]
+    assert len(activity) == 7
+    for day in activity:
+        assert set(day.keys()) == {"date", "issued", "returned"}
+        assert isinstance(day["issued"], int)
+        assert isinstance(day["returned"], int)
+    # Oldest first, ending on today.
+    assert activity[-1]["date"] == datetime.now(UTC).date().isoformat()
+
+    most_borrowed = body["most_borrowed_books"]
+    assert set(most_borrowed.keys()) == {"this_month", "last_3_months", "last_6_months"}
+    for period in most_borrowed.values():
+        assert len(period) <= 25
+        counts = [book["count"] for book in period]
+        assert counts == sorted(counts, reverse=True)  # most-borrowed first
+        for book in period:
+            assert set(book.keys()) == {"book_id", "title", "count"}
+            assert book["count"] > 0
+
+    member_activity = body["member_activity"]
+    assert len(member_activity) == 6
+    for month in member_activity:
+        assert set(month.keys()) == {"month", "new_members", "active_members"}
+
+    seat_utilization = body["seat_utilization"]
+    assert len(seat_utilization) == 12  # OPEN_HOURS = range(9, 21)
+    for hour in seat_utilization:
+        assert set(hour.keys()) == {"hour", "percent"}
+        assert 0 <= hour["percent"] <= 100
+
+    overdue_fines = body["overdue_fines"]
+    assert len(overdue_fines) == 3
+    for month in overdue_fines:
+        assert set(month.keys()) == {"month", "overdue_books", "fines_generated", "fines_collected"}
+
+    revenue = body["revenue"]
+    assert len(revenue) == 6
+    for month in revenue:
+        assert set(month.keys()) == {"month", "total"}
 
 
 async def test_dashboard_counts_todays_new_registrations(manager_user):

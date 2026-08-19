@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Badge } from '@/components/ui';
 import { cn } from '@/lib/cn';
-import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
+import { PageHeader, QuickActionsCard } from '@/components/common';
 import { ROUTES } from '@/constants/routes';
 import { useMembershipQuery } from '@/features/payment/hooks/useMembershipQuery';
 import { LeaveLibraryReviewModal } from '@/features/reviews/components/LeaveLibraryReviewModal';
@@ -25,6 +25,7 @@ import {
 import { useNotificationsQuery } from '../../notifications/hooks/useNotificationsQuery';
 import { BooksDueSoon } from '../components/BooksDueSoon';
 import { CurrentlyBorrowed } from '../components/CurrentlyBorrowed';
+import { MemberStatCard } from '../components/MemberStatCard';
 import { MemberStatModal, type MemberStatKey } from '../components/MemberStatModal';
 import { MemberSubscription } from '../components/MemberSubscription';
 import { RecentNotifications, UpcomingEvents } from '../components/RecentActivity';
@@ -230,31 +231,51 @@ export function MemberDashboard() {
 
       <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatisticCard
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-6">
+        <MemberSubscription
+          className="lg:col-span-2"
+          planLabel={membership ? membership.plan_label : 'No active plan'}
+          expiresOn={membership ? formatDate(membership.expires_at) : undefined}
+          purchasedAtIso={membership?.purchased_at}
+          expiresAtIso={membership?.expires_at}
+          isActive={membership?.is_active}
+          outstandingFine={formatCurrency(totalFine)}
+          fineReasonKey={unpaidFines.length > 0 ? 'lateReturn' : undefined}
+          fineBookTitle={unpaidFines[0]?.book_title}
+        />
+
+        <MemberStatCard
           icon={BookOpen}
+          tone="primary"
           label={t('dashboard.stats.booksBorrowed')}
+          subtitle={t('dashboard.stats.booksBorrowedSubtitle')}
           value={String(activeLoans.length)}
           onClick={() => setActiveStat('booksBorrowed')}
           selected={activeStat === 'booksBorrowed'}
         />
-        <StatisticCard
+        <MemberStatCard
           icon={BookMarked}
+          tone="info"
           label={t('dashboard.stats.booksReserved')}
+          subtitle={t('dashboard.stats.booksReservedSubtitle')}
           value={String(reservations.length)}
           onClick={() => setActiveStat('booksReserved')}
           selected={activeStat === 'booksReserved'}
         />
-        <StatisticCard
+        <MemberStatCard
           icon={CalendarCheck}
+          tone="success"
           label={t('dashboard.stats.seatBookings')}
+          subtitle={t('dashboard.stats.seatBookingsSubtitle')}
           value={String(seatBookings.length)}
           onClick={() => setActiveStat('seatBookings')}
           selected={activeStat === 'seatBookings'}
         />
-        <StatisticCard
+        <MemberStatCard
           icon={Flame}
+          tone="warning"
           label={t('readingProgress.readingStreak.title')}
+          subtitle={t('dashboard.stats.readingStreakSubtitle')}
           value={t('readingProgress.readingStreak.currentDays', {
             count: streak.current_streak_days,
           })}
@@ -262,14 +283,6 @@ export function MemberDashboard() {
           selected={activeStat === 'readingStreak'}
         />
       </div>
-
-      <MemberSubscription
-        planLabel={membership ? membership.plan_label : 'No active plan'}
-        expiresOn={membership ? formatDate(membership.expires_at) : undefined}
-        outstandingFine={formatCurrency(totalFine)}
-        fineReasonKey={unpaidFines.length > 0 ? 'lateReturn' : undefined}
-        fineBookTitle={unpaidFines[0]?.book_title}
-      />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <BooksDueSoon books={booksDueSoon} />

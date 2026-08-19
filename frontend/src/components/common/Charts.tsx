@@ -199,3 +199,72 @@ export function MultiLineTrendChart({ data, series, className }: MultiLineTrendC
     </div>
   );
 }
+
+export interface MultiBarChartProps {
+  data: MultiTrendPoint[];
+  series: MultiTrendSeries[];
+  className?: string;
+}
+
+const BAR_GROUP_GAP = 6;
+
+// Same MultiTrendPoint/MultiTrendSeries shape as MultiLineTrendChart, grouped bars
+// instead of lines — a trend made of few, discrete periods (e.g. months) usually reads
+// better as bars than as a curve implying continuous movement between points.
+export function MultiBarChart({ data, series, className }: MultiBarChartProps) {
+  if (data.length === 0 || series.length === 0) return null;
+
+  const allValues = data.flatMap((d) => series.map((s) => d.values[s.key] ?? 0));
+  const max = Math.max(...allValues, 0);
+
+  const groupWidth = (CHART_WIDTH - CHART_PADDING * 2) / data.length;
+  const barWidth = (groupWidth - BAR_GROUP_GAP) / series.length;
+  const plotHeight = CHART_HEIGHT - CHART_PADDING * 2;
+
+  return (
+    <div className={cn('flex flex-col gap-2', className)}>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        {series.map((s) => (
+          <span key={s.key} className="inline-flex items-center gap-1.5">
+            <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
+            {s.label}
+          </span>
+        ))}
+      </div>
+      <svg
+        viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
+        preserveAspectRatio="none"
+        className="h-36 w-full"
+        role="img"
+      >
+        {data.map((point, groupIndex) => {
+          const groupX = CHART_PADDING + groupIndex * groupWidth + BAR_GROUP_GAP / 2;
+          return (
+            <g key={point.label}>
+              {series.map((s, seriesIndex) => {
+                const value = point.values[s.key] ?? 0;
+                const barHeight = max === 0 ? 0 : (value / max) * plotHeight;
+                return (
+                  <rect
+                    key={s.key}
+                    x={groupX + seriesIndex * barWidth}
+                    y={CHART_HEIGHT - CHART_PADDING - barHeight}
+                    width={Math.max(barWidth - 2, 1)}
+                    height={barHeight}
+                    rx={2}
+                    fill={s.color}
+                  />
+                );
+              })}
+            </g>
+          );
+        })}
+      </svg>
+      <div className="flex justify-between px-0.5 text-[10px] text-muted-foreground">
+        {data.map((d) => (
+          <span key={d.label}>{d.label}</span>
+        ))}
+      </div>
+    </div>
+  );
+}

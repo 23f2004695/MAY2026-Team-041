@@ -734,11 +734,63 @@ export interface MemberSearchOptions {
   activeOnly?: boolean;
 }
 
+export interface DailyLibraryActivity {
+  date: string;
+  issued: number;
+  returned: number;
+}
+
+export interface MostBorrowedBook {
+  book_id: string;
+  title: string;
+  count: number;
+}
+
+export interface MostBorrowedBooksByPeriod {
+  this_month: MostBorrowedBook[];
+  last_3_months: MostBorrowedBook[];
+  last_6_months: MostBorrowedBook[];
+}
+
+export interface MemberActivityMonth {
+  month: string;
+  new_members: number;
+  active_members: number;
+}
+
+export interface SeatUtilizationHour {
+  hour: number;
+  percent: number;
+}
+
+export interface OverdueFinesMonth {
+  month: string;
+  overdue_books: number;
+  fines_generated: number;
+  fines_collected: number;
+}
+
+export interface RevenueMonth {
+  month: string;
+  total: number;
+}
+
 export interface ManagerDashboardStats {
   seats_booked_today: number;
   books_issued_today: number;
   new_registrations_today: number;
   pending_tasks: number;
+  /** Last 7 calendar days including today, oldest first. */
+  library_activity: DailyLibraryActivity[];
+  most_borrowed_books: MostBorrowedBooksByPeriod;
+  /** Last 6 months, oldest first. */
+  member_activity: MemberActivityMonth[];
+  /** Today, one entry per open hour. */
+  seat_utilization: SeatUtilizationHour[];
+  /** Last 3 months, oldest first. */
+  overdue_fines: OverdueFinesMonth[];
+  /** Last 6 months, oldest first. */
+  revenue: RevenueMonth[];
 }
 
 export interface ManagerSeatBookingPayload {

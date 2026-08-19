@@ -902,6 +902,39 @@
       "issued": "जारी की गई पुस्तकें",
       "returned": "वापस की गई पुस्तकें"
     },
+    "mostBorrowedBooks": {
+      "title": "सबसे ज़्यादा उधार ली गई पुस्तकें",
+      "empty": "इस अवधि में अभी तक कोई पुस्तक उधार नहीं ली गई।",
+      "axisLabel": "उधार लिए जाने की संख्या",
+      "periodLabel": "समय अवधि",
+      "thisMonth": "इस महीने",
+      "last3Months": "पिछले 3 महीने",
+      "last6Months": "पिछले 6 महीने",
+      "seeMore": "और देखें"
+    },
+    "memberActivity": {
+      "title": "सदस्य गतिविधि (पिछले 6 महीने)",
+      "newMembers": "नए सदस्य",
+      "activeMembers": "सक्रिय सदस्य"
+    },
+    "seatUtilization": {
+      "title": "सीट उपयोग (आज)",
+      "peakTime": "व्यस्ततम समय",
+      "averageUtilization": "औसत उपयोग {{percent}}%"
+    },
+    "revenue": {
+      "title": "राजस्व अवलोकन (पिछले 6 महीने)",
+      "total": "कुल राजस्व",
+      "thisMonth": "इस महीने",
+      "avgMonthly": "औसत मासिक"
+    },
+    "overdueFines": {
+      "title": "बकाया और जुर्माना अवलोकन (पिछले 3 महीने)",
+      "totalOverdue": "कुल बकाया पुस्तकें",
+      "finesGenerated": "उत्पन्न जुर्माना",
+      "finesCollected": "वसूला गया जुर्माना",
+      "collectionRate": "वसूली दर"
+    },
     "statModal": {
       "seatsBookedToday": {
         "description": "आज काउंटर पर बुक की गई वॉक-इन सीटें। यहाँ से किसी सदस्य के लिए एक और सीट बुक करें।"

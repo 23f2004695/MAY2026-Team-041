@@ -902,6 +902,39 @@
       "issued": "ਜਾਰੀ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ",
       "returned": "ਵਾਪਸ ਕੀਤੀਆਂ ਕਿਤਾਬਾਂ"
     },
+    "mostBorrowedBooks": {
+      "title": "ਸਭ ਤੋਂ ਵੱਧ ਉਧਾਰ ਲਈਆਂ ਕਿਤਾਬਾਂ",
+      "empty": "ਇਸ ਮਿਆਦ ਵਿੱਚ ਹਾਲੇ ਤੱਕ ਕੋਈ ਕਿਤਾਬ ਉਧਾਰ ਨਹੀਂ ਲਈ ਗਈ।",
+      "axisLabel": "ਉਧਾਰ ਲਏ ਜਾਣ ਦੀ ਗਿਣਤੀ",
+      "periodLabel": "ਸਮਾਂ ਮਿਆਦ",
+      "thisMonth": "ਇਸ ਮਹੀਨੇ",
+      "last3Months": "ਪਿਛਲੇ 3 ਮਹੀਨੇ",
+      "last6Months": "ਪਿਛਲੇ 6 ਮਹੀਨੇ",
+      "seeMore": "ਹੋਰ ਵੇਖੋ"
+    },
+    "memberActivity": {
+      "title": "ਮੈਂਬਰ ਗਤੀਵਿਧੀ (ਪਿਛਲੇ 6 ਮਹੀਨੇ)",
+      "newMembers": "ਨਵੇਂ ਮੈਂਬਰ",
+      "activeMembers": "ਸਰਗਰਮ ਮੈਂਬਰ"
+    },
+    "seatUtilization": {
+      "title": "ਸੀਟ ਵਰਤੋਂ (ਅੱਜ)",
+      "peakTime": "ਸਭ ਤੋਂ ਰੁੱਝਿਆ ਸਮਾਂ",
+      "averageUtilization": "ਔਸਤ ਵਰਤੋਂ {{percent}}%"
+    },
+    "revenue": {
+      "title": "ਮਾਲੀਆ ਸੰਖੇਪ (ਪਿਛਲੇ 6 ਮਹੀਨੇ)",
+      "total": "ਕੁੱਲ ਮਾਲੀਆ",
+      "thisMonth": "ਇਸ ਮਹੀਨੇ",
+      "avgMonthly": "ਔਸਤ ਮਾਸਿਕ"
+    },
+    "overdueFines": {
+      "title": "ਬਕਾਇਆ ਅਤੇ ਜੁਰਮਾਨਾ ਸੰਖੇਪ (ਪਿਛਲੇ 3 ਮਹੀਨੇ)",
+      "totalOverdue": "ਕੁੱਲ ਬਕਾਇਆ ਕਿਤਾਬਾਂ",
+      "finesGenerated": "ਲਗਾਇਆ ਗਿਆ ਜੁਰਮਾਨਾ",
+      "finesCollected": "ਵਸੂਲਿਆ ਗਿਆ ਜੁਰਮਾਨਾ",
+      "collectionRate": "ਵਸੂਲੀ ਦਰ"
+    },
     "statModal": {
       "seatsBookedToday": {
         "description": "ਅੱਜ ਕਾਊਂਟਰ 'ਤੇ ਬੁੱਕ ਕੀਤੀਆਂ ਵਾਕ-ਇਨ ਸੀਟਾਂ। ਇੱਥੋਂ ਕਿਸੇ ਮੈਂਬਰ ਲਈ ਇੱਕ ਹੋਰ ਸੀਟ ਬੁੱਕ ਕਰੋ।"

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from prisma.models import Book, Loan
+from prisma.models import Book, Loan, User
 
 from app.core.constants import Role
 from app.db.pagination import paginate
@@ -13,6 +13,10 @@ async def count_seat_bookings_created_between(start: datetime, end: datetime) ->
 
 async def count_loans_created_between(start: datetime, end: datetime) -> int:
     return await prisma.loan.count(where={"createdAt": {"gte": start, "lt": end}})
+
+
+async def count_loans_returned_between(start: datetime, end: datetime) -> int:
+    return await prisma.loan.count(where={"returnedAt": {"gte": start, "lt": end}})
 
 
 async def count_members_created_between(start: datetime, end: datetime) -> int:
@@ -62,4 +66,22 @@ async def list_active_loans_for_books(book_ids: list[str]) -> list[Loan]:
     return await prisma.loan.find_many(
         where={"bookId": {"in": book_ids}, "returnedAt": None},
         order={"dueDate": "asc"},
+    )
+
+
+async def list_loans_borrowed_since(start: datetime) -> list[Loan]:
+    """One bulk fetch feeding three dashboard charts (most-borrowed books, member
+    activity, overdue/fines) — each buckets a different subset/field of the same rows
+    in Python, mirroring admin/service.py::get_profit_and_loss's bulk-fetch-then-bucket
+    pattern rather than one query per month per chart.
+    """
+    return await prisma.loan.find_many(
+        where={"borrowedAt": {"gte": start}},
+        include={"book": True},
+    )
+
+
+async def list_members_created_since(start: datetime) -> list[User]:
+    return await prisma.user.find_many(
+        where={"role": {"name": Role.MEMBER}, "deletedAt": None, "createdAt": {"gte": start}}
     )

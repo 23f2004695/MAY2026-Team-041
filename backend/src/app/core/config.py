@@ -17,6 +17,12 @@ class Settings(BaseSettings):
     # replicas booting at once is safe. Set AUTO_MIGRATE=false if your deployment applies
     # migrations as its own step and the app should never touch the schema.
     auto_migrate: bool = Field(default=True, validation_alias="AUTO_MIGRATE")
+    # Runs scripts/seed_books.py + scripts/seed_demo_data.py on startup in development
+    # only, so a fresh clone has books and ~5 months of demo activity without anyone
+    # remembering to run the seed scripts by hand. Both are idempotent, so repeat boots
+    # (including --reload restarts) just skip after the first. Set AUTO_SEED_DEMO=false
+    # to opt out.
+    auto_seed_demo: bool = Field(default=True, validation_alias="AUTO_SEED_DEMO")
     database_url: str = Field(
         default="postgresql://app:app@localhost:5432/app",
         validation_alias="DATABASE_URL",

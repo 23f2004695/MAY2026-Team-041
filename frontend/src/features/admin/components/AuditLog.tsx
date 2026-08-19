@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +11,7 @@ import { formatCurrency } from '@/lib/format';
 import { formatRelativeTime } from '@/lib/formatRelativeTime';
 import { useAuth, type AuditLogEntry } from '@/providers/AuthProvider';
 
-function useActionText(entry: AuditLogEntry) {
+export function useActionText(entry: AuditLogEntry) {
   const { t } = useTranslation();
   const { action, params } = entry;
   const amount = formatCurrency(Number(params.amount));
@@ -46,7 +48,7 @@ function useActionText(entry: AuditLogEntry) {
   }
 }
 
-function useActorText(entry: AuditLogEntry) {
+export function useActorText(entry: AuditLogEntry) {
   const { t } = useTranslation();
   const { userId } = useAuth();
   if (userId === entry.actor_id) return t('common.you');

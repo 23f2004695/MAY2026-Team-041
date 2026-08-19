@@ -82,6 +82,11 @@ async def _due_soon_reminder_loop() -> None:
 
 
 SCHEMA_PATH = Path(__file__).resolve().parent.parent.parent / "prisma" / "schema.prisma"
+BACKEND_DIR = SCHEMA_PATH.parent.parent
+DEMO_SEED_SCRIPTS = [
+    BACKEND_DIR / "scripts" / "seed_books.py",
+    BACKEND_DIR / "scripts" / "seed_demo_data.py",
+]
 
 
 def _run_migrate_deploy(database_url: str) -> subprocess.CompletedProcess[str]:
@@ -126,6 +131,34 @@ async def _apply_pending_migrations(database_url: str) -> None:
         logger.info("applied pending database migrations")
 
 
+def _run_seed_script(script: Path, database_url: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(script)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        cwd=BACKEND_DIR,
+        env={**os.environ, "DATABASE_URL": database_url, "PYTHONPATH": str(BACKEND_DIR / "src")},
+    )
+
+
+async def _seed_dev_demo_data(database_url: str) -> None:
+    """Dev-only convenience: book catalog + ~5 months of synthetic activity, so a
+    fresh clone has something to look at without anyone running the seed scripts by
+    hand. Both scripts are idempotent (seed_books upserts on ISBN, seed_demo_data
+    skips once it finds its own seeded users), so this is a quick no-op on every boot
+    after the first — including --reload restarts. Failures here are logged, not
+    fatal: missing demo data doesn't stop the app from serving real traffic.
+    """
+    for script in DEMO_SEED_SCRIPTS:
+        result = await asyncio.to_thread(_run_seed_script, script, database_url)
+        output = result.stdout.strip()
+        if result.returncode != 0:
+            logger.warning("%s failed, skipping demo seed:\n%s", script.name, output)
+            return
+        logger.info("%s: %s", script.name, output.splitlines()[-1] if output else "done")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
@@ -135,6 +168,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         if settings.auto_migrate:
             await _apply_pending_migrations(settings.database_url)
         await prisma.connect()
+        # development only — excludes "e2e" (Playwright seeds its own fixed fixtures,
+        # see playwright.config.ts) and "test" (whole block skipped above).
+        if settings.app_env == "development" and settings.auto_seed_demo:
+            await _seed_dev_demo_data(settings.database_url)
         reminder_task = asyncio.create_task(_due_soon_reminder_loop())
 
     # ── Startup config summary ────────────────────────────────────────────

@@ -10,8 +10,10 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { PageHeader, QuickActionsCard, StatisticCard } from '@/components/common';
+import { MultiBarChart, MultiLineTrendChart, PageHeader, QuickActionsCard } from '@/components/common';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { CreateEventModal } from '@/features/events/components/CreateEventModal';
+import { formatMonth, formatWeekday } from '@/lib/format';
 import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
   useAuth,
@@ -29,10 +31,16 @@ import { CheckInCheckOutCard } from '../components/CheckInCheckOutCard';
 import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
 import { IssueBookForMemberModal } from '../components/IssueBookForMemberModal';
 import { ManagerStatModal, type ManagerStatKey } from '../components/ManagerStatModal';
+import { MemberStatCard, type MemberStatTone } from '../components/MemberStatCard';
+import { MostBorrowedBooks } from '../components/MostBorrowedBooks';
 import { NewRegistrations } from '../components/NewRegistrations';
+import { OverdueFinesOverview } from '../components/OverdueFinesOverview';
 import { PendingPayments } from '../components/PendingPayments';
 import { PendingReservations } from '../components/PendingReservations';
+import { RecentNotificationsPanel } from '../components/RecentNotificationsPanel';
 import { RegisterMemberModal } from '../components/RegisterMemberModal';
+import { RevenueOverviewCard } from '../components/RevenueOverviewCard';
+import { SeatUtilizationCard } from '../components/SeatUtilizationCard';
 import { RequestPermissionModal } from '../components/RequestPermissionModal';
 import { WalkInAssistance } from '../components/WalkInAssistance';
 
@@ -167,25 +175,34 @@ export function ManagerDashboard() {
     refreshActiveLoans();
   }
 
-  const statCards: { key: ManagerStatKey; icon: typeof Armchair; value: number | undefined }[] = [
+  const statCards: {
+    key: ManagerStatKey;
+    icon: typeof Armchair;
+    tone: MemberStatTone;
+    value: number | undefined;
+  }[] = [
     {
       key: 'seatsBookedToday',
       icon: Armchair,
+      tone: 'primary',
       value: stats?.seats_booked_today,
     },
     {
       key: 'booksIssuedToday',
       icon: BookPlus,
+      tone: 'info',
       value: stats?.books_issued_today,
     },
     {
       key: 'newRegistrationsToday',
       icon: UserPlus,
+      tone: 'success',
       value: stats?.new_registrations_today,
     },
     {
       key: 'pendingTasks',
       icon: ClipboardList,
+      tone: 'warning',
       value: stats?.pending_tasks,
     },
   ];
@@ -201,9 +218,10 @@ export function ManagerDashboard() {
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {statCards.map((stat) => (
-          <StatisticCard
+          <MemberStatCard
             key={stat.key}
             icon={stat.icon}
+            tone={stat.tone}
             label={t(`managerDashboard.stats.${stat.key}`)}
             value={stat.value === undefined ? '—' : String(stat.value)}
             onClick={stats ? () => setActiveStat(stat.key) : undefined}
@@ -212,13 +230,85 @@ export function ManagerDashboard() {
         ))}
       </div>
 
+      {stats && stats.library_activity.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('managerDashboard.libraryActivity.title')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MultiLineTrendChart
+              data={stats.library_activity.map((day) => ({
+                label: formatWeekday(day.date),
+                values: { issued: day.issued, returned: day.returned },
+              }))}
+              series={[
+                {
+                  key: 'issued',
+                  label: t('managerDashboard.libraryActivity.issued'),
+                  color: 'var(--color-primary)',
+                },
+                {
+                  key: 'returned',
+                  label: t('managerDashboard.libraryActivity.returned'),
+                  color: 'var(--color-info)',
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {stats && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <MostBorrowedBooks books={stats.most_borrowed_books} />
+
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('managerDashboard.memberActivity.title')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MultiBarChart
+                data={stats.member_activity.map((m) => ({
+                  label: formatMonth(m.month),
+                  values: { new: m.new_members, active: m.active_members },
+                }))}
+                series={[
+                  {
+                    key: 'new',
+                    label: t('managerDashboard.memberActivity.newMembers'),
+                    color: 'var(--color-primary)',
+                  },
+                  {
+                    key: 'active',
+                    label: t('managerDashboard.memberActivity.activeMembers'),
+                    color: 'var(--color-info)',
+                  },
+                ]}
+              />
+            </CardContent>
+          </Card>
+
+          <SeatUtilizationCard hours={stats.seat_utilization} />
+        </div>
+      )}
+
+      {stats && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <OverdueFinesOverview months={stats.overdue_fines} />
+          <RevenueOverviewCard months={stats.revenue} />
+        </div>
+      )}
+
       <CheckInCheckOutCard />
 
-      <PendingReservations
-        requests={pendingReservations}
-        onApprove={handleApproveReservation}
-        onReject={handleRejectReservation}
-      />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <PendingReservations
+          requests={pendingReservations}
+          onApprove={handleApproveReservation}
+          onReject={handleRejectReservation}
+        />
+        <RecentNotificationsPanel notifications={notifications} />
+      </div>
 
       <ActiveLoans loans={activeLoans} onReturn={handleReturnLoan} onRemind={sendFineReminder} />
 
