@@ -11,7 +11,7 @@ from app.modules.admin import repository as admin_repository
 from app.modules.admin import service as admin_service
 from app.modules.admin.constants import OPEN_HOURS
 from app.modules.guardian import service as guardian_service
-from app.modules.guardian.schemas import GuardianLinkCreate
+from app.modules.guardian.schemas import GuardianContactOut, GuardianLinkCreate
 from app.modules.loans import service as loans_service
 from app.modules.loans.constants import FINE_PER_DAY
 from app.modules.loans.schemas import LoanCreate, LoanOut
@@ -268,15 +268,28 @@ async def issue_loan_for_member(manager_id: str, payload: ManagerLoanCreate) -> 
     )
 
 
-async def link_guardian(payload: ManagerGuardianLinkCreate) -> None:
+async def _resolve_pair(payload: ManagerGuardianLinkCreate) -> GuardianLinkCreate:
     student = await members_repository.find_by_email(payload.student_email)
     guardian = await members_repository.find_by_email(payload.guardian_email)
     if student is None or guardian is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Guardian or member not found")
+    return GuardianLinkCreate(guardian_id=guardian.id, member_id=student.id)
 
-    await guardian_service.link_child(
-        GuardianLinkCreate(guardian_id=guardian.id, member_id=student.id)
-    )
+
+async def link_guardian(payload: ManagerGuardianLinkCreate) -> None:
+    await guardian_service.link_child(await _resolve_pair(payload))
+
+
+async def set_guardian(payload: ManagerGuardianLinkCreate) -> None:
+    await guardian_service.set_guardian(await _resolve_pair(payload))
+
+
+async def unlink_guardian(student_id: str) -> None:
+    await guardian_service.unlink_child(student_id)
+
+
+async def get_student_guardian(student_id: str) -> GuardianContactOut | None:
+    return await guardian_service.get_my_guardian(student_id)
 
 
 async def list_pending_reservations() -> list[PendingReservationOut]:

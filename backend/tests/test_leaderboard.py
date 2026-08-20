@@ -140,9 +140,19 @@ async def test_leaderboard_ranks_by_score_and_flags_current_user():
     assert top_entry["books_completed"] == 8
     assert top_entry["reviews_count"] == 5
     assert top_entry["score"] == 970
-    assert top_entry["rank"] == 1
-    assert "reading_champion" in top_entry["badges"]
     assert top_entry["is_current_user"] is False
+
+    # rank is the 1-based position in the returned board. Asserted relative to this
+    # entry's own position rather than as a hard-coded 1: the board spans every member
+    # in the database, so on a developer machine with demo data seeded these fixtures
+    # are legitimately outranked and a literal `== 1` only ever passed on an empty DB.
+    assert top_entry["rank"] == ids.index(top_participant.id) + 1
+
+    # reading_champion belongs to rank 1 and nobody else — the rule the old assertion
+    # was really checking, now verified wherever rank 1 happens to land.
+    champion = next(e for e in body if e["rank"] == 1)
+    assert "reading_champion" in champion["badges"]
+    assert all("reading_champion" not in e["badges"] for e in body if e["rank"] != 1)
 
     own_entry = next(e for e in body if e["member_id"] == book_heavy_reader.id)
     assert own_entry["books_completed"] == 9

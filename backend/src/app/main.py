@@ -32,6 +32,7 @@ from app.modules.contact.router import router as contact_router
 from app.modules.coupons.router import router as coupons_router
 from app.modules.events.router import router as events_router
 from app.modules.guardian.router import router as guardian_router
+from app.modules.guardian.service import send_monthly_reading_digests
 from app.modules.it_head.router import router as it_head_router
 from app.modules.leaderboard.router import router as leaderboard_router
 from app.modules.library_reviews.router import router as library_reviews_router
@@ -82,11 +83,29 @@ async def _due_soon_reminder_loop() -> None:
         await asyncio.sleep(REMINDER_LOOP_INTERVAL_SECONDS)
 
 
+# Same shape as _due_soon_reminder_loop: runs daily, but send_monthly_reading_digests()
+# itself is what decides whether a given guardian-child link is actually due this
+# calendar month (GuardianLink.lastDigestSentAt) — the loop's own interval only bounds
+# how quickly a newly-due link gets picked up, not how often digests actually go out.
+async def _guardian_digest_loop() -> None:
+    while True:
+        try:
+            await send_monthly_reading_digests()
+        except Exception:
+            logger.exception("send_monthly_reading_digests failed")
+        await asyncio.sleep(REMINDER_LOOP_INTERVAL_SECONDS)
+
+
 SCHEMA_PATH = Path(__file__).resolve().parent.parent.parent / "prisma" / "schema.prisma"
 BACKEND_DIR = SCHEMA_PATH.parent.parent
 DEMO_SEED_SCRIPTS = [
     BACKEND_DIR / "scripts" / "seed_books.py",
     BACKEND_DIR / "scripts" / "seed_demo_data.py",
+    # Unlike the two above, this one is never "already seeded" — it re-checks a few
+    # time-relative facts (this month's reading progress, today's seat occupancy,
+    # whether any event is still upcoming) on every boot and only tops up what's
+    # short, so demo data keeps looking current without anyone re-seeding by hand.
+    BACKEND_DIR / "scripts" / "seed_daily_refresh.py",
 ]
 
 
@@ -164,6 +183,7 @@ async def _seed_dev_demo_data(database_url: str) -> None:
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     settings = get_settings()
     reminder_task: asyncio.Task | None = None
+    guardian_digest_task: asyncio.Task | None = None
     if settings.app_env != "test":
         os.environ.setdefault("DATABASE_URL", settings.database_url)
         if settings.auto_migrate:
@@ -174,6 +194,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         if settings.app_env == "development" and settings.auto_seed_demo:
             await _seed_dev_demo_data(settings.database_url)
         reminder_task = asyncio.create_task(_due_soon_reminder_loop())
+        guardian_digest_task = asyncio.create_task(_guardian_digest_loop())
 
     # ── Startup config summary ────────────────────────────────────────────
     llm_detail = {
@@ -192,10 +213,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 ╚══════════════════════════════════════════════════════╝
 """)
     yield
-    if reminder_task is not None:
-        reminder_task.cancel()
-        with contextlib.suppress(asyncio.CancelledError):
-            await reminder_task
+    for task in (reminder_task, guardian_digest_task):
+        if task is not None:
+            task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await task
     if settings.app_env != "test":
         await prisma.disconnect()
 

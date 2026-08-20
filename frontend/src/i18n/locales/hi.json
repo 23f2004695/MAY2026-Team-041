@@ -1097,7 +1097,15 @@
       "studentEmailPlaceholder": "नाम या ईमेल से सक्रिय सदस्य खोजें",
       "submit": "अभिभावक जोड़ें",
       "successToast": "अभिभावक {{guardianEmail}} को {{studentEmail}} से लिंक किया गया",
-      "title": "अभिभावक जोड़ें"
+      "title": "अभिभावक जोड़ें",
+      "currentGuardian": "मौजूदा अभिभावक",
+      "noGuardianYet": "इस विद्यार्थी से अभी कोई अभिभावक नहीं जुड़ा है।",
+      "update": "अभिभावक बदलें",
+      "remove": "हटाएँ",
+      "updatedToast": "{{studentEmail}} का अभिभावक {{guardianEmail}} में बदला गया",
+      "removedToast": "{{studentEmail}} से जुड़ा अभिभावक हटाया गया",
+      "removeConfirmTitle": "अभिभावक हटाएँ?",
+      "removeConfirmDescription": "इससे {{guardianEmail}} का {{studentEmail}} से लिंक हट जाएगा। वे इस विद्यार्थी की लाइब्रेरी गतिविधि नहीं देख पाएँगे।"
     },
     "billingRequest": {
       "amountLabel": "राशि (₹)",
@@ -2183,7 +2191,9 @@
       "emailPlaceholder": "guardian@example.com",
       "invalidEmail": "एक मान्य ईमेल पता दर्ज करें।",
       "unlink": "अनलिंक",
-      "linked": "लिंक किया गया"
+      "linked": "लिंक किया गया",
+      "noneLinked": "आपके खाते से अभी कोई अभिभावक जुड़ा नहीं है।",
+      "managedByStaff": "अभिभावक लिंक लाइब्रेरी स्टाफ़ द्वारा सत्यापित और प्रबंधित किए जाते हैं। अभिभावक जोड़ने, बदलने या हटाने के लिए फ़्रंट डेस्क से संपर्क करें।"
     },
     "changePassword": {
       "title": "पासवर्ड बदलें",
@@ -2217,6 +2227,9 @@
     "writeReview": "समीक्षा लिखें",
     "viewReviews": "समीक्षाएं देखें",
     "commentsHeading": "टिप्पणियाँ",
+    "digest": {
+      "heading": "पाठक क्या कह रहे हैं"
+    },
     "libraryReviewCard": {
       "title": "अपने लाइब्रेरी अनुभव को रेट करें",
       "existingTitle": "आपकी लाइब्रेरी समीक्षा",

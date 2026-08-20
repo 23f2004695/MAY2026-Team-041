@@ -5,6 +5,7 @@ from prisma.models import User
 
 from app.api.deps import require_role
 from app.core.constants import Role
+from app.modules.guardian.schemas import GuardianContactOut
 from app.modules.loans.schemas import LoanOut
 from app.modules.manager import service
 from app.modules.manager.schemas import (
@@ -52,6 +53,27 @@ async def link_guardian(
     payload: ManagerGuardianLinkCreate, _: Annotated[User, Depends(manage)]
 ) -> None:
     await service.link_guardian(payload)
+
+
+@router.get("/guardian-links/{student_id}", response_model=GuardianContactOut | None)
+async def get_student_guardian(
+    student_id: str, _: Annotated[User, Depends(manage)]
+) -> GuardianContactOut | None:
+    return await service.get_student_guardian(student_id)
+
+
+# PUT rather than reusing POST: POST stays a strict create (409 if the student already has
+# a guardian), this is the deliberate "change who it is" action.
+@router.put("/guardian-links", status_code=status.HTTP_204_NO_CONTENT)
+async def set_guardian(
+    payload: ManagerGuardianLinkCreate, _: Annotated[User, Depends(manage)]
+) -> None:
+    await service.set_guardian(payload)
+
+
+@router.delete("/guardian-links/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def unlink_guardian(student_id: str, _: Annotated[User, Depends(manage)]) -> None:
+    await service.unlink_guardian(student_id)
 
 
 @router.get("/books", response_model=ManagerBookListOut)

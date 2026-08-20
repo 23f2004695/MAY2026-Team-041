@@ -3,6 +3,7 @@ import {
   Armchair,
   BellRing,
   BookMarked,
+  BookOpen,
   CheckCircle2,
   ClipboardList,
   Clock,
@@ -51,7 +52,8 @@ export type NotificationType =
   | 'support-ticket'
   | 'support-ticket-resolved'
   | 'support-ticket-reopened'
-  | 'fine-reminder';
+  | 'fine-reminder'
+  | 'reading-digest';
 
 export interface NotificationCardProps {
   type: NotificationType;
@@ -89,6 +91,7 @@ export const notificationTypeIcon: Record<NotificationType, LucideIcon> = {
   'support-ticket-resolved': CheckCircle2,
   'support-ticket-reopened': AlertCircle,
   'fine-reminder': Clock,
+  'reading-digest': BookOpen,
 };
 
 export function NotificationCard({
