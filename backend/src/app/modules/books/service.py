@@ -1,11 +1,23 @@
+import logging
 from collections import Counter, defaultdict
 
 from fastapi import HTTPException, status
+from langchain_core.messages import HumanMessage, SystemMessage
 from prisma.errors import UniqueViolationError
 from prisma.models import Book
 
+from app.core.llm import build_chat_llm
 from app.modules.books import repository
-from app.modules.books.schemas import BookCreate, BookListResponse, BookOut, BookSort, BookUpdate
+from app.modules.books.schemas import (
+    BookCreate,
+    BookListResponse,
+    BookOut,
+    BookSort,
+    BookUpdate,
+    SuggestDescriptionRequest,
+)
+
+logger = logging.getLogger(__name__)
 
 # Category match counts less than an author match — a reader who's borrowed several
 # Agatha Christie mysteries is more likely chasing "more Christie" than "more mystery".
@@ -137,6 +149,52 @@ async def get_related_books(book_id: str) -> list[BookOut]:
 
     ratings = await _ratings_by_book([b.id for b in related])
     return [_book_out(b, ratings) for b in related]
+
+
+_DESCRIPTION_SYSTEM_PROMPT = """You write short library-catalog descriptions.
+
+Given a book's title, author, and category, write a 2-3 sentence description a member
+would see on the book's page. Rules:
+- No spoilers, no invented plot specifics (character names, twists, endings) unless
+  you are confident they are accurate for this exact book.
+- If you don't recognize this specific title, write a general, honest description
+  based on the title, author, and category alone — do not invent a plot.
+- Plain prose only: no headings, no bullet points, no quotation marks around the
+  whole thing.
+- Output only the description text, nothing else."""
+
+
+async def suggest_description(payload: SuggestDescriptionRequest) -> str:
+    """Drafts a book description for staff to edit or discard — never saved directly.
+
+    Grounded on purpose: the prompt explicitly tells the model to stay generic rather
+    than invent plot details for a book it doesn't actually recognize, since a small
+    local model's knowledge of less-famous titles is thin. Staff always see this in an
+    editable field before anything is written to the catalog (see create_book/update_book).
+    """
+    human = f"Title: {payload.title}\nAuthor: {payload.author}"
+    if payload.category:
+        human += f"\nCategory: {payload.category}"
+
+    try:
+        llm = build_chat_llm()
+        result = await llm.ainvoke(
+            [SystemMessage(content=_DESCRIPTION_SYSTEM_PROMPT), HumanMessage(content=human)]
+        )
+    except Exception as exc:
+        logger.exception("suggest_description failed for %r by %r", payload.title, payload.author)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="The description assistant is unavailable right now. Please try again shortly.",
+        ) from exc
+
+    description = str(result.content).strip()
+    if not description:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="The description assistant is unavailable right now. Please try again shortly.",
+        )
+    return description
 
 
 async def create_book(payload: BookCreate) -> BookOut:

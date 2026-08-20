@@ -1,4 +1,4 @@
-import { BookX } from 'lucide-react';
+import { BookX, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,6 +6,7 @@ import { PageHeader, Pagination, TableToolbar } from '@/components/common';
 import { NoResults } from '@/components/feedback';
 import {
   Badge,
+  Button,
   SearchBar,
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui';
+import { AddBookModal, type BookDraft } from '@/features/dashboard/components/AddBookModal';
 import { formatDate } from '@/lib/format';
 import { useDebouncedFetch } from '@/lib/useDebouncedFetch';
 import { useAuth, type ManagerBookAvailability } from '@/providers/AuthProvider';
@@ -76,19 +78,40 @@ function StatusCell({ book }: { book: ManagerBookAvailability }) {
 // copies tied up by an online reservation, so that case shows "unknown").
 export function ManagerBooksPage() {
   const { t } = useTranslation();
-  const { getManagerBooks } = useAuth();
+  const { role, getManagerBooks, createBook } = useAuth();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<string>(CATEGORIES[0]);
   const [status, setStatus] = useState<string>(STATUSES[0]);
   const [sort, setSort] = useState<string>(SORTS[0]);
   const [page, setPage] = useState(1);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Mirrors the backend's manage_books role gate (ADMIN, LIBRARIAN, MANAGER) — the
+  // API enforces this either way, but there's no point showing the button to a role
+  // that can only ever get a 403 back from it.
+  const canAddBooks = role === 'admin' || role === 'librarian' || role === 'manager';
 
   const { data } = useDebouncedFetch(
     () => getManagerBooks({ search, category, status, sort, page, page_size: PAGE_SIZE }),
-    [search, category, status, sort, page, getManagerBooks],
+    [search, category, status, sort, page, refreshKey, getManagerBooks],
     EMPTY_BOOK_LIST,
   );
   const { items, total } = data;
+
+  async function handleAddBook(draft: BookDraft) {
+    await createBook({
+      title: draft.title.trim(),
+      author: draft.author.trim(),
+      category: draft.category,
+      description: draft.description.trim() || undefined,
+      isbn: draft.isbn.trim() || undefined,
+      published_year: draft.publishedYear ? Number(draft.publishedYear) : undefined,
+      total_copies: draft.totalCopies ? Number(draft.totalCopies) : 0,
+    });
+    setIsAddOpen(false);
+    setRefreshKey((key) => key + 1);
+  }
 
   function updateSearch(value: string) {
     setSearch(value);
@@ -125,7 +148,24 @@ export function ManagerBooksPage() {
       <PageHeader
         title={t('managerDashboard.books.pageTitle')}
         description={t('managerDashboard.books.pageDescription')}
+        actions={
+          canAddBooks && (
+            <Button size="sm" onClick={() => setIsAddOpen(true)}>
+              <Plus className="size-4" />
+              {t('managerDashboard.books.addModal.openButton')}
+            </Button>
+          )
+        }
       />
+
+      {canAddBooks && (
+        <AddBookModal
+          open={isAddOpen}
+          onClose={() => setIsAddOpen(false)}
+          onSubmit={handleAddBook}
+          categories={CATEGORIES.filter((value) => value !== 'all')}
+        />
+      )}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <SearchBar

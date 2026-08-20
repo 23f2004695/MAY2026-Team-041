@@ -21,14 +21,12 @@ from contextvars import ContextVar
 from typing import Any
 
 from fastapi import HTTPException
-from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
-from pydantic import SecretStr
 
-from app.core.config import get_settings
 from app.core.constants import Role
+from app.core.llm import build_chat_llm
 from app.modules.books import service as books_service
 from app.modules.books.schemas import BookSort
 from app.modules.chat.guardrails import GuardrailBlock, check_input, check_output
@@ -67,34 +65,6 @@ STAFF_ROLES = {
     Role.IT_HEAD.value,
 }
 LOAN_MANAGER_ROLES = STAFF_ROLES
-
-
-# ── LLM factory ───────────────────────────────────────────────────────────────
-def _build_llm() -> BaseChatModel:
-    s = get_settings()
-    mode = s.llm_mode.lower()
-
-    if mode == "bedrock":
-        from langchain_aws import ChatBedrockConverse
-
-        kwargs: dict[str, Any] = {"model_id": s.bedrock_model_id, "region_name": s.aws_region}
-        if s.aws_access_key_id and s.aws_secret_access_key:
-            kwargs["aws_access_key_id"] = s.aws_access_key_id
-            kwargs["aws_secret_access_key"] = s.aws_secret_access_key
-        return ChatBedrockConverse(**kwargs)
-
-    if mode == "ollama":
-        from langchain_ollama import ChatOllama
-
-        return ChatOllama(model=s.ollama_model, base_url=s.ollama_base_url)
-
-    from langchain_openai import ChatOpenAI
-
-    return ChatOpenAI(
-        model=s.openai_model,
-        api_key=SecretStr(s.openai_api_key),
-        temperature=0.3,
-    )
 
 
 # ── Context helpers ───────────────────────────────────────────────────────────
@@ -755,7 +725,7 @@ async def run_chat(
     _ctx.set({"member_id": member_id, "role": role, "user_name": user_name})
 
     try:
-        llm = _build_llm()
+        llm = build_chat_llm()
     except Exception:
         logger.exception("LLM backend could not be initialised")
         return ChatResponse(

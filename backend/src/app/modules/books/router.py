@@ -1,13 +1,22 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 from prisma.models import User
 
 from app.api.deps import get_optional_user, require_role
 from app.core.constants import Role
+from app.core.rate_limit import limiter
 from app.modules.books import service
-from app.modules.books.schemas import BookCreate, BookListResponse, BookOut, BookSort, BookUpdate
+from app.modules.books.schemas import (
+    BookCreate,
+    BookListResponse,
+    BookOut,
+    BookSort,
+    BookUpdate,
+    SuggestDescriptionRequest,
+    SuggestDescriptionResponse,
+)
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -52,6 +61,17 @@ async def create_book(
     _: Annotated[User, Depends(manage_books)],
 ) -> BookOut:
     return await service.create_book(payload)
+
+
+@router.post("/suggest-description", response_model=SuggestDescriptionResponse)
+@limiter.limit("10/minute")
+async def suggest_description(
+    request: Request,
+    payload: SuggestDescriptionRequest,
+    _: Annotated[User, Depends(manage_books)],
+) -> SuggestDescriptionResponse:
+    description = await service.suggest_description(payload)
+    return SuggestDescriptionResponse(description=description)
 
 
 @router.put("/{book_id}", response_model=BookOut)
