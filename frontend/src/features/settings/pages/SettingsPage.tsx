@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -20,7 +20,7 @@ import { ROUTES } from '@/constants/routes';
 import { LANGUAGES } from '@/i18n/languages';
 import { getErrorMessage } from '@/lib/api';
 import { changePasswordSchema, type ChangePasswordFormValues } from '@/lib/authSchema';
-import { useAuth } from '@/providers/AuthProvider';
+import { useAuth, type GuardianContact } from '@/providers/AuthProvider';
 import { useLanguage } from '@/providers/languageContext';
 import { useTheme, type Theme } from '@/providers/ThemeProvider';
 
@@ -31,11 +31,36 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { role, fullName, email, logout, deleteAccount, updateProfile } = useAuth();
+  const { role, fullName, email, logout, deleteAccount, updateProfile, getMyGuardian } = useAuth();
   const hasStaffAccount =
     role === 'admin' || role === 'manager' || role === 'librarian' || role === 'it-head';
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const isMember = role === 'member';
+  const [guardian, setGuardian] = useState<GuardianContact | null>(null);
+  const [hasLoadedGuardian, setHasLoadedGuardian] = useState(false);
+  // Derived rather than a third state field, so the effect never has to setState
+  // synchronously in its body for the staff case (it just doesn't run).
+  const isLoadingGuardian = isMember && !hasLoadedGuardian;
+
+  // Members only — staff accounts never have a guardian, so don't spend a request on them.
+  useEffect(() => {
+    if (!isMember) return;
+    let cancelled = false;
+    getMyGuardian()
+      .then((data) => {
+        if (!cancelled) setGuardian(data);
+      })
+      .catch(() => {
+        if (!cancelled) setGuardian(null);
+      })
+      .finally(() => {
+        if (!cancelled) setHasLoadedGuardian(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isMember, getMyGuardian]);
 
   const {
     register: registerPassword,
@@ -190,9 +215,18 @@ export function SettingsPage() {
             <CardTitle>{t('settings.guardianLink.title')}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
+            {isLoadingGuardian ? null : guardian ? (
+              <div className="rounded-lg border border-border p-3">
+                <p className="text-sm font-medium text-foreground">{guardian.full_name}</p>
+                <p className="text-sm text-muted-foreground">{guardian.email}</p>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {t('settings.guardianLink.noneLinked')}
+              </p>
+            )}
             <p className="text-sm text-muted-foreground">
-              Guardian links are verified and managed by library staff. Contact the front desk to
-              add, change, or remove a guardian.
+              {t('settings.guardianLink.managedByStaff')}
             </p>
           </CardContent>
         </Card>

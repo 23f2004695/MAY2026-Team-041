@@ -1,5 +1,7 @@
 import os
 import uuid
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 os.environ["APP_ENV"] = "test"
 
@@ -179,6 +181,87 @@ async def test_book_reviews_average_and_breakdown(member_user, other_member_user
     other_review = next(r for r in body["items"] if r["reviewer_id"] == other_member_user.id)
     assert own_review["is_own"] is True
     assert other_review["is_own"] is False
+
+
+def _fake_llm(reply_text: str) -> SimpleNamespace:
+    return SimpleNamespace(ainvoke=AsyncMock(return_value=SimpleNamespace(content=reply_text)))
+
+
+async def test_review_digest_is_none_without_any_reviews(member_user, librarian_user):
+    book_id = await _create_book(librarian_user)
+
+    async with _client_as(member_user) as client:
+        response = await client.get(f"/api/v1/books/{book_id}/reviews")
+
+    assert response.status_code == 200
+    assert response.json()["review_digest"] is None
+
+
+async def test_review_digest_is_generated_and_then_cached(member_user, librarian_user):
+    book_id = await _create_book(librarian_user)
+    async with _client_as(member_user) as client:
+        await client.post(
+            f"/api/v1/books/{book_id}/reviews", json={"rating": 5, "comment": "Loved it"}
+        )
+
+    fake_llm = _fake_llm("Readers loved this one.")
+    with patch("app.modules.reviews.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            first = await client.get(f"/api/v1/books/{book_id}/reviews")
+            second = await client.get(f"/api/v1/books/{book_id}/reviews")
+
+    assert first.status_code == 200 and second.status_code == 200
+    assert first.json()["review_digest"] == "Readers loved this one."
+    assert second.json()["review_digest"] == "Readers loved this one."
+    # Second call must be served from the Book.reviewDigest cache, not a second LLM call.
+    fake_llm.ainvoke.assert_awaited_once()
+
+
+async def test_review_digest_regenerates_after_review_count_changes(
+    member_user, other_member_user, librarian_user
+):
+    book_id = await _create_book(librarian_user)
+    async with _client_as(member_user) as client:
+        await client.post(
+            f"/api/v1/books/{book_id}/reviews", json={"rating": 5, "comment": "Great"}
+        )
+
+    fake_llm = _fake_llm("First summary.")
+    with patch("app.modules.reviews.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            await client.get(f"/api/v1/books/{book_id}/reviews")
+
+    async with _client_as(other_member_user) as client:
+        await client.post(
+            f"/api/v1/books/{book_id}/reviews", json={"rating": 2, "comment": "Mixed feelings"}
+        )
+
+    fake_llm_2 = _fake_llm("Second summary.")
+    with patch("app.modules.reviews.service.build_chat_llm", return_value=fake_llm_2):
+        async with _client_as(member_user) as client:
+            response = await client.get(f"/api/v1/books/{book_id}/reviews")
+
+    assert response.json()["review_digest"] == "Second summary."
+    fake_llm_2.ainvoke.assert_awaited_once()
+
+
+async def test_review_digest_degrades_gracefully_when_llm_fails(member_user, librarian_user):
+    book_id = await _create_book(librarian_user)
+    async with _client_as(member_user) as client:
+        await client.post(
+            f"/api/v1/books/{book_id}/reviews", json={"rating": 4, "comment": "Solid"}
+        )
+
+    fake_llm = SimpleNamespace(ainvoke=AsyncMock(side_effect=RuntimeError("connection refused")))
+    with patch("app.modules.reviews.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            response = await client.get(f"/api/v1/books/{book_id}/reviews")
+
+    # The reviews themselves must still come back — a broken LLM degrades the digest,
+    # not the whole endpoint.
+    assert response.status_code == 200
+    assert response.json()["review_digest"] is None
+    assert response.json()["total_reviews"] == 1
 
 
 async def test_member_can_edit_own_review(member_user, librarian_user):

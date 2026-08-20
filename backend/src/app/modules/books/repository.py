@@ -38,6 +38,13 @@ async def list_ratings_for_books(book_ids: list[str]) -> list[Review]:
     return await prisma.review.find_many(where={"bookId": {"in": book_ids}})
 
 
+async def save_review_digest(book_id: str, *, digest: str, review_count: int) -> None:
+    await prisma.book.update(
+        where={"id": book_id},
+        data={"reviewDigest": digest, "reviewDigestReviewCount": review_count},
+    )
+
+
 async def list_books(
     *, search: str | None, category: str | None, page: int, page_size: int
 ) -> tuple[list[Book], int]:

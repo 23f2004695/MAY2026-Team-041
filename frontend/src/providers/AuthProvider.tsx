@@ -882,6 +882,14 @@ export interface ManagerGuardianLinkPayload {
   guardian_email: string;
 }
 
+/** The guardian a member is linked to. A member has at most one. */
+export interface GuardianContact {
+  id: string;
+  full_name: string;
+  email: string;
+  linked_at: string;
+}
+
 export interface PendingReservationRequest {
   id: string;
   book_id: string;
@@ -1042,6 +1050,10 @@ interface AuthContextValue extends AuthState {
   bookSeatForMember: (payload: ManagerSeatBookingPayload) => Promise<SeatBookingRecord>;
   issueLoanForMember: (payload: ManagerLoanPayload) => Promise<LoanRecord>;
   linkGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
+  setGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
+  unlinkGuardian: (studentId: string) => Promise<void>;
+  getStudentGuardian: (studentId: string) => Promise<GuardianContact | null>;
+  getMyGuardian: () => Promise<GuardianContact | null>;
   getManagerBooks: (query?: ManagerBookQuery) => Promise<ManagerBookListResponse>;
   createBook: (payload: BookDraftPayload) => Promise<void>;
   suggestBookDescription: (payload: SuggestBookDescriptionPayload) => Promise<string>;
@@ -1612,6 +1624,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiPost<undefined>('/manager/guardian-links', payload, stateRef.current.token);
   }
 
+  // PUT, not POST — repoints an existing link instead of 409ing on one.
+  async function setGuardian(payload: ManagerGuardianLinkPayload): Promise<void> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPut<undefined>('/manager/guardian-links', payload, stateRef.current.token);
+  }
+
+  async function unlinkGuardian(studentId: string): Promise<void> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/manager/guardian-links/${studentId}`, stateRef.current.token);
+  }
+
+  async function getStudentGuardian(studentId: string): Promise<GuardianContact | null> {
+    if (!stateRef.current.token) return null;
+    return apiGet<GuardianContact | null>(
+      `/manager/guardian-links/${studentId}`,
+      stateRef.current.token,
+    );
+  }
+
+  /** The signed-in member's own guardian, for their settings page. */
+  async function getMyGuardian(): Promise<GuardianContact | null> {
+    if (!stateRef.current.token) return null;
+    return apiGet<GuardianContact | null>('/guardian/my-guardian', stateRef.current.token);
+  }
+
   async function getPendingReservations(): Promise<PendingReservationRequest[]> {
     if (!stateRef.current.token) return [];
     return apiGet<PendingReservationRequest[]>('/manager/reservations/pending', stateRef.current.token);
@@ -2013,6 +2050,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getLoanHistory,
       getMyLoans,
       linkGuardian,
+      setGuardian,
+      unlinkGuardian,
+      getStudentGuardian,
+      getMyGuardian,
       getManagerBooks,
       getBillingRequests,
       createBillingRequest,

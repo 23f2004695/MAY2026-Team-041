@@ -96,6 +96,10 @@ model GuardianLink {
   memberId   String   @unique @map("member_id") @db.Uuid
   member     User     @relation("GuardianLinkMember", fields: [memberId], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
+  // When the monthly reading-digest sweep last notified this guardian about this child.
+  // Same role as Loan.lastRemindedAt — without it, every server restart would re-send
+  // the digest for the rest of the month instead of sending it once.
+  lastDigestSentAt DateTime? @map("last_digest_sent_at")
 
   @@map("guardian_links")
 }
@@ -135,6 +139,13 @@ model Book {
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
   deletedAt     DateTime? @map("deleted_at")
+
+  // AI-generated "what readers are saying" summary, cached so it's regenerated only
+  // when the review count actually changes rather than on every page load.
+  // reviewDigestReviewCount records how many reviews existed when it was generated —
+  // a mismatch with the live review count means the cache is stale.
+  reviewDigest            String? @map("review_digest")
+  reviewDigestReviewCount Int?    @map("review_digest_review_count")
 
   readingProgress ReadingProgress[]
   reservations    Reservation[]

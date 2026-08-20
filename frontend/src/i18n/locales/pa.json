@@ -1097,7 +1097,15 @@
       "studentEmailPlaceholder": "ਨਾਮ ਜਾਂ ਈਮੇਲ ਦੁਆਰਾ ਸਰਗਰਮ ਮੈਂਬਰ ਖੋਜੋ",
       "submit": "ਸਰਪ੍ਰਸਤ ਸ਼ਾਮਲ ਕਰੋ",
       "successToast": "ਸਰਪ੍ਰਸਤ {{guardianEmail}} ਨੂੰ {{studentEmail}} ਨਾਲ ਲਿੰਕ ਕੀਤਾ ਗਿਆ",
-      "title": "ਸਰਪ੍ਰਸਤ ਸ਼ਾਮਲ ਕਰੋ"
+      "title": "ਸਰਪ੍ਰਸਤ ਸ਼ਾਮਲ ਕਰੋ",
+      "currentGuardian": "ਮੌਜੂਦਾ ਸਰਪਰਸਤ",
+      "noGuardianYet": "ਇਸ ਵਿਦਿਆਰਥੀ ਨਾਲ ਅਜੇ ਕੋਈ ਸਰਪਰਸਤ ਨਹੀਂ ਜੁੜਿਆ।",
+      "update": "ਸਰਪਰਸਤ ਬਦਲੋ",
+      "remove": "ਹਟਾਓ",
+      "updatedToast": "{{studentEmail}} ਦਾ ਸਰਪਰਸਤ {{guardianEmail}} ਵਿੱਚ ਬਦਲਿਆ ਗਿਆ",
+      "removedToast": "{{studentEmail}} ਨਾਲ ਜੁੜਿਆ ਸਰਪਰਸਤ ਹਟਾਇਆ ਗਿਆ",
+      "removeConfirmTitle": "ਸਰਪਰਸਤ ਹਟਾਉਣਾ ਹੈ?",
+      "removeConfirmDescription": "ਇਸ ਨਾਲ {{guardianEmail}} ਦਾ {{studentEmail}} ਨਾਲੋਂ ਲਿੰਕ ਹਟ ਜਾਵੇਗਾ। ਉਹ ਇਸ ਵਿਦਿਆਰਥੀ ਦੀ ਲਾਇਬ੍ਰੇਰੀ ਸਰਗਰਮੀ ਨਹੀਂ ਵੇਖ ਸਕਣਗੇ।"
     },
     "billingRequest": {
       "amountLabel": "ਰਾਸ਼ੀ (₹)",
@@ -2185,7 +2193,9 @@
       "linkButton": "ਸਰਪ੍ਰਸਤ ਲਿੰਕ ਕਰੋ",
       "linked": "ਲਿੰਕ ਕੀਤਾ ਗਿਆ",
       "title": "ਸਰਪ੍ਰਸਤ",
-      "unlink": "ਅਨਲਿੰਕ ਕਰੋ"
+      "unlink": "ਅਨਲਿੰਕ ਕਰੋ",
+      "noneLinked": "ਤੁਹਾਡੇ ਖਾਤੇ ਨਾਲ ਅਜੇ ਕੋਈ ਸਰਪਰਸਤ ਨਹੀਂ ਜੁੜਿਆ।",
+      "managedByStaff": "ਸਰਪਰਸਤ ਲਿੰਕ ਲਾਇਬ੍ਰੇਰੀ ਸਟਾਫ਼ ਵੱਲੋਂ ਤਸਦੀਕ ਅਤੇ ਪ੍ਰਬੰਧਿਤ ਕੀਤੇ ਜਾਂਦੇ ਹਨ। ਸਰਪਰਸਤ ਜੋੜਨ, ਬਦਲਣ ਜਾਂ ਹਟਾਉਣ ਲਈ ਫ਼ਰੰਟ ਡੈਸਕ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।"
     },
     "changePassword": {
       "title": "ਪਾਸਵਰਡ ਬਦਲੋ",
@@ -2219,6 +2229,9 @@
     "writeReview": "ਸਮੀਖਿਆ ਲਿਖੋ",
     "viewReviews": "ਸਮੀਖਿਆਵਾਂ ਵੇਖੋ",
     "commentsHeading": "ਟਿੱਪਣੀਆਂ",
+    "digest": {
+      "heading": "ਪਾਠਕ ਕੀ ਕਹਿ ਰਹੇ ਹਨ"
+    },
     "libraryReviewCard": {
       "title": "ਆਪਣੇ ਲਾਇਬ੍ਰੇਰੀ ਤਜ਼ਰਬੇ ਨੂੰ ਰੇਟ ਕਰੋ",
       "existingTitle": "ਤੁਹਾਡੀ ਲਾਇਬ੍ਰੇਰੀ ਸਮੀਖਿਆ",

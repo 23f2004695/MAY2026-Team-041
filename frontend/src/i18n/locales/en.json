@@ -1220,7 +1220,15 @@
       "guardianEmailLabel": "Guardian",
       "guardianEmailPlaceholder": "Search active guardians by name or email",
       "submit": "Add Guardian",
-      "successToast": "Linked guardian {{guardianEmail}} to {{studentEmail}}"
+      "successToast": "Linked guardian {{guardianEmail}} to {{studentEmail}}",
+      "currentGuardian": "Current guardian",
+      "noGuardianYet": "This student has no guardian linked yet.",
+      "update": "Update Guardian",
+      "remove": "Remove",
+      "updatedToast": "Updated {{studentEmail}}'s guardian to {{guardianEmail}}",
+      "removedToast": "Removed the guardian linked to {{studentEmail}}",
+      "removeConfirmTitle": "Remove guardian?",
+      "removeConfirmDescription": "This unlinks {{guardianEmail}} from {{studentEmail}}. They will lose access to this student's library activity."
     },
     "bookSeatModal": {
       "title": "Book a Seat for a Member",
@@ -2381,7 +2389,9 @@
       "invalidEmail": "Enter a valid email address.",
       "linkButton": "Link Guardian",
       "linked": "Linked",
-      "unlink": "Unlink"
+      "unlink": "Unlink",
+      "noneLinked": "No guardian is linked to your account yet.",
+      "managedByStaff": "Guardian links are verified and managed by library staff. Contact the front desk to add, change, or remove a guardian."
     },
     "changePassword": {
       "title": "Change Password",
@@ -2418,6 +2428,9 @@
     "writeReview": "Write a Review",
     "viewReviews": "View Reviews",
     "commentsHeading": "Comments",
+    "digest": {
+      "heading": "What readers are saying"
+    },
     "libraryReviewCard": {
       "title": "Rate Your Library Experience",
       "existingTitle": "Your Library Review",

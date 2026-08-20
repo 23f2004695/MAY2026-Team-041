@@ -10,6 +10,15 @@ class GuardianLinkCreate(BaseModel):
     member_id: str
 
 
+class GuardianContactOut(BaseModel):
+    """The guardian a member is linked to, as shown on their own settings page."""
+
+    id: str
+    full_name: str
+    email: str
+    linked_at: datetime
+
+
 class GuardianChildOut(BaseModel):
     id: str
     full_name: str

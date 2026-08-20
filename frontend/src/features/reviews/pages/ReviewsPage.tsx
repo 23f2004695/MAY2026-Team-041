@@ -3,6 +3,7 @@ import {
   MessageSquareOff,
   Pencil,
   RotateCcw,
+  Sparkles,
   Star,
   Trash2,
   Users,
@@ -59,6 +60,7 @@ const EMPTY_BOOK_REVIEWS: BookReviews = {
   average_rating: 0,
   total_reviews: 0,
   breakdown: [5, 4, 3, 2, 1].map((stars) => ({ stars, percent: 0 })),
+  review_digest: null,
 };
 
 export function ReviewsPage() {
@@ -410,6 +412,20 @@ export function ReviewsPage() {
                 totalReviews={bookReviews.total_reviews}
                 breakdown={bookReviews.breakdown}
               />
+
+              {bookReviews.review_digest && (
+                <Card className="border-primary/20 bg-primary/5">
+                  <CardContent className="flex gap-3 p-4">
+                    <Sparkles className="mt-0.5 size-4 shrink-0 text-primary" />
+                    <div className="flex flex-col gap-1">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                        {t('reviews.digest.heading', 'What readers are saying')}
+                      </p>
+                      <p className="text-sm text-foreground">{bookReviews.review_digest}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               <div className="flex flex-col gap-4">
                 <h2 className="text-xl font-bold text-foreground">
