@@ -29,6 +29,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 sys.path.insert(0, str(Path(__file__).parent))
 import seed_demo_data as sdd  # noqa: E402
+from prisma import Json  # noqa: E402
 
 from app.core.config import get_settings  # noqa: E402
 from app.core.constants import Role  # noqa: E402
@@ -217,6 +218,42 @@ async def _top_up_member(member, books: list, issuers: list) -> None:
     )
 
 
+async def _seed_mtd_expenses(admin) -> int:
+    mtd_start = TODAY_START.replace(day=1)
+    await prisma.expense.delete_many(where={"createdAt": {"gte": mtd_start}})
+
+    sample_expenses = [
+        ("staffSalaries", 4200, 2),
+        ("bookProcurement", 1800, 5),
+        ("utilities", 650, 10),
+        ("marketing", 450, 12),
+    ]
+
+    count = 0
+    for category, amount, days_ago in sample_expenses:
+        created_at = TODAY_7PM - timedelta(days=days_ago)
+        if created_at < mtd_start:
+            created_at = mtd_start + timedelta(hours=10)
+        await prisma.expense.create(
+            data={
+                "category": category,
+                "amount": amount,
+                "loggedById": admin.id,
+                "createdAt": created_at,
+            }
+        )
+        await prisma.auditlogentry.create(
+            data={
+                "actorId": admin.id,
+                "action": "expenseApproved",
+                "metadata": Json({"category": category, "amount": amount}),
+                "createdAt": created_at,
+            }
+        )
+        count += 1
+    return count
+
+
 async def main() -> None:
     settings = get_settings()
     if settings.app_env not in sdd.SEEDABLE_ENVIRONMENTS:
@@ -240,6 +277,11 @@ async def main() -> None:
         books = await prisma.book.find_many()
         if not members or not issuers or not books:
             sys.exit("No seed-demo members/staff/books found — run seed_demo_data.py first.")
+
+        admin = await prisma.user.find_first(where={"role": {"name": Role.ADMIN}})
+        if admin:
+            exp_count = await _seed_mtd_expenses(admin)
+            print(f"Seeded {exp_count} MTD expenses for active month.")
 
         existing_bookings = await prisma.seatbooking.find_many()
         used_slots: set[tuple] = set()
