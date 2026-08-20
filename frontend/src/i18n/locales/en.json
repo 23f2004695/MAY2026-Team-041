@@ -1325,6 +1325,23 @@
       "empty": {
         "title": "No books found",
         "description": "Try a different title or author."
+      },
+      "addModal": {
+        "openButton": "Add Book",
+        "title": "Add a Book",
+        "titleLabel": "Title",
+        "authorLabel": "Author",
+        "categoryLabel": "Category",
+        "categoryPlaceholder": "Select a category",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "What's this book about?",
+        "suggestButton": "Suggest",
+        "suggestHint": "AI-drafted from the title and author — review before saving.",
+        "suggestFailed": "Couldn't generate a suggestion right now.",
+        "isbnLabel": "ISBN (optional)",
+        "publishedYearLabel": "Published year (optional)",
+        "totalCopiesLabel": "Total copies",
+        "submit": "Add Book"
       }
     },
     "borrowHistory": {
@@ -2263,7 +2280,11 @@
       "banAria": "Ban {{author}}",
       "bannedBadge": "Banned",
       "report": "Report",
-      "reportAria": "Report {{author}}'s post"
+      "reportAria": "Report {{author}}'s post",
+      "translate": "Translate",
+      "showOriginal": "Show original",
+      "translating": "Translating…",
+      "translateFailed": "Couldn't translate this right now"
     },
     "createPostModal": {
       "title": "Create Post",

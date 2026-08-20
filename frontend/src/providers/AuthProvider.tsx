@@ -923,6 +923,22 @@ export interface ManagerBookQuery {
   page_size?: number;
 }
 
+export interface BookDraftPayload {
+  title: string;
+  author: string;
+  category: string;
+  description?: string;
+  isbn?: string;
+  published_year?: number;
+  total_copies?: number;
+}
+
+export interface SuggestBookDescriptionPayload {
+  title: string;
+  author: string;
+  category?: string;
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   role: Role | null;
@@ -1027,6 +1043,8 @@ interface AuthContextValue extends AuthState {
   issueLoanForMember: (payload: ManagerLoanPayload) => Promise<LoanRecord>;
   linkGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
   getManagerBooks: (query?: ManagerBookQuery) => Promise<ManagerBookListResponse>;
+  createBook: (payload: BookDraftPayload) => Promise<void>;
+  suggestBookDescription: (payload: SuggestBookDescriptionPayload) => Promise<string>;
   getPendingReservations: () => Promise<PendingReservationRequest[]>;
   checkInMember: (memberId: string) => Promise<LibraryVisitRecord>;
   checkOutMember: (memberId: string) => Promise<LibraryVisitRecord>;
@@ -1826,6 +1844,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiPost<BookRecordEntry>('/book-records', payload, stateRef.current.token);
   }
 
+  async function createBook(payload: BookDraftPayload): Promise<void> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost('/books', payload, stateRef.current.token);
+  }
+
+  async function suggestBookDescription(payload: SuggestBookDescriptionPayload): Promise<string> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    const data = await apiPost<{ description: string }>(
+      '/books/suggest-description',
+      payload,
+      stateRef.current.token,
+    );
+    return data.description;
+  }
+
   async function getITHeadDashboard(): Promise<ITHeadDashboard> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiGet<ITHeadDashboard>('/it-head/dashboard', stateRef.current.token);
@@ -2012,6 +2045,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getITHeadDashboard,
       getBookRecords,
       createBookRecord,
+      createBook,
+      suggestBookDescription,
       checkInMember,
       checkOutMember,
       getCurrentlyInLibrary,

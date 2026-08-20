@@ -1,6 +1,8 @@
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 os.environ["APP_ENV"] = "test"
 
@@ -229,6 +231,59 @@ async def test_create_book_available_when_copies_positive(librarian_user):
     body = response.json()
     assert body["total_copies"] == 3
     assert body["available"] is True
+
+
+async def test_suggest_description_requires_authentication():
+    async with _anon_client() as client:
+        response = await client.post(
+            "/api/v1/books/suggest-description",
+            json={"title": "Dune", "author": "Frank Herbert"},
+        )
+
+    assert response.status_code == 401
+
+
+async def test_suggest_description_forbidden_for_member_role(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.post(
+            "/api/v1/books/suggest-description",
+            json={"title": "Dune", "author": "Frank Herbert"},
+        )
+
+    assert response.status_code == 403
+
+
+async def test_suggest_description_success_as_librarian(librarian_user):
+    fake_reply = SimpleNamespace(
+        content="A sweeping saga of politics and prophecy on a desert world."
+    )
+    fake_llm = SimpleNamespace(ainvoke=AsyncMock(return_value=fake_reply))
+
+    with patch("app.modules.books.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(librarian_user) as client:
+            response = await client.post(
+                "/api/v1/books/suggest-description",
+                json={"title": "Dune", "author": "Frank Herbert", "category": "Science Fiction"},
+            )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "description": "A sweeping saga of politics and prophecy on a desert world."
+    }
+    fake_llm.ainvoke.assert_awaited_once()
+
+
+async def test_suggest_description_degrades_gracefully_when_llm_unavailable(librarian_user):
+    fake_llm = SimpleNamespace(ainvoke=AsyncMock(side_effect=RuntimeError("connection refused")))
+
+    with patch("app.modules.books.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(librarian_user) as client:
+            response = await client.post(
+                "/api/v1/books/suggest-description",
+                json={"title": "Dune", "author": "Frank Herbert"},
+            )
+
+    assert response.status_code == 503
 
 
 async def test_update_cannot_shrink_copies_below_active_loans(librarian_user, member_user):

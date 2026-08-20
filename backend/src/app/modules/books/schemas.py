@@ -99,3 +99,13 @@ class BookListResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class SuggestDescriptionRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=255)
+    author: str = Field(min_length=1, max_length=150)
+    category: str | None = Field(default=None, max_length=80)
+
+
+class SuggestDescriptionResponse(BaseModel):
+    description: str
