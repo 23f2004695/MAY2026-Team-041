@@ -1,4 +1,4 @@
-import { AlertCircle, Clock, IndianRupee, KeyRound, UploadCloud, Users } from 'lucide-react';
+import { AlertCircle, IndianRupee, KeyRound, UploadCloud, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -108,7 +108,7 @@ export function ITHeadDashboardPage() {
       <h2 className="sr-only">{t('common.dashboardSectionsHeading')}</h2>
 
       {stats && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatisticCard
             icon={Users}
             label={t('itHead.stats.activeMembers')}
@@ -169,17 +169,6 @@ export function ITHeadDashboardPage() {
             onClick={() => setActiveStat('feesOutstanding')}
             selected={activeStat === 'feesOutstanding'}
           />
-          <StatisticCard
-            icon={Clock}
-            label={t('itHead.stats.lateFinesOutstanding')}
-            value={formatCurrency(stats.late_fines_outstanding)}
-            trend={{
-              ...stats.late_fines_outstanding_trend,
-              sentiment: owedSentiment(stats.late_fines_outstanding_trend),
-            }}
-            onClick={() => setActiveStat('lateFinesOutstanding')}
-            selected={activeStat === 'lateFinesOutstanding'}
-          />
         </div>
       )}
 
@@ -190,7 +179,7 @@ export function ITHeadDashboardPage() {
             <IssueResolutionChart months={dashboard.issue_resolution} />
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <SystemActivityCard
               days={dashboard.system_activity}
               summary={dashboard.system_activity_summary}

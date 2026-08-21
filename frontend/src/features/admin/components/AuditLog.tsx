@@ -108,11 +108,10 @@ export function AuditLog({ entries }: { entries: AuditLogEntry[] }) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('admin.auditLog.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('admin.auditLog.filters.typeLabel'),
@@ -144,6 +143,8 @@ export function AuditLog({ entries }: { entries: AuditLogEntry[] }) {
           onReset={resetToolbar}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
 
         {filteredEntries.length === 0 ? (
           <NoResults title={t('admin.auditLog.empty')} />

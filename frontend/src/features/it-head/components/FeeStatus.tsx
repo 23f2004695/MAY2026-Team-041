@@ -41,11 +41,10 @@ export function FeeStatus({ entries }: { entries: FeeStatusEntryRecord[] }) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('itHead.feeStatus.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('itHead.feeStatus.filters.statusLabel'),
@@ -82,6 +81,8 @@ export function FeeStatus({ entries }: { entries: FeeStatusEntryRecord[] }) {
           }}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {outstanding.length === 0 ? (
           <NoResults title={t('itHead.feeStatus.empty')} />
         ) : (

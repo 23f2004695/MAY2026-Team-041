@@ -34,11 +34,10 @@ export function PendingPayments({ payments, onDismiss }: PendingPaymentsProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('managerDashboard.payments.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           sort={{
             label: t('common.actions.sort'),
             value: sortValue,
@@ -57,6 +56,8 @@ export function PendingPayments({ payments, onDismiss }: PendingPaymentsProps) {
           }}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {filteredPayments.length === 0 ? (
           <EmptyState
             title={t('managerDashboard.payments.emptyTitle')}

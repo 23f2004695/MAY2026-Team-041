@@ -39,7 +39,7 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
     }
   }, [entries, sortValue, statusFilter]);
 
-  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(unpaid, 5);
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(unpaid, 3);
 
   async function handleRemind(entry: LoanRecord) {
     try {
@@ -62,11 +62,10 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('itHead.lateFines.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('itHead.lateFines.filters.statusLabel'),
@@ -101,6 +100,8 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
           }}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {unpaid.length === 0 ? (
           <NoResults title={t('itHead.lateFines.empty')} />
         ) : (
@@ -132,13 +133,15 @@ export function LateReturnFines({ entries, onChanged }: { entries: LoanRecord[];
                 </div>
               </div>
             ))}
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={5}
-              onPageChange={setPage}
-            />
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={3}
+                onPageChange={setPage}
+              />
+            )}
           </>
         )}
       </CardContent>

@@ -71,11 +71,10 @@ export function ActiveLoans({ loans, onReturn, onRemind }: ActiveLoansProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('managerDashboard.activeLoans.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('managerDashboard.activeLoans.filters.statusLabel'),
@@ -112,6 +111,8 @@ export function ActiveLoans({ loans, onReturn, onRemind }: ActiveLoansProps) {
           }}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {filteredLoans.length === 0 ? (
           <EmptyState
             title={t('managerDashboard.activeLoans.emptyTitle')}
