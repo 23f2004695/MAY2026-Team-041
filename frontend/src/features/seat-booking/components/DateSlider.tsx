@@ -56,7 +56,7 @@ export function DateSlider({ options, active, ariaLabel, onChange }: DateSliderP
                   className={cn(
                     'rounded-full px-1.5 py-0.5 text-[9px] font-semibold leading-none uppercase tracking-wide',
                     isActive
-                      ? 'bg-white/20 text-white'
+                      ? 'bg-primary-foreground text-primary font-bold'
                       : option.badgeTone === 'danger'
                         ? 'bg-danger/10 text-danger'
                         : option.badgeTone === 'success'
