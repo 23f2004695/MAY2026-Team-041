@@ -8,14 +8,7 @@ from app.db.prisma import prisma
 
 
 def _list_where(search: str | None, category: str | None) -> dict:
-    where: dict = {
-        "deletedAt": None,
-        "NOT": [
-            {"author": {"contains": "ShelfSpace Test Suite", "mode": "insensitive"}},
-            {"title": {"startsWith": "E2E", "mode": "insensitive"}},
-            {"title": {"startsWith": "WISHLIST-TEST", "mode": "insensitive"}},
-        ],
-    }
+    where: dict = {"deletedAt": None}
     if search:
         where["OR"] = [
             {"title": {"contains": search, "mode": "insensitive"}},
@@ -80,12 +73,10 @@ async def list_books(
     )
 
 
-# Used by sort modes ("rating"/"recommended") that need every matching book scored
-# before they can be paginated, unlike the DB-level skip/take "newest" sort above.
 async def list_books_by_rating(
     *, search: str | None, category: str | None, skip: int, take: int
 ) -> tuple[list[Book], int]:
-    """A page of books ordered by average rating, ranked and paginated in SQL.
+    """Sorts books by their average rating (highest first) entirely in SQL.
 
     Rating order used to mean loading the entire matching catalogue plus every review
     for it, sorting in Python and slicing — on a list endpoint the chat tool also hits.
@@ -94,12 +85,7 @@ async def list_books_by_rating(
     like = f"%{search}%" if search else None
     wants_category = bool(category and category.lower() != "all")
 
-    conditions = [
-        "b.deleted_at IS NULL",
-        "b.author NOT ILIKE '%ShelfSpace Test Suite%'",
-        "b.title NOT ILIKE 'E2E%'",
-        "b.title NOT ILIKE 'WISHLIST-TEST%'",
-    ]
+    conditions = ["b.deleted_at IS NULL"]
     params: list = []
     if like is not None:
         params.append(like)
