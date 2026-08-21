@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { resolveAvatarUrl } from '@/lib/avatarPresets';
 import { cn } from '@/lib/cn';
 
 export type AvatarSize = 'sm' | 'md' | 'lg';
@@ -28,7 +29,8 @@ function getInitials(name?: string): string {
 
 export function Avatar({ src, alt, name, size = 'md', className }: AvatarProps) {
   const [imageFailed, setImageFailed] = useState(false);
-  const showImage = src && !imageFailed;
+  const resolvedSrc = resolveAvatarUrl(src);
+  const showImage = Boolean(resolvedSrc) && !imageFailed;
 
   return (
     <span
@@ -40,7 +42,7 @@ export function Avatar({ src, alt, name, size = 'md', className }: AvatarProps) 
     >
       {showImage ? (
         <img
-          src={src}
+          src={resolvedSrc}
           alt={alt ?? name ?? 'Avatar'}
           onError={() => setImageFailed(true)}
           className="size-full object-cover"

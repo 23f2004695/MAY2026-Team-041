@@ -86,6 +86,33 @@ async def link_child(payload: GuardianLinkCreate) -> None:
         ) from exc
 
 
+async def link_my_guardian(member_id: str, guardian_email: str) -> GuardianContactOut:
+    guardian = await members_repository.find_by_email(guardian_email.strip())
+    if (
+        guardian is None
+        or guardian.role is None
+        or guardian.role.name != Role.GUARDIAN
+        or not guardian.isActive
+        or guardian.deletedAt is not None
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No active guardian account found with this email",
+        )
+
+    await repository.upsert_link(guardian_id=guardian.id, member_id=member_id)
+    return GuardianContactOut(
+        id=guardian.id,
+        full_name=guardian.fullName,
+        email=guardian.email,
+        linked_at=datetime.now(UTC),
+    )
+
+
+async def unlink_my_guardian(member_id: str) -> None:
+    await repository.delete_link_for_member(member_id=member_id)
+
+
 async def set_guardian(payload: GuardianLinkCreate) -> None:
     """Link, or repoint an existing link at a different guardian.
 

@@ -10,6 +10,7 @@ from app.modules.guardian.schemas import (
     GuardianChildOut,
     GuardianContactOut,
     GuardianLinkCreate,
+    SelfGuardianLinkCreate,
 )
 from app.modules.payments.schemas import PaymentOut
 from app.modules.seat_booking.schemas import SeatBookingCreate, SeatBookingOut, SeatNotifyCreate
@@ -35,6 +36,21 @@ async def get_my_guardian(
     user: Annotated[User, Depends(get_current_user)],
 ) -> GuardianContactOut | None:
     return await service.get_my_guardian(user.id)
+
+
+@router.post("/my-guardian", response_model=GuardianContactOut)
+async def link_my_guardian(
+    payload: SelfGuardianLinkCreate,
+    user: Annotated[User, Depends(get_current_user)],
+) -> GuardianContactOut:
+    return await service.link_my_guardian(user.id, payload.guardian_email)
+
+
+@router.delete("/my-guardian", status_code=status.HTTP_204_NO_CONTENT)
+async def unlink_my_guardian(
+    user: Annotated[User, Depends(get_current_user)],
+) -> None:
+    await service.unlink_my_guardian(user.id)
 
 
 @router.get("/children", response_model=list[GuardianChildOut])

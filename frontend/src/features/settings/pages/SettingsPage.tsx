@@ -14,6 +14,7 @@ import {
   CardTitle,
   ConfirmDialog,
   Input,
+  Modal,
   Select,
 } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
@@ -31,14 +32,28 @@ export function SettingsPage() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useLanguage();
-  const { role, fullName, email, logout, deleteAccount, updateProfile, getMyGuardian } = useAuth();
+  const {
+    role,
+    fullName,
+    email,
+    logout,
+    deleteAccount,
+    updateProfile,
+    getMyGuardian,
+    linkMyGuardian,
+    unlinkMyGuardian,
+  } = useAuth();
   const hasStaffAccount =
     role === 'admin' || role === 'manager' || role === 'librarian' || role === 'it-head';
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
   const isMember = role === 'member';
   const [guardian, setGuardian] = useState<GuardianContact | null>(null);
   const [hasLoadedGuardian, setHasLoadedGuardian] = useState(false);
+  const [guardianEmailInput, setGuardianEmailInput] = useState('');
+  const [isLinkingGuardian, setIsLinkingGuardian] = useState(false);
+  const [isUnlinkingGuardian, setIsUnlinkingGuardian] = useState(false);
   // Derived rather than a third state field, so the effect never has to setState
   // synchronously in its body for the staff case (it just doesn't run).
   const isLoadingGuardian = isMember && !hasLoadedGuardian;
@@ -84,6 +99,7 @@ export function SettingsPage() {
       });
       toast.success(t('settings.changePassword.successToast', 'Password updated successfully'));
       resetPasswordForm();
+      setChangePasswordModalOpen(false);
     } catch (err) {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
     }
@@ -104,6 +120,40 @@ export function SettingsPage() {
       toast.error(getErrorMessage(err, t('common.errors.generic')));
     } finally {
       setIsDeletingAccount(false);
+    }
+  }
+
+  async function handleLinkGuardian(e: React.FormEvent) {
+    e.preventDefault();
+    if (!guardianEmailInput.trim()) return;
+    setIsLinkingGuardian(true);
+    try {
+      const contact = await linkMyGuardian(guardianEmailInput.trim());
+      setGuardian(contact);
+      setGuardianEmailInput('');
+      toast.success(t('settings.guardianLink.successToast', 'Guardian linked successfully!'));
+    } catch (err) {
+      toast.error(
+        getErrorMessage(
+          err,
+          'Failed to link guardian. Make sure the email belongs to a registered Guardian account.',
+        ),
+      );
+    } finally {
+      setIsLinkingGuardian(false);
+    }
+  }
+
+  async function handleUnlinkGuardian() {
+    setIsUnlinkingGuardian(true);
+    try {
+      await unlinkMyGuardian();
+      setGuardian(null);
+      toast.success(t('settings.guardianLink.unlinkSuccessToast', 'Guardian unlinked successfully!'));
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to unlink guardian.'));
+    } finally {
+      setIsUnlinkingGuardian(false);
     }
   }
 
@@ -161,73 +211,49 @@ export function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings.changePassword.title')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form
-            onSubmit={handlePasswordSubmit(onChangePasswordSubmit)}
-            className="flex max-w-md flex-col gap-4"
-            noValidate
-          >
-            <Input
-              label={t('settings.changePassword.currentPassword', 'Current password')}
-              type="password"
-              autoComplete="current-password"
-              error={
-                passwordErrors.currentPassword?.message
-                  ? t(passwordErrors.currentPassword.message)
-                  : undefined
-              }
-              {...registerPassword('currentPassword')}
-            />
-            <Input
-              label={t('settings.changePassword.newPassword')}
-              type="password"
-              autoComplete="new-password"
-              error={
-                passwordErrors.password?.message ? t(passwordErrors.password.message) : undefined
-              }
-              {...registerPassword('password')}
-            />
-            <Input
-              label={t('settings.changePassword.confirmPassword')}
-              type="password"
-              autoComplete="new-password"
-              error={
-                passwordErrors.confirmPassword?.message
-                  ? t(passwordErrors.confirmPassword.message)
-                  : undefined
-              }
-              {...registerPassword('confirmPassword')}
-            />
-            <Button type="submit" isLoading={isSubmittingPassword} className="w-fit">
-              {t('settings.changePassword.updateButton')}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
       {role === 'member' && (
         <Card>
           <CardHeader>
             <CardTitle>{t('settings.guardianLink.title')}</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            {isLoadingGuardian ? null : guardian ? (
-              <div className="rounded-lg border border-border p-3">
-                <p className="text-sm font-medium text-foreground">{guardian.full_name}</p>
-                <p className="text-sm text-muted-foreground">{guardian.email}</p>
+          <CardContent className="flex flex-col gap-4">
+            {isLoadingGuardian ? (
+              <p className="text-sm text-muted-foreground">Loading guardian details...</p>
+            ) : guardian ? (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-border p-4 bg-muted/20">
+                <div>
+                  <p className="text-xs uppercase font-semibold text-primary mb-1">Linked Guardian</p>
+                  <p className="text-sm font-medium text-foreground">{guardian.full_name}</p>
+                  <p className="text-sm text-muted-foreground">{guardian.email}</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleUnlinkGuardian}
+                  isLoading={isUnlinkingGuardian}
+                  className="w-fit"
+                >
+                  Unlink Guardian
+                </Button>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {t('settings.guardianLink.noneLinked')}
-              </p>
+              <form onSubmit={handleLinkGuardian} className="flex flex-col gap-4 max-w-md">
+                <p className="text-sm text-muted-foreground">
+                  No guardian is linked to your account yet. Enter your guardian's email address below to link your account.
+                </p>
+                <Input
+                  label="Guardian Email"
+                  placeholder="e.g. guardian@devpreview.internal"
+                  type="email"
+                  value={guardianEmailInput}
+                  onChange={(e) => setGuardianEmailInput(e.target.value)}
+                  required
+                />
+                <Button type="submit" isLoading={isLinkingGuardian} className="w-fit">
+                  Link Guardian
+                </Button>
+              </form>
             )}
-            <p className="text-sm text-muted-foreground">
-              {t('settings.guardianLink.managedByStaff')}
-            </p>
           </CardContent>
         </Card>
       )}
@@ -252,6 +278,20 @@ export function SettingsPage() {
             </Button>
             <Button variant="outline" className="w-fit" onClick={handleLogOut}>
               {t('settings.account.logOut')}
+            </Button>
+          </div>
+
+          <div className="flex flex-col gap-2 rounded-md border border-primary/30 bg-primary/5 p-4">
+            <p className="text-sm text-muted-foreground">
+              Update your account password to keep your library account secure.
+            </p>
+            <Button
+              variant="primary"
+              size="sm"
+              className="w-fit"
+              onClick={() => setChangePasswordModalOpen(true)}
+            >
+              {t('settings.changePassword.title')}
             </Button>
           </div>
 
@@ -284,6 +324,68 @@ export function SettingsPage() {
         isLoading={isDeletingAccount}
         destructive
       />
+
+      <Modal
+        open={changePasswordModalOpen}
+        onClose={() => {
+          setChangePasswordModalOpen(false);
+          resetPasswordForm();
+        }}
+        title={t('settings.changePassword.title')}
+      >
+        <form
+          onSubmit={handlePasswordSubmit(onChangePasswordSubmit)}
+          className="flex flex-col gap-4"
+          noValidate
+        >
+          <Input
+            label={t('settings.changePassword.currentPassword', 'Current password')}
+            type="password"
+            autoComplete="current-password"
+            error={
+              passwordErrors.currentPassword?.message
+                ? t(passwordErrors.currentPassword.message)
+                : undefined
+            }
+            {...registerPassword('currentPassword')}
+          />
+          <Input
+            label={t('settings.changePassword.newPassword')}
+            type="password"
+            autoComplete="new-password"
+            error={
+              passwordErrors.password?.message ? t(passwordErrors.password.message) : undefined
+            }
+            {...registerPassword('password')}
+          />
+          <Input
+            label={t('settings.changePassword.confirmPassword')}
+            type="password"
+            autoComplete="new-password"
+            error={
+              passwordErrors.confirmPassword?.message
+                ? t(passwordErrors.confirmPassword.message)
+                : undefined
+            }
+            {...registerPassword('confirmPassword')}
+          />
+          <div className="flex justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setChangePasswordModalOpen(false);
+                resetPasswordForm();
+              }}
+            >
+              {t('common.actions.cancel', 'Cancel')}
+            </Button>
+            <Button type="submit" isLoading={isSubmittingPassword}>
+              {t('settings.changePassword.updateButton')}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
