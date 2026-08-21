@@ -1,6 +1,5 @@
 import { Armchair, CheckCircle2, Clock, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 import { cn } from '@/lib/cn';
 
@@ -49,12 +48,13 @@ export function SeatCard({
   childName,
   guardianName,
 }: SeatCardProps) {
-  const { t } = useTranslation();
+  const [prevAvatarUrl, setPrevAvatarUrl] = useState(avatarUrl);
   const [imgError, setImgError] = useState(false);
 
-  useEffect(() => {
+  if (prevAvatarUrl !== avatarUrl) {
+    setPrevAvatarUrl(avatarUrl);
     setImgError(false);
-  }, [avatarUrl]);
+  }
 
   const statusText =
     status === 'booked_for_child'

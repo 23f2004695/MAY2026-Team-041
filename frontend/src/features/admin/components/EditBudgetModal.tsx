@@ -1,5 +1,5 @@
 import { Pencil } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Input, Modal } from '@/components/ui';
@@ -32,9 +32,12 @@ export function EditBudgetModal({
     utilities: 900,
     marketing: 700,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [prevCategories, setPrevCategories] = useState(categories);
+  const [prevOpen, setPrevOpen] = useState(open);
 
-  useEffect(() => {
+  if (prevCategories !== categories || prevOpen !== open) {
+    setPrevCategories(categories);
+    setPrevOpen(open);
     if (categories.length > 0) {
       const initial: Record<ExpenseCategory, number> = {
         staffSalaries: 6000,
@@ -47,7 +50,7 @@ export function EditBudgetModal({
       });
       setAllocations(initial);
     }
-  }, [categories, open]);
+  }
 
   function handleChange(category: ExpenseCategory, value: string) {
     const parsed = parseFloat(value);

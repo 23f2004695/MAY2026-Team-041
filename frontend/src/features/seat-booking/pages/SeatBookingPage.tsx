@@ -1,4 +1,4 @@
-import { Clock, Flame, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import { Clock, Flame, TrendingDown, TrendingUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
