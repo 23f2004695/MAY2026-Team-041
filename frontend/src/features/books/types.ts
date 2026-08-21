@@ -8,6 +8,7 @@ export interface Book {
   isbn: string | null;
   description: string | null;
   total_copies: number;
+  shelf_location: string | null;
   available: boolean;
   average_rating: number | null;
   review_count: number;

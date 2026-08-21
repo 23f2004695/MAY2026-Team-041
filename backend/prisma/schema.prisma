@@ -68,6 +68,8 @@ model User {
   libraryReviews        LibraryReview[] @relation("LibraryReviewMember")
   libraryReviewsDecided LibraryReview[] @relation("LibraryReviewDecidedBy")
 
+  wishlist Wishlist[] @relation("WishlistMember")
+
   billingRequestsAsMember BillingRequest[] @relation("BillingRequestMember")
   billingRequestsFiled    BillingRequest[] @relation("BillingRequestCreatedBy")
   billingRequestsDecided  BillingRequest[] @relation("BillingRequestDecidedBy")
@@ -145,6 +147,8 @@ model Book {
   language      String?   @db.VarChar(40)
   coverImageUrl String?   @map("cover_image_url")
   totalCopies   Int       @default(0) @map("total_copies")
+  // Free-text physical location, e.g. "Aisle 3, Shelf B" — display-only, not searchable.
+  shelfLocation String?   @map("shelf_location") @db.VarChar(120)
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
   deletedAt     DateTime? @map("deleted_at")
@@ -173,8 +177,24 @@ model Book {
   reviews         Review[]
   loans           Loan[]
   bookRecords     BookRecord[]
+  wishlistedBy    Wishlist[]
 
   @@map("books")
+}
+
+// A member's saved-for-later list — any authenticated role can hold one, same as book
+// browsing itself isn't member-only. Structurally identical to CommunityPostSave (a
+// plain (member, book) toggle join), copied rather than reinvented.
+model Wishlist {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  memberId  String   @map("member_id") @db.Uuid
+  member    User     @relation("WishlistMember", fields: [memberId], references: [id], onDelete: Cascade)
+  bookId    String   @map("book_id") @db.Uuid
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([memberId, bookId])
+  @@map("wishlists")
 }
 
 model Event {

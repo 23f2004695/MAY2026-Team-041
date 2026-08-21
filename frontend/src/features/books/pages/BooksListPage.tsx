@@ -139,6 +139,7 @@ export function BooksListPage() {
               author={book.author}
               category={book.category}
               available={book.available}
+              shelfLocation={book.shelf_location}
               averageRating={book.average_rating}
               reviewCount={book.review_count}
               description={book.description}

@@ -1,4 +1,4 @@
-import { BookOpen, Heart, Info, Star } from 'lucide-react';
+import { BookOpen, Heart, Info, MapPin, Star } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,7 @@ export interface BookCardProps {
   author: string;
   category: string;
   available: boolean;
+  shelfLocation?: string | null;
   averageRating?: number | null;
   reviewCount?: number;
   description?: string | null;
@@ -29,6 +30,7 @@ export function BookCard({
   author,
   category,
   available,
+  shelfLocation,
   averageRating,
   reviewCount = 0,
   description,
@@ -106,6 +108,13 @@ export function BookCard({
           {available ? t('books.status.available') : t('books.status.checkedOut')}
         </Badge>
       </div>
+
+      {shelfLocation && (
+        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+          <MapPin className="size-3.5" />
+          {shelfLocation}
+        </span>
+      )}
 
       {averageRating != null && (
         <span className="flex items-center gap-1 text-sm text-muted-foreground">

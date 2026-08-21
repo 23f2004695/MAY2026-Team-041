@@ -85,22 +85,28 @@ async def test_availability_summary_is_public_and_has_the_right_shape():
 
 
 async def test_availability_summary_reflects_a_booking_for_the_current_hour(member_user):
+    # ponytail: a hardcoded seat label (the previous version booked "D8" unconditionally)
+    # flakes against this suite's live dev database — real seed/demo activity can already
+    # occupy that exact seat at "the current hour" by the time this runs. Ask the real
+    # schedule which seat is actually free right now instead of guessing one.
     now = datetime.now(UTC)
     await prisma.seatbooking.delete_many(
         where={"date": datetime(now.year, now.month, now.day, tzinfo=UTC), "hour": now.hour}
     )
     async with _client_as(member_user) as client:
         before = await client.get("/api/v1/seat-booking/availability")
-        sched = await client.get(
+        schedule = await client.get(
             "/api/v1/seat-booking/schedule",
             params={"date": now.date().isoformat(), "hour": now.hour},
         )
-        avail_seat = next(
-            s["seat_label"] for s in sched.json()["seats"] if s["status"] == "available"
-        )
+        free_seat = next(s for s in schedule.json()["seats"] if s["status"] == "available")
         created = await client.post(
             "/api/v1/seat-booking",
-            json={"seat_label": avail_seat, "date": now.date().isoformat(), "hour": now.hour},
+            json={
+                "seat_label": free_seat["seat_label"],
+                "date": now.date().isoformat(),
+                "hour": now.hour,
+            },
         )
         after = await client.get("/api/v1/seat-booking/availability")
     assert created.status_code == 201

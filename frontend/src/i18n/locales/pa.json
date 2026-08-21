@@ -6,6 +6,7 @@
     "getStarted": "ਸ਼ੁਰੂ ਕਰੋ",
     "you": "ਤੁਸੀਂ",
     "quickActionsTitle": "ਤੁਰੰਤ ਕਾਰਵਾਈਆਂ",
+    "weekdays": ["ਸੋਮਵਾਰ", "ਮੰਗਲਵਾਰ", "ਬੁੱਧਵਾਰ", "ਵੀਰਵਾਰ", "ਸ਼ੁੱਕਰਵਾਰ", "ਸ਼ਨੀਵਾਰ", "ਐਤਵਾਰ"],
     "trend": {
       "vsLastMonth": "ਪਿਛਲੇ ਮਹੀਨੇ ਦੇ ਮੁਕਾਬਲੇ"
     },
@@ -982,6 +983,21 @@
       "title": "ਸੀਟ ਵਰਤੋਂ (ਅੱਜ)",
       "peakTime": "ਸਭ ਤੋਂ ਰੁੱਝਿਆ ਸਮਾਂ",
       "averageUtilization": "ਔਸਤ ਵਰਤੋਂ {{percent}}%"
+    },
+    "footfall": {
+      "title": "ਫੁਟਫਾਲ ਵਿਸ਼ਲੇਸ਼ਣ",
+      "periodLabel": "ਮਿਆਦ",
+      "last7Days": "ਪਿਛਲੇ 7 ਦਿਨ",
+      "last30Days": "ਪਿਛਲੇ 30 ਦਿਨ",
+      "last3Months": "ਪਿਛਲੇ 3 ਮਹੀਨੇ",
+      "visitsByDay": "ਰੋਜ਼ਾਨਾ ਵਿਜ਼ਿਟਾਂ",
+      "peakHours": "ਸਭ ਤੋਂ ਰੁੱਝਿਆ ਸਮਾਂ",
+      "avgVisitDuration": "ਔਸਤ ਵਿਜ਼ਿਟ ਸਮਾਂ",
+      "avgVisitDurationValue": "{{minutes}} ਮਿੰਟ",
+      "noDuration": "ਹਾਲੇ ਲੋੜੀਂਦਾ ਡਾਟਾ ਨਹੀਂ",
+      "busiestDay": "ਸਭ ਤੋਂ ਰੁੱਝਿਆ ਦਿਨ",
+      "quietestDay": "ਸਭ ਤੋਂ ਸ਼ਾਂਤ ਦਿਨ",
+      "empty": "ਇਸ ਮਿਆਦ ਵਿੱਚ ਕੋਈ ਵਿਜ਼ਿਟ ਦਰਜ ਨਹੀਂ ਹੋਈ।"
     },
     "revenue": {
       "title": "ਮਾਲੀਆ ਸੰਖੇਪ (ਪਿਛਲੇ 6 ਮਹੀਨੇ)",
@@ -1990,7 +2006,14 @@
       "slotDurationFixed": "ਹਰ ਬੁਕਿੰਗ 1 ਘੰਟੇ ਲਈ ਹੁੰਦੀ ਹੈ — ਇਹ ਸੀਟ {{endHour}} ਵਜੇ ਦੁਬਾਰਾ ਉਪਲਬਧ ਹੋਵੇਗੀ।"
     },
     "today": "ਅੱਜ",
-    "dateSliderAriaLabel": "ਇੱਕ ਮਿਤੀ ਚੁਣੋ"
+    "dateSliderAriaLabel": "ਇੱਕ ਮਿਤੀ ਚੁਣੋ",
+    "occupancy": {
+      "rowLabel": "ਕਤਾਰ {{row}}",
+      "available": "ਉਪਲਬਧ",
+      "partial": "ਭਰ ਰਹੀ ਹੈ",
+      "full": "ਪੂਰੀ ਤਰ੍ਹਾਂ ਬੁੱਕ",
+      "rowStatusAria": "ਕਤਾਰ {{row}}: {{status}}"
+    }
   },
   "readingProgress": {
     "pageTitle": "ਪੜ੍ਹਨ ਦੀ ਪ੍ਰਗਤੀ",

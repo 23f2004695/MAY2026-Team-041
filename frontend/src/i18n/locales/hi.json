@@ -6,6 +6,7 @@
     "getStarted": "शुरू करें",
     "you": "आप",
     "quickActionsTitle": "त्वरित कार्रवाई",
+    "weekdays": ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार", "रविवार"],
     "trend": {
       "vsLastMonth": "पिछले महीने की तुलना में"
     },
@@ -982,6 +983,21 @@
       "title": "सीट उपयोग (आज)",
       "peakTime": "व्यस्ततम समय",
       "averageUtilization": "औसत उपयोग {{percent}}%"
+    },
+    "footfall": {
+      "title": "फुटफॉल एनालिटिक्स",
+      "periodLabel": "अवधि",
+      "last7Days": "पिछले 7 दिन",
+      "last30Days": "पिछले 30 दिन",
+      "last3Months": "पिछले 3 महीने",
+      "visitsByDay": "दैनिक विज़िट",
+      "peakHours": "व्यस्ततम समय",
+      "avgVisitDuration": "औसत विज़िट अवधि",
+      "avgVisitDurationValue": "{{minutes}} मिनट",
+      "noDuration": "अभी पर्याप्त डेटा नहीं है",
+      "busiestDay": "सबसे व्यस्त दिन",
+      "quietestDay": "सबसे शांत दिन",
+      "empty": "इस अवधि में कोई विज़िट दर्ज नहीं हुई।"
     },
     "revenue": {
       "title": "राजस्व अवलोकन (पिछले 6 महीने)",
@@ -1990,7 +2006,14 @@
       "slotDurationFixed": "हर बुकिंग 1 घंटे के लिए होती है — यह सीट {{endHour}} बजे फिर से उपलब्ध होगी।"
     },
     "today": "आज",
-    "dateSliderAriaLabel": "एक तारीख़ चुनें"
+    "dateSliderAriaLabel": "एक तारीख़ चुनें",
+    "occupancy": {
+      "rowLabel": "पंक्ति {{row}}",
+      "available": "उपलब्ध",
+      "partial": "भरती जा रही है",
+      "full": "पूरी तरह बुक",
+      "rowStatusAria": "पंक्ति {{row}}: {{status}}"
+    }
   },
   "readingProgress": {
     "pageTitle": "पठन प्रगति",
