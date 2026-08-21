@@ -74,6 +74,11 @@ AVAILABILITY_WEIGHT = 3
 # Small on purpose — a returning member's borrowing history is a bonus signal, not
 # something that should drown out what they told the quiz just now.
 HISTORY_AUTHOR_WEIGHT = 1
+# Same tier as HISTORY_AUTHOR_WEIGHT: the AI reading profile (members/reading_profile.py)
+# is another soft behavioral signal, not a replacement for what the member just told the
+# quiz. Reading profile_interests is optional and defaults to empty, so a member with no
+# cached profile yet scores identically to before this existed.
+PROFILE_INTEREST_WEIGHT = 1
 
 
 def _era_key_for_year(year: int | None) -> str | None:
@@ -102,6 +107,7 @@ def score_candidates(
     ratings: dict[str, tuple[float, int]],
     loan_counts: dict[str, int],
     history_authors: Counter[str],
+    profile_interests: frozenset[str] = frozenset(),
 ) -> list[ScoredBook]:
     scored: list[ScoredBook] = []
     for book in books:
@@ -146,6 +152,10 @@ def score_candidates(
         if history_hits:
             score += history_hits * HISTORY_AUTHOR_WEIGHT
             reasons.append(f"You've enjoyed other books by {book.author}")
+
+        if book.category in profile_interests:
+            score += PROFILE_INTEREST_WEIGHT
+            reasons.append("Matches your AI reading profile's interests")
 
         scored.append(ScoredBook(book=book, score=score, reasons=reasons))
 

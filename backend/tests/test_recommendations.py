@@ -106,6 +106,7 @@ def _book(**overrides) -> Book:
         createdAt=datetime.now(UTC),
         updatedAt=datetime.now(UTC),
         deletedAt=None,
+        embedding=[],
     )
     defaults.update(overrides)
     return Book(**defaults)
@@ -417,6 +418,38 @@ def test_history_bonus_favors_previously_enjoyed_authors():
     )
 
     assert scored[0].book.id == familiar.id
+
+
+def test_profile_interest_bonus_favors_matching_category():
+    matching = _book(category="Science")
+    non_matching = _book(category="Poetry")
+    answers = QuizAnswers()
+
+    scored = scoring.score_candidates(
+        [non_matching, matching],
+        answers,
+        ratings={},
+        loan_counts={},
+        history_authors=Counter(),
+        profile_interests=frozenset({"Science"}),
+    )
+
+    assert scored[0].book.id == matching.id
+    assert scored[0].score > scored[1].score
+
+
+def test_profile_interest_bonus_is_a_noop_when_absent():
+    """An empty profile_interests set (the default — no cached AI reading profile yet)
+    must score identically to before this feature existed."""
+    book_a = _book(category="Science")
+    book_b = _book(category="Poetry")
+    answers = QuizAnswers()
+
+    scored = scoring.score_candidates(
+        [book_a, book_b], answers, ratings={}, loan_counts={}, history_authors=Counter()
+    )
+
+    assert scored[0].score == scored[1].score
 
 
 # ═══════════════════════════════════════════════════════════════════════════

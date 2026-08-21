@@ -106,6 +106,10 @@ DEMO_SEED_SCRIPTS = [
     # whether any event is still upcoming) on every boot and only tops up what's
     # short, so demo data keeps looking current without anyone re-seeding by hand.
     BACKEND_DIR / "scripts" / "seed_daily_refresh.py",
+    # Not required for correctness (get_related_books computes embeddings lazily), but
+    # runs the ~400 embed calls once up front here instead of on whichever member's
+    # request happens to hit an un-embedded book first.
+    BACKEND_DIR / "scripts" / "backfill_book_embeddings.py",
 ]
 
 

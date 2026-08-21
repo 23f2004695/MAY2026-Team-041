@@ -1111,6 +1111,32 @@
       "finesCollected": "Fines Collected",
       "collectionRate": "Collection Rate"
     },
+    "aiInsights": {
+      "heading": "AI Insights"
+    },
+    "demandForecast": {
+      "title": "Demand Forecast",
+      "subtitle": "Books trending up in loans and reservations over the last 30 days.",
+      "emptyTitle": "No trending demand right now",
+      "emptyDescription": "Come back once there's more recent borrowing activity to compare.",
+      "level": {
+        "high": "High demand",
+        "medium": "Rising demand"
+      }
+    },
+    "lateReturnRisk": {
+      "title": "Late-Return Risk",
+      "subtitle": "Active loans most likely to come back late, based on borrowing history.",
+      "emptyTitle": "No active loans to assess",
+      "emptyDescription": "Risk scores will appear here once there are active loans.",
+      "borrower": "{{name}}",
+      "dueDate": "due {{date}}",
+      "level": {
+        "high": "High risk ({{score}}%)",
+        "medium": "Medium risk ({{score}}%)",
+        "low": "Low risk ({{score}}%)"
+      }
+    },
     "statModal": {
       "seatsBookedToday": {
         "description": "Walk-in seats booked at the counter today. Book another one for a member from here."
@@ -1935,6 +1961,17 @@
       "reserveSuccessToast": "Requested \"{{title}}\" — awaiting manager approval",
       "relatedBooks": {
         "title": "Readers who borrowed this also borrowed…"
+      },
+      "aiInsights": {
+        "heading": "AI Book Insights",
+        "loading": "Generating AI insights…",
+        "unavailable": "AI insights aren't available right now.",
+        "keyConcepts": "Key concepts",
+        "themes": "Themes",
+        "vocabulary": "Vocabulary complexity",
+        "technicalDifficulty": "Technical difficulty",
+        "prerequisites": "Prerequisites",
+        "whyRead": "Why read it"
       }
     },
     "wishlist": {
@@ -2673,6 +2710,14 @@
       "booksRead": "Books Read",
       "pagesRead": "Pages Read",
       "hoursRead": "Hours Read"
+    },
+    "readingProfile": {
+      "heading": "AI Reading Profile",
+      "loading": "Building your reading profile…",
+      "unavailable": "Your AI reading profile isn't available yet — borrow, review, or reserve a few books to get started.",
+      "interests": "Top interests",
+      "difficulty": "Preferred difficulty",
+      "preference": "Reading preference"
     },
     "adminStats": {
       "actionsThisMonth": "Actions This Month",

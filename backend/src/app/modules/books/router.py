@@ -10,6 +10,7 @@ from app.core.rate_limit import limiter
 from app.modules.books import service
 from app.modules.books.schemas import (
     BookCreate,
+    BookInsightsOut,
     BookListResponse,
     BookOut,
     BookSort,
@@ -55,6 +56,11 @@ async def get_book(book_id: UUID) -> BookOut:
 @router.get("/{book_id}/related", response_model=list[BookOut])
 async def get_related_books(book_id: UUID) -> list[BookOut]:
     return await service.get_related_books(str(book_id))
+
+
+@router.get("/{book_id}/insights", response_model=BookInsightsOut | None)
+async def get_book_insights(book_id: UUID) -> BookInsightsOut | None:
+    return await service.get_book_insights(str(book_id))
 
 
 @router.post("", response_model=BookOut, status_code=status.HTTP_201_CREATED)

@@ -8,6 +8,7 @@ os.environ["APP_ENV"] = "test"
 
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from prisma import Json
 
 from app.api.deps import get_current_user, get_optional_user
 from app.core.config import get_settings
@@ -483,6 +484,8 @@ async def test_related_books_not_found():
 
 
 async def test_related_books_ranks_by_co_borrowing(member_user):
+    """No embedding provider available -> ensure_embedding degrades to [] and the
+    endpoint falls back to its pre-embedding co-borrow ranking, unchanged."""
     anchor = await prisma.book.create(data=_book_payload(category="Fiction"))
     co_borrowed = await prisma.book.create(data=_book_payload(category="Sci-Fi"))
     unrelated = await prisma.book.create(data=_book_payload(category="History"))
@@ -506,8 +509,12 @@ async def test_related_books_ranks_by_co_borrowing(member_user):
             }
         )
 
-    async with _anon_client() as client:
-        response = await client.get(f"/api/v1/books/{anchor.id}/related")
+    with patch(
+        "app.modules.books.embeddings.build_embeddings",
+        side_effect=RuntimeError("no embedding provider configured"),
+    ):
+        async with _anon_client() as client:
+            response = await client.get(f"/api/v1/books/{anchor.id}/related")
 
     assert response.status_code == 200
     ids = [item["id"] for item in response.json()]
@@ -516,15 +523,95 @@ async def test_related_books_ranks_by_co_borrowing(member_user):
 
 
 async def test_related_books_falls_back_to_category_without_loan_history():
+    """Same degrade-gracefully path as above, exercised via the category/author tier."""
     anchor = await prisma.book.create(data=_book_payload(category="Poetry"))
     same_category = await prisma.book.create(data=_book_payload(category="Poetry"))
 
-    async with _anon_client() as client:
-        response = await client.get(f"/api/v1/books/{anchor.id}/related")
+    with patch(
+        "app.modules.books.embeddings.build_embeddings",
+        side_effect=RuntimeError("no embedding provider configured"),
+    ):
+        async with _anon_client() as client:
+            response = await client.get(f"/api/v1/books/{anchor.id}/related")
 
     assert response.status_code == 200
     ids = [item["id"] for item in response.json()]
     assert same_category.id in ids
+
+
+def _fake_embeddings(vector_by_keyword: dict[str, list[float]], default: list[float]):
+    """A minimal stand-in for a LangChain Embeddings object: returns a fixed vector
+    based on which keyword appears in the text handed to embedding_text()."""
+
+    async def aembed_query(text: str) -> list[float]:
+        for keyword, vector in vector_by_keyword.items():
+            if keyword in text:
+                return vector
+        return default
+
+    return SimpleNamespace(aembed_query=aembed_query)
+
+
+async def test_related_books_ranks_by_embedding_similarity():
+    """Semantic similarity, not category/author matching: the anchor and its closest
+    match share no category or author, but their (cached) embeddings are near-identical,
+    while a same-category/same-author book's embedding points the opposite way and
+    should rank lower. Candidate embeddings are pre-seeded rather than computed inline —
+    get_related_books ranks against whatever's already cached (populated in practice by
+    scripts/backfill_book_embeddings.py) and never embeds a whole catalog per request."""
+    anchor = await prisma.book.create(data=_book_payload(category="Fiction", author="Author A"))
+    close_match = await prisma.book.create(data=_book_payload(category="Science", author="Author B"))
+    far_match = await prisma.book.create(data=_book_payload(category="Fiction", author="Author A"))
+
+    await prisma.book.update(where={"id": close_match.id}, data={"embedding": [1.0, 0.0]})
+    await prisma.book.update(where={"id": far_match.id}, data={"embedding": [0.0, 1.0]})
+
+    fake = _fake_embeddings({}, default=[1.0, 0.0])  # anchor embeds to the close_match's vector
+    with patch("app.modules.books.embeddings.build_embeddings", return_value=fake):
+        async with _anon_client() as client:
+            response = await client.get(f"/api/v1/books/{anchor.id}/related")
+
+    assert response.status_code == 200
+    ids = [item["id"] for item in response.json()]
+    assert close_match.id in ids
+    assert far_match.id not in ids or ids.index(close_match.id) < ids.index(far_match.id)
+
+
+async def test_related_books_caches_embedding_after_first_request():
+    anchor = await prisma.book.create(
+        data=_book_payload(description="A journey through deep space")
+    )
+    other = await prisma.book.create(data=_book_payload(description="A cozy cookbook"))
+
+    fake = _fake_embeddings({"space": [1.0, 0.0], "cookbook": [0.0, 1.0]}, default=[0.5, 0.5])
+    with patch(
+        "app.modules.books.embeddings.build_embeddings", return_value=fake
+    ) as build_embeddings_mock:
+        async with _anon_client() as client:
+            first = await client.get(f"/api/v1/books/{anchor.id}/related")
+            second = await client.get(f"/api/v1/books/{anchor.id}/related")
+
+    assert first.status_code == second.status_code == 200
+    # Anchor's own vector is computed once and reused, not recomputed per request —
+    # build_embeddings() itself may still be called again for `other`'s vector, so this
+    # checks the persisted value rather than call counts.
+    stored = await prisma.book.find_unique(where={"id": anchor.id})
+    assert stored.embedding == [1.0, 0.0]
+    assert build_embeddings_mock.called
+
+
+async def test_update_book_invalidates_cached_embedding(librarian_user):
+    book = await prisma.book.create(data=_book_payload(description="A journey through deep space"))
+    await prisma.book.update(where={"id": book.id}, data={"embedding": [1.0, 0.0]})
+
+    async with _client_as(librarian_user) as client:
+        response = await client.put(
+            f"/api/v1/books/{book.id}", json={"description": "Completely different plot"}
+        )
+
+    assert response.status_code == 200
+    stored = await prisma.book.find_unique(where={"id": book.id})
+    assert stored.embedding == []
 
 
 async def test_book_without_reviews_has_no_rating(member_user):
@@ -678,3 +765,73 @@ async def test_sort_recommended_without_auth_falls_back_gracefully():
 
     assert response.status_code == 200
     assert len(response.json()["items"]) == 2
+
+
+_FAKE_INSIGHTS_JSON = """{
+  "summary": "A short summary.",
+  "key_concepts": ["concept a", "concept b", "concept c"],
+  "themes": ["theme a", "theme b"],
+  "difficulty": "Intermediate",
+  "technical_difficulty": "Unknown",
+  "vocabulary_complexity": "Medium",
+  "prerequisites": [],
+  "why_read": "Because it is good."
+}"""
+
+
+async def test_book_insights_not_found():
+    async with _anon_client() as client:
+        response = await client.get(f"/api/v1/books/{uuid.uuid4()}/insights")
+
+    assert response.status_code == 404
+
+
+async def test_book_insights_generates_and_caches():
+    book = await prisma.book.create(data=_book_payload(description="A story about space."))
+    fake_llm = SimpleNamespace(
+        ainvoke=AsyncMock(return_value=SimpleNamespace(content=_FAKE_INSIGHTS_JSON))
+    )
+
+    with patch("app.modules.books.insights.build_chat_llm", return_value=fake_llm):
+        async with _anon_client() as client:
+            first = await client.get(f"/api/v1/books/{book.id}/insights")
+            second = await client.get(f"/api/v1/books/{book.id}/insights")
+
+    assert first.status_code == second.status_code == 200
+    body = first.json()
+    assert body["difficulty"] == "Intermediate"
+    assert body["key_concepts"] == ["concept a", "concept b", "concept c"]
+    # Second request is a pure cache hit — the LLM is called once, not per request.
+    fake_llm.ainvoke.assert_awaited_once()
+    stored = await prisma.book.find_unique(where={"id": book.id})
+    assert stored.aiInsights["difficulty"] == "Intermediate"
+
+
+async def test_book_insights_unavailable_when_llm_fails():
+    book = await prisma.book.create(data=_book_payload())
+    fake_llm = SimpleNamespace(ainvoke=AsyncMock(side_effect=RuntimeError("connection refused")))
+
+    with patch("app.modules.books.insights.build_chat_llm", return_value=fake_llm):
+        async with _anon_client() as client:
+            response = await client.get(f"/api/v1/books/{book.id}/insights")
+
+    # Existing functionality (the endpoint itself) keeps working — 200 with a null body,
+    # not a 500 — even though the AI provider is unreachable.
+    assert response.status_code == 200
+    assert response.json() is None
+
+
+async def test_update_book_invalidates_cached_ai_insights(librarian_user):
+    book = await prisma.book.create(data=_book_payload())
+    await prisma.book.update(
+        where={"id": book.id}, data={"aiInsights": Json({"difficulty": "Advanced"})}
+    )
+
+    async with _client_as(librarian_user) as client:
+        response = await client.put(
+            f"/api/v1/books/{book.id}", json={"description": "A brand new plot"}
+        )
+
+    assert response.status_code == 200
+    stored = await prisma.book.find_unique(where={"id": book.id})
+    assert stored.aiInsights is None

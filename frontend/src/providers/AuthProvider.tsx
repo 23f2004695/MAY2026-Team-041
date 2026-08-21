@@ -862,6 +862,40 @@ export interface ManagerDashboardStats {
   revenue: RevenueMonth[];
 }
 
+export interface ReadingProfile {
+  interests: string[];
+  difficulty: string;
+  preference: string;
+  insight: string;
+}
+
+export interface DemandForecastItem {
+  book_id: string;
+  title: string;
+  author: string;
+  category: string;
+  total_copies: number;
+  recent_activity: number;
+  prior_activity: number;
+  change_pct: number | null;
+  pending_reservations: number;
+  demand_level: 'high' | 'medium';
+  reason: string;
+}
+
+export interface LateReturnRiskItem {
+  loan_id: string;
+  book_title: string;
+  member_id: string;
+  member_name: string;
+  due_date: string;
+  is_overdue: boolean;
+  days_overdue: number;
+  risk_score: number;
+  risk_level: 'low' | 'medium' | 'high';
+  reason: string;
+}
+
 export interface ManagerSeatBookingPayload {
   member_id: string;
   seat_label: string;
@@ -1008,6 +1042,7 @@ interface AuthContextValue extends AuthState {
   getReadingGoal: () => Promise<ReadingGoal | null>;
   setReadingGoal: (payload: ReadingGoalPayload) => Promise<ReadingGoal>;
   getReadingStreak: () => Promise<ReadingStreak>;
+  getReadingProfile: () => Promise<ReadingProfile | null>;
   getLeaderboard: () => Promise<LeaderboardEntry[]>;
   getMyReservations: () => Promise<Reservation[]>;
   reserveBook: (bookId: string) => Promise<Reservation>;
@@ -1063,6 +1098,8 @@ interface AuthContextValue extends AuthState {
   reopenSupportTicket: (ticketId: string) => Promise<SupportTicketRecord>;
   searchMembers: (query: string, options?: MemberSearchOptions) => Promise<MemberSummary[]>;
   getManagerDashboard: () => Promise<ManagerDashboardStats>;
+  getDemandForecast: () => Promise<DemandForecastItem[]>;
+  getLateReturnRisk: () => Promise<LateReturnRiskItem[]>;
   bookSeatForMember: (payload: ManagerSeatBookingPayload) => Promise<SeatBookingRecord>;
   issueLoanForMember: (payload: ManagerLoanPayload) => Promise<LoanRecord>;
   linkGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
@@ -1321,6 +1358,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function getReadingStreak(): Promise<ReadingStreak> {
     if (!stateRef.current.token) return { current_streak_days: 0, longest_streak_days: 0 };
     return apiGet<ReadingStreak>('/members/me/reading-streak', stateRef.current.token);
+  }
+
+  async function getReadingProfile(): Promise<ReadingProfile | null> {
+    if (!stateRef.current.token) return null;
+    return apiGet<ReadingProfile | null>('/members/me/reading-profile', stateRef.current.token);
   }
 
   async function getLeaderboard(): Promise<LeaderboardEntry[]> {
@@ -1633,6 +1675,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function getManagerDashboard(): Promise<ManagerDashboardStats> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiGet<ManagerDashboardStats>('/manager/dashboard', stateRef.current.token);
+  }
+
+  async function getDemandForecast(): Promise<DemandForecastItem[]> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<DemandForecastItem[]>('/manager/demand-forecast', stateRef.current.token);
+  }
+
+  async function getLateReturnRisk(): Promise<LateReturnRiskItem[]> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<LateReturnRiskItem[]>('/manager/late-return-risk', stateRef.current.token);
   }
 
   async function bookSeatForMember(payload: ManagerSeatBookingPayload): Promise<SeatBookingRecord> {
@@ -2025,6 +2077,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getReadingGoal,
       setReadingGoal,
       getReadingStreak,
+      getReadingProfile,
       getLeaderboard,
       getMyReservations,
       reserveBook,
@@ -2077,6 +2130,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       reopenSupportTicket,
       searchMembers,
       getManagerDashboard,
+      getDemandForecast,
+      getLateReturnRisk,
       bookSeatForMember,
       issueLoanForMember,
       getPendingReservations,

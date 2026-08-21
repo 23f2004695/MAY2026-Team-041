@@ -4,20 +4,24 @@ from datetime import UTC, datetime, timedelta
 from typing import cast
 
 from fastapi import HTTPException, status
-from prisma.models import Loan, User
+from prisma.models import Book, Loan, User
 
 from app.db.prisma import prisma
 from app.modules.admin import repository as admin_repository
 from app.modules.admin import service as admin_service
 from app.modules.admin.constants import OPEN_HOURS
+from app.modules.books import repository as books_repository
 from app.modules.guardian import service as guardian_service
 from app.modules.guardian.schemas import GuardianContactOut, GuardianLinkCreate
+from app.modules.loans import repository as loans_repository
 from app.modules.loans import service as loans_service
 from app.modules.loans.constants import FINE_PER_DAY
 from app.modules.loans.schemas import LoanCreate, LoanOut
-from app.modules.manager import repository
+from app.modules.manager import insights, repository
 from app.modules.manager.schemas import (
     DailyLibraryActivityOut,
+    DemandForecastItemOut,
+    LateReturnRiskItemOut,
     ManagerBookAvailabilityOut,
     ManagerBookListOut,
     ManagerDashboardStatsOut,
@@ -377,3 +381,109 @@ async def list_book_availability(
         )
 
     return ManagerBookListOut(items=items, total=total, page=page, page_size=page_size)
+
+
+async def get_demand_forecast() -> list[DemandForecastItemOut]:
+    now = datetime.now(UTC)
+    recent_start = now - timedelta(days=insights.DEMAND_RECENT_WINDOW_DAYS)
+    prior_start = recent_start - timedelta(days=insights.DEMAND_PRIOR_WINDOW_DAYS)
+
+    loan_counts, reservation_counts, pending = await asyncio.gather(
+        repository.count_loans_by_book_in_windows(recent_start=recent_start, prior_start=prior_start),
+        repository.count_reservations_by_book_in_windows(
+            recent_start=recent_start, prior_start=prior_start
+        ),
+        reservations_repository.list_pending(),
+    )
+
+    pending_by_book: dict[str, int] = defaultdict(int)
+    for reservation in pending:
+        pending_by_book[reservation.bookId] += 1
+
+    book_ids = set(loan_counts) | set(reservation_counts) | set(pending_by_book)
+    if not book_ids:
+        return []
+
+    books_by_id = {book.id: book for book in await books_repository.list_by_ids(list(book_ids))}
+
+    scored: list[tuple[insights.DemandForecast, Book]] = []
+    for book_id in book_ids:
+        book = books_by_id.get(book_id)
+        if book is None or book.deletedAt is not None:
+            continue
+        loan_recent, loan_prior = loan_counts.get(book_id, (0, 0))
+        res_recent, res_prior = reservation_counts.get(book_id, (0, 0))
+        forecast = insights.score_demand(
+            insights.DemandSignal(
+                book_id=book_id,
+                recent_activity=loan_recent + res_recent,
+                prior_activity=loan_prior + res_prior,
+                pending_reservations=pending_by_book.get(book_id, 0),
+                total_copies=book.totalCopies,
+            )
+        )
+        if forecast is not None:
+            scored.append((forecast, book))
+
+    scored.sort(key=lambda pair: (pair[0].demand_level == "high", pair[0].change_pct or 0), reverse=True)
+
+    return [
+        DemandForecastItemOut(
+            book_id=book.id,
+            title=book.title,
+            author=book.author,
+            category=book.category,
+            total_copies=book.totalCopies,
+            recent_activity=forecast.recent_activity,
+            prior_activity=forecast.prior_activity,
+            change_pct=forecast.change_pct,
+            pending_reservations=forecast.pending_reservations,
+            demand_level=forecast.demand_level,
+            reason=forecast.reason,
+        )
+        for forecast, book in scored[: insights.DEMAND_RESULT_LIMIT]
+    ]
+
+
+async def get_late_return_risk() -> list[LateReturnRiskItemOut]:
+    now = datetime.now(UTC)
+    active_loans, history_by_member = await asyncio.gather(
+        loans_repository.list_active(),
+        repository.member_late_return_history(),
+    )
+    if not active_loans:
+        return []
+
+    total_late = sum(late for late, _total in history_by_member.values())
+    total_returns = sum(total for _late, total in history_by_member.values())
+    library_wide_rate_pct = (total_late / total_returns * 100) if total_returns > 0 else 0.0
+
+    items = []
+    for loan in active_loans:
+        late, total = history_by_member.get(loan.memberId, (0, 0))
+        member_history = (
+            insights.MemberLoanHistory(late_returns=late, total_returns=total) if total > 0 else None
+        )
+        risk = insights.score_late_return_risk(
+            due_date=loan.dueDate,
+            now=now,
+            member_history=member_history,
+            library_wide_late_rate_pct=library_wide_rate_pct,
+        )
+        items.append(
+            LateReturnRiskItemOut(
+                loan_id=loan.id,
+                book_title=loan.book.title,
+                member_id=loan.memberId,
+                member_name=loan.member.fullName,
+                due_date=loan.dueDate,
+                is_overdue=loan.dueDate < now,
+                days_overdue=max(0, (now.date() - loan.dueDate.date()).days),
+                risk_score=risk.risk_score,
+                risk_level=risk.risk_level,
+                reason=risk.reason,
+            )
+        )
+
+    items.sort(key=lambda item: item.risk_score, reverse=True)
+    return items[: insights.LATE_RETURN_RESULT_LIMIT]

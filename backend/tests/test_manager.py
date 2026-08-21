@@ -2,6 +2,7 @@ import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
+from unittest.mock import AsyncMock, patch
 
 os.environ["APP_ENV"] = "test"
 
@@ -681,3 +682,118 @@ async def test_concurrent_approve_and_reject_leave_one_consistent_outcome(
     # A rejected reservation must never carry a loan.
     if reservation.status == "rejected":
         assert reservation.loanId is None
+
+
+async def test_demand_forecast_requires_manager(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/manager/demand-forecast")
+
+    assert response.status_code == 403
+
+
+async def test_demand_forecast_flags_new_activity_as_high_demand(manager_user):
+    """The dev DB carries months of seeded catalog-wide activity, so a single fresh
+    book's signal can rank outside DEMAND_RESULT_LIMIT even when correctly scored high
+    — the aggregation queries themselves are exercised for real (book_id, count shape),
+    but the counts are mocked down to just this one book so the response is
+    deterministic regardless of what else is trending in seeded data."""
+    book_id = await _create_book(manager_user, total_copies=5)
+
+    with (
+        patch(
+            "app.modules.manager.service.repository.count_loans_by_book_in_windows",
+            AsyncMock(return_value={book_id: (2, 0)}),
+        ),
+        patch(
+            "app.modules.manager.service.repository.count_reservations_by_book_in_windows",
+            AsyncMock(return_value={}),
+        ),
+        patch(
+            "app.modules.manager.service.reservations_repository.list_pending",
+            AsyncMock(return_value=[]),
+        ),
+    ):
+        async with _client_as(manager_user) as client:
+            response = await client.get("/api/v1/manager/demand-forecast")
+
+    assert response.status_code == 200
+    items = response.json()
+    assert len(items) == 1
+    assert items[0]["book_id"] == book_id
+    assert items[0]["demand_level"] == "high"
+    assert items[0]["recent_activity"] == 2
+    assert items[0]["prior_activity"] == 0
+    assert items[0]["change_pct"] is None
+
+
+async def test_demand_forecast_ignores_books_with_no_recent_activity(manager_user):
+    book_id = await _create_book(manager_user)
+
+    async with _client_as(manager_user) as client:
+        response = await client.get("/api/v1/manager/demand-forecast")
+
+    assert response.status_code == 200
+    assert all(item["book_id"] != book_id for item in response.json())
+
+
+async def test_late_return_risk_requires_manager(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/manager/late-return-risk")
+
+    assert response.status_code == 403
+
+
+async def test_late_return_risk_flags_overdue_loan_with_bad_history(manager_user, member_user):
+    book_id = await _create_book(manager_user, total_copies=3)
+    other_book_id = await _create_book(manager_user, total_copies=3)
+
+    # A past loan this member returned late, to build a bad personal track record.
+    await prisma.loan.create(
+        data={
+            "bookId": other_book_id,
+            "memberId": member_user.id,
+            "borrowedAt": datetime.now(UTC) - timedelta(days=30),
+            "dueDate": datetime.now(UTC) - timedelta(days=20),
+            "returnedAt": datetime.now(UTC) - timedelta(days=10),
+            "createdById": manager_user.id,
+        }
+    )
+
+    overdue_loan = await prisma.loan.create(
+        data={
+            "bookId": book_id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) - timedelta(days=3),
+            "createdById": manager_user.id,
+        }
+    )
+
+    async with _client_as(manager_user) as client:
+        response = await client.get("/api/v1/manager/late-return-risk")
+
+    assert response.status_code == 200
+    items = response.json()
+    matching = next((item for item in items if item["loan_id"] == overdue_loan.id), None)
+    assert matching is not None
+    assert matching["is_overdue"] is True
+    assert matching["days_overdue"] == 3
+    assert matching["risk_level"] == "high"
+
+
+async def test_late_return_risk_excludes_returned_loans(manager_user, member_user):
+    book_id = await _create_book(manager_user)
+    returned_loan = await prisma.loan.create(
+        data={
+            "bookId": book_id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) - timedelta(days=5),
+            "returnedAt": datetime.now(UTC) - timedelta(days=1),
+            "createdById": manager_user.id,
+        }
+    )
+
+    async with _client_as(manager_user) as client:
+        response = await client.get("/api/v1/manager/late-return-risk")
+
+    assert response.status_code == 200
+    assert all(item["loan_id"] != returned_loan.id for item in response.json())

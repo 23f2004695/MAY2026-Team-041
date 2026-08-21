@@ -41,6 +41,9 @@ class Settings(BaseSettings):
     chat_history_max_turns: int = Field(default=5, validation_alias="CHAT_HISTORY_MAX_TURNS")
     openai_api_key: str = Field(default="", validation_alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", validation_alias="OPENAI_MODEL")
+    openai_embedding_model: str = Field(
+        default="text-embedding-3-small", validation_alias="OPENAI_EMBEDDING_MODEL"
+    )
     # LLM backend: "openai" | "bedrock" | "ollama"
     # Defaults to ollama to match .env.example: a missing LLM_MODE then falls back to the
     # free local model rather than silently reaching for a paid API, which is what happened
@@ -53,11 +56,21 @@ class Settings(BaseSettings):
     bedrock_model_id: str = Field(
         default="amazon.nova-lite-v1:0", validation_alias="BEDROCK_MODEL_ID"
     )
+    bedrock_embedding_model_id: str = Field(
+        default="amazon.titan-embed-text-v2:0", validation_alias="BEDROCK_EMBEDDING_MODEL_ID"
+    )
     # Ollama
     ollama_base_url: str = Field(
         default="http://localhost:11434", validation_alias="OLLAMA_BASE_URL"
     )
     ollama_model: str = Field(default="llama3.2:3b", validation_alias="OLLAMA_MODEL")
+    # Separate embedding model, since a chat model like llama3.2 isn't tuned for it —
+    # nomic-embed-text is a small, widely-available Ollama embedding model. Pull it with
+    # `ollama pull nomic-embed-text`; ensure_embedding() logs and skips per-book if it's
+    # not present rather than failing the request.
+    ollama_embedding_model: str = Field(
+        default="nomic-embed-text", validation_alias="OLLAMA_EMBEDDING_MODEL"
+    )
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
     reset_token_expire_minutes: int = 30

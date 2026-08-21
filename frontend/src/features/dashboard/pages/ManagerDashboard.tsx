@@ -17,6 +17,8 @@ import { formatMonth } from '@/lib/format';
 import type { RegistrationRequest, WalkInRequest } from '@/mocks/manager';
 import {
   useAuth,
+  type DemandForecastItem,
+  type LateReturnRiskItem,
   type LoanDurationDays,
   type LoanRecord,
   type ManagerDashboardStats,
@@ -28,8 +30,10 @@ import { ActiveLoans } from '../components/ActiveLoans';
 import { AddGuardianCard } from '../components/AddGuardianCard';
 import { BookSeatForMemberModal } from '../components/BookSeatForMemberModal';
 import { CheckInCheckOutCard } from '../components/CheckInCheckOutCard';
+import { DemandForecastCard } from '../components/DemandForecastCard';
 import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
 import { IssueBookForMemberModal } from '../components/IssueBookForMemberModal';
+import { LateReturnRiskCard } from '../components/LateReturnRiskCard';
 import { LibraryActivityModal } from '../components/LibraryActivityModal';
 import { ManagerStatModal, type ManagerStatKey } from '../components/ManagerStatModal';
 import { MemberStatCard, type MemberStatTone } from '../components/MemberStatCard';
@@ -59,6 +63,8 @@ export function ManagerDashboard() {
   const { t } = useTranslation();
   const {
     getManagerDashboard,
+    getDemandForecast,
+    getLateReturnRisk,
     getPendingReservations,
     approveReservation,
     rejectReservation,
@@ -77,6 +83,8 @@ export function ManagerDashboard() {
   const [stats, setStats] = useState<ManagerDashboardStats | null>(null);
   const [pendingReservations, setPendingReservations] = useState<PendingReservationRequest[]>([]);
   const [activeLoans, setActiveLoans] = useState<LoanRecord[]>([]);
+  const [demandForecast, setDemandForecast] = useState<DemandForecastItem[]>([]);
+  const [lateReturnRisk, setLateReturnRisk] = useState<LateReturnRiskItem[]>([]);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isBookSeatOpen, setIsBookSeatOpen] = useState(false);
   const [isIssueBookOpen, setIsIssueBookOpen] = useState(false);
@@ -161,6 +169,34 @@ export function ManagerDashboard() {
       cancelled = true;
     };
   }, [getActiveLoans]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getDemandForecast()
+      .then((data) => {
+        if (!cancelled) setDemandForecast(data);
+      })
+      .catch(() => {
+        if (!cancelled) setDemandForecast([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getDemandForecast]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getLateReturnRisk()
+      .then((data) => {
+        if (!cancelled) setLateReturnRisk(data);
+      })
+      .catch(() => {
+        if (!cancelled) setLateReturnRisk([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [getLateReturnRisk]);
 
   async function handleDismissPaymentRequest(notificationId: string) {
     await markNotificationRead(notificationId);
@@ -292,6 +328,14 @@ export function ManagerDashboard() {
           <RevenueOverviewCard months={stats.revenue} />
         </div>
       )}
+
+      <h2 className="text-lg font-semibold text-foreground">
+        {t('managerDashboard.aiInsights.heading')}
+      </h2>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <DemandForecastCard items={demandForecast} />
+        <LateReturnRiskCard items={lateReturnRisk} />
+      </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PendingReservations

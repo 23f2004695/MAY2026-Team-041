@@ -1,9 +1,9 @@
-import { ArrowLeft, BookOpen, Heart } from 'lucide-react';
+import { ArrowLeft, BookOpen, Heart, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import { BookCard } from '@/components/common';
+import { BookCard, DifficultyBadge } from '@/components/common';
 import { ErrorState, LoadingState } from '@/components/feedback';
 import { Badge, Button, Card, CardContent, EmptyState } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
@@ -11,7 +11,7 @@ import { ApiError, getErrorMessage } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/providers/AuthProvider';
 
-import { useBookQuery, useRelatedBooksQuery } from '../hooks/useBooks';
+import { useBookInsightsQuery, useBookQuery, useRelatedBooksQuery } from '../hooks/useBooks';
 import { useWishlist } from '../hooks/useWishlist';
 
 export function BookDetailsPage() {
@@ -21,6 +21,11 @@ export function BookDetailsPage() {
   const { reserveBook } = useAuth();
   const { data: book, isLoading, error, refetch } = useBookQuery(bookId);
   const { data: relatedBooks = [] } = useRelatedBooksQuery(bookId);
+  const {
+    data: insights,
+    isLoading: insightsLoading,
+    isError: insightsError,
+  } = useBookInsightsQuery(bookId);
   const { isWishlisted, toggleWishlist } = useWishlist();
 
   async function handleReserve() {
@@ -86,6 +91,7 @@ export function BookDetailsPage() {
               <Badge variant={book.available ? 'success' : 'danger'}>
                 {book.available ? t('books.status.available') : t('books.status.checkedOut')}
               </Badge>
+              {insights && <DifficultyBadge difficulty={insights.difficulty} />}
             </div>
 
             <p className="text-sm text-muted-foreground">{book.description}</p>
@@ -109,6 +115,88 @@ export function BookDetailsPage() {
               </Button>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-primary/20 bg-primary/5">
+        <CardContent className="flex flex-col gap-3 p-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 shrink-0 text-primary" />
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              {t('books.details.aiInsights.heading')}
+            </p>
+          </div>
+
+          {insightsLoading && (
+            <p className="text-sm text-muted-foreground">{t('books.details.aiInsights.loading')}</p>
+          )}
+
+          {!insightsLoading && (insightsError || insights === null) && (
+            <p className="text-sm text-muted-foreground">
+              {t('books.details.aiInsights.unavailable')}
+            </p>
+          )}
+
+          {!insightsLoading && insights && (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-foreground">{insights.summary}</p>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {insights.key_concepts.length > 0 && (
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-xs font-medium text-muted-foreground">
+                      {t('books.details.aiInsights.keyConcepts')}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {insights.key_concepts.map((concept) => (
+                        <Badge key={concept} variant="outline">
+                          {concept}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {insights.themes.length > 0 && (
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-xs font-medium text-muted-foreground">
+                      {t('books.details.aiInsights.themes')}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {insights.themes.map((theme) => (
+                        <Badge key={theme} variant="outline">
+                          {theme}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span>
+                  {t('books.details.aiInsights.vocabulary')}: {insights.vocabulary_complexity}
+                </span>
+                {insights.technical_difficulty !== 'Unknown' && (
+                  <span>
+                    · {t('books.details.aiInsights.technicalDifficulty')}:{' '}
+                    {insights.technical_difficulty}
+                  </span>
+                )}
+              </div>
+
+              {insights.prerequisites.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {t('books.details.aiInsights.prerequisites')}: {insights.prerequisites.join(', ')}
+                </p>
+              )}
+
+              <p className="text-sm text-foreground">
+                <span className="font-medium">{t('books.details.aiInsights.whyRead')}: </span>
+                {insights.why_read}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
