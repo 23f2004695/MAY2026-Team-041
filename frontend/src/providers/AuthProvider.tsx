@@ -480,7 +480,7 @@ export interface RecommendationQuiz {
 
 // Partial — a question the member skipped (or that wasn't offered) simply isn't a key
 // here; the backend treats a missing answer the same as an explicit "no preference".
-export type RecommendationAnswers = Partial<Record<RecommendationQuestionId, string>>;
+export type RecommendationAnswers = Partial<Record<RecommendationQuestionId, string | string[]>>;
 
 export interface RecommendationItem {
   book: Book;

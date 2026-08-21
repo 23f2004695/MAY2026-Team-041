@@ -123,25 +123,28 @@ async def export_active_visits_csv() -> str:
     visits = await list_active_visits()
     output = io.StringIO()
     writer = csv.writer(output, lineterminator="\n")
-    writer.writerow([
-        "Member ID",
-        "Member Name",
-        "Email",
-        "Check-In Date",
-        "Check-In Time",
-        "Status",
-    ])
+    writer.writerow(
+        [
+            "Member ID",
+            "Member Name",
+            "Email",
+            "Check-In Date",
+            "Check-In Time",
+            "Status",
+        ]
+    )
     for visit in visits:
         dt = visit.checked_in_at
         date_str = dt.strftime("%Y-%m-%d")
         time_str = dt.strftime("%I:%M %p")
-        writer.writerow([
-            visit.member_id,
-            visit.member_name,
-            visit.member_email,
-            date_str,
-            time_str,
-            "Currently in Library",
-        ])
+        writer.writerow(
+            [
+                visit.member_id,
+                visit.member_name,
+                visit.member_email,
+                date_str,
+                time_str,
+                "Currently in Library",
+            ]
+        )
     return output.getvalue()
-

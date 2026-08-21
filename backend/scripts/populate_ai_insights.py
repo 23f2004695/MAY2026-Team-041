@@ -28,7 +28,8 @@ def _generate_fallback_insights(book) -> dict:
     cat = (book.category or "General").title()
     desc = book.description or ""
     summary = (
-        (desc[:220] + "...") if len(desc) > 220
+        (desc[:220] + "...")
+        if len(desc) > 220
         else (desc or f"An engaging {cat} title by {book.author}.")
     )
 
@@ -75,10 +76,7 @@ async def main() -> None:
 
             if not insights:
                 insights = _generate_fallback_insights(book)
-                await prisma.book.update(
-                    where={"id": book.id},
-                    data={"aiInsights": Json(insights)}
-                )
+                await prisma.book.update(where={"id": book.id}, data={"aiInsights": Json(insights)})
 
             populated += 1
             if populated % 50 == 0 or populated == len(books):

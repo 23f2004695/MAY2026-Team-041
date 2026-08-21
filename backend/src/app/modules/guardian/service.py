@@ -123,9 +123,7 @@ async def set_guardian(payload: GuardianLinkCreate) -> None:
     await _validate_pair(payload.guardian_id, payload.member_id)
 
     try:
-        await repository.upsert_link(
-            guardian_id=payload.guardian_id, member_id=payload.member_id
-        )
+        await repository.upsert_link(guardian_id=payload.guardian_id, member_id=payload.member_id)
     except ForeignKeyViolationError as exc:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -555,9 +555,7 @@ async def test_guardian_can_list_child_payments(client):
 
     plan = await prisma.pricingplan.find_unique(where={"planId": "1m"})
     if plan is None:
-        plan = await prisma.pricingplan.create(
-            data={"planId": "1m", "price": 1000, "months": 1}
-        )
+        plan = await prisma.pricingplan.create(data={"planId": "1m", "price": 1000, "months": 1})
     assert plan is not None
     await prisma.payment.create(
         data={
@@ -633,4 +631,3 @@ async def test_member_self_link_and_unlink_guardian(client):
     )
     assert res_get2.status_code == 200
     assert res_get2.json() is None
-

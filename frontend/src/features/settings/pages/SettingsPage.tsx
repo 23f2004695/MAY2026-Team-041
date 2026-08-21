@@ -199,18 +199,6 @@ export function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings.notifications.title')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Notification preferences are not configurable yet. Important account and library
-            notifications remain enabled.
-          </p>
-        </CardContent>
-      </Card>
-
       {role === 'member' && (
         <Card>
           <CardHeader>

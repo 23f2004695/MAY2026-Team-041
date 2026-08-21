@@ -127,12 +127,16 @@ async def test_manager_can_view_dashboard_stats(manager_user):
         "revenue",
     }
     non_int_fields = list_fields | {"most_borrowed_books"}
-    assert set(body.keys()) == {
-        "seats_booked_today",
-        "books_issued_today",
-        "new_registrations_today",
-        "pending_tasks",
-    } | non_int_fields
+    assert (
+        set(body.keys())
+        == {
+            "seats_booked_today",
+            "books_issued_today",
+            "new_registrations_today",
+            "pending_tasks",
+        }
+        | non_int_fields
+    )
     int_fields = {k: v for k, v in body.items() if k not in non_int_fields}
     assert all(isinstance(value, int) for value in int_fields.values())
     assert all(isinstance(body[field], list) for field in list_fields)
