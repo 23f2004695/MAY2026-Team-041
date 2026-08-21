@@ -49,3 +49,12 @@ async def get_latest_visit_for_member(member_id: str) -> LibraryVisit | None:
         order={"checkedInAt": "desc"},
         include=VISIT_INCLUDE,
     )
+
+
+async def list_check_ins_between(start: datetime, end: datetime) -> list[LibraryVisit]:
+    """Every visit that started in [start, end) — one bulk fetch for footfall analytics
+    to bucket by day/hour/duration in Python, rather than one query per bucket."""
+    return await prisma.libraryvisit.find_many(
+        where={"checkedInAt": {"gte": start, "lt": end}},
+        order={"checkedInAt": "asc"},
+    )

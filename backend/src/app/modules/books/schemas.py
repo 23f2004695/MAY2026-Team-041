@@ -35,6 +35,7 @@ class BookCreate(BaseModel):
     language: str | None = Field(default=None, max_length=40)
     cover_image_url: str | None = Field(default=None, max_length=2048)
     total_copies: int = Field(default=0, ge=0)
+    shelf_location: str | None = Field(default=None, max_length=120)
 
     _validate_isbn = field_validator("isbn")(_validate_isbn)
 
@@ -52,6 +53,7 @@ class BookUpdate(BaseModel):
     language: str | None = Field(default=None, max_length=40)
     cover_image_url: str | None = Field(default=None, max_length=2048)
     total_copies: int | None = Field(default=None, ge=0)
+    shelf_location: str | None = Field(default=None, max_length=120)
 
     _validate_isbn = field_validator("isbn")(_validate_isbn)
 
@@ -68,6 +70,7 @@ class BookOut(BaseModel):
     language: str | None
     cover_image_url: str | None
     total_copies: int
+    shelf_location: str | None
     available: bool
     average_rating: float | None
     review_count: int
@@ -90,6 +93,7 @@ class BookOut(BaseModel):
             language=book.language,
             cover_image_url=book.coverImageUrl,
             total_copies=book.totalCopies,
+            shelf_location=book.shelfLocation,
             available=book.totalCopies > 0,
             average_rating=average_rating,
             review_count=review_count,

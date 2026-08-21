@@ -832,6 +832,33 @@ export interface SeatUtilizationHour {
   percent: number;
 }
 
+export type FootfallRange = '7d' | '30d' | '3m';
+
+export interface DailyFootfall {
+  date: string;
+  visits: number;
+}
+
+export interface HourlyFootfall {
+  hour: number;
+  visits: number;
+}
+
+export interface DayOfWeekFootfall {
+  /** Monday=0 .. Sunday=6 */
+  day_of_week: number;
+  visits: number;
+}
+
+export interface FootfallAnalytics {
+  range: FootfallRange;
+  daily: DailyFootfall[];
+  peak_hours: HourlyFootfall[];
+  average_visit_minutes: number | null;
+  busiest_day: DayOfWeekFootfall | null;
+  quietest_day: DayOfWeekFootfall | null;
+}
+
 export interface OverdueFinesMonth {
   month: string;
   overdue_books: number;
@@ -1065,6 +1092,9 @@ interface AuthContextValue extends AuthState {
   getMySeatBookings: () => Promise<SeatBookingRecord[]>;
   cancelSeatBooking: (bookingId: string) => Promise<void>;
   requestSeatNotify: (payload: SeatSlotPayload) => Promise<void>;
+  getWishlist: () => Promise<string[]>;
+  addToWishlist: (bookId: string) => Promise<void>;
+  removeFromWishlist: (bookId: string) => Promise<void>;
   getMyNotifications: () => Promise<AppNotificationRecord[]>;
   markNotificationRead: (notificationId: string) => Promise<AppNotificationRecord>;
   markAllNotificationsRead: () => Promise<AppNotificationRecord[]>;
@@ -1100,6 +1130,7 @@ interface AuthContextValue extends AuthState {
   getManagerDashboard: () => Promise<ManagerDashboardStats>;
   getDemandForecast: () => Promise<DemandForecastItem[]>;
   getLateReturnRisk: () => Promise<LateReturnRiskItem[]>;
+  getFootfallAnalytics: (range: FootfallRange) => Promise<FootfallAnalytics>;
   bookSeatForMember: (payload: ManagerSeatBookingPayload) => Promise<SeatBookingRecord>;
   issueLoanForMember: (payload: ManagerLoanPayload) => Promise<LoanRecord>;
   linkGuardian: (payload: ManagerGuardianLinkPayload) => Promise<void>;
@@ -1479,6 +1510,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await apiDelete(`/seat-booking/${bookingId}`, stateRef.current.token);
   }
 
+  async function getWishlist(): Promise<string[]> {
+    if (!stateRef.current.token) return [];
+    return apiGet<string[]>('/wishlist', stateRef.current.token);
+  }
+
+  async function addToWishlist(bookId: string): Promise<void> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiPost(`/wishlist/${bookId}`, undefined, stateRef.current.token);
+  }
+
+  async function removeFromWishlist(bookId: string): Promise<void> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    await apiDelete(`/wishlist/${bookId}`, stateRef.current.token);
+  }
+
   async function requestSeatNotify(payload: SeatSlotPayload): Promise<void> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     await apiPost('/seat-booking/notify', payload, stateRef.current.token);
@@ -1685,6 +1731,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function getLateReturnRisk(): Promise<LateReturnRiskItem[]> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiGet<LateReturnRiskItem[]>('/manager/late-return-risk', stateRef.current.token);
+  }
+
+  async function getFootfallAnalytics(range: FootfallRange): Promise<FootfallAnalytics> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiGet<FootfallAnalytics>(
+      `/manager/footfall?range=${range}`,
+      stateRef.current.token,
+    );
   }
 
   async function bookSeatForMember(payload: ManagerSeatBookingPayload): Promise<SeatBookingRecord> {
@@ -2100,6 +2154,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getMySeatBookings,
       cancelSeatBooking,
       requestSeatNotify,
+      getWishlist,
+      addToWishlist,
+      removeFromWishlist,
       getMyNotifications,
       markNotificationRead,
       markAllNotificationsRead,
@@ -2132,6 +2189,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getManagerDashboard,
       getDemandForecast,
       getLateReturnRisk,
+      getFootfallAnalytics,
       bookSeatForMember,
       issueLoanForMember,
       getPendingReservations,

@@ -10,6 +10,8 @@ from app.modules.loans.schemas import LoanOut
 from app.modules.manager import service
 from app.modules.manager.schemas import (
     DemandForecastItemOut,
+    FootfallAnalyticsOut,
+    FootfallRange,
     LateReturnRiskItemOut,
     ManagerBookListOut,
     ManagerDashboardStatsOut,
@@ -123,3 +125,11 @@ async def get_late_return_risk(
     _: Annotated[User, Depends(manage)],
 ) -> list[LateReturnRiskItemOut]:
     return await service.get_late_return_risk()
+
+
+@router.get("/footfall", response_model=FootfallAnalyticsOut)
+async def get_footfall_analytics(
+    _: Annotated[User, Depends(manage)],
+    range: Annotated[FootfallRange, Query()] = "7d",
+) -> FootfallAnalyticsOut:
+    return await service.get_footfall_analytics(range)

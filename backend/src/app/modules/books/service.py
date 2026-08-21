@@ -423,6 +423,7 @@ async def create_book(payload: BookCreate) -> BookOut:
                 "language": payload.language,
                 "coverImageUrl": payload.cover_image_url,
                 "totalCopies": payload.total_copies,
+                "shelfLocation": payload.shelf_location,
             }
         )
     except UniqueViolationError as exc:
@@ -461,6 +462,8 @@ async def update_book(book_id: str, payload: BookUpdate) -> BookOut:
         data["coverImageUrl"] = payload.cover_image_url
     if payload.total_copies is not None:
         data["totalCopies"] = payload.total_copies
+    if "shelf_location" in fields_set:
+        data["shelfLocation"] = payload.shelf_location
 
     if not data:
         return BookOut.from_prisma(existing)

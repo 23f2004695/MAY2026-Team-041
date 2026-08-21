@@ -11,6 +11,7 @@ import { useAuth, type SeatBookingRecord, type SeatSlot } from '@/providers/Auth
 import { BookingSummary } from '../components/BookingSummary';
 import { DateSlider } from '../components/DateSlider';
 import { SeatLegend } from '../components/SeatLegend';
+import { ROW_OCCUPANCY_DOT, rowOccupancy } from '../rowOccupancy';
 
 const SEAT_ROWS = ['A', 'B', 'C', 'D'];
 const SEATS_PER_ROW = 8;
@@ -34,6 +35,7 @@ function formatHourLabel(hour: number): string {
 function slotKey(seatLabel: string, date: string, hour: number): string {
   return `${seatLabel}|${date}|${hour}`;
 }
+
 
 const dayFormatter = new Intl.DateTimeFormat(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
 
@@ -269,11 +271,26 @@ export function SeatBookingPage() {
             />
           ) : (
             <div className="flex flex-col gap-4">
-              {SEAT_ROWS.map((row) => (
+              {SEAT_ROWS.map((row) => {
+                const rowLabels = SEAT_LABELS.filter((label) => label.startsWith(row));
+                const occupancy = rowOccupancy(seats, rowLabels);
+                return (
                 <div key={row} className="flex items-center gap-3">
-                  <span className="w-6 text-sm font-semibold text-muted-foreground">{row}</span>
+                  <span
+                    className="flex w-14 items-center gap-1.5 text-sm font-semibold text-muted-foreground"
+                    title={t('seatBooking.occupancy.rowStatusAria', {
+                      row,
+                      status: t(`seatBooking.occupancy.${occupancy}`),
+                    })}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`size-2 shrink-0 rounded-full ${ROW_OCCUPANCY_DOT[occupancy]}`}
+                    />
+                    {t('seatBooking.occupancy.rowLabel', { row })}
+                  </span>
                   <div className="grid flex-1 grid-cols-4 gap-2 sm:grid-cols-8">
-                    {SEAT_LABELS.filter((label) => label.startsWith(row)).map((label) => {
+                    {rowLabels.map((label) => {
                       const seat = seats?.find((s) => s.seat_label === label);
                       // A missing record is unknown, never available. Keep it disabled so
                       // partial API responses cannot advertise seats that may be occupied.
@@ -301,7 +318,8 @@ export function SeatBookingPage() {
                     })}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

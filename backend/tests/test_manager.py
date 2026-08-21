@@ -2,6 +2,7 @@ import asyncio
 import os
 import uuid
 from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 os.environ["APP_ENV"] = "test"
@@ -55,6 +56,7 @@ async def _db_connection():
     yield
     domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
     await prisma.notification.delete_many(where={"user": domain_filter})
+    await prisma.libraryvisit.delete_many(where={"member": domain_filter})
     await prisma.guardianlink.delete_many(where={"guardian": domain_filter})
     await prisma.loan.delete_many(where={"member": domain_filter})
     await prisma.reservation.delete_many(where={"member": domain_filter})
@@ -797,3 +799,95 @@ async def test_late_return_risk_excludes_returned_loans(manager_user, member_use
 
     assert response.status_code == 200
     assert all(item["loan_id"] != returned_loan.id for item in response.json())
+
+
+async def _create_visit(member_user, manager_user, *, checked_in_at, checked_out_at=None):
+    return await prisma.libraryvisit.create(
+        data={
+            "memberId": member_user.id,
+            "recordedById": manager_user.id,
+            "checkedInAt": checked_in_at,
+            "checkedOutAt": checked_out_at,
+        }
+    )
+
+
+async def test_footfall_requires_authentication():
+    async with AsyncClient(
+        transport=ASGITransport(app=create_app()), base_url="http://test"
+    ) as client:
+        response = await client.get("/api/v1/manager/footfall")
+    assert response.status_code == 401
+
+
+async def test_member_cannot_view_footfall(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.get("/api/v1/manager/footfall")
+    assert response.status_code == 403
+
+
+async def test_footfall_counts_visits_by_day_and_hour(manager_user, member_user):
+    today = datetime.now(UTC).replace(hour=10, minute=0, second=0, microsecond=0)
+    yesterday = today - timedelta(days=1)
+    await _create_visit(member_user, manager_user, checked_in_at=today)
+    await _create_visit(member_user, manager_user, checked_in_at=today.replace(hour=11))
+    await _create_visit(member_user, manager_user, checked_in_at=yesterday)
+
+    async with _client_as(manager_user) as client:
+        response = await client.get("/api/v1/manager/footfall", params={"range": "7d"})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["range"] == "7d"
+    assert len(body["daily"]) == 7
+    by_date = {row["date"]: row["visits"] for row in body["daily"]}
+    assert by_date[today.date().isoformat()] >= 2
+    assert by_date[yesterday.date().isoformat()] >= 1
+
+    by_hour = {row["hour"]: row["visits"] for row in body["peak_hours"]}
+    assert len(body["peak_hours"]) == 24
+    assert by_hour[10] >= 1
+    assert by_hour[11] >= 1
+
+
+async def test_footfall_average_duration_ignores_still_open_visits(manager_user):
+    """Mocked to an exact, controlled visit list — asserting an exact average against
+    real DB writes would be flaky if any other real visit exists in the same 7-day
+    window (same reasoning as the empty-range test above)."""
+    now = datetime.now(UTC)
+    closed_visit = SimpleNamespace(
+        checkedInAt=now - timedelta(minutes=30), checkedOutAt=now
+    )
+    # Still checked in — no checkedOutAt — must not count as a zero-length visit.
+    open_visit = SimpleNamespace(checkedInAt=now, checkedOutAt=None)
+
+    with patch(
+        "app.modules.manager.service.visits_repository.list_check_ins_between",
+        AsyncMock(return_value=[closed_visit, open_visit]),
+    ):
+        async with _client_as(manager_user) as client:
+            response = await client.get("/api/v1/manager/footfall", params={"range": "7d"})
+
+    assert response.status_code == 200
+    assert response.json()["average_visit_minutes"] == 30.0
+
+
+async def test_footfall_handles_an_empty_range_honestly(manager_user):
+    """The dev DB may carry real visits from other tests/manual use within the same 7
+    days, so asserting "empty" against live data would be flaky — mocked down to a
+    genuinely empty window instead, same reasoning as the demand-forecast test above."""
+    with patch(
+        "app.modules.manager.service.visits_repository.list_check_ins_between",
+        AsyncMock(return_value=[]),
+    ):
+        async with _client_as(manager_user) as client:
+            response = await client.get("/api/v1/manager/footfall", params={"range": "7d"})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert all(row["visits"] == 0 for row in body["daily"])
+    assert all(row["visits"] == 0 for row in body["peak_hours"])
+    # No fabricated average/busiest-day when there's genuinely no data to compute from.
+    assert body["average_visit_minutes"] is None
+    assert body["busiest_day"] is None
+    assert body["quietest_day"] is None

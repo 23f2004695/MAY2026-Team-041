@@ -166,3 +166,33 @@ class LateReturnRiskItemOut(BaseModel):
     risk_score: int
     risk_level: Literal["low", "medium", "high"]
     reason: str
+
+
+FootfallRange = Literal["7d", "30d", "3m"]
+
+
+class DailyFootfallOut(BaseModel):
+    date: date_type
+    visits: int
+
+
+class HourlyFootfallOut(BaseModel):
+    hour: int
+    visits: int
+
+
+class DayOfWeekFootfallOut(BaseModel):
+    # Monday=0 .. Sunday=6, same as Python's date.weekday() — the frontend maps this to
+    # a localized day name rather than the backend hardcoding an English label.
+    day_of_week: int
+    visits: int
+
+
+class FootfallAnalyticsOut(BaseModel):
+    range: FootfallRange
+    daily: list[DailyFootfallOut]
+    peak_hours: list[HourlyFootfallOut]  # 24 entries, hour 0-23
+    # None when no visit in range has been checked out yet — never fabricated as 0.
+    average_visit_minutes: float | None
+    busiest_day: DayOfWeekFootfallOut | None
+    quietest_day: DayOfWeekFootfallOut | None

@@ -1,4 +1,4 @@
-import { ArrowLeft, BookOpen, Heart, Sparkles } from 'lucide-react';
+import { ArrowLeft, BookOpen, Heart, MapPin, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -99,6 +99,13 @@ export function BookDetailsPage() {
             <p className="text-sm text-muted-foreground">
               {t('books.details.copiesAvailable', { total: book.total_copies })}
             </p>
+
+            {book.shelf_location && (
+              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <MapPin className="size-4" />
+                {book.shelf_location}
+              </p>
+            )}
 
             <div className="flex gap-2">
               <Button disabled={!book.available} onClick={handleReserve}>
@@ -214,6 +221,7 @@ export function BookDetailsPage() {
                 author={related.author}
                 category={related.category}
                 available={related.available}
+                shelfLocation={related.shelf_location}
                 averageRating={related.average_rating}
                 reviewCount={related.review_count}
                 description={related.description}

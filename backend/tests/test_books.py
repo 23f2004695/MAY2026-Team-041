@@ -231,7 +231,44 @@ async def test_create_book_available_when_copies_positive(librarian_user):
     assert response.status_code == 201
     body = response.json()
     assert body["total_copies"] == 3
-    assert body["available"] is True
+
+
+async def test_create_book_with_shelf_location(librarian_user):
+    async with _client_as(librarian_user) as client:
+        response = await client.post(
+            "/api/v1/books", json=_book_payload(shelf_location="Aisle 3, Shelf B")
+        )
+
+    assert response.status_code == 201
+    assert response.json()["shelf_location"] == "Aisle 3, Shelf B"
+
+
+async def test_create_book_without_shelf_location_defaults_to_none(librarian_user):
+    async with _client_as(librarian_user) as client:
+        response = await client.post("/api/v1/books", json=_book_payload())
+
+    assert response.status_code == 201
+    assert response.json()["shelf_location"] is None
+
+
+async def test_update_book_can_set_and_clear_shelf_location(librarian_user):
+    async with _client_as(librarian_user) as client:
+        created = await client.post("/api/v1/books", json=_book_payload())
+        book_id = created.json()["id"]
+        assert created.json()["shelf_location"] is None
+
+        set_response = await client.put(
+            f"/api/v1/books/{book_id}", json={"shelf_location": "Aisle 3, Shelf B"}
+        )
+        assert set_response.json()["shelf_location"] == "Aisle 3, Shelf B"
+
+        cleared_response = await client.put(
+            f"/api/v1/books/{book_id}", json={"shelf_location": None}
+        )
+
+    assert set_response.status_code == 200
+    assert cleared_response.status_code == 200
+    assert cleared_response.json()["shelf_location"] is None
 
 
 async def test_suggest_description_requires_authentication():

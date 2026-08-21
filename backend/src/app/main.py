@@ -51,6 +51,7 @@ from app.modules.seat_booking.router import router as seat_booking_router
 from app.modules.support_tickets.router import router as support_tickets_router
 from app.modules.translate.router import router as translate_router
 from app.modules.visits.router import router as visits_router
+from app.modules.wishlist.router import router as wishlist_router
 
 # Windows' console defaults to a legacy codepage (cp1252 here) that can't encode the
 # box-drawing characters in the startup banner below, crashing print() with
@@ -305,6 +306,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(leaderboard_router, prefix=settings.api_prefix)
     app.include_router(visits_router, prefix=settings.api_prefix)
     app.include_router(library_reviews_router, prefix=settings.api_prefix)
+    app.include_router(wishlist_router, prefix=settings.api_prefix)
     return app
 
 

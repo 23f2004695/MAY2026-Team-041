@@ -19,8 +19,13 @@ from app.modules.loans.constants import FINE_PER_DAY
 from app.modules.loans.schemas import LoanCreate, LoanOut
 from app.modules.manager import insights, repository
 from app.modules.manager.schemas import (
+    DailyFootfallOut,
     DailyLibraryActivityOut,
+    DayOfWeekFootfallOut,
     DemandForecastItemOut,
+    FootfallAnalyticsOut,
+    FootfallRange,
+    HourlyFootfallOut,
     LateReturnRiskItemOut,
     ManagerBookAvailabilityOut,
     ManagerBookListOut,
@@ -43,6 +48,7 @@ from app.modules.reservations.schemas import ReservationOut
 from app.modules.seat_booking import service as seat_booking_service
 from app.modules.seat_booking.constants import SEAT_LABELS
 from app.modules.seat_booking.schemas import SeatBookingCreate, SeatBookingOut
+from app.modules.visits import repository as visits_repository
 
 TOTAL_SEATS = len(SEAT_LABELS)
 MOST_BORROWED_LIMIT = 25
@@ -79,6 +85,67 @@ def _today_window() -> tuple[datetime, datetime]:
     now = datetime.now(UTC)
     start = datetime(now.year, now.month, now.day, tzinfo=UTC)
     return start, start + timedelta(days=1)
+
+
+FOOTFALL_RANGE_DAYS: dict[FootfallRange, int] = {"7d": 7, "30d": 30, "3m": 90}
+
+
+async def get_footfall_analytics(range_key: FootfallRange) -> FootfallAnalyticsOut:
+    """One bulk fetch of every check-in in the window, bucketed by day / hour / weekday /
+    duration in Python — avoids one query per day the way a naive loop would."""
+    days = FOOTFALL_RANGE_DAYS[range_key]
+    today_start, _ = _today_window()
+    start = today_start - timedelta(days=days - 1)
+    end = today_start + timedelta(days=1)
+    visits = await visits_repository.list_check_ins_between(start, end)
+
+    visits_by_day: dict[str, int] = defaultdict(int)
+    visits_by_hour: dict[int, int] = defaultdict(int)
+    visits_by_weekday: dict[int, int] = defaultdict(int)
+    duration_minutes: list[float] = []
+    for visit in visits:
+        visits_by_day[visit.checkedInAt.date().isoformat()] += 1
+        visits_by_hour[visit.checkedInAt.hour] += 1
+        visits_by_weekday[visit.checkedInAt.weekday()] += 1
+        # Still-open visits (no checkedOutAt yet) simply don't contribute a duration —
+        # they're not silently treated as zero-length or dropped from the day/hour counts.
+        if visit.checkedOutAt is not None:
+            elapsed = (visit.checkedOutAt - visit.checkedInAt).total_seconds() / 60
+            duration_minutes.append(elapsed)
+
+    daily = [
+        DailyFootfallOut(
+            date=(start + timedelta(days=offset)).date(),
+            visits=visits_by_day.get((start + timedelta(days=offset)).date().isoformat(), 0),
+        )
+        for offset in range(days)
+    ]
+    peak_hours = [
+        HourlyFootfallOut(hour=hour, visits=visits_by_hour.get(hour, 0)) for hour in range(24)
+    ]
+    average_visit_minutes = (
+        round(sum(duration_minutes) / len(duration_minutes), 1) if duration_minutes else None
+    )
+
+    busiest_day = quietest_day = None
+    if visits_by_weekday:
+        busiest_key = max(visits_by_weekday, key=lambda day: visits_by_weekday[day])
+        quietest_key = min(visits_by_weekday, key=lambda day: visits_by_weekday[day])
+        busiest_day = DayOfWeekFootfallOut(
+            day_of_week=busiest_key, visits=visits_by_weekday[busiest_key]
+        )
+        quietest_day = DayOfWeekFootfallOut(
+            day_of_week=quietest_key, visits=visits_by_weekday[quietest_key]
+        )
+
+    return FootfallAnalyticsOut(
+        range=range_key,
+        daily=daily,
+        peak_hours=peak_hours,
+        average_visit_minutes=average_visit_minutes,
+        busiest_day=busiest_day,
+        quietest_day=quietest_day,
+    )
 
 
 LIBRARY_ACTIVITY_DAYS = 7

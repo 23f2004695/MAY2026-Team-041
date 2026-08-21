@@ -32,6 +32,7 @@ import { BookSeatForMemberModal } from '../components/BookSeatForMemberModal';
 import { CheckInCheckOutCard } from '../components/CheckInCheckOutCard';
 import { DemandForecastCard } from '../components/DemandForecastCard';
 import { FileBillingRequestModal } from '../components/FileBillingRequestModal';
+import { FootfallAnalyticsCard } from '../components/FootfallAnalyticsCard';
 import { IssueBookForMemberModal } from '../components/IssueBookForMemberModal';
 import { LateReturnRiskCard } from '../components/LateReturnRiskCard';
 import { LibraryActivityModal } from '../components/LibraryActivityModal';
@@ -277,6 +278,8 @@ export function ManagerDashboard() {
       </div>
 
       <CheckInCheckOutCard />
+
+      <FootfallAnalyticsCard />
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <WalkInAssistance

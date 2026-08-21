@@ -8,6 +8,7 @@
     "quickActionsTitle": "Quick Actions",
     "dashboardSectionsHeading": "Dashboard sections",
     "percentComplete": "{{percent}}% complete",
+    "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     "trend": {
       "vsLastMonth": "vs last month"
     },
@@ -1098,6 +1099,21 @@
       "peakTime": "Peak Time",
       "averageUtilization": "{{percent}}% average utilization"
     },
+    "footfall": {
+      "title": "Footfall Analytics",
+      "periodLabel": "Range",
+      "last7Days": "Last 7 Days",
+      "last30Days": "Last 30 Days",
+      "last3Months": "Last 3 Months",
+      "visitsByDay": "Visits by day",
+      "peakHours": "Peak Hours",
+      "avgVisitDuration": "Avg. Visit Duration",
+      "avgVisitDurationValue": "{{minutes}} min",
+      "noDuration": "Not enough data yet",
+      "busiestDay": "Busiest Day",
+      "quietestDay": "Quietest Day",
+      "empty": "No visits recorded in this range."
+    },
     "revenue": {
       "title": "Revenue Overview (Last 6 Months)",
       "total": "Total Revenue",
@@ -2186,7 +2202,14 @@
       "slotDurationCountdown": "Each booking is for 1 hour — this seat will be available again in {{minutes}} min.",
       "slotDurationFixed": "Each booking is for 1 hour — this seat will be available again at {{endHour}}."
     },
-    "dateSliderAriaLabel": "Choose a date"
+    "dateSliderAriaLabel": "Choose a date",
+    "occupancy": {
+      "rowLabel": "Row {{row}}",
+      "available": "Available",
+      "partial": "Filling up",
+      "full": "Fully booked",
+      "rowStatusAria": "Row {{row}}: {{status}}"
+    }
   },
   "readingProgress": {
     "pageTitle": "Reading Progress",
