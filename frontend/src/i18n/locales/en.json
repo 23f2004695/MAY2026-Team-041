@@ -1347,9 +1347,23 @@
         "suggestHint": "AI-drafted from the title and author — review before saving.",
         "suggestFailed": "Couldn't generate a suggestion right now.",
         "isbnLabel": "ISBN (optional)",
+        "publisherLabel": "Publisher (optional)",
         "publishedYearLabel": "Published year (optional)",
+        "languageLabel": "Language (optional)",
         "totalCopiesLabel": "Total copies",
-        "submit": "Add Book"
+        "submit": "Add Book",
+        "identifyHeading": "Identify from a cover photo",
+        "identifyHint": "Upload or paste a photo of the front cover — we'll try to fill in the fields below.",
+        "uploadImage": "Upload image",
+        "pasteImageHint": "or paste an image (Ctrl+V)",
+        "identifying": "Identifying book…",
+        "identifyVerified": "Matched to a verified catalog record — review before saving.",
+        "identifyUnverified": "Filled from the cover photo only — please double-check every field.",
+        "identifyNoMatch": "Couldn't identify this book — fill in the fields manually.",
+        "identifyFailed": "Couldn't read that image right now. Try again or fill in manually.",
+        "identifyInvalidImage": "Please choose an image file.",
+        "identifyImageTooLarge": "Image must be 5 MB or smaller.",
+        "identifyRemoveImage": "Remove image"
       }
     },
     "borrowHistory": {
@@ -1953,7 +1967,12 @@
       "finding": "Finding your recommendations…",
       "submitError": "Couldn't get recommendations. Please try again.",
       "resultsTitle": "Your Recommendations",
-      "done": "Done"
+      "done": "Done",
+      "describe": {
+        "heading": "Or just describe what you want",
+        "placeholder": "e.g. something like a cozy mystery, older, not too long",
+        "submit": "Find books"
+      }
     },
     "categories": {
       "fiction": "Fiction",

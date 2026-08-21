@@ -20,6 +20,8 @@ import os
 import uuid
 from collections import Counter
 from datetime import UTC, datetime
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 os.environ["APP_ENV"] = "test"
 
@@ -28,6 +30,7 @@ from httpx import ASGITransport, AsyncClient
 from prisma.models import Book
 
 from app.api.deps import get_current_user
+from app.core import llm as llm_module
 from app.core.config import get_settings
 from app.core.constants import Role
 from app.core.security import hash_password
@@ -202,6 +205,115 @@ async def test_submit_quiz_excludes_already_borrowed_books(member_user, libraria
     finally:
         await prisma.loan.delete_many(where={"bookId": book.id})
         await prisma.book.delete(where={"id": book.id})
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# "Describe it, don't quiz it" — POST /recommendations/describe
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def _fake_llm(reply_text: str) -> SimpleNamespace:
+    return SimpleNamespace(ainvoke=AsyncMock(return_value=SimpleNamespace(content=reply_text)))
+
+
+async def test_describe_requires_authentication():
+    async with _anon_client() as client:
+        response = await client.post(
+            "/api/v1/recommendations/describe", json={"description": "something cozy"}
+        )
+    assert response.status_code == 401
+
+
+async def test_describe_rejects_non_member_role(librarian_user):
+    async with _client_as(librarian_user) as client:
+        response = await client.post(
+            "/api/v1/recommendations/describe", json={"description": "something cozy"}
+        )
+    assert response.status_code == 403
+
+
+async def test_describe_rejects_empty_description(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.post("/api/v1/recommendations/describe", json={"description": ""})
+    assert response.status_code == 422
+
+
+async def test_describe_returns_real_books_using_llm_output(member_user):
+    """The LLM only ever fills in QuizAnswers — this drives the exact same
+    submit_quiz() pipeline as the button-based quiz, against the real seeded catalog."""
+    fake_llm = _fake_llm('{"author": null, "era": null, "story_type": null, "popularity": null}')
+    with patch("app.modules.recommendations.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            response = await client.post(
+                "/api/v1/recommendations/describe",
+                json={"description": "something like a cozy mystery, older, not too long"},
+            )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert 0 <= len(body["items"]) <= service.MAX_RESULTS
+    fake_llm.ainvoke.assert_awaited_once()
+
+
+async def test_describe_ignores_llm_values_outside_the_valid_set(member_user, monkeypatch):
+    """Same trust boundary as the quiz buttons: _normalize_answers re-validates
+    everything, so a hallucinated author/era can't silently become a real filter."""
+    monkeypatch.setattr(service, "_valid_authors", _async_return(["Ruskin Bond"]))
+    monkeypatch.setattr(service, "_valid_eras", _async_return(["2010_plus"]))
+    fake_llm = _fake_llm(
+        '{"author": "Not A Real Author", "era": "not_a_real_era", '
+        '"story_type": null, "popularity": null}'
+    )
+    with patch("app.modules.recommendations.service.build_chat_llm", return_value=fake_llm):
+        answers = await service._parse_description("anything")
+        normalized = await service._normalize_answers(answers)
+
+    assert normalized.author is None
+    assert normalized.era is None
+
+
+async def test_describe_falls_back_to_no_preference_when_llm_output_is_unparseable(member_user):
+    fake_llm = _fake_llm("Sure! Here's a great pick for you: The Hobbit.")
+    with patch("app.modules.recommendations.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            response = await client.post(
+                "/api/v1/recommendations/describe", json={"description": "anything"}
+            )
+
+    # Unparseable output degrades to "no preference" answers, not an error — the
+    # deterministic engine still returns whatever it would for an empty quiz.
+    assert response.status_code == 200
+
+
+async def test_describe_falls_back_when_llm_call_raises(member_user):
+    fake_llm = SimpleNamespace(ainvoke=AsyncMock(side_effect=RuntimeError("connection refused")))
+    with patch("app.modules.recommendations.service.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            response = await client.post(
+                "/api/v1/recommendations/describe", json={"description": "anything"}
+            )
+
+    assert response.status_code == 200
+
+
+def test_extract_json_object_strips_markdown_code_fence():
+    # Moved to core/llm.py once books/service.py's identify_cover needed the same
+    # "parse JSON the model wrapped in a code fence anyway" helper.
+    fenced = (
+        '```json\n{"author": "Ruskin Bond", "era": null, '
+        '"story_type": null, "popularity": null}\n```'
+    )
+    parsed = llm_module.extract_json_object(fenced)
+    assert parsed == {
+        "author": "Ruskin Bond",
+        "era": None,
+        "story_type": None,
+        "popularity": None,
+    }
+
+
+def test_extract_json_object_returns_none_for_non_json():
+    assert llm_module.extract_json_object("not json at all") is None
 
 
 # ═══════════════════════════════════════════════════════════════════════════

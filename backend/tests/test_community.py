@@ -132,6 +132,62 @@ async def test_staff_cannot_create_post(manager_user):
     assert response.status_code == 403
 
 
+# ═══════════════════════════════════════════════════════════════════════════
+# Auto-moderation — a post/comment matching the shared harmful-content pattern
+# (chat/guardrails.py::contains_harmful_content) is flagged the moment it's created,
+# using the identical `reported` field a member report would set.
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+async def test_post_with_harmful_content_is_auto_flagged(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.post(
+            "/api/v1/community/posts",
+            json={"content": "This book has a scene about weapon trafficking.", "images": []},
+        )
+    assert response.status_code == 201
+    body = response.json()
+    assert body["reported"] is True
+    # Nothing is hidden or blocked — the author sees their own post normally.
+    assert body["is_own"] is True
+
+
+async def test_ordinary_post_is_not_flagged(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.post(
+            "/api/v1/community/posts",
+            json={"content": "I really enjoyed this book's pacing.", "images": []},
+        )
+    assert response.status_code == 201
+    assert response.json()["reported"] is False
+
+
+async def test_flagged_post_notifies_moderators(member_user, admin_user):
+    async with _client_as(member_user) as client:
+        response = await client.post(
+            "/api/v1/community/posts",
+            json={"content": "There's a bomb threat subplot in this thriller.", "images": []},
+        )
+    assert response.status_code == 201
+
+    notifications = await prisma.notification.find_many(where={"userId": admin_user.id})
+    assert any(
+        n.type == "reported-comment" and "automatically flagged" in n.message for n in notifications
+    )
+
+
+async def test_comment_with_harmful_content_is_auto_flagged(member_user):
+    post = await _create_post(member_user)
+    async with _client_as(member_user) as client:
+        response = await client.post(
+            f"/api/v1/community/posts/{post['id']}/comments",
+            json={"content": "This reminded me of a self-harm storyline."},
+        )
+    assert response.status_code == 201
+    comment = response.json()["comments"][-1]
+    assert comment["reported"] is True
+
+
 async def test_list_posts_shows_new_post(member_user):
     post = await _create_post(member_user, content="Findable post")
     async with _client_as(member_user) as client:

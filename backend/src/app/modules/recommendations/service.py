@@ -1,7 +1,10 @@
+import logging
 from collections import Counter, defaultdict
 
+from langchain_core.messages import HumanMessage, SystemMessage
 from prisma.models import Book
 
+from app.core.llm import build_chat_llm, extract_json_object
 from app.modules.books import repository as books_repository
 from app.modules.books.schemas import BookOut
 from app.modules.recommendations import repository, scoring
@@ -14,6 +17,8 @@ from app.modules.recommendations.schemas import (
     RecommendationItem,
     RecommendationResponse,
 )
+
+logger = logging.getLogger(__name__)
 
 # Thresholds for whether a dimension is worth asking about at all. Deliberately low —
 # these gate "does this attribute meaningfully differentiate the catalog", not "is this a
@@ -240,3 +245,81 @@ async def submit_quiz(member_id: str, raw_answers: QuizAnswers) -> Recommendatio
         message = "Here's what we found based on your preferences."
 
     return RecommendationResponse(items=items, relaxed=relaxed, message=message)
+
+
+# ── "Describe it, don't quiz it" ─────────────────────────────────────────────
+# The LLM's only job below is mapping free text onto the same QuizAnswers shape the
+# quiz UI already produces — it never sees or ranks a single book. submit_quiz() (the
+# untouched, deterministic scoring engine above) does the actual work either way, so a
+# parsing failure here degrades to "no preference" answers, never an error.
+
+
+def _describe_prompt(
+    authors: list[str],
+    eras: list[tuple[str, str]],
+    story_types: list[tuple[str, str]],
+    popularity: list[tuple[str, str]],
+) -> str:
+    author_line = ", ".join(authors) if authors else "(none available)"
+    era_lines = "\n".join(f"  {key} = {label}" for key, label in eras) or "  (none available)"
+    story_lines = "\n".join(f"  {key} = {label}" for key, label in story_types)
+    popularity_lines = "\n".join(f"  {key} = {label}" for key, label in popularity)
+    return f"""You turn a library member's free-text book request into structured filters for a
+recommendation engine. Output ONLY a JSON object with exactly these keys: author, era,
+story_type, popularity. Each value must be one of the listed valid ids for that field
+(copy the id itself, not its meaning) — or null if the description doesn't clearly
+indicate a preference for that field. Never invent a value that isn't listed below.
+Output nothing but the JSON object: no explanation, no markdown formatting.
+
+Valid authors: {author_line}
+
+Valid eras (id = meaning):
+{era_lines}
+
+Valid story types (id = meaning):
+{story_lines}
+
+Valid popularity (id = meaning):
+{popularity_lines}"""
+
+
+async def _parse_description(description: str) -> QuizAnswers:
+    authors = await _valid_authors()
+    eras = [(key, ERA_LABELS[key]) for key in await _valid_eras()]
+    story_types = [(key, label) for key, label, _ in scoring.STORY_TYPES]
+    popularity = list(POPULARITY_OPTIONS.items())
+
+    parsed: dict | None = None
+    try:
+        llm = build_chat_llm()
+        result = await llm.ainvoke(
+            [
+                SystemMessage(content=_describe_prompt(authors, eras, story_types, popularity)),
+                HumanMessage(content=description),
+            ]
+        )
+        parsed = extract_json_object(str(result.content))
+    except Exception:
+        logger.exception("describe-to-quiz parsing failed for %r", description)
+
+    if parsed is None:
+        return QuizAnswers()
+
+    def _get(key: str) -> str | None:
+        value = parsed.get(key)
+        return value if isinstance(value, str) else None
+
+    return QuizAnswers(
+        author=_get("author"),
+        era=_get("era"),
+        story_type=_get("story_type"),
+        popularity=_get("popularity"),
+    )
+
+
+async def describe_and_recommend(member_id: str, description: str) -> RecommendationResponse:
+    # _normalize_answers (inside submit_quiz) re-validates every field against a fresh
+    # valid-value set regardless — the LLM's output is never trusted further than the
+    # quiz UI's own answers are.
+    answers = await _parse_description(description)
+    return await submit_quiz(member_id, answers)

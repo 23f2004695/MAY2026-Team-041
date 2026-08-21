@@ -1,12 +1,14 @@
 import logging
 from collections import Counter, defaultdict
+from typing import Any
 
+import httpx
 from fastapi import HTTPException, status
 from langchain_core.messages import HumanMessage, SystemMessage
 from prisma.errors import UniqueViolationError
 from prisma.models import Book
 
-from app.core.llm import build_chat_llm
+from app.core.llm import build_chat_llm, extract_json_object
 from app.modules.books import repository
 from app.modules.books.schemas import (
     BookCreate,
@@ -14,6 +16,7 @@ from app.modules.books.schemas import (
     BookOut,
     BookSort,
     BookUpdate,
+    IdentifiedBookFields,
     SuggestDescriptionRequest,
 )
 
@@ -197,6 +200,179 @@ async def suggest_description(payload: SuggestDescriptionRequest) -> str:
     return description
 
 
+_COVER_VISION_PROMPT = """Look at this photo of a book's front cover. Output ONLY a JSON
+object with these exact keys: title, author, isbn. Read them directly off the cover —
+title and author are almost always printed on the front; isbn is only there if a
+barcode/number is visible. Use null for anything not actually visible in the image.
+Never guess a title, author, or ISBN you can't actually read there. Output nothing but
+the JSON object — no explanation, no markdown formatting."""
+
+# Mirrors the fixed category set the Add Book form offers (see ManagerBooksPage.tsx's
+# CATEGORIES) — an Open Library subject list that matches none of these leaves category
+# unset rather than guessing wrong, since staff pick from that same fixed list anyway.
+#
+# Order matters: "science fiction" (an extremely common Open Library subject) contains
+# "science" as a substring, so "fiction" must be checked first or every science-fiction
+# novel would get miscategorized as Science. Same reasoning puts "non-fiction" ahead of
+# the plain "fiction" check.
+_CATEGORY_KEYWORDS: list[tuple[str, str]] = [
+    ("non-fiction", "Non-Fiction"),
+    ("nonfiction", "Non-Fiction"),
+    ("fiction", "Fiction"),
+    ("self-help", "Self-Help"),
+    ("self help", "Self-Help"),
+    ("biography", "Biography"),
+    ("autobiography", "Biography"),
+    ("technology", "Technology"),
+    ("computer", "Technology"),
+    ("science", "Science"),
+]
+
+_LANGUAGE_CODES = {
+    "eng": "English",
+    "hin": "Hindi",
+    "pan": "Punjabi",
+    "fre": "French",
+    "fra": "French",
+    "ger": "German",
+    "deu": "German",
+    "spa": "Spanish",
+    "ita": "Italian",
+    "jpn": "Japanese",
+    "chi": "Chinese",
+    "zho": "Chinese",
+    "ara": "Arabic",
+    "rus": "Russian",
+}
+
+
+def _map_category(subjects: list[str]) -> str | None:
+    lowered = [subject.lower() for subject in subjects]
+    for keyword, category in _CATEGORY_KEYWORDS:
+        if any(keyword in subject for subject in lowered):
+            return category
+    return None
+
+
+async def _vision_identify(image: str) -> dict[str, Any]:
+    """Reads whatever's actually printed on the cover — nothing more. Returns {} on any
+    failure (unreachable backend, a text-only model, unparseable reply) rather than
+    raising: a photo that doesn't identify is a normal outcome here, not an error —
+    manual entry stays available either way.
+    """
+    try:
+        llm = build_chat_llm()
+        result = await llm.ainvoke(
+            [
+                HumanMessage(
+                    content=[
+                        {"type": "text", "text": _COVER_VISION_PROMPT},
+                        {"type": "image_url", "image_url": {"url": image}},
+                    ]
+                )
+            ]
+        )
+    except Exception:
+        logger.exception("cover vision identification failed")
+        return {}
+    return extract_json_object(str(result.content)) or {}
+
+
+async def _lookup_metadata(
+    *, isbn: str | None, title: str | None, author: str | None
+) -> dict[str, Any]:
+    """Open Library is the source of truth for anything that gets saved beyond "what's
+    visible in the photo" — this is what stands between a vision guess and the catalog,
+    per the "don't hallucinate ISBN/metadata" requirement. Best-effort: any network or
+    parsing failure just yields no match, leaving the vision guess (or a blank field for
+    staff to fill by hand) as the only fallback.
+    """
+    query: dict[str, str] = {}
+    if isbn:
+        query["isbn"] = isbn
+    if title:
+        query["title"] = title
+    if author:
+        query["author"] = author
+    if not query:
+        return {}
+
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            response = await client.get(
+                "https://openlibrary.org/search.json",
+                params={
+                    **query,
+                    "limit": 1,
+                    "fields": "title,author_name,first_publish_year,isbn,publisher,"
+                    "language,subject,key",
+                },
+            )
+            response.raise_for_status()
+            docs = response.json().get("docs") or []
+            if not docs:
+                return {}
+            doc = docs[0]
+
+            description = None
+            work_key = doc.get("key")
+            if work_key:
+                try:
+                    work_response = await client.get(f"https://openlibrary.org{work_key}.json")
+                    work_response.raise_for_status()
+                    raw_description = work_response.json().get("description")
+                    description = (
+                        raw_description.get("value")
+                        if isinstance(raw_description, dict)
+                        else raw_description if isinstance(raw_description, str) else None
+                    )
+                except httpx.HTTPError:
+                    pass  # Description is a bonus, not worth failing the whole lookup over.
+    except (httpx.HTTPError, ValueError):
+        logger.exception("Open Library lookup failed for isbn=%r title=%r", isbn, title)
+        return {}
+
+    doc_isbn = (doc.get("isbn") or [None])[0]
+    return {
+        "title": doc.get("title"),
+        "author": (doc.get("author_name") or [None])[0],
+        "isbn": doc_isbn.replace("-", "") if doc_isbn else None,
+        "publisher": (doc.get("publisher") or [None])[0],
+        "published_year": doc.get("first_publish_year"),
+        "language": _LANGUAGE_CODES.get((doc.get("language") or [None])[0] or ""),
+        "category": _map_category(doc.get("subject") or []),
+        "description": description,
+    }
+
+
+async def identify_cover(image: str) -> IdentifiedBookFields:
+    """The full "upload a cover, get a pre-filled form" pipeline: a vision model reads
+    whatever it can off the photo, then a real book-metadata API verifies/fills in the
+    rest. Nothing here is ever written to the catalog directly — the caller only uses
+    this to pre-fill AddBookModal's fields, which staff still review and submit through
+    the normal create_book path above.
+    """
+    guess = await _vision_identify(image)
+    verified = await _lookup_metadata(
+        isbn=guess.get("isbn"), title=guess.get("title"), author=guess.get("author")
+    )
+
+    def pick(key: str) -> Any:
+        return verified.get(key) or guess.get(key)
+
+    return IdentifiedBookFields(
+        title=pick("title"),
+        author=pick("author"),
+        isbn=pick("isbn"),
+        category=verified.get("category"),
+        description=verified.get("description"),
+        publisher=verified.get("publisher"),
+        published_year=verified.get("published_year"),
+        language=verified.get("language"),
+        verified=bool(verified),
+    )
+
+
 async def create_book(payload: BookCreate) -> BookOut:
     try:
         book = await repository.create_book(
@@ -206,6 +382,7 @@ async def create_book(payload: BookCreate) -> BookOut:
                 "category": payload.category,
                 "isbn": payload.isbn,
                 "description": payload.description,
+                "publisher": payload.publisher,
                 "publishedYear": payload.published_year,
                 "language": payload.language,
                 "coverImageUrl": payload.cover_image_url,
@@ -238,6 +415,8 @@ async def update_book(book_id: str, payload: BookUpdate) -> BookOut:
         data["isbn"] = payload.isbn
     if "description" in fields_set:
         data["description"] = payload.description
+    if "publisher" in fields_set:
+        data["publisher"] = payload.publisher
     if "published_year" in fields_set:
         data["publishedYear"] = payload.published_year
     if "language" in fields_set:

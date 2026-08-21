@@ -286,6 +286,74 @@ async def test_suggest_description_degrades_gracefully_when_llm_unavailable(libr
     assert response.status_code == 503
 
 
+async def test_identify_cover_requires_authentication():
+    async with _anon_client() as client:
+        response = await client.post("/api/v1/books/identify-cover", json={"image": "data:x"})
+    assert response.status_code == 401
+
+
+async def test_identify_cover_forbidden_for_member_role(member_user):
+    async with _client_as(member_user) as client:
+        response = await client.post("/api/v1/books/identify-cover", json={"image": "data:x"})
+    assert response.status_code == 403
+
+
+async def test_identify_cover_merges_vision_guess_with_verified_metadata(librarian_user):
+    vision_guess = {"title": "Dune", "author": "Frank Herbert", "isbn": None}
+    verified = {
+        "title": "Dune",
+        "author": "Frank Herbert",
+        "isbn": "9780441013593",
+        "publisher": "Ace Books",
+        "published_year": 1965,
+        "language": "English",
+        "category": "Science",
+        "description": "A verified description from the metadata API.",
+    }
+    with (
+        patch("app.modules.books.service._vision_identify", AsyncMock(return_value=vision_guess)),
+        patch("app.modules.books.service._lookup_metadata", AsyncMock(return_value=verified)),
+    ):
+        async with _client_as(librarian_user) as client:
+            response = await client.post(
+                "/api/v1/books/identify-cover", json={"image": "data:image/png;base64,abc"}
+            )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["title"] == "Dune"
+    assert body["isbn"] == "9780441013593"
+    assert body["publisher"] == "Ace Books"
+    assert body["category"] == "Science"
+    assert body["verified"] is True
+
+
+async def test_identify_cover_degrades_gracefully_when_nothing_matches(librarian_user):
+    with (
+        patch("app.modules.books.service._vision_identify", AsyncMock(return_value={})),
+        patch("app.modules.books.service._lookup_metadata", AsyncMock(return_value={})),
+    ):
+        async with _client_as(librarian_user) as client:
+            response = await client.post(
+                "/api/v1/books/identify-cover", json={"image": "data:image/png;base64,abc"}
+            )
+
+    # Never an error — an unidentifiable cover just means every field stays blank for
+    # staff to fill in manually.
+    assert response.status_code == 200
+    body = response.json()
+    assert body["title"] is None
+    assert body["verified"] is False
+
+
+def test_map_category_matches_known_subjects():
+    from app.modules.books.service import _map_category
+
+    assert _map_category(["Science fiction", "Adventure"]) == "Fiction"
+    assert _map_category(["Self-help techniques"]) == "Self-Help"
+    assert _map_category(["Completely unrelated subject"]) is None
+
+
 async def test_update_cannot_shrink_copies_below_active_loans(librarian_user, member_user):
     book = await prisma.book.create(data=_book_payload(totalCopies=2))
     other_member = await _make_user(Role.MEMBER)
