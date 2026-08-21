@@ -360,7 +360,9 @@ async def _lookup_metadata(
                     description = (
                         raw_description.get("value")
                         if isinstance(raw_description, dict)
-                        else raw_description if isinstance(raw_description, str) else None
+                        else raw_description
+                        if isinstance(raw_description, str)
+                        else None
                     )
                 except httpx.HTTPError:
                     pass  # Description is a bonus, not worth failing the whole lookup over.

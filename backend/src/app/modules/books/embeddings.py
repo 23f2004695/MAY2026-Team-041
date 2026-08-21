@@ -69,9 +69,7 @@ def rank_by_similarity(target: list[float], candidates: list[Book], *, limit: in
     (an empty vector scores 0.0 via cosine_similarity's guard, but excluding it outright
     keeps a same-scored coincidence from ever outranking a real embedded match)."""
     scored = [
-        (book, cosine_similarity(target, book.embedding))
-        for book in candidates
-        if book.embedding
+        (book, cosine_similarity(target, book.embedding)) for book in candidates if book.embedding
     ]
     scored.sort(key=lambda pair: pair[1], reverse=True)
     return [book for book, _score in scored[:limit]]

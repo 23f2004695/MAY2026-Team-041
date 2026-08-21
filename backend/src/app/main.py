@@ -99,6 +99,7 @@ async def _guardian_digest_loop() -> None:
 SCHEMA_PATH = Path(__file__).resolve().parent.parent.parent / "prisma" / "schema.prisma"
 BACKEND_DIR = SCHEMA_PATH.parent.parent
 DEMO_SEED_SCRIPTS = [
+    BACKEND_DIR / "scripts" / "seed_dev_accounts.py",
     BACKEND_DIR / "scripts" / "seed_books.py",
     BACKEND_DIR / "scripts" / "seed_demo_data.py",
     # Unlike the two above, this one is never "already seeded" — it re-checks a few

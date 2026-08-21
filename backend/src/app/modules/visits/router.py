@@ -48,6 +48,7 @@ async def export_active_visits_csv(
     _: Annotated[User, Depends(require_staff)],
 ) -> Response:
     from datetime import UTC, datetime
+
     csv_content = await service.export_active_visits_csv()
     today_str = datetime.now(UTC).strftime("%Y-%m-%d")
     filename = f"library-currently-present-{today_str}.csv"

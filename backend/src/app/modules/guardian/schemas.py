@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 from app.modules.members.schemas import ReadingProgressOut
 
@@ -8,6 +8,10 @@ from app.modules.members.schemas import ReadingProgressOut
 class GuardianLinkCreate(BaseModel):
     guardian_id: str
     member_id: str
+
+
+class SelfGuardianLinkCreate(BaseModel):
+    guardian_email: EmailStr
 
 
 class GuardianContactOut(BaseModel):

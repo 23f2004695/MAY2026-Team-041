@@ -319,5 +319,3 @@ async def test_export_active_visits_csv(client):
         "/api/v1/visits/export-csv", headers={"Authorization": f"Bearer {member_token}"}
     )
     assert unauthorized_res.status_code == 403
-
-

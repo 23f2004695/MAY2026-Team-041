@@ -127,12 +127,20 @@ async def _normalize_answers(raw: QuizAnswers) -> QuizAnswers:
     valid_authors = set(await _valid_authors())
     valid_eras = set(await _valid_eras())
 
-    def clean(value: str | None, valid: set[str] | None = None) -> str | None:
-        if not value or value == NO_PREFERENCE:
+    def clean(
+        value: str | list[str] | None, valid: set[str] | None = None
+    ) -> str | list[str] | None:
+        if not value:
             return None
-        if valid is not None and value not in valid:
+        items = [value] if isinstance(value, str) else value
+        cleaned = [
+            item
+            for item in items
+            if item and item != NO_PREFERENCE and (valid is None or item in valid)
+        ]
+        if not cleaned:
             return None
-        return value
+        return cleaned[0] if len(cleaned) == 1 else cleaned
 
     return QuizAnswers(
         author=clean(raw.author, valid_authors),
@@ -153,7 +161,7 @@ async def _fetch_candidates(
     Already-borrowed books never appear — recommending something the member has already
     read isn't a matter of taste, it's a miss, at every relaxation stage alike.
     """
-    levels: list[dict[str, str]] = []
+    levels: list[dict[str, str | list[str]]] = []
     if answers.author and answers.era:
         levels.append({"author": answers.author, "era": answers.era})
     if answers.author:

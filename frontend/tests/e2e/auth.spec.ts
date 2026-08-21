@@ -23,7 +23,7 @@ test.describe('Register', () => {
   });
 
   test('shows validation errors on empty submit', async ({ page }) => {
-    await page.getByRole('button', { name: 'Create account' }).click();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await expect(page.getByText('Name must be 2–100 characters and contain only letters.')).toBeVisible();
     await expect(
       page.getByText('Enter a valid 10-digit Indian mobile number (e.g. 9876543210).'),
@@ -39,7 +39,7 @@ test.describe('Register', () => {
       password: 'StrongPass1!',
       confirmPassword: 'StrongPass1!',
     });
-    await page.getByRole('button', { name: 'Create account' }).click();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await expect(
       page.getByText('Enter a valid email address (e.g. name@example.com).'),
     ).toBeVisible();
@@ -53,7 +53,7 @@ test.describe('Register', () => {
       password: 'weak',
       confirmPassword: 'weak',
     });
-    await page.getByRole('button', { name: 'Create account' }).click();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await expect(
       page.getByText(
         'Password must be 8+ characters with uppercase, lowercase, a number, and a special character.',
@@ -69,7 +69,7 @@ test.describe('Register', () => {
       password: 'StrongPass1!',
       confirmPassword: 'DifferentPass1!',
     });
-    await page.getByRole('button', { name: 'Create account' }).click();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await expect(page.getByText('Passwords do not match.')).toBeVisible();
   });
 
@@ -82,6 +82,7 @@ test.describe('Register', () => {
       confirmPassword: 'StrongPass1!',
     });
     await page.getByLabel('I agree to the terms of service').check();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await page.getByRole('button', { name: 'Create account' }).click();
     await expect(page).toHaveURL(/\/payment/);
   });
@@ -98,6 +99,7 @@ test.describe('Register', () => {
 
     await fillRegisterForm(page, values);
     await page.getByLabel('I agree to the terms of service').check();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await page.getByRole('button', { name: 'Create account' }).click();
     await expect(page).toHaveURL(/\/payment/);
 
@@ -112,6 +114,7 @@ test.describe('Register', () => {
     await expect(page).toHaveURL('/register');
     await fillRegisterForm(page, values);
     await page.getByLabel('I agree to the terms of service').check();
+    await page.getByRole('button', { name: 'Proceed' }).click();
     await page.getByRole('button', { name: 'Create account' }).click();
     await expect(page.getByText('An account with this email already exists')).toBeVisible();
   });
