@@ -5,7 +5,7 @@ import { useAuth } from '@/providers/AuthProvider';
 export function SeatLegend() {
   const { t } = useTranslation();
   const { role } = useAuth();
-  const isManagerOrStaff = role === 'manager' || role === 'it_head' || role === 'admin';
+  const isManagerOrStaff = role === 'admin' || role === 'librarian' || role === 'it-head';
 
   return (
     <div className="flex flex-col gap-2">

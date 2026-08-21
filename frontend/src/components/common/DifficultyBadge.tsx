@@ -15,10 +15,9 @@ export function DifficultyBadge({ difficulty }: { difficulty: string }) {
     <div className="relative inline-flex items-center">
       <Badge variant={VARIANT_BY_DIFFICULTY[difficulty] ?? 'outline'} className="relative pr-5">
         {difficulty}
-        <Sparkles
-          className="absolute -top-1 -right-1 size-3.5 text-amber-500 fill-amber-300 drop-shadow-sm"
-          title="AI Generated"
-        />
+        <span title="AI Generated" className="absolute -top-1 -right-1">
+          <Sparkles className="size-3.5 text-amber-500 fill-amber-300 drop-shadow-sm" />
+        </span>
       </Badge>
     </div>
   );

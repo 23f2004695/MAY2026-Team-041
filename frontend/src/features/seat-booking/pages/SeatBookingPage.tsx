@@ -58,7 +58,7 @@ export function SeatBookingPage() {
     getFootfallAnalytics,
   } = useAuth();
 
-  const isManagerOrStaff = role === 'manager' || role === 'it_head' || role === 'admin';
+  const isManagerOrStaff = role === 'admin' || role === 'librarian' || role === 'it-head';
 
   const [footfall, setFootfall] = useState<FootfallAnalytics | null>(null);
 

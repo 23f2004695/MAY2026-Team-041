@@ -32,6 +32,7 @@ export function EditBudgetModal({
     utilities: 900,
     marketing: 700,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [prevCategories, setPrevCategories] = useState(categories);
   const [prevOpen, setPrevOpen] = useState(open);
 

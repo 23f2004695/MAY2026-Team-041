@@ -1,5 +1,6 @@
 import { Armchair, CheckCircle2, Clock, X } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/cn';
 
@@ -48,6 +49,7 @@ export function SeatCard({
   childName,
   guardianName,
 }: SeatCardProps) {
+  const { t } = useTranslation();
   const [prevAvatarUrl, setPrevAvatarUrl] = useState(avatarUrl);
   const [imgError, setImgError] = useState(false);
 
