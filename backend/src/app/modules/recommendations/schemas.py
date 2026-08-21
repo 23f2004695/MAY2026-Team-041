@@ -27,14 +27,14 @@ class QuizResponse(BaseModel):
 
 
 class QuizAnswers(BaseModel):
-    """One selected option id per question, keyed by question id. Every non-null value
+    """Selected option id(s) per question, keyed by question id. Every value
     is re-validated against a freshly recomputed set of currently-valid options before
     it's ever used — see service._normalize_answers. Nothing here is trusted as-is."""
 
-    author: str | None = None
-    era: str | None = None
-    story_type: str | None = None
-    popularity: str | None = None
+    author: str | list[str] | None = None
+    era: str | list[str] | None = None
+    story_type: str | list[str] | None = None
+    popularity: str | list[str] | None = None
 
 
 class RecommendationItem(BaseModel):

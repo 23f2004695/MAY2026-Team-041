@@ -571,8 +571,10 @@ async def _top_up_support_tickets(members: list, staff_pool: list) -> None:
                 }
             )
             created += 1
-    print(f"Support-ticket top-up: added {created} tickets (every member now has "
-          f"{MIN_TICKETS_PER_MEMBER}+).")
+    print(
+        f"Support-ticket top-up: added {created} tickets (every member now has "
+        f"{MIN_TICKETS_PER_MEMBER}+)."
+    )
 
 
 async def _top_up_upcoming_events(
@@ -614,8 +616,7 @@ async def main() -> None:
     settings = get_settings()
     if settings.app_env not in SEEDABLE_ENVIRONMENTS:
         print(
-            f"Skipping daily refresh — APP_ENV={settings.app_env!r} "
-            "is not a dev/demo environment."
+            f"Skipping daily refresh — APP_ENV={settings.app_env!r} is not a dev/demo environment."
         )
         return
     os.environ.setdefault("DATABASE_URL", settings.database_url)

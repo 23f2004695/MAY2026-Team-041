@@ -114,28 +114,43 @@ def score_candidates(
         score = 0.0
         reasons: list[str] = []
 
-        if answers.author and answers.author != NO_PREFERENCE and book.author == answers.author:
+        authors = [answers.author] if isinstance(answers.author, str) else (answers.author or [])
+        if book.author in authors and book.author != NO_PREFERENCE:
             score += AUTHOR_MATCH_WEIGHT
             reasons.append(f"By {book.author}, the author you picked")
 
-        era_wanted = answers.era and answers.era != NO_PREFERENCE
-        if era_wanted and _era_key_for_year(book.publishedYear) == answers.era:
+        eras = [answers.era] if isinstance(answers.era, str) else (answers.era or [])
+        book_era = _era_key_for_year(book.publishedYear)
+        if book_era and book_era in eras and book_era != NO_PREFERENCE:
             score += ERA_MATCH_WEIGHT
             reasons.append("Matches the era you picked")
 
-        if answers.story_type and answers.story_type != NO_PREFERENCE and book.description:
-            keywords = STORY_TYPE_KEYWORDS.get(answers.story_type, [])
-            text = book.description.lower()
-            hits = min(sum(1 for kw in keywords if kw in text), STORY_TYPE_MAX_HITS)
-            if hits:
-                score += hits * STORY_TYPE_HIT_WEIGHT
-                reasons.append(f"Themes that fit {_STORY_TYPE_LABELS[answers.story_type].lower()}")
+        story_types = (
+            [answers.story_type]
+            if isinstance(answers.story_type, str)
+            else (answers.story_type or [])
+        )
+        if book.description:
+            for st in story_types:
+                if st != NO_PREFERENCE:
+                    keywords = STORY_TYPE_KEYWORDS.get(st, [])
+                    text = book.description.lower()
+                    hits = min(sum(1 for kw in keywords if kw in text), STORY_TYPE_MAX_HITS)
+                    if hits:
+                        score += hits * STORY_TYPE_HIT_WEIGHT
+                        reasons.append(f"Themes that fit {_STORY_TYPE_LABELS[st].lower()}")
+                        break
 
+        pops = (
+            [answers.popularity]
+            if isinstance(answers.popularity, str)
+            else (answers.popularity or [])
+        )
         loan_count = loan_counts.get(book.id, 0)
-        if answers.popularity == "trending" and loan_count > 0:
+        if "trending" in pops and loan_count > 0:
             score += POPULARITY_WEIGHT
             reasons.append("Popular with other members")
-        elif answers.popularity == "hidden_gems" and loan_count == 0:
+        elif "hidden_gems" in pops and loan_count == 0:
             score += POPULARITY_WEIGHT
             reasons.append("A hidden gem — not widely borrowed yet")
 

@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { Pagination, TableToolbar } from '@/components/common';
+import { Pagination } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, Select } from '@/components/ui';
 import { usePagination } from '@/hooks';
 import { getErrorMessage } from '@/lib/api';
@@ -38,7 +39,7 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
     }
   }, [requests, sortValue]);
 
-  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(filteredRequests, 5);
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(filteredRequests, 3);
 
   function durationFor(id: string): LoanDurationDays {
     return durationByRequest[id] ?? 7;
@@ -74,31 +75,41 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0 pb-4">
         <CardTitle>{t('managerDashboard.pendingReservations.title')}</CardTitle>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-10 w-10 p-0 flex items-center justify-center shrink-0 rounded-md"
+            onClick={() => {
+              setSortValue('newest');
+              setPage(1);
+            }}
+            title={t('common.actions.reset', 'Reset')}
+            aria-label={t('common.actions.reset', 'Reset')}
+          >
+            <RotateCcw className="size-4 text-muted-foreground" />
+          </Button>
+          <div className="w-32 shrink-0">
+            <Select
+              value={sortValue}
+              aria-label={t('managerDashboard.pendingReservations.sort.label', 'Sort pending requests')}
+              onChange={(e) => {
+                setSortValue(e.target.value);
+                setPage(1);
+              }}
+              options={[
+                { value: 'newest', label: t('managerDashboard.pendingReservations.sort.newestFirst') },
+                { value: 'oldest', label: t('managerDashboard.pendingReservations.sort.oldestFirst') },
+                { value: 'book', label: t('managerDashboard.pendingReservations.sort.bookTitle') },
+                { value: 'member', label: t('managerDashboard.pendingReservations.sort.memberName') },
+              ]}
+            />
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        <TableToolbar
-          sort={{
-            label: t('common.actions.sort'),
-            value: sortValue,
-            onChange: (value) => {
-              setSortValue(value);
-              setPage(1);
-            },
-            options: [
-              { value: 'newest', label: t('managerDashboard.pendingReservations.sort.newestFirst') },
-              { value: 'oldest', label: t('managerDashboard.pendingReservations.sort.oldestFirst') },
-              { value: 'book', label: t('managerDashboard.pendingReservations.sort.bookTitle') },
-              { value: 'member', label: t('managerDashboard.pendingReservations.sort.memberName') },
-            ],
-          }}
-          onReset={() => {
-            setSortValue('newest');
-            setPage(1);
-          }}
-          resetLabel={t('common.actions.reset')}
-        />
         {filteredRequests.length === 0 ? (
           <EmptyState
             title={t('managerDashboard.pendingReservations.emptyTitle')}
@@ -110,36 +121,34 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
               {paginatedItems.map((request) => (
                 <li
                   key={request.id}
-                  className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{request.book_title}</p>
-                    <p className="text-xs text-muted-foreground">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">{request.book_title}</p>
+                    <p className="truncate text-xs text-muted-foreground">
                       {t('managerDashboard.pendingReservations.requestedBy', {
                         name: request.member_name,
-                      })}
+                      })} · {formatDate(request.requested_at)}
                     </p>
-                    <p className="text-xs text-muted-foreground">{formatDate(request.requested_at)}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
                     <Select
-                      aria-label={t('managerDashboard.pendingReservations.durationLabel', {
-                        defaultValue: 'Loan duration',
-                      })}
                       value={String(durationFor(request.id))}
-                      onChange={(event) =>
+                      aria-label={t('managerDashboard.pendingReservations.durationLabel', 'Loan duration')}
+                      onChange={(e) =>
                         setDurationByRequest((prev) => ({
                           ...prev,
-                          [request.id]: Number(event.target.value) as LoanDurationDays,
+                          [request.id]: Number(e.target.value) as LoanDurationDays,
                         }))
                       }
-                      options={DURATION_CHOICES.map((days) => ({
-                        value: String(days),
+                      options={DURATION_CHOICES.map((d) => ({
+                        value: String(d),
                         label: t('managerDashboard.pendingReservations.durationOption', {
-                          count: days,
+                          count: d,
+                          defaultValue: `${d} days`,
                         }),
                       }))}
-                      className="w-auto"
+                      className="h-8 w-28 text-xs py-0 pl-2.5 pr-7"
                     />
                     <Button
                       size="sm"
@@ -160,7 +169,7 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
               currentPage={page}
               totalPages={totalPages}
               totalItems={totalItems}
-              pageSize={5}
+              pageSize={3}
               onPageChange={setPage}
             />
           </>

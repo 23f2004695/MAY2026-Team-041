@@ -45,6 +45,8 @@ export interface RegisterPayload {
   password: string;
   full_name: string;
   phone?: string;
+  role?: Role;
+  avatar_url?: string;
 }
 
 export interface CompleteProfilePayload {
@@ -478,7 +480,7 @@ export interface RecommendationQuiz {
 
 // Partial — a question the member skipped (or that wasn't offered) simply isn't a key
 // here; the backend treats a missing answer the same as an explicit "no preference".
-export type RecommendationAnswers = Partial<Record<RecommendationQuestionId, string>>;
+export type RecommendationAnswers = Partial<Record<RecommendationQuestionId, string | string[]>>;
 
 export interface RecommendationItem {
   book: Book;
@@ -1138,6 +1140,8 @@ interface AuthContextValue extends AuthState {
   unlinkGuardian: (studentId: string) => Promise<void>;
   getStudentGuardian: (studentId: string) => Promise<GuardianContact | null>;
   getMyGuardian: () => Promise<GuardianContact | null>;
+  linkMyGuardian: (guardianEmail: string) => Promise<GuardianContact>;
+  unlinkMyGuardian: () => Promise<void>;
   getManagerBooks: (query?: ManagerBookQuery) => Promise<ManagerBookListResponse>;
   createBook: (payload: BookDraftPayload) => Promise<void>;
   suggestBookDescription: (payload: SuggestBookDescriptionPayload) => Promise<string>;
@@ -1781,6 +1785,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return apiGet<GuardianContact | null>('/guardian/my-guardian', stateRef.current.token);
   }
 
+  async function linkMyGuardian(guardianEmail: string): Promise<GuardianContact> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<GuardianContact>(
+      '/guardian/my-guardian',
+      { guardian_email: guardianEmail },
+      stateRef.current.token,
+    );
+  }
+
+  async function unlinkMyGuardian(): Promise<void> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiDelete('/guardian/my-guardian', stateRef.current.token);
+  }
+
   async function getPendingReservations(): Promise<PendingReservationRequest[]> {
     if (!stateRef.current.token) return [];
     return apiGet<PendingReservationRequest[]>('/manager/reservations/pending', stateRef.current.token);
@@ -2203,6 +2221,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       unlinkGuardian,
       getStudentGuardian,
       getMyGuardian,
+      linkMyGuardian,
+      unlinkMyGuardian,
       getManagerBooks,
       getBillingRequests,
       createBillingRequest,

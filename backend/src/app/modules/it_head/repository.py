@@ -40,9 +40,7 @@ async def count_overdue_loans_beyond(threshold_days: int, *, now: datetime) -> i
     return await prisma.loan.count(where={"returnedAt": None, "dueDate": {"lt": cutoff}})
 
 
-async def count_audit_actions_between(
-    actions: list[str], start: datetime, end: datetime
-) -> int:
+async def count_audit_actions_between(actions: list[str], start: datetime, end: datetime) -> int:
     return await prisma.auditlogentry.count(
         where={"action": {"in": actions}, "createdAt": {"gte": start, "lt": end}}
     )

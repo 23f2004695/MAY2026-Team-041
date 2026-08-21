@@ -555,9 +555,7 @@ async def test_guardian_can_list_child_payments(client):
 
     plan = await prisma.pricingplan.find_unique(where={"planId": "1m"})
     if plan is None:
-        plan = await prisma.pricingplan.create(
-            data={"planId": "1m", "price": 1000, "months": 1}
-        )
+        plan = await prisma.pricingplan.create(data={"planId": "1m", "price": 1000, "months": 1})
     assert plan is not None
     await prisma.payment.create(
         data={
@@ -593,3 +591,43 @@ async def test_listing_payments_for_unlinked_child_is_403(client):
     )
 
     assert response.status_code == 403
+
+
+async def test_member_self_link_and_unlink_guardian(client):
+    guardian = await _make_user(Role.GUARDIAN)
+    member = await _make_user(Role.MEMBER)
+    member_token = await _login(client, member)
+
+    # Link guardian
+    res = await client.post(
+        "/api/v1/guardian/my-guardian",
+        json={"guardian_email": guardian.email},
+        headers={"Authorization": f"Bearer {member_token}"},
+    )
+    assert res.status_code == 200
+    data = res.json()
+    assert data["email"] == guardian.email
+    assert data["full_name"] == guardian.fullName
+
+    # Get my guardian
+    res_get = await client.get(
+        "/api/v1/guardian/my-guardian",
+        headers={"Authorization": f"Bearer {member_token}"},
+    )
+    assert res_get.status_code == 200
+    assert res_get.json()["email"] == guardian.email
+
+    # Unlink guardian
+    res_del = await client.delete(
+        "/api/v1/guardian/my-guardian",
+        headers={"Authorization": f"Bearer {member_token}"},
+    )
+    assert res_del.status_code == 204
+
+    # Verify unlinked
+    res_get2 = await client.get(
+        "/api/v1/guardian/my-guardian",
+        headers={"Authorization": f"Bearer {member_token}"},
+    )
+    assert res_get2.status_code == 200
+    assert res_get2.json() is None
