@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.modules.books.schemas import BookOut
 
@@ -47,3 +47,10 @@ class RecommendationResponse(BaseModel):
     items: list[RecommendationItem]
     relaxed: bool
     message: str
+
+
+class DescribeRequest(BaseModel):
+    """Free text in place of the quiz — see service.describe_and_recommend. The LLM
+    only ever maps this onto QuizAnswers; it never sees or ranks a single book."""
+
+    description: str = Field(min_length=1, max_length=500)

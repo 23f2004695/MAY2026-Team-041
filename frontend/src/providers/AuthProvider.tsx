@@ -937,7 +937,10 @@ export interface BookDraftPayload {
   category: string;
   description?: string;
   isbn?: string;
+  publisher?: string;
   published_year?: number;
+  language?: string;
+  cover_image_url?: string;
   total_copies?: number;
 }
 
@@ -945,6 +948,18 @@ export interface SuggestBookDescriptionPayload {
   title: string;
   author: string;
   category?: string;
+}
+
+export interface IdentifiedBookFields {
+  title: string | null;
+  author: string | null;
+  isbn: string | null;
+  category: string | null;
+  description: string | null;
+  publisher: string | null;
+  published_year: number | null;
+  language: string | null;
+  verified: boolean;
 }
 
 interface AuthState {
@@ -1036,6 +1051,7 @@ interface AuthContextValue extends AuthState {
   getAdminPayments: (query?: AdminPaymentQuery) => Promise<AdminPaymentListResponse>;
   getRecommendationQuiz: () => Promise<RecommendationQuiz>;
   submitRecommendationQuiz: (answers: RecommendationAnswers) => Promise<RecommendationResult>;
+  describeRecommendation: (description: string) => Promise<RecommendationResult>;
   createSupportTicket: (payload: SupportTicketPayload) => Promise<SupportTicketRecord>;
   getMySupportTickets: () => Promise<SupportTicketRecord[]>;
   getStaffSupportTickets: (status?: SupportTicketStatus) => Promise<SupportTicketRecord[]>;
@@ -1057,6 +1073,7 @@ interface AuthContextValue extends AuthState {
   getManagerBooks: (query?: ManagerBookQuery) => Promise<ManagerBookListResponse>;
   createBook: (payload: BookDraftPayload) => Promise<void>;
   suggestBookDescription: (payload: SuggestBookDescriptionPayload) => Promise<string>;
+  identifyBookFromCover: (image: string) => Promise<IdentifiedBookFields>;
   getPendingReservations: () => Promise<PendingReservationRequest[]>;
   checkInMember: (memberId: string) => Promise<LibraryVisitRecord>;
   checkOutMember: (memberId: string) => Promise<LibraryVisitRecord>;
@@ -1548,6 +1565,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   }
 
+  async function describeRecommendation(description: string): Promise<RecommendationResult> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<RecommendationResult>(
+      '/recommendations/describe',
+      { description },
+      stateRef.current.token,
+    );
+  }
+
   async function createSupportTicket(payload: SupportTicketPayload): Promise<SupportTicketRecord> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiPost<SupportTicketRecord>('/support-tickets', payload, stateRef.current.token);
@@ -1896,6 +1922,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return data.description;
   }
 
+  async function identifyBookFromCover(image: string): Promise<IdentifiedBookFields> {
+    if (!stateRef.current.token) throw new Error('Not authenticated');
+    return apiPost<IdentifiedBookFields>(
+      '/books/identify-cover',
+      { image },
+      stateRef.current.token,
+    );
+  }
+
   async function getITHeadDashboard(): Promise<ITHeadDashboard> {
     if (!stateRef.current.token) throw new Error('Not authenticated');
     return apiGet<ITHeadDashboard>('/it-head/dashboard', stateRef.current.token);
@@ -2033,6 +2068,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       getAdminPayments,
       getRecommendationQuiz,
       submitRecommendationQuiz,
+      describeRecommendation,
       createSupportTicket,
       getMySupportTickets,
       getStaffSupportTickets,
@@ -2088,6 +2124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       createBookRecord,
       createBook,
       suggestBookDescription,
+      identifyBookFromCover,
       checkInMember,
       checkOutMember,
       getCurrentlyInLibrary,

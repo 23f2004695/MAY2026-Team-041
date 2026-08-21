@@ -106,7 +106,10 @@ export function ManagerBooksPage() {
       category: draft.category,
       description: draft.description.trim() || undefined,
       isbn: draft.isbn.trim() || undefined,
+      publisher: draft.publisher.trim() || undefined,
       published_year: draft.publishedYear ? Number(draft.publishedYear) : undefined,
+      language: draft.language.trim() || undefined,
+      cover_image_url: draft.coverImageUrl || undefined,
       total_copies: draft.totalCopies ? Number(draft.totalCopies) : 0,
     });
     setIsAddOpen(false);

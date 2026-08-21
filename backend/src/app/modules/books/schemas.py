@@ -28,6 +28,7 @@ class BookCreate(BaseModel):
     category: str = Field(min_length=1, max_length=80)
     isbn: str | None = Field(default=None, max_length=20)
     description: str | None = None
+    publisher: str | None = Field(default=None, max_length=150)
     published_year: int | None = Field(
         default=None, ge=_EARLIEST_PRINT_YEAR, le=_MAX_PUBLISHED_YEAR
     )
@@ -44,6 +45,7 @@ class BookUpdate(BaseModel):
     category: str | None = Field(default=None, min_length=1, max_length=80)
     isbn: str | None = Field(default=None, max_length=20)
     description: str | None = None
+    publisher: str | None = Field(default=None, max_length=150)
     published_year: int | None = Field(
         default=None, ge=_EARLIEST_PRINT_YEAR, le=_MAX_PUBLISHED_YEAR
     )
@@ -61,6 +63,7 @@ class BookOut(BaseModel):
     category: str
     isbn: str | None
     description: str | None
+    publisher: str | None
     published_year: int | None
     language: str | None
     cover_image_url: str | None
@@ -82,6 +85,7 @@ class BookOut(BaseModel):
             category=book.category,
             isbn=book.isbn,
             description=book.description,
+            publisher=book.publisher,
             published_year=book.publishedYear,
             language=book.language,
             cover_image_url=book.coverImageUrl,
@@ -109,3 +113,28 @@ class SuggestDescriptionRequest(BaseModel):
 
 class SuggestDescriptionResponse(BaseModel):
     description: str
+
+
+class IdentifyCoverRequest(BaseModel):
+    # data: URL, same "no object storage yet" convention as community post images —
+    # generous max_length covers a ~5MB image's base64 blow-up.
+    image: str = Field(min_length=1, max_length=8_000_000)
+
+
+class IdentifiedBookFields(BaseModel):
+    """Every field is a best-effort suggestion, never trusted further than a manually
+    typed one — the caller (AddBookModal) only ever pre-fills the form with these and
+    still requires staff to review/submit. title/author/isbn/publisher/published_year/
+    language come from a real book-metadata lookup (Open Library) whenever the cover
+    photo yields enough to search on; only description falls back to the vision model's
+    own reading of the cover when Open Library has none."""
+
+    title: str | None = None
+    author: str | None = None
+    isbn: str | None = None
+    category: str | None = None
+    description: str | None = None
+    publisher: str | None = None
+    published_year: int | None = None
+    language: str | None = None
+    verified: bool = False

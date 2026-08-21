@@ -12,6 +12,7 @@ provider or change a default, instead of two copies drifting apart.
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from langchain_core.language_models import BaseChatModel
@@ -45,3 +46,22 @@ def build_chat_llm() -> BaseChatModel:
         api_key=SecretStr(s.openai_api_key),
         temperature=0.3,
     )
+
+
+def extract_json_object(text: str) -> dict[str, Any] | None:
+    """Small local models sometimes wrap a requested JSON reply in a markdown code
+    fence despite being told not to — strip one if present before parsing. Shared by
+    every feature that asks the model for structured output instead of prose
+    (recommendations' describe-to-quiz, books' cover identification).
+    """
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.strip("`")
+        if cleaned.lower().startswith("json"):
+            cleaned = cleaned[4:]
+        cleaned = cleaned.strip()
+    try:
+        parsed = json.loads(cleaned)
+    except (json.JSONDecodeError, ValueError):
+        return None
+    return parsed if isinstance(parsed, dict) else None

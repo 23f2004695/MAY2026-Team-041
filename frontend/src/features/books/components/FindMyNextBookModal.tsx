@@ -1,11 +1,11 @@
-import { BookOpen, PartyPopper, Sparkles } from 'lucide-react';
+import { BookOpen, PartyPopper, Sparkles, Wand2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { BookCard, ProgressBar } from '@/components/common';
 import { LoadingState } from '@/components/feedback';
-import { Button, EmptyState, Modal } from '@/components/ui';
+import { Button, EmptyState, Modal, Textarea } from '@/components/ui';
 import { ROUTES } from '@/constants/routes';
 import { getErrorMessage } from '@/lib/api';
 import {
@@ -21,15 +21,23 @@ export interface FindMyNextBookModalProps {
 }
 
 type Phase = 'loading' | 'quiz' | 'submitting' | 'results' | 'load_error' | 'submit_error';
+// Which request to retry from the 'submit_error' phase, and which draft the results
+// belong to — the quiz's five taps and the describe box are two doors to the same
+// submit/results machinery, not two separate flows.
+type SubmitMode = 'quiz' | 'describe';
+
+const DESCRIBE_MAX_LENGTH = 500;
 
 export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps) {
   const { t } = useTranslation();
-  const { getRecommendationQuiz, submitRecommendationQuiz } = useAuth();
+  const { getRecommendationQuiz, submitRecommendationQuiz, describeRecommendation } = useAuth();
 
   const [phase, setPhase] = useState<Phase>('loading');
   const [quiz, setQuiz] = useState<RecommendationQuiz | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<RecommendationAnswers>({});
+  const [description, setDescription] = useState('');
+  const [submitMode, setSubmitMode] = useState<SubmitMode>('quiz');
   const [result, setResult] = useState<RecommendationResult | null>(null);
 
   const [prevOpen, setPrevOpen] = useState(open);
@@ -40,6 +48,7 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
       setQuiz(null);
       setQuestionIndex(0);
       setAnswers({});
+      setDescription('');
       setResult(null);
     }
   }
@@ -81,6 +90,7 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
   }
 
   async function submit(finalAnswers: RecommendationAnswers) {
+    setSubmitMode('quiz');
     setPhase('submitting');
     try {
       const response = await submitRecommendationQuiz(finalAnswers);
@@ -89,6 +99,27 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
     } catch (error) {
       toast.error(getErrorMessage(error, t('books.quiz.submitError')));
       setPhase('submit_error');
+    }
+  }
+
+  async function submitDescription(text: string) {
+    setSubmitMode('describe');
+    setPhase('submitting');
+    try {
+      const response = await describeRecommendation(text);
+      setResult(response);
+      setPhase('results');
+    } catch (error) {
+      toast.error(getErrorMessage(error, t('books.quiz.submitError')));
+      setPhase('submit_error');
+    }
+  }
+
+  function retry() {
+    if (submitMode === 'describe') {
+      void submitDescription(description);
+    } else {
+      void submit(answers);
     }
   }
 
@@ -141,14 +172,23 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
         )}
 
         {phase === 'quiz' && quiz && quiz.questions.length > 0 && (
-          <QuizStep
-            quiz={quiz}
-            questionIndex={questionIndex}
-            answers={answers}
-            onSelect={selectOption}
-            onBack={goBack}
-            onNext={goNext}
-          />
+          <>
+            <QuizStep
+              quiz={quiz}
+              questionIndex={questionIndex}
+              answers={answers}
+              onSelect={selectOption}
+              onBack={goBack}
+              onNext={goNext}
+            />
+            {questionIndex === 0 && (
+              <DescribeBox
+                value={description}
+                onChange={setDescription}
+                onSubmit={() => void submitDescription(description)}
+              />
+            )}
+          </>
         )}
 
         {phase === 'submitting' && (
@@ -159,7 +199,7 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
           <EmptyState
             icon={Sparkles}
             title={t('books.quiz.submitError')}
-            action={<Button onClick={() => void submit(answers)}>{t('books.quiz.retry')}</Button>}
+            action={<Button onClick={retry}>{t('books.quiz.retry')}</Button>}
           />
         )}
 
@@ -223,6 +263,46 @@ function QuizStep({ quiz, questionIndex, answers, onSelect, onBack, onNext }: Qu
         </Button>
       </div>
     </>
+  );
+}
+
+interface DescribeBoxProps {
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit: () => void;
+}
+
+// Sits below the first quiz question as a second door into the same results screen —
+// answer the question above, or skip straight to typing what you want here. The LLM
+// only ever translates this text into the same answer shape the quiz buttons produce;
+// the ranking itself never changes, see recommendations/service.py::describe_and_recommend.
+function DescribeBox({ value, onChange, onSubmit }: DescribeBoxProps) {
+  const { t } = useTranslation();
+  const canSubmit = value.trim().length > 0;
+
+  return (
+    <div className="flex flex-col gap-2 border-t border-border pt-4">
+      <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+        <Wand2 className="size-4 text-primary" />
+        {t('books.quiz.describe.heading')}
+      </div>
+      <Textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        maxLength={DESCRIBE_MAX_LENGTH}
+        rows={2}
+        placeholder={t('books.quiz.describe.placeholder')}
+      />
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={!canSubmit}
+        onClick={onSubmit}
+        className="self-end"
+      >
+        {t('books.quiz.describe.submit')}
+      </Button>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react';
+import { Camera, Check, CircleAlert, ClipboardPaste, Sparkles, Wand2, X } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +11,10 @@ export interface BookDraft {
   category: string;
   description: string;
   isbn: string;
+  publisher: string;
   publishedYear: string;
+  language: string;
+  coverImageUrl: string;
   totalCopies: string;
 }
 
@@ -28,17 +31,41 @@ const EMPTY_DRAFT: BookDraft = {
   category: '',
   description: '',
   isbn: '',
+  publisher: '',
   publishedYear: '',
+  language: '',
+  coverImageUrl: '',
   totalCopies: '0',
 };
 
+// Same cap CreatePostModal already applies to a single image — no upload/object
+// storage exists yet, images are stored as data: URLs, so this bounds request size.
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
 export function AddBookModal({ open, onClose, onSubmit, categories }: AddBookModalProps) {
   const { t } = useTranslation();
-  const { suggestBookDescription } = useAuth();
+  const { suggestBookDescription, identifyBookFromCover } = useAuth();
   const [draft, setDraft] = useState<BookDraft>(EMPTY_DRAFT);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestError, setSuggestError] = useState<string | null>(null);
+  const [isIdentifying, setIsIdentifying] = useState(false);
+  const [identifyError, setIdentifyError] = useState<string | null>(null);
+  // matched: false is "we asked, nothing came back" — a real, distinct outcome from
+  // "found something" (matched: true), not a slightly different flavor of success.
+  const [identifyResult, setIdentifyResult] = useState<{
+    message: string;
+    matched: boolean;
+  } | null>(null);
 
   // Re-sync to a blank draft whenever the modal transitions to open, same pattern as
   // CreatePostModal — this is a "create", never an "edit", so there's no initialValues case.
@@ -49,11 +76,92 @@ export function AddBookModal({ open, onClose, onSubmit, categories }: AddBookMod
       setDraft(EMPTY_DRAFT);
       setIsSubmitting(false);
       setSuggestError(null);
+      setIsIdentifying(false);
+      setIdentifyError(null);
+      setIdentifyResult(null);
     }
   }
 
   function update<K extends keyof BookDraft>(key: K, value: BookDraft[K]) {
     setDraft((prev) => ({ ...prev, [key]: value }));
+  }
+
+  async function identifyFromImage(imageDataUrl: string) {
+    setIdentifyError(null);
+    setIdentifyResult(null);
+    update('coverImageUrl', imageDataUrl);
+    setIsIdentifying(true);
+    try {
+      const fields = await identifyBookFromCover(imageDataUrl);
+      if (!fields.title && !fields.author && !fields.isbn) {
+        setIdentifyResult({
+          message: t('managerDashboard.books.addModal.identifyNoMatch'),
+          matched: false,
+        });
+        return;
+      }
+      setDraft((prev) => ({
+        ...prev,
+        title: fields.title ?? prev.title,
+        author: fields.author ?? prev.author,
+        isbn: fields.isbn ?? prev.isbn,
+        category: fields.category ?? prev.category,
+        description: fields.description ?? prev.description,
+        publisher: fields.publisher ?? prev.publisher,
+        publishedYear: fields.published_year ? String(fields.published_year) : prev.publishedYear,
+        language: fields.language ?? prev.language,
+      }));
+      setIdentifyResult({
+        message: fields.verified
+          ? t('managerDashboard.books.addModal.identifyVerified')
+          : t('managerDashboard.books.addModal.identifyUnverified'),
+        matched: true,
+      });
+    } catch {
+      setIdentifyError(t('managerDashboard.books.addModal.identifyFailed'));
+    } finally {
+      setIsIdentifying(false);
+    }
+  }
+
+  async function handleFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setIdentifyError(t('managerDashboard.books.addModal.identifyInvalidImage'));
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      setIdentifyError(t('managerDashboard.books.addModal.identifyImageTooLarge'));
+      return;
+    }
+    try {
+      await identifyFromImage(await readAsDataUrl(file));
+    } catch {
+      setIdentifyError(t('managerDashboard.books.addModal.identifyInvalidImage'));
+    }
+  }
+
+  function handlePaste(event: React.ClipboardEvent) {
+    const item = Array.from(event.clipboardData.items).find((i) => i.type.startsWith('image/'));
+    if (!item) return;
+    event.preventDefault();
+    const file = item.getAsFile();
+    if (!file) return;
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      setIdentifyError(t('managerDashboard.books.addModal.identifyImageTooLarge'));
+      return;
+    }
+    readAsDataUrl(file)
+      .then(identifyFromImage)
+      .catch(() => setIdentifyError(t('managerDashboard.books.addModal.identifyInvalidImage')));
+  }
+
+  function clearCoverImage() {
+    update('coverImageUrl', '');
+    setIdentifyResult(null);
+    setIdentifyError(null);
   }
 
   async function handleSuggestDescription() {
@@ -90,7 +198,88 @@ export function AddBookModal({ open, onClose, onSubmit, categories }: AddBookMod
 
   return (
     <Modal open={open} onClose={onClose} title={t('managerDashboard.books.addModal.title')}>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} onPaste={handlePaste} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2 rounded-lg border border-dashed border-border p-3">
+          <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+            <Wand2 className="size-4 text-primary" />
+            {t('managerDashboard.books.addModal.identifyHeading')}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {t('managerDashboard.books.addModal.identifyHint')}
+          </p>
+
+          {draft.coverImageUrl ? (
+            <div className="flex items-center gap-3">
+              <img
+                src={draft.coverImageUrl}
+                alt=""
+                className="size-16 rounded-md border border-border object-cover"
+              />
+              <div className="flex flex-1 flex-col gap-1 text-xs">
+                {isIdentifying && (
+                  <span className="text-muted-foreground">
+                    {t('managerDashboard.books.addModal.identifying')}
+                  </span>
+                )}
+                {!isIdentifying && identifyResult && (
+                  <span
+                    className={
+                      'inline-flex items-center gap-1 ' +
+                      (identifyResult.matched ? 'text-foreground' : 'text-muted-foreground')
+                    }
+                  >
+                    {identifyResult.matched ? (
+                      <Check className="size-3.5 shrink-0 text-success" />
+                    ) : (
+                      <CircleAlert className="size-3.5 shrink-0" />
+                    )}
+                    {identifyResult.message}
+                  </span>
+                )}
+                {!isIdentifying && identifyError && (
+                  <span role="alert" className="text-danger">
+                    {identifyError}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={clearCoverImage}
+                aria-label={t('managerDashboard.books.addModal.identifyRemoveImage')}
+                className="rounded-full p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center gap-2">
+              <label>
+                <span className="sr-only">{t('managerDashboard.books.addModal.uploadImage')}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="sr-only"
+                  onChange={(event) => void handleFileSelect(event)}
+                />
+                <span className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm text-foreground hover:bg-secondary">
+                  <Camera className="size-4" />
+                  {t('managerDashboard.books.addModal.uploadImage')}
+                </span>
+              </label>
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <ClipboardPaste className="size-3.5" />
+                {t('managerDashboard.books.addModal.pasteImageHint')}
+              </span>
+              {identifyError && (
+                <span role="alert" className="w-full text-xs text-danger">
+                  {identifyError}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+
         <Input
           label={t('managerDashboard.books.addModal.titleLabel')}
           value={draft.title}
@@ -157,6 +346,19 @@ export function AddBookModal({ open, onClose, onSubmit, categories }: AddBookMod
             type="number"
             value={draft.publishedYear}
             onChange={(event) => update('publishedYear', event.target.value)}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            label={t('managerDashboard.books.addModal.publisherLabel')}
+            value={draft.publisher}
+            onChange={(event) => update('publisher', event.target.value)}
+          />
+          <Input
+            label={t('managerDashboard.books.addModal.languageLabel')}
+            value={draft.language}
+            onChange={(event) => update('language', event.target.value)}
           />
         </div>
 

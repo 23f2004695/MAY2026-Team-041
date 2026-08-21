@@ -132,6 +132,7 @@ model Book {
   category      String    @db.VarChar(80)
   isbn          String?   @unique @db.VarChar(20)
   description   String?
+  publisher     String?   @db.VarChar(150)
   publishedYear Int?      @map("published_year")
   language      String?   @db.VarChar(40)
   coverImageUrl String?   @map("cover_image_url")

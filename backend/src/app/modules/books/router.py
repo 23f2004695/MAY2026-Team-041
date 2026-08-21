@@ -14,6 +14,8 @@ from app.modules.books.schemas import (
     BookOut,
     BookSort,
     BookUpdate,
+    IdentifiedBookFields,
+    IdentifyCoverRequest,
     SuggestDescriptionRequest,
     SuggestDescriptionResponse,
 )
@@ -72,6 +74,16 @@ async def suggest_description(
 ) -> SuggestDescriptionResponse:
     description = await service.suggest_description(payload)
     return SuggestDescriptionResponse(description=description)
+
+
+@router.post("/identify-cover", response_model=IdentifiedBookFields)
+@limiter.limit("10/minute")
+async def identify_cover(
+    request: Request,
+    payload: IdentifyCoverRequest,
+    _: Annotated[User, Depends(manage_books)],
+) -> IdentifiedBookFields:
+    return await service.identify_cover(payload.image)
 
 
 @router.put("/{book_id}", response_model=BookOut)
