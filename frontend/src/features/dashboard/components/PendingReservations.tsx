@@ -94,6 +94,7 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
           <div className="w-32 shrink-0">
             <Select
               value={sortValue}
+              aria-label={t('managerDashboard.pendingReservations.sort.label', 'Sort pending requests')}
               onChange={(e) => {
                 setSortValue(e.target.value);
                 setPage(1);
@@ -133,6 +134,7 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
                   <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
                     <Select
                       value={String(durationFor(request.id))}
+                      aria-label={t('managerDashboard.pendingReservations.durationLabel', 'Loan duration')}
                       onChange={(e) =>
                         setDurationByRequest((prev) => ({
                           ...prev,

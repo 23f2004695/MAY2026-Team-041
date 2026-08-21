@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from prisma import Json
+
 from app.core.config import get_settings
 from app.db.prisma import prisma
 from app.modules.books.insights import ensure_insights
