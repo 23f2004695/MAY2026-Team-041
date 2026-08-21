@@ -43,7 +43,7 @@ describe('useWishlist', () => {
   it('adds a book optimistically, before the backend call resolves', async () => {
     let resolveAdd: () => void = () => {};
     const addToWishlist = vi.fn(
-      (_bookId: string) => new Promise<void>((resolve) => (resolveAdd = resolve)),
+      () => new Promise<void>((resolve) => (resolveAdd = resolve)),
     );
     mockedUseAuth.mockReturnValue({
       userId: 'member-1',
