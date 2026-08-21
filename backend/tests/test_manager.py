@@ -824,10 +824,10 @@ async def test_footfall_requires_authentication():
     assert response.status_code == 401
 
 
-async def test_member_cannot_view_footfall(member_user):
+async def test_member_can_view_footfall(member_user):
     async with _client_as(member_user) as client:
         response = await client.get("/api/v1/manager/footfall")
-    assert response.status_code == 403
+    assert response.status_code == 200
 
 
 async def test_footfall_counts_visits_by_day_and_hour(manager_user, member_user):

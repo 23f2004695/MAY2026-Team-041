@@ -1,3 +1,4 @@
+import { Sparkles } from 'lucide-react';
 import { Badge, type BadgeVariant } from '@/components/ui';
 
 // Shared by BookDetailsPage's AI Book Insights card and the profile's AI Reading Profile
@@ -10,5 +11,15 @@ const VARIANT_BY_DIFFICULTY: Record<string, BadgeVariant> = {
 };
 
 export function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  return <Badge variant={VARIANT_BY_DIFFICULTY[difficulty] ?? 'outline'}>{difficulty}</Badge>;
+  return (
+    <div className="relative inline-flex items-center">
+      <Badge variant={VARIANT_BY_DIFFICULTY[difficulty] ?? 'outline'} className="relative pr-5">
+        {difficulty}
+        <Sparkles
+          className="absolute -top-1 -right-1 size-3.5 text-amber-500 fill-amber-300 drop-shadow-sm"
+          title="AI Generated"
+        />
+      </Badge>
+    </div>
+  );
 }

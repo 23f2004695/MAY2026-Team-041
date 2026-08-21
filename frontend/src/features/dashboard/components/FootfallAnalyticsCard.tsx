@@ -40,11 +40,11 @@ export function FootfallAnalyticsCard() {
 
   return (
     <Card>
-      <CardHeader className="gap-2">
+      <CardHeader className="flex-row items-center justify-between gap-4 space-y-0 pb-1">
         <CardTitle>{t('managerDashboard.footfall.title')}</CardTitle>
         <Select
           aria-label={t('managerDashboard.footfall.periodLabel')}
-          className="h-9 w-full"
+          className="h-8 w-36"
           value={range}
           onChange={(e) => setRange(e.target.value as FootfallRange)}
           options={[
@@ -54,27 +54,21 @@ export function FootfallAnalyticsCard() {
           ]}
         />
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-2.5">
         {!data ? null : !hasAnyVisits ? (
           <p className="text-sm text-muted-foreground">{t('managerDashboard.footfall.empty')}</p>
         ) : (
           <>
-            <TrendLineChart
-              data={toChartPoints(data.daily, range)}
-              color="var(--color-primary)"
-              ariaLabel={t('managerDashboard.footfall.visitsByDay')}
-            />
-
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 rounded-lg border border-border bg-secondary/30 p-2">
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Clock className="size-4" />
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">
                     {t('managerDashboard.footfall.avgVisitDuration')}
                   </p>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground truncate">
                     {data.average_visit_minutes != null
                       ? t('managerDashboard.footfall.avgVisitDurationValue', {
                           minutes: Math.round(data.average_visit_minutes),
@@ -84,50 +78,57 @@ export function FootfallAnalyticsCard() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-success/10 text-success">
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-success/10 text-success">
                   <TrendingUp className="size-4" />
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">
                     {t('managerDashboard.footfall.busiestDay')}
                   </p>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground truncate">
                     {data.busiest_day ? weekdayNames[data.busiest_day.day_of_week] : '—'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning">
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-warning/10 text-warning">
                   <TrendingDown className="size-4" />
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">
                     {t('managerDashboard.footfall.quietestDay')}
                   </p>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium text-foreground truncate">
                     {data.quietest_day ? weekdayNames[data.quietest_day.day_of_week] : '—'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Users className="size-4" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-xs text-muted-foreground">
+                    {t('managerDashboard.footfall.peakHours')}
+                  </p>
+                  <p className="text-sm font-medium text-foreground truncate">
+                    {peakHour && peakHour.visits > 0
+                      ? `${formatHour(peakHour.hour)} - ${formatHour((peakHour.hour + 1) % 24)}`
+                      : '—'}
                   </p>
                 </div>
               </div>
             </div>
 
-            {peakHour && peakHour.visits > 0 && (
-              <div className="flex items-center gap-3 rounded-lg border border-border bg-secondary/40 p-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Users className="size-4" />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {t('managerDashboard.footfall.peakHours')}
-                  </p>
-                  <p className="text-sm text-foreground">
-                    {formatHour(peakHour.hour)} - {formatHour((peakHour.hour + 1) % 24)}
-                  </p>
-                </div>
-              </div>
-            )}
+            <TrendLineChart
+              data={toChartPoints(data.daily, range)}
+              color="var(--color-primary)"
+              ariaLabel={t('managerDashboard.footfall.visitsByDay')}
+              compact
+            />
           </>
         )}
       </CardContent>

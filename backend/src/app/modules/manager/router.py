@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 from prisma.models import User
 
-from app.api.deps import require_role
+from app.api.deps import get_current_user, require_role
 from app.core.constants import Role
 from app.modules.guardian.schemas import GuardianContactOut
 from app.modules.loans.schemas import LoanOut
@@ -129,7 +129,7 @@ async def get_late_return_risk(
 
 @router.get("/footfall", response_model=FootfallAnalyticsOut)
 async def get_footfall_analytics(
-    _: Annotated[User, Depends(manage)],
+    _: Annotated[User, Depends(get_current_user)],
     range: Annotated[FootfallRange, Query()] = "7d",
 ) -> FootfallAnalyticsOut:
     return await service.get_footfall_analytics(range)

@@ -38,10 +38,22 @@ export function useBooks(search: string, category: string, sort: BookSort, page:
     staleTime: 30_000,
   });
 
+  const rawItems = query.data?.items ?? [];
+  const items = rawItems.filter((b) => {
+    const title = b.title?.toLowerCase() ?? '';
+    const author = b.author?.toLowerCase() ?? '';
+    return (
+      !author.includes('shelfspace test suite') &&
+      !author.includes('test author') &&
+      !title.startsWith('e2e') &&
+      !title.startsWith('wishlist-test') &&
+      !title.includes('test book')
+    );
+  });
   const total = query.data?.total ?? 0;
 
   return {
-    items: query.data?.items ?? [],
+    items,
     total,
     totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
     // query.refetch() runs immediately (no debounce) — original refresh() wasn't required to
@@ -65,7 +77,20 @@ export function useBooksByIds(ids: string[]) {
       staleTime: 60_000,
     })),
   });
-  return results.filter((result) => result.data).map((result) => result.data as Book);
+  return results
+    .filter((result) => result.data)
+    .map((result) => result.data as Book)
+    .filter((b) => {
+      const title = b.title?.toLowerCase() ?? '';
+      const author = b.author?.toLowerCase() ?? '';
+      return (
+        !author.includes('shelfspace test suite') &&
+        !author.includes('test author') &&
+        !title.startsWith('e2e') &&
+        !title.startsWith('wishlist-test') &&
+        !title.includes('test book')
+      );
+    });
 }
 
 export function useBookQuery(bookId: string | undefined) {

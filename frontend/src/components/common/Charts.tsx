@@ -199,6 +199,23 @@ function GlowFilter({ id }: { id: string }) {
   );
 }
 
+export interface TrendLineChartProps {
+  data: TrendPoint[];
+  /** CSS color value, e.g. 'var(--color-primary)'. */
+  color?: string;
+  valueFormatter?: (value: number) => string;
+  className?: string;
+  /** Accessible name for the chart — the svg carries role="img", so axe/screen readers
+   * need this to describe what it's a chart of (e.g. the card's own title text). */
+  ariaLabel: string;
+  /** Prefixes each y-axis tick, e.g. '₹'. */
+  axisPrefix?: string;
+  /** Suffixes each y-axis tick, e.g. '%'. */
+  axisSuffix?: string;
+  aspectRatio?: string;
+  compact?: boolean;
+}
+
 export function TrendLineChart({
   data,
   color = 'var(--color-primary)',
@@ -207,6 +224,8 @@ export function TrendLineChart({
   ariaLabel,
   axisPrefix,
   axisSuffix,
+  aspectRatio,
+  compact = false,
 }: TrendLineChartProps) {
   // useId must run unconditionally on every render (rules of hooks) — hoisted above
   // the empty-data early return below, even though only the non-empty path uses them.
@@ -215,47 +234,84 @@ export function TrendLineChart({
 
   if (data.length === 0) return null;
 
+  const viewH = compact ? 54 : VIEW_HEIGHT;
+  const plotT = compact ? 14 : PLOT_TOP;
+  const plotH = compact ? 28 : PLOT_HEIGHT;
+
   const values = data.map((d) => d.value);
   const axisMax = niceTicks(Math.max(...values, 0)).at(-1) ?? 1;
   const ticks = niceTicks(Math.max(...values, 0));
 
-  const coords = data.map((d, i) => ({ x: xFor(i, data.length), y: yFor(d.value, axisMax) }));
+  const coords = data.map((d, i) => ({
+    x: xFor(i, data.length),
+    y: plotT + plotH - (axisMax > 0 ? (d.value / axisMax) * plotH : 0),
+  }));
   const linePath = buildSmoothPath(coords);
-  const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${PLOT_TOP + PLOT_HEIGHT} L ${coords[0].x} ${PLOT_TOP + PLOT_HEIGHT} Z`;
+  const areaPath = `${linePath} L ${coords[coords.length - 1].x} ${plotT + plotH} L ${coords[0].x} ${plotT + plotH} Z`;
   const last = data[data.length - 1];
   const lastCoord = coords[coords.length - 1];
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <svg viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`} className="aspect-320/168 w-full" role="img" aria-label={ariaLabel}>
+      <svg
+        viewBox={`0 0 ${VIEW_WIDTH} ${viewH}`}
+        className={cn(aspectRatio ?? (compact ? 'aspect-320/54' : 'aspect-320/168'), 'w-full')}
+        role="img"
+        aria-label={ariaLabel}
+      >
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.35} />
-            <stop offset="100%" stopColor={color} stopOpacity={0.02} />
+            <stop offset="0%" stopColor={color} stopOpacity={compact ? 0.15 : 0.22} />
+            <stop offset="100%" stopColor={color} stopOpacity={0.01} />
           </linearGradient>
           <GlowFilter id={glowId} />
         </defs>
-        <GridLines ticks={ticks} axisMax={axisMax} prefix={axisPrefix} suffix={axisSuffix} />
+        {ticks.map((tick) => {
+          const y = plotT + plotH - (axisMax > 0 ? (tick / axisMax) * plotH : 0);
+          return (
+            <g key={tick}>
+              <line
+                x1={PLOT_LEFT}
+                y1={y}
+                x2={VIEW_WIDTH - PLOT_RIGHT}
+                y2={y}
+                stroke="var(--color-border)"
+                strokeWidth={1}
+              />
+              <text
+                x={PLOT_LEFT - 5}
+                y={y}
+                textAnchor="end"
+                dominantBaseline="middle"
+                fontSize={compact ? 5 : 6}
+                fill="var(--color-muted-foreground)"
+              >
+                {axisPrefix}
+                {compactNumber(tick)}
+                {axisSuffix}
+              </text>
+            </g>
+          );
+        })}
         <path d={areaPath} fill={`url(#${gradientId})`} />
         <path
           d={linePath}
           fill="none"
           stroke={color}
-          strokeWidth={2}
+          strokeWidth={compact ? 1.5 : 1.75}
           strokeLinecap="round"
           strokeLinejoin="round"
-          filter={`url(#${glowId})`}
+          filter={compact ? undefined : `url(#${glowId})`}
         />
         {coords.map((c, i) => (
-          <circle key={i} cx={c.x} cy={c.y} r={4} fill={color} stroke="var(--color-surface)" strokeWidth={2} />
+          <circle key={i} cx={c.x} cy={c.y} r={compact ? 2.5 : 3.25} fill={color} stroke="var(--color-surface)" strokeWidth={compact ? 1.25 : 1.5} />
         ))}
-        {/* Endpoint label only — "label the endpoint, not every point" keeps a dense
-            series (months, hours) legible instead of a number-per-dot wall of text. */}
+        {/* Endpoint label only */}
         <text
           x={lastCoord.x}
-          y={lastCoord.y - 9}
+          y={Math.max(lastCoord.y - 4, 7)}
           textAnchor="end"
-          fontSize={10}
+          fontSize={compact ? 5.5 : 6.5}
           fontWeight={600}
           fill="var(--color-foreground)"
         >
@@ -551,6 +607,7 @@ export interface ComboBarLineChartProps {
   /** Prefix/suffix for the RIGHT axis (line scale), e.g. '₹' for currency. */
   lineAxisPrefix?: string;
   lineAxisSuffix?: string;
+  legendPosition?: 'top' | 'bottom';
   className?: string;
 }
 
@@ -652,6 +709,7 @@ export function ComboBarLineChart({
   barAxisSuffix,
   lineAxisPrefix,
   lineAxisSuffix,
+  legendPosition = 'bottom',
   className,
 }: ComboBarLineChartProps) {
   // Hoisted above the early return — see TrendLineChart's identical comment.
@@ -675,16 +733,20 @@ export function ComboBarLineChart({
     })),
   }));
 
+  const legend = (
+    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground justify-center">
+      {[barSeries, ...lineSeries].map((s) => (
+        <span key={s.key} className="inline-flex items-center gap-1.5">
+          <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
+          {s.label}
+        </span>
+      ))}
+    </div>
+  );
+
   return (
     <div className={cn('flex flex-col gap-2', className)}>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        {[barSeries, ...lineSeries].map((s) => (
-          <span key={s.key} className="inline-flex items-center gap-1.5">
-            <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
-            {s.label}
-          </span>
-        ))}
-      </div>
+      {legendPosition === 'top' && legend}
       <svg viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`} className="aspect-320/168 w-full" role="img" aria-label={ariaLabel}>
         <defs>
           <GlowFilter id={glowId} />
@@ -731,6 +793,7 @@ export function ComboBarLineChart({
         ))}
         <XAxisLabels data={data} xForIndex={(i) => comboBandXFor(i, data.length)} />
       </svg>
+      {legendPosition === 'bottom' && legend}
     </div>
   );
 }

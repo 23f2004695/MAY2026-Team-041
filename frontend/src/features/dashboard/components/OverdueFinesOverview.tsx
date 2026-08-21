@@ -85,7 +85,7 @@ export function OverdueFinesOverview({ months }: { months: OverdueFinesMonth[] }
         <CardTitle>{t('managerDashboard.overdueFines.title')}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 rounded-lg border border-border bg-secondary/20 p-3">
           <StatCell
             label={t('managerDashboard.overdueFines.totalOverdue')}
             value={String(totalOverdue)}
@@ -118,6 +118,7 @@ export function OverdueFinesOverview({ months }: { months: OverdueFinesMonth[] }
         <ComboBarLineChart
           ariaLabel={t('managerDashboard.overdueFines.title')}
           lineAxisPrefix="₹"
+          legendPosition="bottom"
           data={months.map((m) => ({
             label: formatMonth(m.month),
             values: {
