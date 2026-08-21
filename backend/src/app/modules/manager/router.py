@@ -9,6 +9,8 @@ from app.modules.guardian.schemas import GuardianContactOut
 from app.modules.loans.schemas import LoanOut
 from app.modules.manager import service
 from app.modules.manager.schemas import (
+    DemandForecastItemOut,
+    LateReturnRiskItemOut,
     ManagerBookListOut,
     ManagerDashboardStatsOut,
     ManagerGuardianLinkCreate,
@@ -107,3 +109,17 @@ async def reject_reservation(
     reservation_id: str, _: Annotated[User, Depends(manage)]
 ) -> ReservationOut:
     return await service.reject_reservation(reservation_id)
+
+
+@router.get("/demand-forecast", response_model=list[DemandForecastItemOut])
+async def get_demand_forecast(
+    _: Annotated[User, Depends(manage)],
+) -> list[DemandForecastItemOut]:
+    return await service.get_demand_forecast()
+
+
+@router.get("/late-return-risk", response_model=list[LateReturnRiskItemOut])
+async def get_late_return_risk(
+    _: Annotated[User, Depends(manage)],
+) -> list[LateReturnRiskItemOut]:
+    return await service.get_late_return_risk()

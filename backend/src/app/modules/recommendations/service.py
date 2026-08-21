@@ -7,6 +7,7 @@ from prisma.models import Book
 from app.core.llm import build_chat_llm, extract_json_object
 from app.modules.books import repository as books_repository
 from app.modules.books.schemas import BookOut
+from app.modules.members import repository as members_repository
 from app.modules.recommendations import repository, scoring
 from app.modules.recommendations.schemas import (
     NO_PREFERENCE,
@@ -187,9 +188,19 @@ async def _member_loan_context(member_id: str) -> tuple[set[str], Counter[str]]:
     return borrowed_ids, author_counts
 
 
+async def _profile_interests(member_id: str) -> frozenset[str]:
+    """Reads whatever AI reading profile (members/reading_profile.py) is already
+    cached — never triggers a fresh generation from inside the quiz flow, so submitting
+    the quiz never causes an extra Ollama call. Empty if the member has no profile yet."""
+    user = await members_repository.find_by_id(member_id)
+    interests = user.readingProfile.get("interests") if user and user.readingProfile else None
+    return frozenset(interests) if isinstance(interests, list) else frozenset()
+
+
 async def submit_quiz(member_id: str, raw_answers: QuizAnswers) -> RecommendationResponse:
     answers = await _normalize_answers(raw_answers)
     borrowed_ids, history_authors = await _member_loan_context(member_id)
+    profile_interests = await _profile_interests(member_id)
     candidates, relaxed = await _fetch_candidates(answers, exclude_ids=borrowed_ids)
 
     if not candidates:
@@ -210,6 +221,7 @@ async def submit_quiz(member_id: str, raw_answers: QuizAnswers) -> Recommendatio
         ratings=ratings,
         loan_counts=loan_counts,
         history_authors=history_authors,
+        profile_interests=profile_interests,
     )
 
     # Defensive: the query shape here can't currently produce duplicate rows, but a

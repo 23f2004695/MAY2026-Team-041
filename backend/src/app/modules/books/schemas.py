@@ -98,6 +98,17 @@ class BookOut(BaseModel):
         )
 
 
+class BookInsightsOut(BaseModel):
+    summary: str
+    key_concepts: list[str]
+    themes: list[str]
+    difficulty: str
+    technical_difficulty: str
+    vocabulary_complexity: str
+    prerequisites: list[str]
+    why_read: str
+
+
 class BookListResponse(BaseModel):
     items: list[BookOut]
     total: int

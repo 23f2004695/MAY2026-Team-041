@@ -139,3 +139,30 @@ class ManagerBookListOut(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class DemandForecastItemOut(BaseModel):
+    book_id: str
+    title: str
+    author: str
+    category: str
+    total_copies: int
+    recent_activity: int
+    prior_activity: int
+    change_pct: float | None
+    pending_reservations: int
+    demand_level: Literal["high", "medium"]
+    reason: str
+
+
+class LateReturnRiskItemOut(BaseModel):
+    loan_id: str
+    book_title: str
+    member_id: str
+    member_name: str
+    due_date: datetime
+    is_overdue: bool
+    days_overdue: int
+    risk_score: int
+    risk_level: Literal["low", "medium", "high"]
+    reason: str

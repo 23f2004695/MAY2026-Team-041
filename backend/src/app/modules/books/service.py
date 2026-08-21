@@ -5,13 +5,15 @@ from typing import Any
 import httpx
 from fastapi import HTTPException, status
 from langchain_core.messages import HumanMessage, SystemMessage
+from prisma import Json
 from prisma.errors import UniqueViolationError
 from prisma.models import Book
 
 from app.core.llm import build_chat_llm, extract_json_object
-from app.modules.books import repository
+from app.modules.books import embeddings, insights, repository
 from app.modules.books.schemas import (
     BookCreate,
+    BookInsightsOut,
     BookListResponse,
     BookOut,
     BookSort,
@@ -135,11 +137,32 @@ RELATED_BOOKS_LIMIT = 6
 
 
 async def get_related_books(book_id: str) -> list[BookOut]:
+    """Ranked by embedding cosine similarity (see books/embeddings.py) — semantic
+    similarity across title/author/category/description, not a same-category or
+    same-author lookup. Falls back to the old co-borrow + category/author signals only
+    to fill out the list when too few catalog books have a usable embedding yet (e.g.
+    LLM_MODE is misconfigured, or the backfill script hasn't run) — never invents a
+    result, just degrades to the previous behavior for whatever slots embeddings can't
+    fill.
+    """
     book = await repository.find_by_id(book_id)
     if book is None or book.deletedAt is not None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
 
-    related = await repository.find_co_borrowed(book_id, limit=RELATED_BOOKS_LIMIT)
+    target_vector = await embeddings.ensure_embedding(book)
+
+    related: list[Book] = []
+    if target_vector:
+        candidates = await repository.list_active_excluding(book_id)
+        related = embeddings.rank_by_similarity(
+            target_vector, candidates, limit=RELATED_BOOKS_LIMIT
+        )
+
+    if len(related) < RELATED_BOOKS_LIMIT:
+        exclude_ids = [book_id] + [b.id for b in related]
+        fallback = await repository.find_co_borrowed(book_id, limit=RELATED_BOOKS_LIMIT)
+        fallback = [b for b in fallback if b.id not in exclude_ids]
+        related += fallback
 
     if len(related) < RELATED_BOOKS_LIMIT:
         exclude_ids = [book_id] + [b.id for b in related]
@@ -152,6 +175,19 @@ async def get_related_books(book_id: str) -> list[BookOut]:
 
     ratings = await _ratings_by_book([b.id for b in related])
     return [_book_out(b, ratings) for b in related]
+
+
+async def get_book_insights(book_id: str) -> BookInsightsOut | None:
+    """None means "not available right now" (LLM unreachable, bad output) — distinct
+    from 404, which is raised for a missing book before this is ever called. The router
+    returns 200 with a null body either way; the frontend renders an "AI unavailable"
+    state rather than an error."""
+    book = await repository.find_by_id(book_id)
+    if book is None or book.deletedAt is not None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+
+    data = await insights.ensure_insights(book)
+    return BookInsightsOut(**data) if data else None
 
 
 _DESCRIPTION_SYSTEM_PROMPT = """You write short library-catalog descriptions.
@@ -428,6 +464,14 @@ async def update_book(book_id: str, payload: BookUpdate) -> BookOut:
 
     if not data:
         return BookOut.from_prisma(existing)
+
+    # Any edit to the fields the cached embedding was built from (see
+    # books/embeddings.py::embedding_text) invalidates it — cleared here rather than
+    # recomputed inline so an LLM call never blocks a catalog edit; the next read of
+    # GET /books/{id}/related lazily recomputes it instead.
+    if {"title", "author", "category", "description"} & data.keys():
+        data["embedding"] = []
+        data["aiInsights"] = Json(None)
 
     try:
         updated, error = await repository.update_book_with_inventory_guard(book_id, data)

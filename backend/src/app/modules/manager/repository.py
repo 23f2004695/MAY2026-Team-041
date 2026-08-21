@@ -85,3 +85,66 @@ async def list_members_created_since(start: datetime) -> list[User]:
     return await prisma.user.find_many(
         where={"role": {"name": Role.MEMBER}, "deletedAt": None, "createdAt": {"gte": start}}
     )
+
+
+# ── AI insight cards (manager/insights.py) ───────────────────────────────────
+# Grouped counts, not per-loan/per-reservation rows — the demand forecast only ever
+# needs "how many in each window, per book" and the risk score only needs "how many
+# late vs total, per member", so aggregating in SQL avoids hydrating the underlying
+# rows just to count them in Python.
+
+
+async def count_loans_by_book_in_windows(
+    *, recent_start: datetime, prior_start: datetime
+) -> dict[str, tuple[int, int]]:
+    """book_id -> (loans borrowed in [recent_start, now], loans borrowed in
+    [prior_start, recent_start))."""
+    rows = await prisma.query_raw(
+        """SELECT book_id::text AS book_id,
+                  COUNT(*) FILTER (WHERE borrowed_at >= $1::timestamptz)::int AS recent,
+                  COUNT(*) FILTER (
+                    WHERE borrowed_at >= $2::timestamptz AND borrowed_at < $1::timestamptz
+                  )::int AS prior
+           FROM loans
+           WHERE borrowed_at >= $2::timestamptz
+           GROUP BY book_id""",
+        recent_start,
+        prior_start,
+    )
+    return {row["book_id"]: (row["recent"], row["prior"]) for row in rows}
+
+
+async def count_reservations_by_book_in_windows(
+    *, recent_start: datetime, prior_start: datetime
+) -> dict[str, tuple[int, int]]:
+    """book_id -> (reservations created in [recent_start, now], in
+    [prior_start, recent_start)) — any status, since even a since-cancelled request
+    still reflects real demand at the moment it was made."""
+    rows = await prisma.query_raw(
+        """SELECT book_id::text AS book_id,
+                  COUNT(*) FILTER (WHERE created_at >= $1::timestamptz)::int AS recent,
+                  COUNT(*) FILTER (
+                    WHERE created_at >= $2::timestamptz AND created_at < $1::timestamptz
+                  )::int AS prior
+           FROM reservations
+           WHERE created_at >= $2::timestamptz
+           GROUP BY book_id""",
+        recent_start,
+        prior_start,
+    )
+    return {row["book_id"]: (row["recent"], row["prior"]) for row in rows}
+
+
+async def member_late_return_history() -> dict[str, tuple[int, int]]:
+    """member_id -> (late_returns, total_returns), across every loan they've ever
+    returned. Feeds both each member's personal late rate and the library-wide average
+    used as a cold-start fallback for members with no return history yet."""
+    rows = await prisma.query_raw(
+        """SELECT member_id::text AS member_id,
+                  COUNT(*) FILTER (WHERE returned_at::date > due_date::date)::int AS late,
+                  COUNT(*)::int AS total
+           FROM loans
+           WHERE returned_at IS NOT NULL
+           GROUP BY member_id"""
+    )
+    return {row["member_id"]: (row["late"], row["total"]) for row in rows}

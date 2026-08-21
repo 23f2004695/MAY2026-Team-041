@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 
+from prisma import Json
 from prisma.models import Book, Loan, Review
 
 from app.db.pagination import paginate
@@ -43,6 +44,21 @@ async def save_review_digest(book_id: str, *, digest: str, review_count: int) ->
         where={"id": book_id},
         data={"reviewDigest": digest, "reviewDigestReviewCount": review_count},
     )
+
+
+async def save_embedding(book_id: str, vector: list[float]) -> None:
+    await prisma.book.update(where={"id": book_id}, data={"embedding": vector})
+
+
+async def save_ai_insights(book_id: str, data: dict) -> None:
+    await prisma.book.update(where={"id": book_id}, data={"aiInsights": Json(data)})
+
+
+async def list_active_excluding(book_id: str) -> list[Book]:
+    """Every non-deleted book but the one being related against — the candidate pool
+    for embedding-similarity ranking. Small enough catalog (~400 books) that fetching
+    it whole and ranking in Python beats standing up vector-index infrastructure."""
+    return await prisma.book.find_many(where={"deletedAt": None, "id": {"not": book_id}})
 
 
 async def list_books(

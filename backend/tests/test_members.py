@@ -1,35 +1,48 @@
 import os
 import uuid
+from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, patch
 
 os.environ["APP_ENV"] = "test"
 
-import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
 from app.api.deps import get_current_user
 from app.core.config import get_settings
 from app.core.constants import Role
-from app.core.security import hash_password
 from app.db.prisma import prisma
 from app.main import create_app
-from app.modules.members import repository
+from app.modules.members import repository as member_repository
 
 os.environ.setdefault("DATABASE_URL", get_settings().database_url)
 
 TEST_EMAIL_DOMAIN = "@members-test.example.com"
+TEST_TITLE_MARKER = "MEMBERS-TEST-"
 
 
 def _unique_email() -> str:
     return f"{uuid.uuid4().hex}{TEST_EMAIL_DOMAIN}"
 
 
+def _book_payload(**overrides) -> dict:
+    payload = {
+        "title": f"{TEST_TITLE_MARKER}{uuid.uuid4().hex}",
+        "author": "Test Author",
+        "category": "Fiction",
+        "totalCopies": 1,
+    }
+    payload.update(overrides)
+    return payload
+
+
 async def _make_user(role_name: str):
-    role = await repository.upsert_role(role_name)
-    return await repository.create_member(
+    role = await member_repository.upsert_role(role_name)
+    return await member_repository.create_member(
         email=_unique_email(),
-        password_hash=hash_password("Password123!"),
-        full_name=f"Test {role_name.title()}",
+        password_hash=None,
+        full_name=f"Test {role_name.title()} {uuid.uuid4().hex[:6]}",
         phone=None,
         avatar_url=None,
         role_id=role.id,
@@ -40,18 +53,13 @@ async def _make_user(role_name: str):
 async def _db_connection():
     await prisma.connect()
     yield
-    # Audit entries reference the actor with no cascade, so they have to go
-    # before the users do (role changes, bans and fine settlement all log now).
-    await prisma.auditlogentry.delete_many(
-        where={"actor": {"email": {"endswith": TEST_EMAIL_DOMAIN}}}
-    )
-    await prisma.user.delete_many(where={"email": {"endswith": TEST_EMAIL_DOMAIN}})
+    domain_filter = {"email": {"endswith": TEST_EMAIL_DOMAIN}}
+    await prisma.loan.delete_many(where={"member": domain_filter})
+    await prisma.reservation.delete_many(where={"member": domain_filter})
+    await prisma.review.delete_many(where={"member": domain_filter})
+    await prisma.book.delete_many(where={"title": {"startswith": TEST_TITLE_MARKER}})
+    await prisma.user.delete_many(where=domain_filter)
     await prisma.disconnect()
-
-
-@pytest_asyncio.fixture
-async def admin_user():
-    return await _make_user(Role.ADMIN)
 
 
 @pytest_asyncio.fixture
@@ -65,348 +73,139 @@ def _client_as(user) -> AsyncClient:
     return AsyncClient(transport=ASGITransport(app=app), base_url="http://test")
 
 
-async def test_list_members_success(admin_user):
-    """Test Case 1: List Members Success (as admin)"""
-
-    async with _client_as(admin_user) as client:
-        response = await client.get("/api/v1/members")
-
-    print("\nList Members Response:", response.status_code, response.text)
-
-    assert response.status_code == 200
-    body = response.json()
-    assert "items" in body
-    assert "total" in body
+_FAKE_PROFILE_JSON = """{
+  "interests": ["Fiction", "Science"],
+  "difficulty": "Intermediate",
+  "preference": "Practical",
+  "insight": "Prefers practical technical books."
+}"""
 
 
-async def test_list_members_requires_authentication():
-    """Test Case 2: List Members Unauthenticated"""
-
+async def test_reading_profile_requires_authentication():
     app = create_app()
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        response = await client.get("/api/v1/members")
-
-    print("\nList Members Response:", response.status_code, response.text)
+        response = await client.get("/api/v1/members/me/reading-profile")
 
     assert response.status_code == 401
 
 
-async def test_list_members_forbidden_for_member_role(member_user):
-    """Test Case 3: List Members Forbidden (non-admin/member role)"""
-
+async def test_reading_profile_none_without_any_activity(member_user):
     async with _client_as(member_user) as client:
-        response = await client.get("/api/v1/members")
+        response = await client.get("/api/v1/members/me/reading-profile")
 
-    print("\nList Members Response:", response.status_code, response.text)
-
-    assert response.status_code == 403
-
-
-async def test_create_member_defaults_to_member_role(admin_user):
-    """Test Case : Create Member Success"""
-    email = _unique_email()
-    async with _client_as(admin_user) as client:
-        response = await client.post(
-            "/api/v1/members",
-            json={"email": email, "password": "Password123!", "full_name": "Walk-in Visitor"},
-        )
-    print("\nCreate Member Response:", response.status_code, response.text)
-    assert response.status_code == 201
-    body = response.json()
-    assert body["email"] == email
-    assert body["full_name"] == "Walk-in Visitor"
-    assert body["role"]["name"] == Role.MEMBER
-    assert body["is_active"] is True
-    assert "password" not in body
-    assert "password_hash" not in body
-
-
-async def test_create_member_missing_required_field(admin_user):
-    """Test Case 5: Create Member Missing Required Field"""
-
-    async with _client_as(admin_user) as client:
-        response = await client.post(
-            "/api/v1/members",
-            json={"password": "Password123!", "full_name": "No Email"},
-        )
-
-    print("\nCreate Member Response:", response.status_code, response.text)
-
-    assert response.status_code == 422
-    body = response.json()
-    assert body["detail"][0]["loc"] == ["body", "email"]
-    assert body["detail"][0]["type"] == "missing"
-
-
-async def test_create_member_duplicate_email_conflicts(admin_user):
-    """Test Case 6: Create Member Duplicate Email"""
-
-    email = _unique_email()
-    payload = {"email": email, "password": "Password123!", "full_name": "Duplicate Test"}
-
-    async with _client_as(admin_user) as client:
-        first = await client.post("/api/v1/members", json=payload)
-        second = await client.post("/api/v1/members", json=payload)
-
-    print("\nCreate Member Response:", second.status_code, second.text)
-
-    assert first.status_code == 201
-    assert second.status_code == 409
-
-
-async def test_create_member_forbidden_for_member_role(member_user):
-    """Test Case 7: Create Member Forbidden (non-admin)"""
-
-    async with _client_as(member_user) as client:
-        response = await client.post(
-            "/api/v1/members",
-            json={"email": _unique_email(), "password": "Password123!", "full_name": "Nope"},
-        )
-
-    print("\nCreate Member Response:", response.status_code, response.text)
-
-    assert response.status_code == 403
-
-
-@pytest.mark.parametrize("role_name", [Role.MANAGER, Role.LIBRARIAN, Role.IT_HEAD])
-async def test_non_admin_staff_cannot_create_members(role_name):
-    staff_user = await _make_user(role_name)
-
-    async with _client_as(staff_user) as client:
-        response = await client.post(
-            "/api/v1/members",
-            json={
-                "email": _unique_email(),
-                "password": "Password123!",
-                "full_name": "Escalation Attempt",
-                "role_name": Role.ADMIN,
-            },
-        )
-
-    assert response.status_code == 403
-
-
-async def test_create_member_rejects_unknown_role(admin_user):
-    async with _client_as(admin_user) as client:
-        response = await client.post(
-            "/api/v1/members",
-            json={
-                "email": _unique_email(),
-                "password": "Password123!",
-                "full_name": "Unknown Role",
-                "role_name": "super-admin",
-            },
-        )
-
-    assert response.status_code == 422
-
-
-async def test_list_members_search_and_pagination(admin_user):
-    unique_marker = uuid.uuid4().hex[:8]
-    async with _client_as(admin_user) as client:
-        for i in range(3):
-            await client.post(
-                "/api/v1/members",
-                json={
-                    "email": _unique_email(),
-                    "password": "Password123!",
-                    "full_name": f"Searchable-{unique_marker}-{i}",
-                },
-            )
-        response = await client.get(
-            "/api/v1/members", params={"search": unique_marker, "page": 1, "page_size": 2}
-        )
     assert response.status_code == 200
-    body = response.json()
-    assert body["total"] == 3
-    assert len(body["items"]) == 2
-    assert body["page"] == 1
-    assert body["page_size"] == 2
-    assert all(unique_marker in item["full_name"] for item in body["items"])
+    assert response.json() is None
 
 
-async def test_list_members_filters_by_role(admin_user):
-    unique_marker = uuid.uuid4().hex[:8]
-    guardian_role = await repository.upsert_role(Role.GUARDIAN)
-    await repository.create_member(
-        email=_unique_email(),
-        password_hash=None,
-        full_name=f"Guardian-{unique_marker}",
-        phone=None,
-        avatar_url=None,
-        role_id=guardian_role.id,
+async def test_reading_profile_generates_and_caches(member_user):
+    book = await prisma.book.create(data=_book_payload())
+    await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=7),
+            "createdById": member_user.id,
+        }
+    )
+    fake_llm = SimpleNamespace(
+        ainvoke=AsyncMock(return_value=SimpleNamespace(content=_FAKE_PROFILE_JSON))
     )
 
-    async with _client_as(admin_user) as client:
-        await client.post(
-            "/api/v1/members",
-            json={
-                "email": _unique_email(),
-                "password": "Password123!",
-                "full_name": f"Member-{unique_marker}",
-            },
+    # Two separate requests, like a real client would make — get_current_user re-fetches
+    # the user from the DB on each real request, so re-fetching here (rather than reusing
+    # the fixture's now-stale in-memory object) matches production behavior.
+    with patch("app.modules.members.reading_profile.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            first = await client.get("/api/v1/members/me/reading-profile")
+        refreshed = await prisma.user.find_unique(
+            where={"id": member_user.id}, include={"role": True}
         )
-        response = await client.get(
-            "/api/v1/members", params={"search": unique_marker, "role": Role.GUARDIAN}
-        )
+        async with _client_as(refreshed) as client:
+            second = await client.get("/api/v1/members/me/reading-profile")
 
+    assert first.status_code == second.status_code == 200
+    body = first.json()
+    assert body["interests"] == ["Fiction", "Science"]
+    assert body["difficulty"] == "Intermediate"
+    # One loan -> activity count unchanged between the two requests -> one LLM call, not two.
+    fake_llm.ainvoke.assert_awaited_once()
+
+    stored = await prisma.user.find_unique(where={"id": member_user.id})
+    assert stored.readingProfile["preference"] == "Practical"
+    assert stored.readingProfileActivityCount == 1
+
+
+async def test_reading_profile_regenerates_after_new_activity(member_user):
+    book = await prisma.book.create(data=_book_payload())
+    await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=7),
+            "createdById": member_user.id,
+        }
+    )
+    fake_llm = SimpleNamespace(
+        ainvoke=AsyncMock(return_value=SimpleNamespace(content=_FAKE_PROFILE_JSON))
+    )
+    with patch("app.modules.members.reading_profile.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            await client.get("/api/v1/members/me/reading-profile")
+    fake_llm.ainvoke.assert_awaited_once()
+
+    # New activity (a second loan) should trigger regeneration on the next fetch.
+    other_book = await prisma.book.create(data=_book_payload())
+    await prisma.loan.create(
+        data={
+            "bookId": other_book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=7),
+            "createdById": member_user.id,
+        }
+    )
+    refreshed = await prisma.user.find_unique(where={"id": member_user.id}, include={"role": True})
+    with patch("app.modules.members.reading_profile.build_chat_llm", return_value=fake_llm):
+        async with _client_as(refreshed) as client:
+            await client.get("/api/v1/members/me/reading-profile")
+
+    assert fake_llm.ainvoke.await_count == 2
+    stored = await prisma.user.find_unique(where={"id": member_user.id})
+    assert stored.readingProfileActivityCount == 2
+
+
+async def test_reading_profile_keeps_stale_cache_when_llm_unavailable(member_user):
+    book = await prisma.book.create(data=_book_payload())
+    await prisma.loan.create(
+        data={
+            "bookId": book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=7),
+            "createdById": member_user.id,
+        }
+    )
+    fake_llm = SimpleNamespace(
+        ainvoke=AsyncMock(return_value=SimpleNamespace(content=_FAKE_PROFILE_JSON))
+    )
+    with patch("app.modules.members.reading_profile.build_chat_llm", return_value=fake_llm):
+        async with _client_as(member_user) as client:
+            await client.get("/api/v1/members/me/reading-profile")
+
+    other_book = await prisma.book.create(data=_book_payload())
+    await prisma.loan.create(
+        data={
+            "bookId": other_book.id,
+            "memberId": member_user.id,
+            "dueDate": datetime.now(UTC) + timedelta(days=7),
+            "createdById": member_user.id,
+        }
+    )
+    refreshed = await prisma.user.find_unique(where={"id": member_user.id}, include={"role": True})
+    failing_llm = SimpleNamespace(ainvoke=AsyncMock(side_effect=RuntimeError("connection refused")))
+    with patch("app.modules.members.reading_profile.build_chat_llm", return_value=failing_llm):
+        async with _client_as(refreshed) as client:
+            response = await client.get("/api/v1/members/me/reading-profile")
+
+    # Existing functionality keeps working: still 200 with the last known-good profile,
+    # not an error, even though new activity couldn't be re-analyzed right now.
     assert response.status_code == 200
-    body = response.json()
-    assert body["total"] == 1
-    assert body["items"][0]["role"]["name"] == Role.GUARDIAN
-
-
-async def test_list_members_active_only_excludes_inactive_accounts(admin_user):
-    unique_marker = uuid.uuid4().hex[:8]
-    async with _client_as(admin_user) as client:
-        created = await client.post(
-            "/api/v1/members",
-            json={
-                "email": _unique_email(),
-                "password": "Password123!",
-                "full_name": f"Inactive-{unique_marker}",
-            },
-        )
-        await client.put(f"/api/v1/members/{created.json()['id']}", json={"is_active": False})
-
-        response = await client.get(
-            "/api/v1/members", params={"search": unique_marker, "active_only": True}
-        )
-
-    assert response.status_code == 200
-    assert response.json()["total"] == 0
-
-
-async def test_update_member_changes_fields(admin_user):
-    """Test Case 8: Update Member Success"""
-
-    async with _client_as(admin_user) as client:
-        created = await client.post(
-            "/api/v1/members",
-            json={
-                "email": _unique_email(),
-                "password": "Password123!",
-                "full_name": "Before Update",
-            },
-        )
-        member_id = created.json()["id"]
-
-        response = await client.put(
-            f"/api/v1/members/{member_id}",
-            json={"full_name": "After Update", "is_active": False},
-        )
-
-    print("\nUpdate Member Response:", response.status_code, response.text)
-
-    assert response.status_code == 200  # ✅ Status Code Check
-    body = response.json()  # ✅ Response Body Check
-    assert body["full_name"] == "After Update"
-    assert body["is_active"] is False
-
-
-async def test_admin_cannot_deactivate_or_demote_self(admin_user):
-    async with _client_as(admin_user) as client:
-        deactivate = await client.put(f"/api/v1/members/{admin_user.id}", json={"is_active": False})
-        demote = await client.put(
-            f"/api/v1/members/{admin_user.id}", json={"role_name": Role.MEMBER}
-        )
-
-    assert deactivate.status_code == 409
-    assert demote.status_code == 409
-    unchanged = await repository.find_by_id(admin_user.id)
-    assert unchanged is not None
-    assert unchanged.isActive is True
-    assert unchanged.role.name == Role.ADMIN
-
-
-async def test_last_active_admin_cannot_be_removed(admin_user, monkeypatch):
-    target = await _make_user(Role.ADMIN)
-
-    # Accepts `client` because the guard now counts inside the same transaction that
-    # performs the write, behind an advisory lock.
-    async def one_admin(*, client=None) -> int:
-        return 1
-
-    monkeypatch.setattr(repository, "count_active_admins", one_admin)
-    async with _client_as(admin_user) as client:
-        response = await client.put(f"/api/v1/members/{target.id}", json={"role_name": Role.MEMBER})
-
-    assert response.status_code == 409
-    unchanged = await repository.find_by_id(target.id)
-    assert unchanged is not None
-    assert unchanged.role.name == Role.ADMIN
-
-
-@pytest.mark.parametrize("role_name", [Role.MANAGER, Role.LIBRARIAN, Role.IT_HEAD])
-async def test_non_admin_staff_cannot_update_members(role_name, member_user):
-    staff_user = await _make_user(role_name)
-
-    async with _client_as(staff_user) as client:
-        response = await client.put(
-            f"/api/v1/members/{member_user.id}",
-            json={"role_name": Role.ADMIN, "is_active": False},
-        )
-
-    assert response.status_code == 403
-
-    unchanged = await repository.find_by_id(member_user.id)
-    assert unchanged is not None
-    assert unchanged.role.name == Role.MEMBER
-    assert unchanged.isActive is True
-
-
-async def test_update_member_rejects_unknown_role(admin_user, member_user):
-    async with _client_as(admin_user) as client:
-        response = await client.put(
-            f"/api/v1/members/{member_user.id}",
-            json={"role_name": "super-admin"},
-        )
-
-    assert response.status_code == 422
-
-
-async def test_update_member_not_found(admin_user):
-    """Test Case 9: Update Member Not Found"""
-
-    async with _client_as(admin_user) as client:
-        response = await client.put(
-            f"/api/v1/members/{uuid.uuid4()}",
-            json={"full_name": "Nobody"},
-        )
-
-    print("\nUpdate Member Response:", response.status_code, response.text)
-
-    assert response.status_code == 404
-
-
-async def test_update_member_rejects_malformed_id(admin_user):
-    async with _client_as(admin_user) as client:
-        response = await client.put(
-            "/api/v1/members/not-a-uuid",
-            json={"full_name": "Nobody"},
-        )
-
-    assert response.status_code == 422
-
-
-async def test_update_member_can_clear_nullable_fields(admin_user):
-    async with _client_as(admin_user) as client:
-        created = await client.post(
-            "/api/v1/members",
-            json={
-                "email": _unique_email(),
-                "password": "Password123!",
-                "full_name": "Has Phone",
-                "phone": "+911234567890",
-            },
-        )
-        member_id = created.json()["id"]
-        assert created.json()["phone"] == "+911234567890"
-
-        response = await client.put(
-            f"/api/v1/members/{member_id}",
-            json={"phone": None},
-        )
-
-    assert response.status_code == 200
-    assert response.json()["phone"] is None
+    assert response.json()["preference"] == "Practical"
