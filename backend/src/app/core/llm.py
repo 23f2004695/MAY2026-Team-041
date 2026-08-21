@@ -62,7 +62,10 @@ def build_embeddings() -> Embeddings:
     if mode == "bedrock":
         from langchain_aws import BedrockEmbeddings
 
-        kwargs: dict[str, Any] = {"model_id": s.bedrock_embedding_model_id, "region_name": s.aws_region}
+        kwargs: dict[str, Any] = {
+            "model_id": s.bedrock_embedding_model_id,
+            "region_name": s.aws_region,
+        }
         if s.aws_access_key_id and s.aws_secret_access_key:
             kwargs["aws_access_key_id"] = s.aws_access_key_id
             kwargs["aws_secret_access_key"] = s.aws_secret_access_key

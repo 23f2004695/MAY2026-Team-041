@@ -389,7 +389,9 @@ async def get_demand_forecast() -> list[DemandForecastItemOut]:
     prior_start = recent_start - timedelta(days=insights.DEMAND_PRIOR_WINDOW_DAYS)
 
     loan_counts, reservation_counts, pending = await asyncio.gather(
-        repository.count_loans_by_book_in_windows(recent_start=recent_start, prior_start=prior_start),
+        repository.count_loans_by_book_in_windows(
+            recent_start=recent_start, prior_start=prior_start
+        ),
         repository.count_reservations_by_book_in_windows(
             recent_start=recent_start, prior_start=prior_start
         ),
@@ -425,7 +427,9 @@ async def get_demand_forecast() -> list[DemandForecastItemOut]:
         if forecast is not None:
             scored.append((forecast, book))
 
-    scored.sort(key=lambda pair: (pair[0].demand_level == "high", pair[0].change_pct or 0), reverse=True)
+    scored.sort(
+        key=lambda pair: (pair[0].demand_level == "high", pair[0].change_pct or 0), reverse=True
+    )
 
     return [
         DemandForecastItemOut(
@@ -462,7 +466,9 @@ async def get_late_return_risk() -> list[LateReturnRiskItemOut]:
     for loan in active_loans:
         late, total = history_by_member.get(loan.memberId, (0, 0))
         member_history = (
-            insights.MemberLoanHistory(late_returns=late, total_returns=total) if total > 0 else None
+            insights.MemberLoanHistory(late_returns=late, total_returns=total)
+            if total > 0
+            else None
         )
         risk = insights.score_late_return_risk(
             due_date=loan.dueDate,

@@ -96,7 +96,9 @@ async def _activity_signal(member_id: str) -> tuple[int, str]:
 
     top_categories = ", ".join(f"{c} ({n})" for c, n in category_counts.most_common(5)) or "none"
     top_authors = ", ".join(f"{a} ({n})" for a, n in author_counts.most_common(3)) or "none"
-    difficulty_line = ", ".join(f"{d} ({n})" for d, n in difficulty_counts.most_common()) or "unknown"
+    difficulty_line = (
+        ", ".join(f"{d} ({n})" for d, n in difficulty_counts.most_common()) or "unknown"
+    )
 
     text = (
         f"Books borrowed: {len(loans)}\n"

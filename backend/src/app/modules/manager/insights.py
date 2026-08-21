@@ -160,7 +160,9 @@ def score_late_return_risk(
         )
     else:
         late_rate_pct = library_wide_late_rate_pct
-        history_note = f"no return history yet — using the library-wide average ({late_rate_pct:.0f}%)"
+        history_note = (
+            f"no return history yet — using the library-wide average ({late_rate_pct:.0f}%)"
+        )
 
     days_overdue = max(0, (now.date() - due_date.date()).days)
     days_until_due = (due_date.date() - now.date()).days

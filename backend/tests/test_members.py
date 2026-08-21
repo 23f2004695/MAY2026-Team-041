@@ -117,7 +117,9 @@ async def test_reading_profile_generates_and_caches(member_user):
     with patch("app.modules.members.reading_profile.build_chat_llm", return_value=fake_llm):
         async with _client_as(member_user) as client:
             first = await client.get("/api/v1/members/me/reading-profile")
-        refreshed = await prisma.user.find_unique(where={"id": member_user.id}, include={"role": True})
+        refreshed = await prisma.user.find_unique(
+            where={"id": member_user.id}, include={"role": True}
+        )
         async with _client_as(refreshed) as client:
             second = await client.get("/api/v1/members/me/reading-profile")
 

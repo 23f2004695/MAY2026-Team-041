@@ -154,7 +154,9 @@ async def get_related_books(book_id: str) -> list[BookOut]:
     related: list[Book] = []
     if target_vector:
         candidates = await repository.list_active_excluding(book_id)
-        related = embeddings.rank_by_similarity(target_vector, candidates, limit=RELATED_BOOKS_LIMIT)
+        related = embeddings.rank_by_similarity(
+            target_vector, candidates, limit=RELATED_BOOKS_LIMIT
+        )
 
     if len(related) < RELATED_BOOKS_LIMIT:
         exclude_ids = [book_id] + [b.id for b in related]

@@ -560,7 +560,9 @@ async def test_related_books_ranks_by_embedding_similarity():
     get_related_books ranks against whatever's already cached (populated in practice by
     scripts/backfill_book_embeddings.py) and never embeds a whole catalog per request."""
     anchor = await prisma.book.create(data=_book_payload(category="Fiction", author="Author A"))
-    close_match = await prisma.book.create(data=_book_payload(category="Science", author="Author B"))
+    close_match = await prisma.book.create(
+        data=_book_payload(category="Science", author="Author B")
+    )
     far_match = await prisma.book.create(data=_book_payload(category="Fiction", author="Author A"))
 
     await prisma.book.update(where={"id": close_match.id}, data={"embedding": [1.0, 0.0]})
@@ -581,7 +583,7 @@ async def test_related_books_caches_embedding_after_first_request():
     anchor = await prisma.book.create(
         data=_book_payload(description="A journey through deep space")
     )
-    other = await prisma.book.create(data=_book_payload(description="A cozy cookbook"))
+    await prisma.book.create(data=_book_payload(description="A cozy cookbook"))
 
     fake = _fake_embeddings({"space": [1.0, 0.0], "cookbook": [0.0, 1.0]}, default=[0.5, 0.5])
     with patch(
@@ -593,8 +595,8 @@ async def test_related_books_caches_embedding_after_first_request():
 
     assert first.status_code == second.status_code == 200
     # Anchor's own vector is computed once and reused, not recomputed per request —
-    # build_embeddings() itself may still be called again for `other`'s vector, so this
-    # checks the persisted value rather than call counts.
+    # build_embeddings() itself may still be called again for the other book's vector,
+    # so this checks the persisted value rather than call counts.
     stored = await prisma.book.find_unique(where={"id": anchor.id})
     assert stored.embedding == [1.0, 0.0]
     assert build_embeddings_mock.called
