@@ -42,7 +42,11 @@ describe('useWishlist', () => {
 
   it('adds a book optimistically, before the backend call resolves', async () => {
     let resolveAdd: () => void = () => {};
-    const addToWishlist = vi.fn(
+    // Typed via the generic (rather than a named param) so the mock's call-args tuple
+    // stays `[string]` for the assertion below, without an unused-parameter lint error —
+    // react-query's mutate() actually invokes this with a second (internal context)
+    // argument too, which is why the assertion below checks only the first.
+    const addToWishlist = vi.fn<(bookId: string) => Promise<void>>(
       () => new Promise<void>((resolve) => (resolveAdd = resolve)),
     );
     mockedUseAuth.mockReturnValue({
