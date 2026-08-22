@@ -170,7 +170,8 @@ export function ManagerBooksPage() {
         />
       )}
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      {/* Styled Filter & Search Toolbar Container matching Admin Members page */}
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3.5 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <SearchBar
           value={search}
           onChange={updateSearch}
@@ -224,36 +225,38 @@ export function ManagerBooksPage() {
         />
       ) : (
         <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('managerDashboard.books.table.title')}</TableHead>
-                <TableHead>{t('managerDashboard.books.table.category')}</TableHead>
-                <TableHead>{t('managerDashboard.books.table.copies')}</TableHead>
-                <TableHead>{t('managerDashboard.books.table.status')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {items.map((book) => (
-                <TableRow key={book.id}>
-                  <TableCell>
-                    <p className="font-medium text-foreground">{book.title}</p>
-                    <p className="text-xs text-muted-foreground">{book.author}</p>
-                  </TableCell>
-                  <TableCell>{book.category}</TableCell>
-                  <TableCell>
-                    {t('managerDashboard.books.copiesAvailable', {
-                      available: book.available_copies,
-                      total: book.total_copies,
-                    })}
-                  </TableCell>
-                  <TableCell>
-                    <StatusCell book={book} />
-                  </TableCell>
+          <div className="w-full overflow-x-auto rounded-xl border border-border bg-card shadow-xs">
+            <Table className="min-w-full">
+              <TableHeader className="bg-secondary/20">
+                <TableRow>
+                  <TableHead className="whitespace-nowrap px-3.5 py-2.5">{t('managerDashboard.books.table.title')}</TableHead>
+                  <TableHead className="whitespace-nowrap px-3.5 py-2.5">{t('managerDashboard.books.table.category')}</TableHead>
+                  <TableHead className="whitespace-nowrap px-3.5 py-2.5">{t('managerDashboard.books.table.copies')}</TableHead>
+                  <TableHead className="whitespace-nowrap px-3.5 py-2.5 text-right">{t('managerDashboard.books.table.status')}</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {items.map((book) => (
+                  <TableRow key={book.id} className="transition-colors hover:bg-secondary/40">
+                    <TableCell className="px-3.5 py-2.5">
+                      <p className="font-semibold text-foreground text-xs sm:text-sm">{book.title}</p>
+                      <p className="text-xs text-muted-foreground">{book.author}</p>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap px-3.5 py-2.5 text-xs text-foreground font-medium">{book.category}</TableCell>
+                    <TableCell className="whitespace-nowrap px-3.5 py-2.5 text-xs font-semibold text-foreground">
+                      {t('managerDashboard.books.copiesAvailable', {
+                        available: book.available_copies,
+                        total: book.total_copies,
+                      })}
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap px-3.5 py-2.5 text-right">
+                      <StatusCell book={book} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
           <Pagination
             currentPage={page}

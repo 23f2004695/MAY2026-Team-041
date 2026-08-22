@@ -68,14 +68,16 @@ export function DateSlider({ options, active, ariaLabel, onChange }: DateSliderP
                 </span>
               )}
             </div>
-            <span
-              className={cn(
-                'relative text-xs font-normal',
-                isActive ? 'text-primary-foreground' : 'text-muted-foreground',
-              )}
-            >
-              {option.subLabel}
-            </span>
+            {option.subLabel && option.subLabel !== option.label && (
+              <span
+                className={cn(
+                  'relative text-xs font-normal',
+                  isActive ? 'text-primary-foreground/90' : 'text-muted-foreground',
+                )}
+              >
+                {option.subLabel}
+              </span>
+            )}
           </button>
         );
       })}

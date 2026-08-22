@@ -95,7 +95,8 @@ export function ReservationsPage() {
     <div className="flex flex-col gap-6">
       <PageHeader title={t('reservations.pageTitle')} description={t('reservations.pageDescription')} />
 
-      <div className="flex flex-col gap-3 md:flex-row md:items-end">
+      {/* Styled Filter & Search Toolbar Container matching Admin Members page */}
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3.5 shadow-xs sm:flex-row sm:items-center sm:justify-between">
         <SearchBar
           value={search}
           onChange={(value) => {
@@ -107,42 +108,42 @@ export function ReservationsPage() {
           aria-label={t('reservations.search.ariaLabel')}
           className="sm:max-w-sm"
         />
-      </div>
 
-      <TableToolbar
-        filters={[
-          {
-            label: t('reservations.filters.statusLabel'),
-            value: statusFilter,
+        <TableToolbar
+          filters={[
+            {
+              label: t('reservations.filters.statusLabel'),
+              value: statusFilter,
+              onChange: (value) => {
+                setStatusFilter(value as 'all' | 'pending' | 'approved' | 'rejected' | 'cancelled');
+                setPage(1);
+              },
+              options: [
+                { value: 'all', label: t('reservations.filters.all') },
+                { value: 'pending', label: t('reservations.filters.pending') },
+                { value: 'approved', label: t('reservations.filters.approved') },
+                { value: 'rejected', label: t('reservations.filters.rejected') },
+                { value: 'cancelled', label: t('reservations.filters.cancelled') },
+              ],
+            },
+          ]}
+          sort={{
+            label: t('common.actions.sort'),
+            value: sort,
             onChange: (value) => {
-              setStatusFilter(value as 'all' | 'pending' | 'approved' | 'rejected' | 'cancelled');
+              setSort(value as 'newest' | 'oldest' | 'titleAsc' | 'titleDesc');
               setPage(1);
             },
             options: [
-              { value: 'all', label: t('reservations.filters.all') },
-              { value: 'pending', label: t('reservations.filters.pending') },
-              { value: 'approved', label: t('reservations.filters.approved') },
-              { value: 'rejected', label: t('reservations.filters.rejected') },
-              { value: 'cancelled', label: t('reservations.filters.cancelled') },
+              { value: 'newest', label: t('reservations.sort.newest') },
+              { value: 'oldest', label: t('reservations.sort.oldest') },
+              { value: 'titleAsc', label: t('reservations.sort.titleAsc') },
+              { value: 'titleDesc', label: t('reservations.sort.titleDesc') },
             ],
-          },
-        ]}
-        sort={{
-          label: t('common.actions.sort'),
-          value: sort,
-          onChange: (value) => {
-            setSort(value as 'newest' | 'oldest' | 'titleAsc' | 'titleDesc');
-            setPage(1);
-          },
-          options: [
-            { value: 'newest', label: t('reservations.sort.newest') },
-            { value: 'oldest', label: t('reservations.sort.oldest') },
-            { value: 'titleAsc', label: t('reservations.sort.titleAsc') },
-            { value: 'titleDesc', label: t('reservations.sort.titleDesc') },
-          ],
-        }}
-        onReset={resetFilters}
-      />
+          }}
+          onReset={resetFilters}
+        />
+      </div>
 
       <section aria-labelledby="current-reservations-heading" className="flex flex-col gap-3">
         <h2 id="current-reservations-heading" className="text-lg font-semibold text-foreground">

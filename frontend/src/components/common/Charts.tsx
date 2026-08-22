@@ -348,6 +348,8 @@ export interface MultiLineTrendChartProps {
    * Deliberately opt-in: the general rule is "label selectively," but a small, fixed-size
    * series like a 7-day window reads fine with a number on every point. */
   showPointLabels?: boolean;
+  /** Controls whether the series legend renders above or below the graph SVG. */
+  legendPosition?: 'top' | 'bottom';
 }
 
 // Same smooth-curve construction as TrendLineChart, but for two or more series sharing
@@ -361,6 +363,7 @@ export function MultiLineTrendChart({
   ariaLabel,
   axisPrefix,
   showPointLabels,
+  legendPosition = 'top',
 }: MultiLineTrendChartProps) {
   // Hoisted above the early return — see TrendLineChart's identical comment.
   const glowId = `multiline-glow-${useId()}`;
@@ -376,16 +379,20 @@ export function MultiLineTrendChart({
     coords: data.map((d, i) => ({ x: xFor(i, data.length), y: yFor(d.values[s.key] ?? 0, axisMax) })),
   }));
 
+  const legend = (
+    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      {series.map((s) => (
+        <span key={s.key} className="inline-flex items-center gap-1.5">
+          <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
+          {s.label}
+        </span>
+      ))}
+    </div>
+  );
+
   return (
     <div className={cn('flex flex-col gap-2', className)}>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        {series.map((s) => (
-          <span key={s.key} className="inline-flex items-center gap-1.5">
-            <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
-            {s.label}
-          </span>
-        ))}
-      </div>
+      {legendPosition === 'top' && legend}
       <svg viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`} className="aspect-320/168 w-full" role="img" aria-label={ariaLabel}>
         <defs>
           <GlowFilter id={glowId} />
@@ -423,6 +430,7 @@ export function MultiLineTrendChart({
         ))}
         <XAxisLabels data={data} xForIndex={(i) => xFor(i, data.length)} />
       </svg>
+      {legendPosition === 'bottom' && legend}
     </div>
   );
 }
@@ -440,6 +448,8 @@ export interface MultiBarChartProps {
   ariaLabel: string;
   /** Prefixes each y-axis tick, e.g. '₹' or '%'. */
   axisPrefix?: string;
+  /** Controls whether the series legend renders above or below the graph SVG. */
+  legendPosition?: 'top' | 'bottom';
 }
 
 const BAR_GROUP_GAP = 8;
@@ -465,6 +475,7 @@ export function MultiBarChart({
   stacked = false,
   ariaLabel,
   axisPrefix,
+  legendPosition = 'top',
 }: MultiBarChartProps) {
   // Hoisted above the early return — see TrendLineChart's identical comment.
   const glowId = `bar-glow-${useId()}`;
@@ -485,16 +496,20 @@ export function MultiBarChart({
     : barWidth * series.length + (series.length - 1) * BAR_GAP;
   const lastGroupIndex = data.length - 1;
 
+  const legend = (
+    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      {series.map((s) => (
+        <span key={s.key} className="inline-flex items-center gap-1.5">
+          <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
+          {s.label}
+        </span>
+      ))}
+    </div>
+  );
+
   return (
     <div className={cn('flex flex-col gap-2', className)}>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        {series.map((s) => (
-          <span key={s.key} className="inline-flex items-center gap-1.5">
-            <span className="size-2 rounded-full" style={{ backgroundColor: s.color }} />
-            {s.label}
-          </span>
-        ))}
-      </div>
+      {legendPosition === 'top' && legend}
       <svg viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`} className="aspect-320/168 w-full" role="img" aria-label={ariaLabel}>
         <defs>
           <GlowFilter id={glowId} />
@@ -588,6 +603,7 @@ export function MultiBarChart({
         })}
         <XAxisLabels data={data} xForIndex={(i) => bandXFor(i, data.length)} />
       </svg>
+      {legendPosition === 'bottom' && legend}
     </div>
   );
 }
@@ -813,6 +829,8 @@ export interface MultiSegmentDonutProps {
   className?: string;
   /** Formats each segment's legend value, e.g. formatCurrency. Defaults to the raw number. */
   valueFormatter?: (value: number) => string;
+  /** Hides the default vertical legend list below the SVG. */
+  hideLegend?: boolean;
 }
 
 const DONUT_RADIUS = 40;
@@ -828,6 +846,7 @@ export function MultiSegmentDonut({
   centerLabel,
   className,
   valueFormatter = String,
+  hideLegend = false,
 }: MultiSegmentDonutProps) {
   const total = segments.reduce((sum, s) => sum + s.value, 0);
   let cursor = 0;
@@ -835,7 +854,7 @@ export function MultiSegmentDonut({
   return (
     <div className={cn('flex flex-col items-center gap-3', className)}>
       <div
-        className="relative flex size-48 shrink-0 items-center justify-center"
+        className="relative flex size-44 shrink-0 items-center justify-center"
         role="img"
         aria-label={`${centerLabel}: ${centerValue}. ${segments.map((s) => `${s.label} ${s.value}`).join(', ')}`}
       >
@@ -868,17 +887,19 @@ export function MultiSegmentDonut({
           <span className="text-xs font-medium text-muted-foreground">{centerLabel}</span>
         </div>
       </div>
-      <ul className="flex w-full flex-col gap-1.5">
-        {segments.map((segment) => (
-          <li key={segment.key} className="flex items-center justify-between gap-2 text-xs">
-            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-              <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: segment.color }} />
-              {segment.label}
-            </span>
-            <span className="font-medium text-foreground">{valueFormatter(segment.value)}</span>
-          </li>
-        ))}
-      </ul>
+      {!hideLegend && (
+        <ul className="flex w-full flex-col gap-1.5">
+          {segments.map((segment) => (
+            <li key={segment.key} className="flex items-center justify-between gap-2 text-xs">
+              <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: segment.color }} />
+                {segment.label}
+              </span>
+              <span className="font-medium text-foreground">{valueFormatter(segment.value)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

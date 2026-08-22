@@ -2,8 +2,9 @@ import { BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ProgressBar } from '@/components/common';
+import { Pagination, ProgressBar } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle, Modal, Select } from '@/components/ui';
+import { usePagination } from '@/hooks';
 import type { MostBorrowedBook, MostBorrowedBooksByPeriod } from '@/providers/AuthProvider';
 
 type Period = keyof MostBorrowedBooksByPeriod;
@@ -48,6 +49,25 @@ function BookBarList({ books, caption }: { books: MostBorrowedBook[]; caption: s
         </div>
         <p className="text-center text-xs text-muted-foreground">{caption}</p>
       </div>
+    </div>
+  );
+}
+
+function MostBorrowedModalContent({ books, caption }: { books: MostBorrowedBook[]; caption: string }) {
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(books, 5);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <BookBarList books={paginatedItems} caption={caption} />
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={5}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }
@@ -103,7 +123,7 @@ export function MostBorrowedBooks({ books }: { books: MostBorrowedBooksByPeriod 
         title={t('managerDashboard.mostBorrowedBooks.title')}
         className="max-w-lg"
       >
-        <BookBarList books={selected} caption={caption} />
+        <MostBorrowedModalContent books={selected} caption={caption} />
       </Modal>
     </Card>
   );
