@@ -14,6 +14,7 @@ export interface BookCardProps {
   category: string;
   available: boolean;
   shelfLocation?: string | null;
+  coverImageUrl?: string | null;
   averageRating?: number | null;
   reviewCount?: number;
   description?: string | null;
@@ -31,6 +32,7 @@ export function BookCard({
   category,
   available,
   shelfLocation,
+  coverImageUrl,
   averageRating,
   reviewCount = 0,
   description,
@@ -74,9 +76,17 @@ export function BookCard({
         to={href}
         aria-label={t('common.cards.book.viewDetailsAria', { title })}
       >
-        <div className="flex h-32 items-center justify-center rounded-md bg-primary/10 text-primary">
-          <BookOpen className="size-8" />
-        </div>
+        {coverImageUrl ? (
+          <img
+            src={coverImageUrl}
+            alt=""
+            className="h-32 w-full rounded-md object-cover"
+          />
+        ) : (
+          <div className="flex h-32 items-center justify-center rounded-md bg-primary/10 text-primary">
+            <BookOpen className="size-8" />
+          </div>
+        )}
       </Link>
       <div className="flex items-start justify-between gap-2">
         <Link to={href} className="min-w-0">

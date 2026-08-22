@@ -9,6 +9,7 @@ export interface Book {
   description: string | null;
   total_copies: number;
   shelf_location: string | null;
+  cover_image_url: string | null;
   available: boolean;
   average_rating: number | null;
   review_count: number;
