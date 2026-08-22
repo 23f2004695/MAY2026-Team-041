@@ -32,7 +32,7 @@ import {
 } from '@/providers/AuthProvider';
 
 const PAGE_SIZE = 10;
-const ROLES: Role[] = ['member', 'librarian', 'manager', 'it-head', 'guardian', 'admin'];
+const ROLES: Role[] = ['member', 'manager', 'it-head', 'guardian', 'admin'];
 const EMPTY_MEMBER_LIST = { items: [] as AdminMemberRecord[], total: 0 };
 
 type PendingMemberAction =

@@ -40,7 +40,7 @@ export function LateReturnRiskCard({ items }: { items: LateReturnRiskItem[] }) {
     }
   }, [items, riskFilter, sortValue]);
 
-  const { page, setPage, totalPages, paginatedItems } = usePagination(filteredItems, 5);
+  const { page, setPage, totalPages, paginatedItems } = usePagination(filteredItems, 4);
 
   return (
     <Card className="flex flex-col justify-between">
@@ -118,28 +118,43 @@ export function LateReturnRiskCard({ items }: { items: LateReturnRiskItem[] }) {
             />
           ) : (
             <ul className="flex flex-col gap-3">
-              {paginatedItems.map((item) => (
-                <li
-                  key={item.loan_id}
-                  className="flex flex-col gap-1 rounded-lg border border-border p-3"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">{item.book_title}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {t('managerDashboard.lateReturnRisk.borrower', { name: item.member_name })} ·{' '}
-                        {t('managerDashboard.lateReturnRisk.dueDate', { date: formatDate(item.due_date) })}
-                      </p>
+              {paginatedItems.map((item) => {
+                const formattedReason = item.reason
+                  .replace(/loan\(s\)/g, 'loans')
+                  .replace(/day\(s\)/g, 'days')
+                  .replace(/;\s*already/g, ' — already');
+
+                return (
+                  <li
+                    key={item.loan_id}
+                    className="flex flex-col gap-2.5 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/30"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-foreground leading-snug">{item.book_title}</p>
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {t('managerDashboard.lateReturnRisk.borrower', { name: item.member_name })}
+                          <span className="mx-1.5 text-muted-foreground/40">•</span>
+                          <span className="font-medium text-foreground/80">
+                            {t('managerDashboard.lateReturnRisk.dueDate', { date: formatDate(item.due_date) })}
+                          </span>
+                        </p>
+                      </div>
+                      <Badge
+                        variant={RISK_VARIANT[item.risk_level]}
+                        className="shrink-0 px-2.5 py-0.5 text-xs font-semibold"
+                      >
+                        {t(`managerDashboard.lateReturnRisk.level.${item.risk_level}`, {
+                          score: item.risk_score,
+                        })}
+                      </Badge>
                     </div>
-                    <Badge variant={RISK_VARIANT[item.risk_level]}>
-                      {t(`managerDashboard.lateReturnRisk.level.${item.risk_level}`, {
-                        score: item.risk_score,
-                      })}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{item.reason}</p>
-                </li>
-              ))}
+                    <p className="border-t border-border/50 pt-2.5 text-xs leading-relaxed text-muted-foreground">
+                      {formattedReason}
+                    </p>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>
@@ -151,7 +166,7 @@ export function LateReturnRiskCard({ items }: { items: LateReturnRiskItem[] }) {
             totalPages={totalPages}
             onPageChange={setPage}
             totalItems={filteredItems.length}
-            pageSize={5}
+            pageSize={4}
           />
         </div>
       )}

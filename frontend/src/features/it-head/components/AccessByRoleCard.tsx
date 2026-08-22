@@ -1,4 +1,4 @@
-import { BookOpen, KeyRound, Shield, ShieldCheck, UserCheck, Users, type LucideIcon } from 'lucide-react';
+import { KeyRound, Shield, ShieldCheck, UserCheck, Users, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
@@ -8,7 +8,6 @@ const ROLE_ICONS: Record<string, LucideIcon> = {
   member: Users,
   guardian: ShieldCheck,
   manager: UserCheck,
-  librarian: BookOpen,
   'it-head': KeyRound,
   admin: Shield,
 };
@@ -17,7 +16,6 @@ const ROLE_COLORS: Record<string, { bg: string; text: string; bar: string }> = {
   member: { bg: 'bg-primary/10', text: 'text-primary', bar: 'bg-primary' },
   guardian: { bg: 'bg-info/10', text: 'text-info', bar: 'bg-info' },
   manager: { bg: 'bg-success/10', text: 'text-success', bar: 'bg-success' },
-  librarian: { bg: 'bg-warning/10', text: 'text-warning', bar: 'bg-warning' },
   'it-head': { bg: 'bg-purple-500/10', text: 'text-purple-600 dark:text-purple-300', bar: 'bg-purple-600' },
   admin: { bg: 'bg-danger/10', text: 'text-danger', bar: 'bg-danger' },
 };
@@ -26,14 +24,14 @@ const ROLE_TIERS: Record<string, string> = {
   member: 'Standard',
   guardian: 'Guardian Tier',
   manager: 'Management',
-  librarian: 'Catalog Control',
   'it-head': 'System Lead',
   admin: 'Super Admin',
 };
 
 export function AccessByRoleCard({ roles }: { roles: RoleBreakdownEntry[] }) {
   const { t } = useTranslation();
-  const total = roles.reduce((sum, r) => sum + r.count, 0);
+  const activeRoles = roles.filter((r) => r.role !== 'librarian');
+  const total = activeRoles.reduce((sum, r) => sum + r.count, 0);
 
   return (
     <Card className="flex h-full flex-col justify-between">
@@ -48,10 +46,10 @@ export function AccessByRoleCard({ roles }: { roles: RoleBreakdownEntry[] }) {
         <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-secondary/30 p-3">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="font-semibold text-foreground">Role Distribution</span>
-            <span>{roles.length} Active Roles</span>
+            <span>{activeRoles.length} Active Roles</span>
           </div>
           <div className="flex h-3 w-full overflow-hidden rounded-full bg-secondary gap-0.5">
-            {roles.map((r) => {
+            {activeRoles.map((r) => {
               const widthPct = total > 0 ? (r.count / total) * 100 : 0;
               const colors = ROLE_COLORS[r.role] ?? { bar: 'bg-primary' };
               return (
@@ -68,7 +66,7 @@ export function AccessByRoleCard({ roles }: { roles: RoleBreakdownEntry[] }) {
 
         {/* Detailed Role List with Icons, Permission Tiers & Badges */}
         <div className="flex flex-col divide-y divide-border/60">
-          {roles.map((r) => {
+          {activeRoles.map((r) => {
             const Icon = ROLE_ICONS[r.role] ?? Users;
             const colors = ROLE_COLORS[r.role] ?? {
               bg: 'bg-secondary',
