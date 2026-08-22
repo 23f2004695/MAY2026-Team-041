@@ -76,9 +76,17 @@ export function BookDetailsPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-6 p-6 md:flex-row">
-          <div className="flex h-48 w-full items-center justify-center rounded-md bg-primary/10 text-primary md:w-48 md:shrink-0">
-            <BookOpen className="size-12" />
-          </div>
+          {book.cover_image_url ? (
+            <img
+              src={book.cover_image_url}
+              alt=""
+              className="h-48 w-full rounded-md object-cover md:w-48 md:shrink-0"
+            />
+          ) : (
+            <div className="flex h-48 w-full items-center justify-center rounded-md bg-primary/10 text-primary md:w-48 md:shrink-0">
+              <BookOpen className="size-12" />
+            </div>
+          )}
 
           <div className="flex flex-1 flex-col gap-3">
             <div>
@@ -228,6 +236,7 @@ export function BookDetailsPage() {
                 category={related.category}
                 available={related.available}
                 shelfLocation={related.shelf_location}
+                coverImageUrl={related.cover_image_url}
                 averageRating={related.average_rating}
                 reviewCount={related.review_count}
                 description={related.description}
