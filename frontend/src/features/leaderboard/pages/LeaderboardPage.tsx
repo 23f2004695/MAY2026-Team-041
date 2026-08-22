@@ -75,6 +75,7 @@ export function LeaderboardPage() {
   const { t } = useTranslation();
   const { getLeaderboard, avatarUrl: authAvatarUrl, fullName: authFullName } = useAuth();
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [rankCutoff, setRankCutoff] = useState<number>(50);
   const [sort, setSort] = useState<LeaderboardSort>('scoreHigh');
   const [showRules, setShowRules] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -107,9 +108,9 @@ export function LeaderboardPage() {
     });
   }, [entries, authAvatarUrl, authFullName]);
 
-  const top50Entries = useMemo(
-    () => normalizedEntries.filter((entry) => entry.rank <= 50),
-    [normalizedEntries],
+  const filteredBoardEntries = useMemo(
+    () => normalizedEntries.filter((entry) => entry.rank <= rankCutoff),
+    [normalizedEntries, rankCutoff],
   );
 
   const sortConfig = useMemo(
@@ -143,7 +144,7 @@ export function LeaderboardPage() {
     [sort],
   );
 
-  const visibleEntries = useSortedItems(top50Entries, sortConfig);
+  const visibleEntries = useSortedItems(filteredBoardEntries, sortConfig);
 
   const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(
     visibleEntries,
@@ -157,6 +158,7 @@ export function LeaderboardPage() {
 
   const handleJumpToMyRank = useCallback(() => {
     if (!currentUserEntry || currentUserEntry.rank > 50) return;
+    setRankCutoff(50);
     setSort('scoreHigh');
     const index = visibleEntries.findIndex((e) => e.is_current_user);
     if (index !== -1) {
@@ -170,6 +172,7 @@ export function LeaderboardPage() {
   }, [currentUserEntry, visibleEntries, setPage]);
 
   function resetFilters() {
+    setRankCutoff(50);
     setSort('scoreHigh');
     setPage(1);
   }
@@ -343,6 +346,22 @@ export function LeaderboardPage() {
         <>
           <div className="rounded-xl border border-border bg-card p-3.5 shadow-xs">
             <TableToolbar
+              filters={[
+                {
+                  label: t('leaderboard.show.label'),
+                  value: `top${rankCutoff}`,
+                  onChange: (value) => {
+                    const cutoff = parseInt(value.replace('top', ''), 10);
+                    setRankCutoff(isNaN(cutoff) ? 50 : cutoff);
+                    setPage(1);
+                  },
+                  options: [
+                    { value: 'top50', label: t('leaderboard.show.top50') },
+                    { value: 'top25', label: 'Top 25' },
+                    { value: 'top10', label: 'Top 10' },
+                  ],
+                },
+              ]}
               sort={{
                 label: t('common.actions.sort'),
                 value: sort,
