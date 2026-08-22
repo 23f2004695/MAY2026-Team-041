@@ -42,7 +42,7 @@ export function SystemActivityCard({
   const { t } = useTranslation();
 
   return (
-    <Card className="lg:col-span-2">
+    <Card>
       <CardHeader>
         <CardTitle>{t('itHead.systemActivity.title')}</CardTitle>
       </CardHeader>

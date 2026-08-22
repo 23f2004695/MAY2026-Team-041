@@ -296,11 +296,10 @@ export function AdminDashboardPage() {
         )}
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle>{t('admin.reports.title')}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
             <TableToolbar
+              variant="icon-only"
               filters={[
                 {
                   label: t('admin.reports.filters.categoryLabel'),
@@ -335,6 +334,8 @@ export function AdminDashboardPage() {
               }}
               resetLabel={t('common.actions.reset')}
             />
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
 
             <div className="flex flex-col gap-3">
               {paginatedItems.map((report) => (

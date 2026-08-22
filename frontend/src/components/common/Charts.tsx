@@ -835,7 +835,7 @@ export function MultiSegmentDonut({
   return (
     <div className={cn('flex flex-col items-center gap-3', className)}>
       <div
-        className="relative flex size-32 shrink-0 items-center justify-center"
+        className="relative flex size-48 shrink-0 items-center justify-center"
         role="img"
         aria-label={`${centerLabel}: ${centerValue}. ${segments.map((s) => `${s.label} ${s.value}`).join(', ')}`}
       >
@@ -864,8 +864,8 @@ export function MultiSegmentDonut({
               })}
         </svg>
         <div className="absolute flex flex-col items-center justify-center text-center">
-          <span className="text-base font-semibold text-foreground">{centerValue}</span>
-          <span className="text-[10px] text-muted-foreground">{centerLabel}</span>
+          <span className="text-xl font-bold text-foreground">{centerValue}</span>
+          <span className="text-xs font-medium text-muted-foreground">{centerLabel}</span>
         </div>
       </div>
       <ul className="flex w-full flex-col gap-1.5">
@@ -937,7 +937,7 @@ export function MultiSegmentPie({
   return (
     <div className={cn('flex flex-col items-center gap-4', className)}>
       <div
-        className="relative flex size-44 shrink-0 items-center justify-center p-1"
+        className="relative flex size-56 shrink-0 items-center justify-center p-1"
         role="img"
         aria-label={`${ariaLabel}. ${segments.map((s) => `${s.label} ${s.value}`).join(', ')}`}
       >

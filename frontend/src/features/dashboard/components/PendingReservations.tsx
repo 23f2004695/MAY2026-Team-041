@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
-import { RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { Pagination } from '@/components/common';
+import { Pagination, TableToolbar } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle, EmptyState, Select } from '@/components/ui';
 import { usePagination } from '@/hooks';
 import { getErrorMessage } from '@/lib/api';
@@ -75,39 +74,30 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
 
   return (
     <Card>
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 space-y-0 pb-4">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('managerDashboard.pendingReservations.title')}</CardTitle>
-        <div className="flex items-center gap-2 shrink-0 max-w-full">
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-10 w-10 p-0 flex items-center justify-center shrink-0 rounded-md"
-            onClick={() => {
-              setSortValue('newest');
+        <TableToolbar
+          variant="icon-only"
+          sort={{
+            label: t('common.actions.sort'),
+            value: sortValue,
+            onChange: (value) => {
+              setSortValue(value);
               setPage(1);
-            }}
-            title={t('common.actions.reset', 'Reset')}
-            aria-label={t('common.actions.reset', 'Reset')}
-          >
-            <RotateCcw className="size-4 text-muted-foreground" />
-          </Button>
-          <div className="w-36 max-w-full shrink-0">
-            <Select
-              value={sortValue}
-              aria-label={t('managerDashboard.pendingReservations.sort.label', 'Sort pending requests')}
-              onChange={(e) => {
-                setSortValue(e.target.value);
-                setPage(1);
-              }}
-              options={[
-                { value: 'newest', label: t('managerDashboard.pendingReservations.sort.newestFirst') },
-                { value: 'oldest', label: t('managerDashboard.pendingReservations.sort.oldestFirst') },
-                { value: 'book', label: t('managerDashboard.pendingReservations.sort.bookTitle') },
-                { value: 'member', label: t('managerDashboard.pendingReservations.sort.memberName') },
-              ]}
-            />
-          </div>
-        </div>
+            },
+            options: [
+              { value: 'newest', label: t('managerDashboard.pendingReservations.sort.newestFirst') },
+              { value: 'oldest', label: t('managerDashboard.pendingReservations.sort.oldestFirst') },
+              { value: 'book', label: t('managerDashboard.pendingReservations.sort.bookTitle') },
+              { value: 'member', label: t('managerDashboard.pendingReservations.sort.memberName') },
+            ],
+          }}
+          onReset={() => {
+            setSortValue('newest');
+            setPage(1);
+          }}
+          resetLabel={t('common.actions.reset')}
+        />
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {filteredRequests.length === 0 ? (

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { MultiSegmentDonut } from '@/components/common';
+import { MultiSegmentPie } from '@/components/common';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { formatCurrency } from '@/lib/format';
 import type { FeeStatusEntryRecord } from '@/providers/AuthProvider';
@@ -17,7 +17,6 @@ export function FeeStatusSummaryCard({
   feeStatus: FeeStatusEntryRecord[];
 }) {
   const { t } = useTranslation();
-  const total = feesOutstanding + lateFinesOutstanding;
 
   // "Overdue" (past the renewal grace period) ranks above "due" (just lapsed, still in
   // grace) — within the same status, the longest-overdue member comes first.
@@ -32,14 +31,14 @@ export function FeeStatusSummaryCard({
     .slice(0, TOP_OVERDUE_COUNT);
 
   return (
-    <Card>
+    <Card className="flex h-full flex-col justify-between">
       <CardHeader>
         <CardTitle>{t('itHead.feeStatusSummary.title')}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <MultiSegmentDonut
-          centerValue={formatCurrency(total)}
-          centerLabel={t('itHead.feeStatusSummary.totalOutstanding')}
+      <CardContent className="flex flex-1 flex-col justify-between gap-4">
+        <MultiSegmentPie
+          ariaLabel={t('itHead.feeStatusSummary.title')}
+          valueFormatter={formatCurrency}
           segments={[
             {
               key: 'current',

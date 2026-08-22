@@ -79,18 +79,19 @@ export function FinancialActivityLog() {
     return sort === 'oldest' ? [...items].reverse() : items;
   }, [filter, sort]);
 
-  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(filteredEntries, 7);
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(filteredEntries, 4);
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{t('itHead.reportsPage.financialActivityLog.title')}</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          {t('itHead.reportsPage.financialActivityLog.subtitle')}
-        </p>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3">
+        <div>
+          <CardTitle>{t('itHead.reportsPage.financialActivityLog.title')}</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            {t('itHead.reportsPage.financialActivityLog.subtitle')}
+          </p>
+        </div>
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('common.actions.filters'),
@@ -127,6 +128,8 @@ export function FinancialActivityLog() {
           }}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
 
         <ul className="flex flex-col gap-2.5">
           {paginatedItems.map((entry) => (
@@ -134,13 +137,15 @@ export function FinancialActivityLog() {
           ))}
         </ul>
 
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          pageSize={7}
-          onPageChange={setPage}
-        />
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={4}
+            onPageChange={setPage}
+          />
+        )}
       </CardContent>
     </Card>
   );

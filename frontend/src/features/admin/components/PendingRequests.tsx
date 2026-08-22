@@ -86,11 +86,10 @@ export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('admin.pendingRequests.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('admin.pendingRequests.filters.statusLabel'),
@@ -138,6 +137,8 @@ export function PendingRequests({ requests, onDecided }: PendingRequestsProps) {
           onReset={resetToolbar}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
 
         {filteredRequests.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
