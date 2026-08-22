@@ -126,7 +126,7 @@ export function CheckInCheckOutCard() {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex flex-col gap-4 rounded-lg border border-border p-4 bg-secondary/20">
+        <div className="flex flex-col gap-4 rounded-lg border border-primary/20 bg-primary/10 p-4">
           <MemberPicker
             selectedMember={selectedMember}
             onSelect={setSelectedMember}

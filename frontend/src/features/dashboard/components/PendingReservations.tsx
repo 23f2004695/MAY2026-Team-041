@@ -75,9 +75,9 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between gap-4 space-y-0 pb-4">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 space-y-0 pb-4">
         <CardTitle>{t('managerDashboard.pendingReservations.title')}</CardTitle>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 max-w-full">
           <Button
             variant="outline"
             size="sm"
@@ -91,7 +91,7 @@ export function PendingReservations({ requests, onApprove, onReject }: PendingRe
           >
             <RotateCcw className="size-4 text-muted-foreground" />
           </Button>
-          <div className="w-32 shrink-0">
+          <div className="w-36 max-w-full shrink-0">
             <Select
               value={sortValue}
               aria-label={t('managerDashboard.pendingReservations.sort.label', 'Sort pending requests')}

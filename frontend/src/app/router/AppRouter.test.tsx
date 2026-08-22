@@ -25,6 +25,6 @@ describe('AppRouter', () => {
     // ponytail: the router's cold import now pulls in every routed page (a lot of them,
     // and growing) — the default 5s timeout stopped being enough. Bump per-test rather
     // than globally, since this is the one test that pays the full cold-import cost.
-    15000,
+    30000,
   );
 });

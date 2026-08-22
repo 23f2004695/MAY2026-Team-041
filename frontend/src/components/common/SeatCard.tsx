@@ -1,4 +1,5 @@
 import { Armchair, CheckCircle2, Clock, X } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/cn';
@@ -38,8 +39,25 @@ const statusIcons: Record<SeatStatus, typeof Armchair> = {
   booked_for_child: CheckCircle2,
 };
 
-export function SeatCard({ label, status, className, selected, onSelect, avatarUrl, childName, guardianName }: SeatCardProps) {
+export function SeatCard({
+  label,
+  status,
+  className,
+  selected,
+  onSelect,
+  avatarUrl,
+  childName,
+  guardianName,
+}: SeatCardProps) {
   const { t } = useTranslation();
+  const [prevAvatarUrl, setPrevAvatarUrl] = useState(avatarUrl);
+  const [imgError, setImgError] = useState(false);
+
+  if (prevAvatarUrl !== avatarUrl) {
+    setPrevAvatarUrl(avatarUrl);
+    setImgError(false);
+  }
+
   const statusText =
     status === 'booked_for_child'
       ? childName
@@ -51,10 +69,10 @@ export function SeatCard({ label, status, className, selected, onSelect, avatarU
   const StatusIcon = statusIcons[status];
 
   const isMineOrChild = status === 'mine' || status === 'booked_for_child';
-  const hasAvatar = (status === 'reserved' || isMineOrChild) && Boolean(avatarUrl);
+  const showAvatar = (status === 'reserved' || isMineOrChild) && Boolean(avatarUrl) && !imgError;
 
   const classes = cn(
-    'flex flex-col items-center gap-1 rounded-md border p-2 text-xs font-medium',
+    'flex flex-col items-center justify-center gap-1 rounded-md border p-2 text-xs font-medium transition-colors',
     statusClasses[status],
     // A thicker, always-on ring on top of the primary-colored background/border above —
     // reserved-by-others seats never get this, so it stays a reliable "this one is yours/your child's"
@@ -64,22 +82,24 @@ export function SeatCard({ label, status, className, selected, onSelect, avatarU
     className,
   );
 
-  // Reserved/mine/child seats identify who holds them via avatar instead of the generic clock
-  // icon + seat label — the seat number is still announced via aria-label/title below,
-  // it's just not shown visually since the avatar alone is enough to read as "taken".
-  // For your own/child seat, the avatar also gets a small checkmark badge in the corner.
-  const marker = hasAvatar ? (
-    <span className="relative inline-flex">
-      <img src={avatarUrl ?? ''} alt="" aria-hidden="true" className="size-10 rounded-full object-cover" />
+  const marker = showAvatar ? (
+    <span className="relative inline-flex shrink-0">
+      <img
+        src={avatarUrl ?? ''}
+        alt=""
+        aria-hidden="true"
+        onError={() => setImgError(true)}
+        className="size-5 rounded-full object-cover"
+      />
       {isMineOrChild && (
         <CheckCircle2
           aria-hidden="true"
-          className="absolute -bottom-1 -right-1 size-4 rounded-full bg-surface text-primary"
+          className="absolute -bottom-1 -right-1 size-3 rounded-full bg-surface text-primary"
         />
       )}
     </span>
   ) : (
-    <StatusIcon className="size-6" />
+    <StatusIcon className="size-5 shrink-0" />
   );
 
   if (!onSelect) {
@@ -89,7 +109,7 @@ export function SeatCard({ label, status, className, selected, onSelect, avatarU
         className={classes}
       >
         {marker}
-        {!hasAvatar && label}
+        <span>{label}</span>
       </div>
     );
   }
@@ -103,7 +123,7 @@ export function SeatCard({ label, status, className, selected, onSelect, avatarU
       className={cn(classes, !selected && 'hover:opacity-80')}
     >
       {marker}
-      {!hasAvatar && label}
+      <span>{label}</span>
     </button>
   );
 }

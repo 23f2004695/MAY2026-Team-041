@@ -5,6 +5,7 @@ import {
   ClipboardList,
   KeyRound,
   ReceiptText,
+  Sparkles,
   UserPlus,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -279,8 +280,6 @@ export function ManagerDashboard() {
 
       <CheckInCheckOutCard />
 
-      <FootfallAnalyticsCard />
-
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <WalkInAssistance
           requests={NO_WALK_INS}
@@ -289,6 +288,8 @@ export function ManagerDashboard() {
         />
         <NewRegistrations requests={NO_REGISTRATIONS} onRegister={() => setIsRegisterOpen(true)} />
       </div>
+
+      <FootfallAnalyticsCard />
 
       {stats && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -332,9 +333,12 @@ export function ManagerDashboard() {
         </div>
       )}
 
-      <h2 className="text-lg font-semibold text-foreground">
-        {t('managerDashboard.aiInsights.heading')}
-      </h2>
+      <div className="flex items-center">
+        <h2 className="relative inline-block text-lg font-semibold text-foreground">
+          {t('managerDashboard.aiInsights.heading')}
+          <Sparkles className="absolute -top-1 -right-4 size-3.5 text-primary fill-primary/20" />
+        </h2>
+      </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <DemandForecastCard items={demandForecast} />
         <LateReturnRiskCard items={lateReturnRisk} />
