@@ -1,9 +1,10 @@
+import { useMemo, useState } from 'react';
 import { ShieldAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { Badge, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { Pagination, TableToolbar } from '@/components/common';
 import { EmptyState } from '@/components/feedback';
-import { Pagination } from '@/components/common';
+import { Badge, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { usePagination } from '@/hooks';
 import { formatDate } from '@/lib/format';
 import type { LateReturnRiskItem } from '@/providers/AuthProvider';
@@ -16,17 +17,100 @@ const RISK_VARIANT = {
 
 export function LateReturnRiskCard({ items }: { items: LateReturnRiskItem[] }) {
   const { t } = useTranslation();
-  const { page, setPage, totalPages, paginatedItems } = usePagination(items, 5);
+  const [riskFilter, setRiskFilter] = useState('all');
+  const [sortValue, setSortValue] = useState('risk-desc');
+
+  const filteredItems = useMemo(() => {
+    let result = [...items];
+    if (riskFilter !== 'all') {
+      result = result.filter((item) => item.risk_level === riskFilter);
+    }
+    switch (sortValue) {
+      case 'book-asc':
+        return result.sort((a, b) => a.book_title.localeCompare(b.book_title));
+      case 'member-asc':
+        return result.sort((a, b) => a.member_name.localeCompare(b.member_name));
+      case 'dueDate-asc':
+        return result.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
+      case 'risk-asc':
+        return result.sort((a, b) => a.risk_score - b.risk_score);
+      case 'risk-desc':
+      default:
+        return result.sort((a, b) => b.risk_score - a.risk_score);
+    }
+  }, [items, riskFilter, sortValue]);
+
+  const { page, setPage, totalPages, paginatedItems } = usePagination(filteredItems, 5);
 
   return (
     <Card className="flex flex-col justify-between">
       <div>
-        <CardHeader>
-          <CardTitle>{t('managerDashboard.lateReturnRisk.title')}</CardTitle>
-          <p className="text-xs text-muted-foreground">{t('managerDashboard.lateReturnRisk.subtitle')}</p>
+        <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3">
+          <div>
+            <CardTitle>{t('managerDashboard.lateReturnRisk.title')}</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              {t('managerDashboard.lateReturnRisk.subtitle')}
+            </p>
+          </div>
+          <TableToolbar
+            variant="icon-only"
+            filters={[
+              {
+                label: t('common.filters.riskLevel', { defaultValue: 'Risk Level' }),
+                value: riskFilter,
+                onChange: setRiskFilter,
+                options: [
+                  { value: 'all', label: t('common.filters.all', { defaultValue: 'All Levels' }) },
+                  {
+                    value: 'high',
+                    label: t('managerDashboard.lateReturnRisk.levelShort.high', { defaultValue: 'High Risk' }),
+                  },
+                  {
+                    value: 'medium',
+                    label: t('managerDashboard.lateReturnRisk.levelShort.medium', { defaultValue: 'Medium Risk' }),
+                  },
+                  {
+                    value: 'low',
+                    label: t('managerDashboard.lateReturnRisk.levelShort.low', { defaultValue: 'Low Risk' }),
+                  },
+                ],
+              },
+            ]}
+            sort={{
+              label: t('common.sort.sortBy', { defaultValue: 'Sort By' }),
+              value: sortValue,
+              onChange: setSortValue,
+              options: [
+                {
+                  value: 'risk-desc',
+                  label: t('common.sort.highestRisk', { defaultValue: 'Highest Risk Score' }),
+                },
+                {
+                  value: 'risk-asc',
+                  label: t('common.sort.lowestRisk', { defaultValue: 'Lowest Risk Score' }),
+                },
+                {
+                  value: 'dueDate-asc',
+                  label: t('common.sort.dueDateSoonest', { defaultValue: 'Due Date (Soonest)' }),
+                },
+                {
+                  value: 'book-asc',
+                  label: t('common.sort.titleAsc', { defaultValue: 'Book Title A-Z' }),
+                },
+                {
+                  value: 'member-asc',
+                  label: t('common.sort.borrowerAsc', { defaultValue: 'Borrower A-Z' }),
+                },
+              ],
+            }}
+            onReset={() => {
+              setRiskFilter('all');
+              setSortValue('risk-desc');
+            }}
+          />
         </CardHeader>
         <CardContent>
-          {items.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <EmptyState
               icon={ShieldAlert}
               title={t('managerDashboard.lateReturnRisk.emptyTitle')}
@@ -66,7 +150,7 @@ export function LateReturnRiskCard({ items }: { items: LateReturnRiskItem[] }) {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
-            totalItems={items.length}
+            totalItems={filteredItems.length}
             pageSize={5}
           />
         </div>

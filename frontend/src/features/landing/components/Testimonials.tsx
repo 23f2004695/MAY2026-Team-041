@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReviewCard, Section, SectionHeading } from '@/components/common';
+import { testimonials } from '@/mocks/landing';
 import { useAuth, type LibraryReviewRecord } from '@/providers/AuthProvider';
 import { useActiveSection } from '@/providers/ActiveSectionProvider';
 
@@ -39,9 +40,22 @@ export function Testimonials() {
     };
   }, [setActiveSection]);
 
-  // No fabricated placeholder testimonials — the section simply doesn't render until at
-  // least one real member review has been approved.
-  if (reviewsList.length === 0) return null;
+  const displayReviews =
+    reviewsList.length > 0
+      ? reviewsList.map((item) => ({
+          id: item.id,
+          name: item.member_name,
+          role: t(`auth.login.roles.${item.member_role}`, { defaultValue: item.member_role }),
+          quote: item.comment,
+          rating: item.rating,
+        }))
+      : testimonials.map((item) => ({
+          id: item.id,
+          name: item.name,
+          role: t(`landing.testimonials.items.${item.id}.role`),
+          quote: t(`landing.testimonials.items.${item.id}.quote`),
+          rating: 5,
+        }));
 
   return (
     <Section id="testimonials" ariaLabelledBy="testimonials-heading">
@@ -52,12 +66,12 @@ export function Testimonials() {
       />
 
       <Marquee gap={16} duration={30}>
-        {reviewsList.map((item) => (
+        {displayReviews.map((item) => (
           <div key={item.id} className="w-72 sm:w-80">
             <ReviewCard
-              name={item.member_name}
-              role={t(`auth.login.roles.${item.member_role}`, { defaultValue: item.member_role })}
-              quote={item.comment}
+              name={item.name}
+              role={item.role}
+              quote={item.quote}
               rating={item.rating}
             />
           </div>

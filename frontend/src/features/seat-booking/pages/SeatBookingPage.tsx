@@ -25,6 +25,8 @@ const SEAT_LABELS = SEAT_ROWS.flatMap((row) =>
   Array.from({ length: SEATS_PER_ROW }, (_, index) => `${row}${index + 1}`),
 );
 
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 function toDateInputValue(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -106,17 +108,8 @@ export function SeatBookingPage() {
       ? `${Math.round(footfall.average_visit_minutes)} mins`
       : '120 mins (~2 hrs)';
 
-  const weekdayNames = (t('common.weekdays', { returnObjects: true }) as string[]) || [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
-  const busiestDayName = weekdayNames[busiestDayOfWeek] ?? 'Friday';
-  const quietestDayName = weekdayNames[quietestDayOfWeek] ?? 'Monday';
+  const busiestDayName = WEEKDAYS[busiestDayOfWeek] ?? 'Friday';
+  const quietestDayName = WEEKDAYS[quietestDayOfWeek] ?? 'Monday';
 
   const dateOptions = useMemo(() => {
     const today = new Date();
@@ -127,10 +120,18 @@ export function SeatBookingPage() {
       const isBusiest = busiestDayOfWeek !== null && dayOfWeek === busiestDayOfWeek;
       const isQuietest = quietestDayOfWeek !== null && dayOfWeek === quietestDayOfWeek;
 
+      const formattedDate = dayFormatter.format(date);
+      const label =
+        offset === 0
+          ? t('seatBooking.today')
+          : offset === 1
+            ? t('seatBooking.tomorrow', { defaultValue: 'Tomorrow' })
+            : WEEKDAYS[dayOfWeek] ?? formattedDate;
+
       return {
         value: toDateInputValue(date),
-        label: offset === 0 ? t('seatBooking.today') : dayFormatter.format(date),
-        subLabel: dayFormatter.format(date),
+        label,
+        subLabel: formattedDate,
         badge: isBusiest ? 'Busiest' : isQuietest ? 'Quietest' : undefined,
         badgeTone: isBusiest ? ('danger' as const) : isQuietest ? ('success' as const) : undefined,
       };
@@ -148,18 +149,10 @@ export function SeatBookingPage() {
   const [myBookings, setMyBookings] = useState<SeatBookingRecord[]>([]);
   const [notifiedSlots, setNotifiedSlots] = useState<Set<string>>(new Set());
   const [isBusy, setIsBusy] = useState(false);
-  // Picking a date is now direct (see selectDate below) — the grid updates immediately
-  // for whatever hour is currently selected. This modal is only for the secondary
-  // "change time" action: choosing a specific hour within the already-selected date.
   const [slotModalDate, setSlotModalDate] = useState<string | null>(null);
 
-  // ISO "YYYY-MM-DD" strings compare lexicographically, so a plain `<` check
-  // correctly catches any date before today, not just today's elapsed hours.
   const isHourPast = (hour: number, date: string = selectedDate) =>
     date < todayValue || (date === todayValue && hour < new Date().getHours());
-  // If the raw selection is a hour that's since slipped into the past for "Today"
-  // (e.g. picked while browsing tomorrow, then switched back), fall back to the
-  // current hour rather than fetching/booking a slot the backend will reject anyway.
   const effectiveHour = isHourPast(selectedHour) ? new Date().getHours() : selectedHour;
 
   function selectDate(date: string) {
@@ -184,20 +177,12 @@ export function SeatBookingPage() {
   }
 
   const selectedSeat = seats?.find((seat) => seat.seat_label === selectedSeatLabel) ?? null;
-  // A "booked_by_me" seat already reflects this for the currently selected seat, but a
-  // member could have booked a *different* seat in this same slot and then selected an
-  // available one — this catches that case so Confirm doesn't round-trip to a 409.
   const hasOtherBookingThisSlot =
     selectedSeat?.status !== 'booked_by_me' &&
     myBookings.some((booking) => booking.date === selectedDate && booking.hour === effectiveHour);
 
-  // The API returns every booking the member has ever made, including slots whose
-  // hour has already elapsed today (or an earlier date entirely). "Your upcoming
-  // bookings" should only ever show slots that haven't ended yet.
   const upcomingMyBookings = myBookings.filter((booking) => !isHourPast(booking.hour, booking.date));
 
-  // Selection deliberately persists across date/hour changes — flipping through
-  // slots to see when a specific seat frees up is a reasonable thing to want.
   useEffect(() => {
     let cancelled = false;
     getSeatSchedule(selectedDate, effectiveHour)
@@ -287,9 +272,6 @@ export function SeatBookingPage() {
     ? notifiedSlots.has(slotKey(selectedSeat.seat_label, selectedDate, effectiveHour))
     : false;
 
-  // Every booking is a fixed 1-hour slot (hour:00 -> hour+1:00). When the slot currently
-  // selected is the one happening right now, show a live-ish countdown to when it frees
-  // up; for a future slot there's nothing counting down yet, just the fixed end time.
   const slotEndHourLabel = formatHourLabel((effectiveHour + 1) % 24);
   const isSlotInProgress = selectedDate === todayValue && effectiveHour === new Date().getHours();
   const minutesUntilFree = isSlotInProgress ? 60 - new Date().getMinutes() : null;
@@ -330,13 +312,7 @@ export function SeatBookingPage() {
           </div>
         )}
         <DateSlider
-          options={dateOptions.map((option) => ({
-            value: option.value,
-            label: option.label,
-            subLabel: dayFormatter.format(new Date(`${option.value}T00:00:00`)),
-            badge: option.badge,
-            badgeTone: option.badgeTone,
-          }))}
+          options={dateOptions}
           active={selectedDate}
           ariaLabel={t('seatBooking.dateSliderAriaLabel')}
           onChange={selectDate}
@@ -389,22 +365,20 @@ export function SeatBookingPage() {
                 const rowLabels = SEAT_LABELS.filter((label) => label.startsWith(row));
                 const occupancy = rowOccupancy(seats, rowLabels);
                 return (
-                <div key={row} className="flex items-center gap-3">
-                  {isManagerOrStaff && (
-                    <span
-                      className="flex w-14 items-center gap-1.5 text-sm font-semibold text-muted-foreground"
-                      title={t('seatBooking.occupancy.rowStatusAria', {
-                        row,
-                        status: t(`seatBooking.occupancy.${occupancy}`),
-                      })}
-                    >
+                <div key={row} className="flex items-center gap-2.5 sm:gap-4">
+                  <div className="flex w-6 shrink-0 items-center justify-center gap-1 font-bold text-foreground text-sm sm:text-base">
+                    <span>{row}</span>
+                    {isManagerOrStaff && (
                       <span
                         aria-hidden="true"
                         className={`size-2 shrink-0 rounded-full ${ROW_OCCUPANCY_DOT[occupancy]}`}
+                        title={t('seatBooking.occupancy.rowStatusAria', {
+                          row,
+                          status: t(`seatBooking.occupancy.${occupancy}`),
+                        })}
                       />
-                      {t('seatBooking.occupancy.rowLabel', { row })}
-                    </span>
-                  )}
+                    )}
+                  </div>
                   <div className="grid flex-1 grid-cols-4 gap-2 sm:grid-cols-8">
                     {rowLabels.map((label) => {
                       const seat = seats?.find((s) => s.seat_label === label);

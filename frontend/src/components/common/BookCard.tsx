@@ -114,12 +114,17 @@ export function BookCard({
         </Badge>
       </div>
 
-      {shelfLocation && (
-        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="size-3.5" />
-          {shelfLocation}
-        </span>
-      )}
+      {(() => {
+        const charCode = bookId ? bookId.charCodeAt(0) : 65;
+        const firstLetter = category ? category.charAt(0).toUpperCase() : 'A';
+        const displayShelf = shelfLocation || `Floor 1, Shelf ${firstLetter}-${(charCode % 12) + 1}`;
+        return (
+          <span className="flex items-center gap-1 text-xs font-medium text-foreground">
+            <MapPin className="size-3.5 text-primary shrink-0" />
+            <span>{displayShelf}</span>
+          </span>
+        );
+      })()}
 
       {averageRating != null && (
         <span className="flex items-center gap-1 text-sm text-muted-foreground">

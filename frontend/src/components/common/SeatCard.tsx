@@ -72,34 +72,31 @@ export function SeatCard({
   const showAvatar = (status === 'reserved' || isMineOrChild) && Boolean(avatarUrl) && !imgError;
 
   const classes = cn(
-    'flex flex-col items-center justify-center gap-1 rounded-md border p-2 text-xs font-medium transition-colors',
+    'flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs font-medium transition-colors min-h-[68px] sm:min-h-[74px]',
     statusClasses[status],
-    // A thicker, always-on ring on top of the primary-colored background/border above —
-    // reserved-by-others seats never get this, so it stays a reliable "this one is yours/your child's"
-    // signal even before the seat is selected.
-    isMineOrChild && 'ring-2 ring-primary/70',
+    isMineOrChild && 'ring-2 ring-primary/70 border-primary',
     selected && 'ring-2 ring-primary ring-offset-1',
     className,
   );
 
   const marker = showAvatar ? (
-    <span className="relative inline-flex shrink-0">
+    <span className="relative inline-flex shrink-0 rounded-full bg-white p-0.5 shadow-xs">
       <img
         src={avatarUrl ?? ''}
         alt=""
         aria-hidden="true"
         onError={() => setImgError(true)}
-        className="size-5 rounded-full object-cover"
+        className="size-9 sm:size-10 rounded-full object-cover"
       />
       {isMineOrChild && (
         <CheckCircle2
           aria-hidden="true"
-          className="absolute -bottom-1 -right-1 size-3 rounded-full bg-surface text-primary"
+          className="absolute -bottom-1 -right-1 size-4 rounded-full bg-white text-primary fill-primary/10 stroke-[2.5]"
         />
       )}
     </span>
   ) : (
-    <StatusIcon className="size-5 shrink-0" />
+    <StatusIcon className="size-5.5 sm:size-6 shrink-0" />
   );
 
   if (!onSelect) {
@@ -109,7 +106,7 @@ export function SeatCard({
         className={classes}
       >
         {marker}
-        <span>{label}</span>
+        {!showAvatar && <span>{label}</span>}
       </div>
     );
   }
@@ -123,7 +120,7 @@ export function SeatCard({
       className={cn(classes, !selected && 'hover:opacity-80')}
     >
       {marker}
-      <span>{label}</span>
+      {!showAvatar && <span>{label}</span>}
     </button>
   );
 }

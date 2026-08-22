@@ -252,37 +252,39 @@ export function LeaderboardPage() {
         />
       ) : (
         <>
-          <TableToolbar
-            filters={[
-              {
-                label: t('leaderboard.show.label'),
-                value: view,
+          <div className="rounded-xl border border-border bg-card p-3.5 shadow-xs">
+            <TableToolbar
+              filters={[
+                {
+                  label: t('leaderboard.show.label'),
+                  value: view,
+                  onChange: (value) => {
+                    setView(value as LeaderboardView);
+                    setPage(1);
+                  },
+                  options: [
+                    { value: 'top50', label: t('leaderboard.show.top50') },
+                    { value: 'all', label: t('leaderboard.show.everyone') },
+                  ],
+                },
+              ]}
+              sort={{
+                label: t('common.actions.sort'),
+                value: sort,
                 onChange: (value) => {
-                  setView(value as LeaderboardView);
+                  setSort(value as LeaderboardSort);
                   setPage(1);
                 },
                 options: [
-                  { value: 'top50', label: t('leaderboard.show.top50') },
-                  { value: 'all', label: t('leaderboard.show.everyone') },
+                  { value: 'scoreHigh', label: t('leaderboard.sort.highestScore') },
+                  { value: 'scoreLow', label: t('leaderboard.sort.lowestScore') },
+                  { value: 'nameAsc', label: t('leaderboard.sort.nameAsc') },
+                  { value: 'nameDesc', label: t('leaderboard.sort.nameDesc') },
                 ],
-              },
-            ]}
-            sort={{
-              label: t('common.actions.sort'),
-              value: sort,
-              onChange: (value) => {
-                setSort(value as LeaderboardSort);
-                setPage(1);
-              },
-              options: [
-                { value: 'scoreHigh', label: t('leaderboard.sort.highestScore') },
-                { value: 'scoreLow', label: t('leaderboard.sort.lowestScore') },
-                { value: 'nameAsc', label: t('leaderboard.sort.nameAsc') },
-                { value: 'nameDesc', label: t('leaderboard.sort.nameDesc') },
-              ],
-            }}
-            onReset={resetFilters}
-          />
+              }}
+              onReset={resetFilters}
+            />
+          </div>
 
           {visibleEntries.length === 0 ? (
             <NoResults
@@ -301,78 +303,83 @@ export function LeaderboardPage() {
             />
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-16">{t('leaderboard.table.rank')}</TableHead>
-                    <TableHead>{t('leaderboard.table.reader')}</TableHead>
-                    <TableHead>{t('leaderboard.table.score')}</TableHead>
-                    <TableHead>{t('leaderboard.table.badges')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedItems.map((entry) => (
-                    <TableRow
-                      key={entry.member_id}
-                      className={cn(entry.is_current_user && 'bg-primary/5 font-medium')}
-                    >
-                      <TableCell>
-                        <span className="flex items-center gap-1.5 font-bold text-foreground">
-                          {entry.rank <= 3 && (
-                            <Award className={cn('size-4', medalColor[entry.rank])} />
-                          )}
-                          {entry.rank}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="flex items-center gap-2">
-                          <Avatar
-                            src={entry.avatar_url ?? undefined}
-                            name={entry.full_name}
-                            size="sm"
-                          />
-                          <span className="font-medium">{entry.full_name}</span>
-                          {entry.is_current_user && (
-                            <Badge variant="outline" className="ml-1 text-[11px] py-0">
-                              {t('common.you')}
-                            </Badge>
-                          )}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="font-semibold text-primary">
-                          {entry.score.toLocaleString()}{' '}
-                          <span className="text-xs font-normal text-muted-foreground">pts</span>
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {entry.badges && entry.badges.length > 0 ? (
-                            entry.badges.map((badgeKey) => {
-                              const config = BADGE_CONFIG[badgeKey];
-                              if (!config) return null;
-                              return (
-                                <span
-                                  key={badgeKey}
-                                  title={`${t(config.titleKey)} — ${t(config.descKey)}`}
-                                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-xs shadow-xs hover:scale-105 transition-transform cursor-help"
-                                >
-                                  <span>{config.icon}</span>
-                                  <span className="hidden sm:inline font-medium text-foreground text-[11px]">
-                                    {t(config.titleKey)}
-                                  </span>
-                                </span>
-                              );
-                            })
-                          ) : (
-                            <span className="text-xs text-muted-foreground italic">—</span>
-                          )}
-                        </div>
-                      </TableCell>
+              <div className="w-full overflow-x-auto rounded-xl border border-border bg-card shadow-xs">
+                <Table className="min-w-full">
+                  <TableHeader className="bg-secondary/20">
+                    <TableRow>
+                      <TableHead className="w-20 whitespace-nowrap px-3.5 py-2.5">{t('leaderboard.table.rank')}</TableHead>
+                      <TableHead className="whitespace-nowrap px-3.5 py-2.5">{t('leaderboard.table.reader')}</TableHead>
+                      <TableHead className="whitespace-nowrap px-3.5 py-2.5">{t('leaderboard.table.score')}</TableHead>
+                      <TableHead className="whitespace-nowrap px-3.5 py-2.5">{t('leaderboard.table.badges')}</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedItems.map((entry) => (
+                      <TableRow
+                        key={entry.member_id}
+                        className={cn(
+                          'transition-colors hover:bg-secondary/40',
+                          entry.is_current_user && 'bg-primary/5 font-medium',
+                        )}
+                      >
+                        <TableCell className="whitespace-nowrap px-3.5 py-2.5">
+                          <span className="flex items-center gap-1.5 font-bold text-foreground">
+                            {entry.rank <= 3 && (
+                              <Award className={cn('size-4', medalColor[entry.rank])} />
+                            )}
+                            {entry.rank}
+                          </span>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap px-3.5 py-2.5">
+                          <span className="flex items-center gap-2.5">
+                            <Avatar
+                              src={entry.avatar_url ?? undefined}
+                              name={entry.full_name}
+                              size="sm"
+                            />
+                            <span className="font-semibold text-foreground text-xs sm:text-sm">{entry.full_name}</span>
+                            {entry.is_current_user && (
+                              <Badge variant="outline" className="ml-1 text-[11px] py-0">
+                                {t('common.you')}
+                              </Badge>
+                            )}
+                          </span>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap px-3.5 py-2.5">
+                          <span className="font-semibold text-primary">
+                            {entry.score.toLocaleString()}{' '}
+                            <span className="text-xs font-normal text-muted-foreground">pts</span>
+                          </span>
+                        </TableCell>
+                        <TableCell className="px-3.5 py-2.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {entry.badges && entry.badges.length > 0 ? (
+                              entry.badges.map((badgeKey) => {
+                                const config = BADGE_CONFIG[badgeKey];
+                                if (!config) return null;
+                                return (
+                                  <span
+                                    key={badgeKey}
+                                    title={`${t(config.titleKey)} — ${t(config.descKey)}`}
+                                    className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-xs shadow-xs hover:scale-105 transition-transform cursor-help"
+                                  >
+                                    <span>{config.icon}</span>
+                                    <span className="hidden sm:inline font-medium text-foreground text-[11px]">
+                                      {t(config.titleKey)}
+                                    </span>
+                                  </span>
+                                );
+                              })
+                            ) : (
+                              <span className="text-xs text-muted-foreground italic">—</span>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
               <Pagination
                 currentPage={page}

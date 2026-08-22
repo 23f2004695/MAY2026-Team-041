@@ -81,11 +81,12 @@ export function OverdueFinesOverview({ months }: { months: OverdueFinesMonth[] }
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle>{t('managerDashboard.overdueFines.title')}</CardTitle>
+        <span className="text-xs font-normal text-muted-foreground">Last 3 Months</span>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 rounded-lg border border-border bg-secondary/20 p-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 rounded-lg border border-border bg-secondary/20 p-5">
           <StatCell
             label={t('managerDashboard.overdueFines.totalOverdue')}
             value={String(totalOverdue)}
