@@ -10,9 +10,12 @@ import { ROUTES } from '@/constants/routes';
 import { getErrorMessage } from '@/lib/api';
 import { loginSchema, type LoginFormValues } from '@/lib/authSchema';
 import { renderGoogleSignInButton } from '@/lib/googleIdentity';
-import { useAuth } from '@/providers/AuthProvider';
+import { useAuth, type Role } from '@/providers/AuthProvider';
 
+const ROLES: Role[] = ['admin', 'member', 'manager', 'librarian', 'it-head', 'guardian'];
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+const DEMO_ROLE_LOGIN_ENABLED =
+  import.meta.env.DEV || import.meta.env.MODE === 'e2e' || import.meta.env.VITE_ENABLE_DEMO_LOGIN === 'true';
 
 function GoogleIcon() {
   return (
@@ -39,8 +42,16 @@ function GoogleIcon() {
 
 export function Login() {
   const { t } = useTranslation();
-  const { loginWithCredentials, loginWithGoogleToken } = useAuth();
+  const { login, loginWithCredentials, loginWithGoogleToken } = useAuth();
   const googleButtonRef = useRef<HTMLDivElement>(null);
+
+  async function signInAs(role: Role) {
+    try {
+      await login(role);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Could not preview this role'));
+    }
+  }
 
   const {
     register,
@@ -121,6 +132,27 @@ export function Login() {
           <GoogleIcon />
           <span>Continue with Google</span>
         </Button>
+      )}
+
+      {DEMO_ROLE_LOGIN_ENABLED && (
+        <>
+          <div className="flex items-center gap-3 py-1 text-xs text-muted-foreground">
+            <div className="h-px flex-1 bg-border" />
+            {t('auth.login.orPreviewRole')}
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          {ROLES.map((role) => (
+            <Button
+              key={role}
+              variant="outline"
+              className="justify-start capitalize"
+              onClick={() => signInAs(role)}
+            >
+              {t('auth.login.continueAs', { role: t(`auth.login.roles.${role}`) })}
+            </Button>
+          ))}
+        </>
       )}
     </div>
   );
