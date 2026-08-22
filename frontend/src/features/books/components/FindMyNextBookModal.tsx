@@ -1,4 +1,4 @@
-import { BookOpen, PartyPopper, Sparkles, Wand2 } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, PartyPopper, Sparkles, Wand2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -20,10 +20,7 @@ export interface FindMyNextBookModalProps {
   onClose: () => void;
 }
 
-type Phase = 'loading' | 'quiz' | 'submitting' | 'results' | 'load_error' | 'submit_error';
-// Which request to retry from the 'submit_error' phase, and which draft the results
-// belong to — the quiz's five taps and the describe box are two doors to the same
-// submit/results machinery, not two separate flows.
+type Phase = 'loading' | 'initial' | 'quiz' | 'submitting' | 'results' | 'load_error' | 'submit_error';
 type SubmitMode = 'quiz' | 'describe';
 
 const DESCRIBE_MAX_LENGTH = 500;
@@ -64,7 +61,7 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
         setQuestionIndex(0);
         setAnswers({});
         setResult(null);
-        setPhase('quiz');
+        setPhase('initial');
       })
       .catch((error: unknown) => {
         if (ignore) return;
@@ -82,7 +79,7 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
     try {
       const response = await getRecommendationQuiz();
       setQuiz(response);
-      setPhase('quiz');
+      setPhase('initial');
     } catch (error) {
       toast.error(getErrorMessage(error, t('books.quiz.loadError')));
       setPhase('load_error');
@@ -123,8 +120,28 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
     }
   }
 
-  function selectOption(questionId: string, optionId: string) {
-    setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+  function toggleOption(questionId: string, optionId: string) {
+    setAnswers((prev) => {
+      const existing = prev[questionId as keyof RecommendationAnswers];
+      let currentList: string[] = [];
+      if (Array.isArray(existing)) {
+        currentList = existing;
+      } else if (typeof existing === 'string' && existing.length > 0) {
+        currentList = [existing];
+      }
+
+      if (optionId === 'no_preference') {
+        return { ...prev, [questionId]: ['no_preference'] };
+      }
+
+      const filtered = currentList.filter((id) => id !== 'no_preference');
+      if (filtered.includes(optionId)) {
+        const next = filtered.filter((id) => id !== optionId);
+        return { ...prev, [questionId]: next.length > 0 ? next : ['no_preference'] };
+      } else {
+        return { ...prev, [questionId]: [...filtered, optionId] };
+      }
+    });
   }
 
   function goNext() {
@@ -138,7 +155,11 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
   }
 
   function goBack() {
-    setQuestionIndex((index) => Math.max(0, index - 1));
+    if (questionIndex === 0) {
+      setPhase('initial');
+    } else {
+      setQuestionIndex((index) => Math.max(0, index - 1));
+    }
   }
 
   return (
@@ -160,7 +181,7 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
           />
         )}
 
-        {phase === 'quiz' && quiz && quiz.questions.length === 0 && (
+        {phase === 'initial' && quiz && quiz.questions.length === 0 && (
           <>
             <EmptyState
               icon={BookOpen}
@@ -171,24 +192,42 @@ export function FindMyNextBookModal({ open, onClose }: FindMyNextBookModalProps)
           </>
         )}
 
-        {phase === 'quiz' && quiz && quiz.questions.length > 0 && (
-          <>
-            <QuizStep
-              quiz={quiz}
-              questionIndex={questionIndex}
-              answers={answers}
-              onSelect={selectOption}
-              onBack={goBack}
-              onNext={goNext}
+        {phase === 'initial' && quiz && quiz.questions.length > 0 && (
+          <div className="flex flex-col gap-5 py-1">
+            <DescribeBox
+              value={description}
+              onChange={setDescription}
+              onSubmit={() => void submitDescription(description)}
             />
-            {questionIndex === 0 && (
-              <DescribeBox
-                value={description}
-                onChange={setDescription}
-                onSubmit={() => void submitDescription(description)}
-              />
-            )}
-          </>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 px-1">
+              <span className="text-sm text-muted-foreground font-medium">
+                {t('books.quiz.moodPrompt', 'Not clear about your mood yet?')}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setQuestionIndex(0);
+                  setPhase('quiz');
+                }}
+                className="flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary/80 transition-colors group"
+              >
+                <span>{t('books.quiz.takeQuizLink', 'Take the 30-sec Quiz')}</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {phase === 'quiz' && quiz && quiz.questions.length > 0 && (
+          <QuizStep
+            quiz={quiz}
+            questionIndex={questionIndex}
+            answers={answers}
+            onToggle={toggleOption}
+            onBack={goBack}
+            onNext={goNext}
+          />
         )}
 
         {phase === 'submitting' && (
@@ -213,17 +252,23 @@ interface QuizStepProps {
   quiz: RecommendationQuiz;
   questionIndex: number;
   answers: RecommendationAnswers;
-  onSelect: (questionId: string, optionId: string) => void;
+  onToggle: (questionId: string, optionId: string) => void;
   onBack: () => void;
   onNext: () => void;
 }
 
-function QuizStep({ quiz, questionIndex, answers, onSelect, onBack, onNext }: QuizStepProps) {
+function QuizStep({ quiz, questionIndex, answers, onToggle, onBack, onNext }: QuizStepProps) {
   const { t } = useTranslation();
   const question = quiz.questions[questionIndex];
   const total = quiz.questions.length;
   const isLastQuestion = questionIndex === total - 1;
-  const selected = answers[question.id];
+
+  const rawSelected = answers[question.id as keyof RecommendationAnswers];
+  const selectedList: string[] = Array.isArray(rawSelected)
+    ? rawSelected
+    : typeof rawSelected === 'string'
+    ? [rawSelected]
+    : [];
 
   return (
     <>
@@ -231,34 +276,48 @@ function QuizStep({ quiz, questionIndex, answers, onSelect, onBack, onNext }: Qu
         percent={((questionIndex + 1) / total) * 100}
         label={t('books.quiz.questionProgress', { current: questionIndex + 1, total })}
       />
-      <p className="text-sm font-medium text-foreground">{question.prompt}</p>
+      <div>
+        <p className="text-sm font-medium text-foreground">{question.prompt}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          {t('books.quiz.multiSelectHint', 'Select one or more options')}
+        </p>
+      </div>
       <div className="flex flex-col gap-2">
-        {question.options.map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            data-testid="quiz-option"
-            onClick={() => onSelect(question.id, option.id)}
-            className={
-              'rounded-lg border p-3 text-left text-sm transition-colors ' +
-              (selected === option.id
-                ? 'border-primary bg-primary/5 font-medium text-foreground'
-                : 'border-border text-foreground hover:bg-secondary')
-            }
-          >
-            {option.label}
-          </button>
-        ))}
+        {question.options.map((option) => {
+          const isSelected = selectedList.includes(option.id);
+          return (
+            <button
+              key={option.id}
+              type="button"
+              data-testid="quiz-option"
+              onClick={() => onToggle(question.id, option.id)}
+              className={
+                'flex items-center justify-between rounded-lg border p-3 text-left text-sm transition-colors ' +
+                (isSelected
+                  ? 'border-primary bg-primary/10 font-medium text-foreground'
+                  : 'border-border text-foreground hover:bg-secondary')
+              }
+            >
+              <span>{option.label}</span>
+              <div
+                className={
+                  'flex size-5 shrink-0 items-center justify-center rounded border transition-colors ' +
+                  (isSelected
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-muted-foreground/40 bg-background')
+                }
+              >
+                {isSelected && <Check className="size-3.5 stroke-[3]" />}
+              </div>
+            </button>
+          );
+        })}
       </div>
       <div className="flex justify-between gap-2">
-        {questionIndex > 0 ? (
-          <Button variant="outline" onClick={onBack}>
-            {t('books.quiz.back')}
-          </Button>
-        ) : (
-          <span />
-        )}
-        <Button disabled={!selected} onClick={onNext}>
+        <Button variant="outline" onClick={onBack}>
+          {t('books.quiz.back')}
+        </Button>
+        <Button onClick={onNext}>
           {isLastQuestion ? t('books.quiz.seeRecommendations') : t('books.quiz.next')}
         </Button>
       </div>
@@ -272,36 +331,59 @@ interface DescribeBoxProps {
   onSubmit: () => void;
 }
 
-// Sits below the first quiz question as a second door into the same results screen —
-// answer the question above, or skip straight to typing what you want here. The LLM
-// only ever translates this text into the same answer shape the quiz buttons produce;
-// the ranking itself never changes, see recommendations/service.py::describe_and_recommend.
 function DescribeBox({ value, onChange, onSubmit }: DescribeBoxProps) {
   const { t } = useTranslation();
   const canSubmit = value.trim().length > 0;
 
+  const SAMPLE_PROMPTS = [
+    'Cozy mystery, short read',
+    'Fast-paced sci-fi adventure',
+    'Heartwarming classic',
+  ];
+
   return (
-    <div className="flex flex-col gap-2 border-t border-border pt-4">
-      <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-        <Wand2 className="size-4 text-primary" />
-        {t('books.quiz.describe.heading')}
+    <div className="flex flex-col gap-3.5 rounded-xl border border-primary/20 bg-primary/5 p-4">
+      <div className="flex items-center gap-2 text-base font-semibold text-foreground">
+        <Wand2 className="size-5 text-primary" />
+        <span>{t('books.quiz.describe.heading', 'Describe what you want')}</span>
       </div>
+
       <Textarea
         value={value}
         onChange={(event) => onChange(event.target.value)}
         maxLength={DESCRIBE_MAX_LENGTH}
-        rows={2}
-        placeholder={t('books.quiz.describe.placeholder')}
+        rows={4}
+        placeholder={t(
+          'books.quiz.describe.placeholder',
+          'e.g. something like a cozy mystery, older, not too long',
+        )}
+        className="resize-none text-sm bg-background border-border min-h-[110px]"
       />
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={!canSubmit}
-        onClick={onSubmit}
-        className="self-end"
-      >
-        {t('books.quiz.describe.submit')}
-      </Button>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {SAMPLE_PROMPTS.map((promptText) => (
+            <button
+              key={promptText}
+              type="button"
+              onClick={() => onChange(promptText)}
+              className="rounded-full border border-primary/30 bg-background px-2.5 py-1 text-xs font-medium text-foreground/80 transition-colors hover:border-primary hover:text-primary hover:bg-primary/5"
+            >
+              + {promptText}
+            </button>
+          ))}
+        </div>
+        <Button
+          variant="primary"
+          size="sm"
+          disabled={!canSubmit}
+          onClick={onSubmit}
+          className="shrink-0 gap-1.5"
+        >
+          <Sparkles className="size-4" />
+          <span>{t('books.quiz.describe.submit', 'Find Books')}</span>
+        </Button>
+      </div>
     </div>
   );
 }

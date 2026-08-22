@@ -82,11 +82,10 @@ export function AccessControl({ members, permissionRequests, onChanged }: Access
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle>{t('itHead.accessControl.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
         <TableToolbar
+          variant="icon-only"
           filters={[
             {
               label: t('itHead.accessControl.filters.statusLabel'),
@@ -138,6 +137,8 @@ export function AccessControl({ members, permissionRequests, onChanged }: Access
           }}
           resetLabel={t('common.actions.reset')}
         />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         {filteredMembers.length === 0 ? (
           <NoResults title={t('itHead.accessControl.empty')} />
         ) : (

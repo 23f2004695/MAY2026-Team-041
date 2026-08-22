@@ -28,13 +28,18 @@ function TranslateToggle({ onClick, active }: { onClick: () => void; active: boo
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={cn(
-        'inline-flex items-center gap-1 text-xs font-medium transition-colors',
-        active ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
-      )}
+      className="inline-flex items-center gap-1 text-xs font-medium transition-opacity hover:opacity-80"
     >
-      <Languages className="size-3.5" />
-      {active ? t('community.post.showOriginal') : t('community.post.translate')}
+      <Languages className="size-3.5 text-primary" />
+      <span
+        className={cn(
+          active
+            ? 'text-primary font-semibold'
+            : 'bg-gradient-to-r from-primary via-primary/70 to-primary bg-clip-text text-transparent font-semibold',
+        )}
+      >
+        {active ? t('community.post.showOriginal') : t('community.post.translate')}
+      </span>
     </button>
   );
 }

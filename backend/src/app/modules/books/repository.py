@@ -73,12 +73,10 @@ async def list_books(
     )
 
 
-# Used by sort modes ("rating"/"recommended") that need every matching book scored
-# before they can be paginated, unlike the DB-level skip/take "newest" sort above.
 async def list_books_by_rating(
     *, search: str | None, category: str | None, skip: int, take: int
 ) -> tuple[list[Book], int]:
-    """A page of books ordered by average rating, ranked and paginated in SQL.
+    """Sorts books by their average rating (highest first) entirely in SQL.
 
     Rating order used to mean loading the entire matching catalogue plus every review
     for it, sorting in Python and slicing — on a list endpoint the chat tool also hits.

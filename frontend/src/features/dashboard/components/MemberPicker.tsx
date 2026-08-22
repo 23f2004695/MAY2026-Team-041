@@ -67,6 +67,7 @@ export function MemberPicker({
             onChange={(event) => setQuery(event.target.value)}
             placeholder={searchPlaceholder}
             autoFocus={autoFocus}
+            className="bg-surface"
           />
           {isLoading && (
             <p className="px-1 text-xs text-muted-foreground" role="status">

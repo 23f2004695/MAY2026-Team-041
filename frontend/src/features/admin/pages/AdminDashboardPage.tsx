@@ -49,6 +49,7 @@ import { AnnouncementModal } from '../components/AnnouncementModal';
 import { AuditLog } from '../components/AuditLog';
 import { BudgetExpenses } from '../components/BudgetExpenses';
 import { CashFlowBreakdown } from '../components/CashFlowBreakdown';
+import { EditBudgetModal } from '../components/EditBudgetModal';
 import { InviteMemberModal } from '../components/InviteMemberModal';
 import { LiveSeatStatus } from '../components/LiveSeatStatus';
 import { LogExpenseModal } from '../components/LogExpenseModal';
@@ -99,6 +100,7 @@ export function AdminDashboardPage() {
   const [auditError, setAuditError] = useState(false);
   const [loggingCategory, setLoggingCategory] = useState<ExpenseCategory | null>(null);
   const [isLogExpenseOpen, setIsLogExpenseOpen] = useState(false);
+  const [isEditBudgetOpen, setIsEditBudgetOpen] = useState(false);
   const [isWaiveFineOpen, setIsWaiveFineOpen] = useState(false);
   const [isAdjustPricingOpen, setIsAdjustPricingOpen] = useState(false);
   const [isInviteMemberOpen, setIsInviteMemberOpen] = useState(false);
@@ -257,7 +259,11 @@ export function AdminDashboardPage() {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <CashFlowBreakdown sources={dashboard.cash_flow} />
-            <BudgetExpenses categories={dashboard.budget} onLogExpense={setLoggingCategory} />
+            <BudgetExpenses
+              categories={dashboard.budget}
+              onLogExpense={setLoggingCategory}
+              onEditBudget={() => setIsEditBudgetOpen(true)}
+            />
           </div>
 
           <LiveSeatStatus status={dashboard.seat_status} />
@@ -290,11 +296,10 @@ export function AdminDashboardPage() {
         )}
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
             <CardTitle>{t('admin.reports.title')}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3">
             <TableToolbar
+              variant="icon-only"
               filters={[
                 {
                   label: t('admin.reports.filters.categoryLabel'),
@@ -329,6 +334,8 @@ export function AdminDashboardPage() {
               }}
               resetLabel={t('common.actions.reset')}
             />
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
 
             <div className="flex flex-col gap-3">
               {paginatedItems.map((report) => (
@@ -440,6 +447,23 @@ export function AdminDashboardPage() {
         categoryLabel={loggingCategory ? t(`admin.budget.categories.${loggingCategory}`) : undefined}
         onLogged={() => {
           refresh();
+          refreshAuditLog();
+        }}
+      />
+
+      <EditBudgetModal
+        open={isEditBudgetOpen}
+        onClose={() => setIsEditBudgetOpen(false)}
+        categories={dashboard?.budget ?? []}
+        onSaveAllocations={(allocations) => {
+          if (!dashboard) return;
+          setDashboard({
+            ...dashboard,
+            budget: dashboard.budget.map((cat) => ({
+              ...cat,
+              budgeted: allocations[cat.category] ?? cat.budgeted,
+            })),
+          });
           refreshAuditLog();
         }}
       />

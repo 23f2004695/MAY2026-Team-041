@@ -90,6 +90,9 @@ async def test_availability_summary_reflects_a_booking_for_the_current_hour(memb
     # occupy that exact seat at "the current hour" by the time this runs. Ask the real
     # schedule which seat is actually free right now instead of guessing one.
     now = datetime.now(UTC)
+    await prisma.seatbooking.delete_many(
+        where={"date": datetime(now.year, now.month, now.day, tzinfo=UTC), "hour": now.hour}
+    )
     async with _client_as(member_user) as client:
         before = await client.get("/api/v1/seat-booking/availability")
         schedule = await client.get(
@@ -260,27 +263,25 @@ async def test_book_beyond_max_days_ahead_rejected(member_user):
 
 
 async def test_book_past_hour_today_rejected(member_user):
-    # Real wall-clock "now" would make this flaky right around midnight (an hour
-    # that's in the past relative to 00:xx is actually still hours away later
-    # today) — pin "now" instead of depending on when the suite happens to run.
     from unittest.mock import patch
 
-    fixed_today = "2026-07-27"
+    now = datetime.now(UTC)
+    fixed_today = now.date().isoformat()
+    fixed_now = datetime(now.year, now.month, now.day, 14, 30, tzinfo=UTC)
 
-    class _FixedClock(datetime):
-        @classmethod
-        def now(cls, tz=None):
-            return datetime(2026, 7, 27, 14, 30, tzinfo=tz)
+    await prisma.seatbooking.delete_many(
+        where={"date": datetime(now.year, now.month, now.day, tzinfo=UTC), "hour": 15}
+    )
 
-    with patch("app.modules.seat_booking.service.datetime", _FixedClock):
+    with patch("app.modules.seat_booking.service._now", lambda: fixed_now):
         async with _client_as(member_user) as client:
             past_hour = await client.post(
                 "/api/v1/seat-booking",
-                json={"seat_label": "A6", "date": fixed_today, "hour": 10},
+                json={"seat_label": "D7", "date": fixed_today, "hour": 10},
             )
             future_hour = await client.post(
                 "/api/v1/seat-booking",
-                json={"seat_label": "A6", "date": fixed_today, "hour": 15},
+                json={"seat_label": "D7", "date": fixed_today, "hour": 15},
             )
     assert past_hour.status_code == 400
     assert future_hour.status_code == 201

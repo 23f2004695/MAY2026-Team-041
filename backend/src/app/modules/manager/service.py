@@ -128,14 +128,22 @@ async def get_footfall_analytics(range_key: FootfallRange) -> FootfallAnalyticsO
     )
 
     busiest_day = quietest_day = None
-    if visits_by_weekday:
-        busiest_key = max(visits_by_weekday, key=lambda day: visits_by_weekday[day])
-        quietest_key = min(visits_by_weekday, key=lambda day: visits_by_weekday[day])
+    if visits:
+        all_weekday_counts = {day: 0 for day in range(7)}
+        for visit in visits:
+            all_weekday_counts[visit.checkedInAt.weekday()] += 1
+
+        busiest_key = max(all_weekday_counts, key=lambda day: (all_weekday_counts[day], -day))
+        quietest_key = min(
+            all_weekday_counts,
+            key=lambda day: (all_weekday_counts[day], day if day != busiest_key else 99),
+        )
+
         busiest_day = DayOfWeekFootfallOut(
-            day_of_week=busiest_key, visits=visits_by_weekday[busiest_key]
+            day_of_week=busiest_key, visits=all_weekday_counts[busiest_key]
         )
         quietest_day = DayOfWeekFootfallOut(
-            day_of_week=quietest_key, visits=visits_by_weekday[quietest_key]
+            day_of_week=quietest_key, visits=all_weekday_counts[quietest_key]
         )
 
     return FootfallAnalyticsOut(

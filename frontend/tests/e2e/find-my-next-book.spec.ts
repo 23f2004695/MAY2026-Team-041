@@ -20,10 +20,13 @@ test.describe('Find My Next Book', () => {
     const dialog = page.getByRole('dialog', { name: 'Find My Next Book' });
     await expect(dialog).toBeVisible();
 
-    const firstOption = dialog.getByTestId('quiz-option').first();
+    const startQuizBtn = dialog.getByRole('button', { name: /Take the 30-sec Quiz|Answer Questions|Start Quiz/i });
     const notEnoughBooks = dialog.getByText('Not enough books yet');
 
-    await expect(firstOption.or(notEnoughBooks)).toBeVisible({ timeout: 15_000 });
+    await expect(startQuizBtn.or(notEnoughBooks)).toBeVisible({ timeout: 15_000 });
+    if (await startQuizBtn.isVisible()) {
+      await startQuizBtn.click();
+    }
 
     // Walk however many questions the live catalog produced (zero if the catalog can't
     // support any), picking the first option each time.

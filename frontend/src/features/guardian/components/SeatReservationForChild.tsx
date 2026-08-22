@@ -198,8 +198,8 @@ export function SeatReservationForChild({ children }: { children: GuardianChild[
 
         <div className="flex flex-col gap-3">
           {SEAT_ROWS.map((row) => (
-            <div key={row} className="flex items-center gap-3">
-              <span className="w-6 text-sm font-semibold text-muted-foreground">{row}</span>
+            <div key={row} className="flex items-center gap-2.5 sm:gap-4">
+              <span className="w-6 shrink-0 text-center font-bold text-foreground text-sm sm:text-base">{row}</span>
               <div className="grid flex-1 grid-cols-4 gap-2 sm:grid-cols-8">
                 {SEAT_LABELS.filter((label) => label.startsWith(row)).map((label) => {
                   const seat = seats?.find((s) => s.seat_label === label);

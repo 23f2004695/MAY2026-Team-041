@@ -109,8 +109,7 @@ async def _add_loan_round(members: list, books: list, issuers: list, used_pairs:
                     data={
                         "userId": member.id,
                         "type": "fine-reminder",
-                        "message": f"Your fine of ₹{fine_amount} for '{book.title}' "
-                        "is overdue.",
+                        "message": f"Your fine of ₹{fine_amount} for '{book.title}' is overdue.",
                         "createdAt": due_date + timedelta(days=1),
                     }
                 )

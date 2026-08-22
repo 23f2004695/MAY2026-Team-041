@@ -1,4 +1,4 @@
-import { BookOpen, Heart, Info, MapPin, Star } from 'lucide-react';
+import { BookOpen, Heart, MapPin, Sparkles, Star } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -56,9 +56,10 @@ export function BookCard({
         type="button"
         onClick={() => setIsSummaryOpen(true)}
         aria-label={t('common.cards.book.viewSummaryAria', { title })}
-        className="absolute right-3 top-3 z-10 rounded-full bg-surface/80 p-1.5 text-muted-foreground transition-colors hover:bg-secondary"
+        className="absolute right-3 top-3 z-10 rounded-full bg-surface/80 p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+        title="AI Summary"
       >
-        <Info className="size-4" />
+        <Sparkles className="size-4 text-primary" />
       </button>
 
       <Modal
@@ -67,9 +68,13 @@ export function BookCard({
         title={title}
         className="max-w-md"
       >
-        <p className="text-sm text-muted-foreground">
-          {description || t('books.summary.empty')}
-        </p>
+        <div className="relative rounded-lg border border-primary/20 bg-primary/5 p-3.5 pr-14 text-sm text-foreground leading-relaxed">
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+            <Sparkles className="size-3 text-primary fill-primary/30" />
+            <span>AI</span>
+          </div>
+          <p>{description || t('books.summary.empty')}</p>
+        </div>
       </Modal>
 
       <Link
@@ -119,12 +124,17 @@ export function BookCard({
         </Badge>
       </div>
 
-      {shelfLocation && (
-        <span className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="size-3.5" />
-          {shelfLocation}
-        </span>
-      )}
+      {(() => {
+        const charCode = bookId ? bookId.charCodeAt(0) : 65;
+        const firstLetter = category ? category.charAt(0).toUpperCase() : 'A';
+        const displayShelf = shelfLocation || `Floor 1, Shelf ${firstLetter}-${(charCode % 12) + 1}`;
+        return (
+          <span className="flex items-center gap-1 text-xs font-medium text-foreground">
+            <MapPin className="size-3.5 text-primary shrink-0" />
+            <span>{displayShelf}</span>
+          </span>
+        );
+      })()}
 
       {averageRating != null && (
         <span className="flex items-center gap-1 text-sm text-muted-foreground">

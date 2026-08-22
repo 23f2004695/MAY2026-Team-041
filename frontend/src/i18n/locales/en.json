@@ -1115,13 +1115,13 @@
       "empty": "No visits recorded in this range."
     },
     "revenue": {
-      "title": "Revenue Overview (Last 6 Months)",
+      "title": "Revenue Overview",
       "total": "Total Revenue",
       "thisMonth": "This Month",
       "avgMonthly": "Avg. Monthly"
     },
     "overdueFines": {
-      "title": "Overdue & Fines Overview (Last 3 Months)",
+      "title": "Overdue & Fines Overview",
       "totalOverdue": "Total Overdue Books",
       "finesGenerated": "Fines Generated",
       "finesCollected": "Fines Collected",
@@ -2022,7 +2022,7 @@
       "resultsTitle": "Your Recommendations",
       "done": "Done",
       "describe": {
-        "heading": "Or just describe what you want",
+        "heading": "Describe what you want",
         "placeholder": "e.g. something like a cozy mystery, older, not too long",
         "submit": "Find books"
       }

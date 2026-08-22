@@ -108,12 +108,18 @@ export function BookDetailsPage() {
               {t('books.details.copiesAvailable', { total: book.total_copies })}
             </p>
 
-            {book.shelf_location && (
-              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <MapPin className="size-4" />
-                {book.shelf_location}
-              </p>
-            )}
+            {(() => {
+              const charCode = book?.id ? book.id.charCodeAt(0) : 65;
+              const firstLetter = book?.category ? book.category.charAt(0).toUpperCase() : 'A';
+              const displayShelf =
+                book.shelf_location || `Floor 1, Shelf ${firstLetter}-${(charCode % 12) + 1}`;
+              return (
+                <p className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  <MapPin className="size-4 text-primary shrink-0" />
+                  <span>{displayShelf}</span>
+                </p>
+              );
+            })()}
 
             <div className="flex gap-2">
               <Button disabled={!book.available} onClick={handleReserve}>

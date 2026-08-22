@@ -11,8 +11,9 @@ import {
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IconBadge, TableToolbar, type IconBadgeTone } from '@/components/common';
+import { IconBadge, Pagination, TableToolbar, type IconBadgeTone } from '@/components/common';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { usePagination } from '@/hooks';
 import { comingSoonToast } from '@/lib/comingSoonToast';
 
 type ReportKey =
@@ -46,27 +47,34 @@ export function ITHeadReportsList() {
     return items;
   }, [sort, t]);
 
+  const { page, setPage, totalPages, paginatedItems, totalItems } = usePagination(sortedReports, 3);
+
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{t('itHead.reportsPage.reportsList.title')}</CardTitle>
-        <p className="text-sm text-muted-foreground">{t('itHead.reportsPage.reportsList.subtitle')}</p>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3">
+        <div>
+          <CardTitle>{t('itHead.reportsPage.reportsList.title')}</CardTitle>
+          <p className="text-sm text-muted-foreground">{t('itHead.reportsPage.reportsList.subtitle')}</p>
+        </div>
         <TableToolbar
+          variant="icon-only"
           sort={{
             label: t('common.actions.sort'),
             value: sort,
-            onChange: setSort,
+            onChange: (value) => {
+              setSort(value);
+              setPage(1);
+            },
             options: [
               { value: 'name-asc', label: t('itHead.reportsPage.reportsList.sort.nameAsc') },
               { value: 'name-desc', label: t('itHead.reportsPage.reportsList.sort.nameDesc') },
             ],
           }}
         />
-
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
         <ul className="flex flex-col gap-2.5">
-          {sortedReports.map((report) => (
+          {paginatedItems.map((report) => (
             <li key={report.key} className="flex items-center gap-3 rounded-lg border border-border p-3">
               <IconBadge icon={report.icon} tone={report.tone} shape="square" size={11} />
               <div className="min-w-0 flex-1">
@@ -96,9 +104,15 @@ export function ITHeadReportsList() {
           ))}
         </ul>
 
-        <p className="text-xs text-muted-foreground">
-          {t('common.pagination.showing', { start: 1, end: sortedReports.length, total: sortedReports.length })}
-        </p>
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            pageSize={3}
+            onPageChange={setPage}
+          />
+        )}
       </CardContent>
     </Card>
   );

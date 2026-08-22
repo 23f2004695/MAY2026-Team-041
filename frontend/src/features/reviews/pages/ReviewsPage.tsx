@@ -42,9 +42,9 @@ import type { Book } from '../../books/hooks/useBooks';
 import { RatingSummary } from '../components/RatingSummary';
 import { WriteReviewModal, type ReviewDraft } from '../components/WriteReviewModal';
 
-const MEMBER_RATED_PAGE_SIZE = 5;
-const MEMBER_REVIEWS_PAGE_SIZE = 5;
-const BOOK_REVIEWS_PAGE_SIZE = 5;
+const MEMBER_RATED_PAGE_SIZE = 6;
+const MEMBER_REVIEWS_PAGE_SIZE = 6;
+const BOOK_REVIEWS_PAGE_SIZE = 6;
 const STAFF_REVIEWS_PAGE_SIZE = 10;
 
 type RatingFilter = 'all' | '1' | '2' | '3' | '4' | '5';

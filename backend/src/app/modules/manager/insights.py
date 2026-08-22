@@ -86,9 +86,7 @@ def score_demand(signal: DemandSignal) -> DemandForecast | None:
         change_pct = None
         trend_level = "high"
     else:
-        change_pct = (
-            (signal.recent_activity - signal.prior_activity) / signal.prior_activity * 100
-        )
+        change_pct = (signal.recent_activity - signal.prior_activity) / signal.prior_activity * 100
         if change_pct >= DEMAND_HIGH_GROWTH_PCT:
             trend_level = "high"
         elif change_pct >= DEMAND_MEDIUM_GROWTH_PCT:
