@@ -625,6 +625,14 @@ async def return_loan(loan_id: str) -> str:
     """STAFF ONLY. Mark a loan as returned. loan_id must come from get_active_loans tool output."""
     if _role() not in LOAN_MANAGER_ROLES:
         return "You don't have permission to return loans."
+    import re
+    if not re.match(r"^[0-9a-f-]{36}$", loan_id, re.IGNORECASE):
+        items = await loans_service.list_active_loans()
+        overdue = [loan for loan in items if loan.status == "overdue"]
+        target = overdue[0] if overdue else (items[0] if items else None)
+        if not target:
+            return "No active loans found to return."
+        loan_id = target.id
     try:
         result = await loans_service.return_loan(loan_id)
         return f"Loan for '{result.book_title}' marked as returned."
@@ -637,6 +645,13 @@ async def send_loan_reminder(loan_id: str) -> str:
     """STAFF ONLY. Send overdue reminder to a member. loan_id must come from get_active_loans tool output."""
     if _role() not in LOAN_MANAGER_ROLES:
         return "You don't have permission to send reminders."
+    import re
+    if not re.match(r"^[0-9a-f-]{36}$", loan_id, re.IGNORECASE):
+        items = await loans_service.list_active_loans()
+        overdue = [loan for loan in items if loan.status == "overdue"]
+        if not overdue:
+            return "No overdue loans found to send a reminder for."
+        loan_id = overdue[0].id
     try:
         await loans_service.send_reminder(loan_id)
         return "Reminder sent successfully."
@@ -684,7 +699,7 @@ Current user: {user_name} | Role: {role} | ID: {member_id}
 
 Your job:
 - Use the available tools to answer questions about books, loans, reservations, seat bookings, events, reading progress, notifications, support tickets, and membership plans.
-- For staff roles (admin, librarian, manager, it_head): also use member search, loan management, and fine tools.
+- For staff roles (admin, librarian, manager, it_head): also use member search, loan management, and fine tools. Do NOT suggest or offer actions like registering for events, reserving books, or booking seats to staff users — those are member-only actions. Never ask a staff user "Would you like to register" for an event.
 - ALWAYS call a tool to get live data. Never answer data questions from memory.
 - Resolve pronouns ("which one", "those", "it") from prior conversation turns before calling a tool.
 - Only answer library-related questions. For anything else say: "I can only help with library-related topics."
@@ -699,8 +714,10 @@ Your job:
 - Be warm and conversational. When data is empty (no loans, no reservations, etc.), acknowledge it naturally and offer ONE relevant next step only (e.g. if no loans → suggest reserving a book; if no reservations → suggest browsing books; if no seat bookings → suggest booking a seat).
 - Never suggest actions that contradict the data (e.g. do NOT suggest returning a loan if the user has no loans).
 - Never render an empty bullet point. If there is no list data, just write a sentence.
-- Use markdown lists (each item on its own line starting with `- `) for any list of results.
-- Use **bold** for titles and key values. Keep responses concise."""
+- Use markdown lists (each item on its own line starting with `- `) for any list of results. Each list item must be on its own line — never put multiple items on the same line separated by bullets or commas.
+- Always put a blank line between an intro sentence and a list.
+- Use **bold** for titles and key values. Keep responses concise.
+- Never mix list styles — use only `- ` prefixed items, never `•` or `*` or numbered inline."""
 
 
 # ── Orchestrator ──────────────────────────────────────────────────────────────
@@ -778,13 +795,17 @@ async def run_chat(
         # Normalise inline bullet characters to markdown list items.
         # Some smaller models (llama3.2, nova-lite) ignore the system prompt
         # formatting rules and emit "• item • item" in one paragraph.
-        if "•" in final and "\n-" not in final:
+        if "•" in final:
             parts = [p.strip() for p in final.split("•") if p.strip()]
             if len(parts) > 1:
                 # First part may be an intro sentence, rest are list items
                 intro = parts[0] if not parts[0].startswith(("-", "*")) else ""
                 items = parts[1:] if intro else parts
                 final = (intro + "\n\n" if intro else "") + "\n".join(f"- {i}" for i in items)
+        # Normalise numbered lists without newlines: "1. foo 2. bar" → proper markdown
+        import re as _re
+        if _re.search(r"\d+\.\s.+\d+\.\s", final):
+            final = _re.sub(r"(?<=[^\n])(\d+\.\s)", r"\n\1", final).strip()
         tag_keywords = [
             "event",
             "book",
