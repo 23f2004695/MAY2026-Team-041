@@ -76,7 +76,7 @@ export function FeeStatusSummaryCard({
               {topOverdue.map((entry) => (
                 <li key={entry.member_id} className="flex items-center justify-between gap-2.5 py-2 first:pt-0 last:pb-0 text-sm">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-foreground">
                       {getInitials(entry.member_name)}
                     </span>
                     <span className="truncate font-medium text-foreground">{entry.member_name}</span>

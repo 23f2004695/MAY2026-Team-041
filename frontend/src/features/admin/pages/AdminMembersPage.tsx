@@ -58,7 +58,7 @@ const ROLE_COLORS: Record<string, { bg: string; text: string; border: string }> 
   guardian: { bg: 'bg-info/10', text: 'text-info', border: 'border-info/20' },
   manager: { bg: 'bg-success/10', text: 'text-success', border: 'border-success/20' },
   librarian: { bg: 'bg-warning/10', text: 'text-warning', border: 'border-warning/20' },
-  'it-head': { bg: 'bg-purple-500/10', text: 'text-purple-600', border: 'border-purple-500/20' },
+  'it-head': { bg: 'bg-purple-500/10', text: 'text-purple-600 dark:text-purple-300', border: 'border-purple-500/20' },
   admin: { bg: 'bg-danger/10', text: 'text-danger', border: 'border-danger/20' },
 };
 

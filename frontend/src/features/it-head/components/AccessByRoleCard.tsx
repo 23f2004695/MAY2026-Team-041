@@ -18,7 +18,7 @@ const ROLE_COLORS: Record<string, { bg: string; text: string; bar: string }> = {
   guardian: { bg: 'bg-info/10', text: 'text-info', bar: 'bg-info' },
   manager: { bg: 'bg-success/10', text: 'text-success', bar: 'bg-success' },
   librarian: { bg: 'bg-warning/10', text: 'text-warning', bar: 'bg-warning' },
-  'it-head': { bg: 'bg-purple-500/10', text: 'text-purple-600', bar: 'bg-purple-600' },
+  'it-head': { bg: 'bg-purple-500/10', text: 'text-purple-600 dark:text-purple-300', bar: 'bg-purple-600' },
   admin: { bg: 'bg-danger/10', text: 'text-danger', bar: 'bg-danger' },
 };
 
