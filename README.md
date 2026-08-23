@@ -64,7 +64,7 @@ It supports:
 - **Make** — common developer commands
 
 ### Deployment / Hosting
-No hosting provider is wired up yet — see [§6 Deployment Guide](#6-deployment-guide) for
+No hosting provider is wired up yet — see [§5 Deployment Guide](#5-deployment-guide) for
 the platform-agnostic notes on how each piece is meant to be deployed.
 
 ---
@@ -110,7 +110,7 @@ flowchart TD
     Root["MAY2026-Team-041/"]
     Root --> Backend["backend/"]
     Root --> Frontend["frontend/"]
-    Root --> Docs["docs/"]
+    Root --> Assets["assets/"]
     Root --> Compose["docker-compose.yml"]
 
     Backend --> BApp["src/app/"]
@@ -331,7 +331,12 @@ make install
 ```
 
 ### Initialize the database
-Starts PostgreSQL automatically, generates the Prisma client, and applies migrations:
+Generate the Prisma client, then apply migrations. Start PostgreSQL first with Docker
+Compose if it is not already running:
+```bash
+docker compose up -d --wait db
+```
+
 ```bash
 make db-generate
 make db-migrate
@@ -343,7 +348,7 @@ make db-migrate
 
 ### Run backend
 ```bash
-npm run backend          # from the repo root — starts Postgres, then FastAPI with reload
+npm run backend          # from the repo root — starts Postgres + Redis, then FastAPI with reload
 ```
 Backend URL: `http://localhost:8000`
 
