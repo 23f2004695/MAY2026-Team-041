@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -44,6 +45,7 @@ export function Login() {
   const { t } = useTranslation();
   const { login, loginWithCredentials, loginWithGoogleToken } = useAuth();
   const googleButtonRef = useRef<HTMLDivElement>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function signInAs(role: Role) {
     try {
@@ -94,13 +96,24 @@ export function Login() {
           error={errors.email?.message ? t(errors.email.message) : undefined}
           {...register('email')}
         />
-        <Input
-          label={t('auth.login.password')}
-          type="password"
-          autoComplete="current-password"
-          error={errors.password?.message ? t(errors.password.message) : undefined}
-          {...register('password')}
-        />
+        <div className="relative">
+          <Input
+            label={t('auth.login.password')}
+            type={showPassword ? 'text' : 'password'}
+            autoComplete="current-password"
+            error={errors.password?.message ? t(errors.password.message) : undefined}
+            className="pr-10"
+            {...register('password')}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3 top-8 text-muted-foreground hover:text-foreground"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
         <Link
           to={ROUTES.FORGOT_PASSWORD}
           className="self-end text-sm font-medium text-primary hover:underline"

@@ -83,14 +83,16 @@ export function BookCard({
         aria-label={t('common.cards.book.viewDetailsAria', { title })}
       >
         {coverImageUrl && !imgError ? (
-          <img
-            src={coverImageUrl}
-            alt=""
-            onError={() => setImgError(true)}
-            className="h-32 w-full rounded-md object-cover"
-          />
+          <div className="flex h-48 items-center justify-center rounded-md bg-muted/30">
+            <img
+              src={coverImageUrl}
+              alt=""
+              onError={() => setImgError(true)}
+              className="h-full w-full rounded-md object-cover drop-shadow-md"
+            />
+          </div>
         ) : (
-          <div className="flex h-32 items-center justify-center rounded-md bg-primary/10 text-primary">
+          <div className="flex h-48 items-center justify-center rounded-md bg-primary/10 text-primary">
             <BookOpen className="size-8" />
           </div>
         )}

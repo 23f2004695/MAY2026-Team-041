@@ -33,7 +33,7 @@ class BookCreate(BaseModel):
         default=None, ge=_EARLIEST_PRINT_YEAR, le=_MAX_PUBLISHED_YEAR
     )
     language: str | None = Field(default=None, max_length=40)
-    cover_image_url: str | None = Field(default=None, max_length=2048)
+    cover_image_url: str | None = Field(default=None, max_length=8_000_000)
     total_copies: int = Field(default=0, ge=0)
     shelf_location: str | None = Field(default=None, max_length=120)
 
@@ -51,7 +51,7 @@ class BookUpdate(BaseModel):
         default=None, ge=_EARLIEST_PRINT_YEAR, le=_MAX_PUBLISHED_YEAR
     )
     language: str | None = Field(default=None, max_length=40)
-    cover_image_url: str | None = Field(default=None, max_length=2048)
+    cover_image_url: str | None = Field(default=None, max_length=8_000_000)
     total_copies: int | None = Field(default=None, ge=0)
     shelf_location: str | None = Field(default=None, max_length=120)
 

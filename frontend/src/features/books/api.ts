@@ -2,7 +2,7 @@ import { apiGet } from '@/lib/api';
 
 import type { Book, BookInsights, BookListParams, BookListResponse } from './types';
 
-export const PAGE_SIZE = 15;
+export const PAGE_SIZE = 16;
 
 export function fetchBooks(params: BookListParams): Promise<BookListResponse> {
   const query = new URLSearchParams({
