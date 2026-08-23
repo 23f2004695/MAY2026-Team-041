@@ -79,16 +79,18 @@ export function BookDetailsPage() {
       <Card>
         <CardContent className="flex flex-col gap-6 p-6 md:flex-row">
           {bookCoverUrl ? (
-            <img
-              src={bookCoverUrl}
-              alt=""
-              onError={(e) => {
-                (e.target as HTMLElement).style.display = 'none';
-              }}
-              className="h-48 w-full rounded-md object-cover md:w-48 md:shrink-0"
-            />
+            <div className="flex w-full shrink-0 items-center justify-center rounded-md bg-muted/30 md:w-52">
+              <img
+                src={bookCoverUrl}
+                alt=""
+                onError={(e) => {
+                  (e.target as HTMLElement).parentElement!.style.display = 'none';
+                }}
+                className="w-full rounded-md object-contain"
+              />
+            </div>
           ) : (
-            <div className="flex h-48 w-full items-center justify-center rounded-md bg-primary/10 text-primary md:w-48 md:shrink-0">
+            <div className="flex h-64 w-full items-center justify-center rounded-md bg-primary/10 text-primary md:w-52 md:shrink-0">
               <BookOpen className="size-12" />
             </div>
           )}
