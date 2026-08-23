@@ -64,10 +64,11 @@ async def main() -> None:
 
         # ── Historical visits over the past 7 days (already checked out) ──
         historical_members = members[8:38] if len(members) >= 38 else members[8:]
-        for i, member in enumerate(historical_members):
+        for member in historical_members:
             days_ago = random.randint(0, 6)
-            hour = random.randint(9, 18)
-            checked_in_at = now - timedelta(days=days_ago, hours=random.randint(1, 4), minutes=random.randint(0, 59))
+            checked_in_at = now - timedelta(
+                days=days_ago, hours=random.randint(1, 4), minutes=random.randint(0, 59)
+            )
             duration_minutes = random.randint(30, 180)
             checked_out_at = checked_in_at + timedelta(minutes=duration_minutes)
             # Don't create a future checkout

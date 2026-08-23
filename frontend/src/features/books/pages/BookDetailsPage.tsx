@@ -84,7 +84,8 @@ export function BookDetailsPage() {
                 src={bookCoverUrl}
                 alt=""
                 onError={(e) => {
-                  (e.target as HTMLElement).parentElement!.style.display = 'none';
+                  const parent = (e.target as HTMLElement).parentElement;
+                  if (parent) parent.style.display = 'none';
                 }}
                 className="w-full rounded-md object-contain"
               />
