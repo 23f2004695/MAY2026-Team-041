@@ -44,6 +44,7 @@ export function BookCard({
 }: BookCardProps) {
   const { t } = useTranslation();
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div
@@ -81,10 +82,11 @@ export function BookCard({
         to={href}
         aria-label={t('common.cards.book.viewDetailsAria', { title })}
       >
-        {coverImageUrl ? (
+        {coverImageUrl && !imgError ? (
           <img
             src={coverImageUrl}
             alt=""
+            onError={() => setImgError(true)}
             className="h-32 w-full rounded-md object-cover"
           />
         ) : (

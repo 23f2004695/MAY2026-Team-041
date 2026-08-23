@@ -65,6 +65,8 @@ export function BookDetailsPage() {
     );
   }
 
+  const bookCoverUrl = book.cover_image_url || (book.isbn ? `/covers/${book.isbn}.jpeg` : null);
+
   return (
     <div className="flex flex-col gap-6">
       <Link
@@ -76,10 +78,13 @@ export function BookDetailsPage() {
 
       <Card>
         <CardContent className="flex flex-col gap-6 p-6 md:flex-row">
-          {book.cover_image_url ? (
+          {bookCoverUrl ? (
             <img
-              src={book.cover_image_url}
+              src={bookCoverUrl}
               alt=""
+              onError={(e) => {
+                (e.target as HTMLElement).style.display = 'none';
+              }}
               className="h-48 w-full rounded-md object-cover md:w-48 md:shrink-0"
             />
           ) : (

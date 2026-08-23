@@ -31,7 +31,7 @@ export function DemandForecastCard({ items }: { items: DemandForecastItem[] }) {
     }
   }, [items, demandFilter, sortValue]);
 
-  const { page, setPage, totalPages, paginatedItems } = usePagination(filteredItems, 5);
+  const { page, setPage, totalPages, paginatedItems } = usePagination(filteredItems, 4);
 
   return (
     <Card className="flex flex-col justify-between">
@@ -101,25 +101,38 @@ export function DemandForecastCard({ items }: { items: DemandForecastItem[] }) {
             />
           ) : (
             <ul className="flex flex-col gap-3">
-              {paginatedItems.map((item) => (
-                <li
-                  key={item.book_id}
-                  className="flex flex-col gap-1 rounded-lg border border-border p-3"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">{item.title}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {item.author} · {item.category}
-                      </p>
+              {paginatedItems.map((item) => {
+                const formattedReason = item.reason
+                  .replace(/loan\(s\)\/reservation\(s\)/g, 'loans & reservations')
+                  .replace(/loan\(s\)/g, 'loans')
+                  .replace(/reservation\(s\)/g, 'reservations')
+                  .replace(/day\(s\)/g, 'days');
+
+                return (
+                  <li
+                    key={item.book_id}
+                    className="flex flex-col gap-2.5 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/30"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-foreground leading-snug">{item.title}</p>
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {item.author} <span className="mx-1 text-muted-foreground/40">•</span> <span className="font-medium text-foreground/80">{item.category}</span>
+                        </p>
+                      </div>
+                      <Badge
+                        variant={item.demand_level === 'high' ? 'danger' : 'warning'}
+                        className="shrink-0 px-2.5 py-0.5 text-xs font-semibold"
+                      >
+                        {t(`managerDashboard.demandForecast.level.${item.demand_level}`)}
+                      </Badge>
                     </div>
-                    <Badge variant={item.demand_level === 'high' ? 'danger' : 'warning'}>
-                      {t(`managerDashboard.demandForecast.level.${item.demand_level}`)}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{item.reason}</p>
-                </li>
-              ))}
+                    <p className="border-t border-border/50 pt-2.5 text-xs leading-relaxed text-muted-foreground">
+                      {formattedReason}
+                    </p>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>
@@ -131,7 +144,7 @@ export function DemandForecastCard({ items }: { items: DemandForecastItem[] }) {
             totalPages={totalPages}
             onPageChange={setPage}
             totalItems={filteredItems.length}
-            pageSize={5}
+            pageSize={4}
           />
         </div>
       )}

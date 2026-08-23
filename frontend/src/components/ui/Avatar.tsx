@@ -28,9 +28,9 @@ function getInitials(name?: string): string {
 }
 
 export function Avatar({ src, alt, name, size = 'md', className }: AvatarProps) {
-  const [imageFailed, setImageFailed] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const resolvedSrc = resolveAvatarUrl(src);
-  const showImage = Boolean(resolvedSrc) && !imageFailed;
+  const showImage = Boolean(resolvedSrc) && failedSrc !== resolvedSrc;
 
   return (
     <span
@@ -44,7 +44,7 @@ export function Avatar({ src, alt, name, size = 'md', className }: AvatarProps) 
         <img
           src={resolvedSrc}
           alt={alt ?? name ?? 'Avatar'}
-          onError={() => setImageFailed(true)}
+          onError={() => setFailedSrc(resolvedSrc ?? null)}
           className="size-full object-cover"
         />
       ) : (
