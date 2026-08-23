@@ -95,12 +95,12 @@ test('books pagination requests page two and reports the final item range', asyn
     const requestedPage = url.searchParams.get('page') ?? '1';
     requestedPages.push(requestedPage);
     const numbers =
-      requestedPage === '2' ? [16] : Array.from({ length: 15 }, (_, index) => index + 1);
+      requestedPage === '2' ? [17] : Array.from({ length: 16 }, (_, index) => index + 1);
     return route.fulfill({
       json: {
-        total: 16,
+        total: 17,
         page: Number(requestedPage),
-        page_size: 15,
+        page_size: 16,
         items: numbers.map((number) => ({
           id: `00000000-0000-4000-8000-${String(number).padStart(12, '0')}`,
           title: `Pagination Book ${number}`,
@@ -116,13 +116,13 @@ test('books pagination requests page two and reports the final item range', asyn
   });
 
   await page.goto('/books');
-  await expect(page.getByText('Showing 1–15 of 16')).toBeVisible();
+  await expect(page.getByText('Showing 1–16 of 17')).toBeVisible();
   await expect(page.getByText('Pagination Book 1', { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Next page' }).click();
 
-  await expect(page.getByText('Pagination Book 16', { exact: true })).toBeVisible();
+  await expect(page.getByText('Pagination Book 17', { exact: true })).toBeVisible();
   await expect(page.getByText('Pagination Book 1', { exact: true })).toHaveCount(0);
-  await expect(page.getByText('Showing 16–16 of 16')).toBeVisible();
+  await expect(page.getByText('Showing 17–17 of 17')).toBeVisible();
   expect(requestedPages).toContain('2');
 });
